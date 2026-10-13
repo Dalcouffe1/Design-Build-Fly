@@ -1,0 +1,21 @@
+# compiled helper tools (rebuild with cad/build.ps1) and vendor interop assemblies
+*.exe
+*.dll
+*.pdb
+# SOLIDWORKS lock/temp files and solver logs
+~$*
+*.SLDBAK
+cad/sim/*BenchMark-Solver.txt
+cad/sim/PerformanceLog.txt
+# local tooling
+.claude/
+__pycache__/
+node_modules/
+
+# third-party downloads
+*.pdf
+# SOLIDWORKS Simulation result databases (regenerate with cad/Sim.exe; studies are saved inside cad/sim/*.SLDPRT)
+cad/sim/*.CWR
+cad/sim/*.gsz
+cad/sim/*.LOG
+cad/sim/*.HTQ

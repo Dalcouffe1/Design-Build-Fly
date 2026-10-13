@@ -1,0 +1,658 @@
+<div class="wrap">
+<header class="top">
+  <div class="cover">
+    <div class="eyebrow"><span class="mark" aria-hidden="true"></span>Engineering design review</div>
+    <h1>Lift + Cruise VTOL Review</h1>
+    <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. Student capstone.</p>
+    <dl class="facts">
+      <div><dt>Review date</dt><dd>2026-10-13</dd></div>
+      <div><dt>Stage</dt><dd>Concept · budget redesign</dd></div>
+      <div><dt>Revision</dt><dd>v0.3.1</dd></div>
+      <div><dt>Sources</dt><dd><code>docs/</code> · <code>analysis/</code> · <code>cad/</code></dd></div>
+    </dl>
+  </div>
+  <button class="themebtn" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: system</button>
+</header>
+<nav class="tabs" id="tabs" aria-label="Sections"></nav>
+<div class="layout">
+<nav class="side" id="side" aria-label="Section index"></nav>
+<main id="main">
+
+<!-- ============================ 1 OVERVIEW ============================ -->
+<section class="sec" id="overview" data-title="Overview" data-n="1">
+  <div class="sechead"><div class="eyebrow">1 · Overview</div><h2>Overview</h2></div>
+  <p class="verdict lede"><b>Baseline: C0, a 4-lift twin-boom quadplane built to a fixed $2,000 cap.</b> It has a 2.4 m span and a <b data-k="C0.sized.S" data-d="2"></b> m² NACA 2415 wing (AR <span data-k="C0.sized.AR" data-d="1"></span>, chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm). Lift comes from four SunnySky X4110S motors on 17-in props, and a fifth X4110S drives a 14×8.5 pusher. The aircraft has 6061 aluminium booms and spar on a taped XPS foam wing, and runs ArduPilot QuadPlane on a CoreWing F405 Wing board. Sized MTOW is <b data-k="C0.sized.m" data-d="2"></b> kg, with hover thrust-to-weight <b data-k="C0.sized.TW" data-d="2"></b>. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W and cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W. On one 6S 6500 mAh pack it has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise after the hover allowance and 20 % reserve. <b class="ok-t">Verdict: it closes physically and financially.</b> Committed spend including tax and shipping is <b data-k="C0.bom.total" data-c="usd"></b>, which leaves a <b data-k="C0.bom.crash" data-c="usd"></b> crash reserve under the cap. That reserve is thin (decision below).</p>
+  <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
+
+  <div class="kpis">
+    <div class="kpi"><div class="l">Committed spend (R6)</div><div class="v ok" data-k="C0.bom.total" data-c="usd"></div><div class="s">cap $2,000 incl. tax + shipping</div></div>
+    <div class="kpi"><div class="l">Crash reserve (R7)</div><div class="v warn" data-k="C0.bom.crash" data-c="usd"></div><div class="s">target ≥ $100: met, thin</div></div>
+    <div class="kpi"><div class="l">Sized MTOW (R2)</div><div class="v warn"><span data-k="C0.sized.m" data-d="2"></span> kg</div><div class="s">below the 8–15 kg working target</div></div>
+    <div class="kpi"><div class="l">Days to 2027-04-30 (R8)</div><div class="v warn" id="kpiDays">199</div><div class="s">first hover planned 2027-03-13</div></div>
+  </div>
+
+  <h3 id="ov-change">What changed from v0.2</h3>
+  <p>v0.2 used a Pixhawk avionics set, X6 SE lift units, carbon tubes and a glass-epoxy wing. Its all-in cost was <b data-k="V02.C0.bom.total" data-c="usd"></b>, so it failed the cap. The team confirmed that $2,000 is fixed and covers everything physical, tax and shipping included. v0.3 keeps the architecture and changes every high-cost part:</p>
+  <div class="tbl"><table id="changeTable"><thead><tr><th>Area</th><th class="n">v0.2 goods</th><th class="n">v0.3 goods</th><th class="n">Saving</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/results_v0.2_baseline.json vs analysis/results.json, category totals of the C0 BOM (goods, pre-tax)</p>
+  <p><b>v0.3.1 (same day):</b> a six-reviewer project audit (§12) confirmed 79 findings. The design changes it drove:</p>
+  <ul class="tight">
+    <li>booms moved outboard so the pusher disc clears the rear lift discs (it overlapped by 30 mm)</li>
+    <li>joiner lengthened to 0.76 m, for 0.30 m of engagement per side</li>
+    <li>wing thickened to NACA 2415, with the spar at 30 % chord, for foam cover over the socket</li>
+    <li>fifth servo for twin rudders</li>
+    <li>motor mounts moved to PA6-CF</li>
+    <li>previously missing wiring, glue, battery straps and a hot-wire allowance added</li>
+    <li>transition speed raised to 16 m/s (R11)</li>
+  </ul>
+
+  <h3 id="ov-decisions">Open decisions</h3>
+  <div class="decision red">
+    <b class="q">Which legal path and which flying field? Flight testing can't be scheduled until this is settled.</b>
+    <div>The campus policy permits "University of California courses (including senior projects)", which covers the capstone. Site limits:</div>
+    <ul class="tight">
+      <li>Richmond Field Station: 400 ft AGL</li>
+      <li>Clark Kerr track: 200 ft AGL</li>
+      <li>La Loma field: below 20 ft, inside the fences</li>
+      <li>All sites: 6 a.m. to sunset; no flying on game or graduation days</li>
+    </ul>
+    <div>Each flight needs a request filed ≥ 7 business days ahead and ≥ $1M liability cover per pilot. A transition needs ≥ 30 m AGL and 50–100 m of straight flight. That rules out La Loma, limits Clark Kerr to hover and low passes, and leaves Richmond Field Station as the only campus site for transitions.</div>
+    <div class="rec"><b>Recommended:</b> by 2026-11-06, request Richmond Field Station from UCPD/Risk Services. Confirm the capstone's institutional sponsorship, which the § 350 educational path implies. Each pilot holds TRUST and AMA Full ($89, outside the cap). <b>Alternative:</b> one member passes Part 107 ($175) and the team flies at an off-campus field.</div>
+    <p class="src">R18, R19; oercs.berkeley.edu/policies/campus-policy-library/unmanned-aircraft-system-drone-policy (site limits and senior-project clause, checked 2026-10-13) · <a href="#schedule">§11</a></p>
+  </div>
+  <div class="decision">
+    <b class="q">The crash reserve is thin: <span data-k="C0.bom.crash" data-c="usd"></span> against a $100 floor.</b>
+    <div>v0.3.1 added items the audit found missing: wiring, glue, battery straps, a fifth servo, PA6-CF mounts and a hot-wire allowance. These are estimates, and several small items are still unpriced: charger adapter, motor bullets, prop adapters and Holybro duty (—).</div>
+    <div class="rec"><b>Recommended:</b> borrow a hot-wire cutter from a campus makerspace, which frees $44. Build the carts early and re-check against the $100 shipping allowance. <b>Alternatives, in order:</b> drop the spare motor ($52 with tax), then the airspeed sensor ($66; R11 then needs Q_ASSIST_SPEED 11 m/s and synthetic airspeed).</div>
+    <p class="src">analysis/results.json C0.bom; §7</p>
+  </div>
+  <div class="decision">
+    <b class="q">The flight controller's ArduPilot target is beta-only today.</b>
+    <div>The CoreWing F405 Wing APP V2 ($67.26, 12 outputs, 90 A current sensor, 8 A servo BEC) has a firmware target only in Plane 4.7.2-beta. Every F405 build includes QuadPlane but drops OctaQuad, Lua and DLVR airspeed.</div>
+    <div class="rec"><b>Recommended:</b> buy the CoreWing and bench-test on 4.7.2-beta in SITL and on the bench. Hold a go/no-go on 2027-02-22: if no stable target exists by then, move to the Matek F405-WMO ($69.99, stable). The Matek has 9–10 outputs, so with 10 needed (5 servos, pusher, 4 lift) both rudders go on a Y-lead. <b>Alternative:</b> buy the Matek now.</div>
+    <p class="src">docs/research/budget-avionics.md §0–§2 · <a href="#controls">§10</a></p>
+  </div>
+  <div class="decision">
+    <b class="q">Accept no hover motor-out tolerance (R14)?</b>
+    <div>C0 cannot hold attitude after losing a lift motor in hover. The 8-lift (C1) keeps T/W <b data-k="C1.sized.TW_motorOut" data-d="2"></b> after a motor-out, but its spend is <b data-k="C1.bom.total" data-c="usd"></b>, which is over the cap.</div>
+    <div class="rec"><b>Recommended:</b> accept for C0. Keep hovers under 5 m AGL and under 60 s each, and qualify every motor on the thrust stand first. <b>Alternative:</b> none fits under $2,000.</div>
+    <p class="src">R14; analysis/results.json · <a href="#concepts">§3</a></p>
+  </div>
+  <div class="decision">
+    <b class="q">How do the stopped lift props sit in cruise?</b>
+    <div>BLHeli_S ESCs cannot stop a prop at a set angle, so a 2-blade prop stops wherever it lands. Folding props add $14–16 per station.</div>
+    <div class="rec"><b>Recommended:</b> run the car-roof test (§3 M1) on one stopped unit at 20 m/s. If the prop windmills or sits crosswise, print a stop pawl. <b>Alternative:</b> Eolo folding 17×6.2, $49.99 a pair. Two pairs cost $99.98, about $110 with tax, and that exceeds the reserve.</div>
+    <p class="src">docs/research/budget-lift.md caveat 4; Props table (folding) · <a href="#concepts">§3</a></p>
+  </div>
+  <div class="decision">
+    <b class="q">MTOW lands at <span data-k="C0.sized.m" data-d="1"></span> kg, under the 8–15 kg working target.</b>
+    <div>The 8–15 kg range was a working target, not a hard limit; the hard cap is 25 kg. The cost cap and the short mission drive mass down. A smaller aircraft is cheaper, easier to carry (R5) and safer to test.</div>
+    <div class="rec"><b>Recommended:</b> accept, and record it in the design basis as pending team sign-off. <b>Alternative:</b> add payload or ballast to reach 8 kg. That needs more battery, motor and money and buys nothing.</div>
+    <p class="src">R2; docs/DESIGN-BASIS.md v0.3.1 · <a href="#mass">§4</a></p>
+  </div>
+
+  <h3 id="ov-lanes">Workstream status</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Workstream</th><th>Status</th><th>What exists</th><th>What does not</th></tr></thead>
+    <tbody>
+      <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
+      <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
+      <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
+      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, 23 parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
+      <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
+      <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
+      <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
+      <tr><td>Flight test / ops</td><td><span class="chip open">planned</span></td><td>Build-up matrix, SITL, risk register (§13)</td><td>Test cards signed off; crew trained</td></tr>
+      <tr><td>Compliance / site</td><td><span class="chip open">open</span></td><td>Rules located; Remote ID module on FAA list</td><td>Site approval; TRUST</td></tr>
+    </tbody></table></div>
+
+  <h3 id="ov-reqs">Requirement status</h3>
+  <div class="tbl"><table id="reqTable">
+    <thead><tr><th class="sort">ID</th><th>Requirement (short)</th><th class="sort">Status</th><th>Evidence</th></tr></thead>
+    <tbody>
+      <tr><td>R1</td><td>Lift rotors + pusher + wing; lift stopped in cruise</td><td><span class="chip met">met</span></td><td>C0 (§3), CAD (§2)</td></tr>
+      <tr><td>R2</td><td>MTOW 8–15 kg target, &lt; 25 kg cap</td><td><span class="chip risk">risk</span></td><td><span data-k="C0.sized.m" data-d="2"></span> kg: cap met; target deviation pending sign-off</td></tr>
+      <tr><td>R3</td><td>Span 2–3 m</td><td><span class="chip met">met</span></td><td>2.4 m</td></tr>
+      <tr><td>R4</td><td>Largest piece fits a car (≤ 1.5 × 0.5 × 0.4 m est.)</td><td><span class="chip risk">risk</span></td><td>Longest piece <span id="longest"></span> m; car not measured (§2 M2)</td></tr>
+      <tr><td>R5</td><td>Two-person carry; assemble ≤ 15 min</td><td><span class="chip open">open</span></td><td>Mass fine; assembly untested</td></tr>
+      <tr><td>R6</td><td>≤ $2,000 incl. tax + shipping</td><td><span class="chip met">met</span></td><td><span data-k="C0.bom.total" data-c="usd"></span> committed (§7)</td></tr>
+      <tr><td>R7</td><td>2nd pack, spares, crash reserve ≥ $100</td><td><span class="chip met">met</span></td><td>Reserve <span data-k="C0.bom.crash" data-c="usd"></span> (thin)</td></tr>
+      <tr><td>R8</td><td>Flight-tested by 2027-04-30</td><td><span class="chip risk">risk</span></td><td>6-day buffer (§11)</td></tr>
+      <tr><td>R9</td><td>Full mission profile</td><td><span class="chip open">open</span></td><td>Transition plan (§10)</td></tr>
+      <tr><td>R10</td><td>10 min cruise + 2 min hover, 20 % reserve</td><td><span class="chip met">met</span></td><td><span data-k="C0.sized.t_cruise_avail_min" data-d="1"></span> min, a <span id="marginPct"></span> % design margin <span class="est">est</span> (§4)</td></tr>
+      <tr><td>R11</td><td>Cruise 18–22 m/s; stall ≤ 12 m/s; transition ≥ 1.3 × stall</td><td><span class="chip open">open</span></td><td>Wing sized from stall; AIRSPEED_MIN 16 m/s ≥ 15.6; stall not measured</td></tr>
+      <tr><td>R12</td><td>0.5 kg payload allowance</td><td><span class="chip met">met</span></td><td>In mass roll-up</td></tr>
+      <tr><td>R13</td><td>Hover T/W ≥ 1.6</td><td><span class="chip open">open</span></td><td><span data-k="C0.sized.TW" data-d="2"></span> on nominal-voltage maker data; pending T2 at storage voltage (§5 M1)</td></tr>
+      <tr><td>R14</td><td>Motor-out: cruise hard, hover desired</td><td><span class="chip risk">risk</span></td><td>C0 fails the hover part (§8)</td></tr>
+      <tr><td>R15</td><td>Pusher-out → hover recovery</td><td><span class="chip open">open</span></td><td>Q_ASSIST plan (§10)</td></tr>
+      <tr><td>R16</td><td>Wind ≤ 5 m/s, gust ≤ 8 m/s</td><td><span class="chip open">open</span></td><td>Not analysed</td></tr>
+      <tr><td>R17</td><td>Maintained VTOL autopilot</td><td><span class="chip risk">risk</span></td><td>ArduPilot QuadPlane; FC target beta-only; go/no-go 2027-02-22</td></tr>
+      <tr><td>R18</td><td>FAA path, TRUST, registration, Remote ID</td><td><span class="chip open">open</span></td><td>BeeID on FAA DoC list (RID000001995)</td></tr>
+      <tr><td>R19</td><td>Campus policy and site</td><td><span class="chip open">open</span></td><td>Capstone covered (senior projects); RFS only campus transition site</td></tr>
+      <tr><td>R20</td><td>Arming switch, failsafe, geofence</td><td><span class="chip open">open</span></td><td>XT90-S anti-spark plug as physical disconnect + RC arm switch; parameters §10</td></tr>
+    </tbody></table></div>
+  <p class="src">docs/DESIGN-BASIS.md R1–R20; analysis/results.json</p>
+</section>
+
+<!-- ============================ 2 CAD ============================ -->
+<section class="sec" id="model3d" data-title="CAD model" data-n="2">
+  <div class="sechead"><div class="eyebrow">2 · CAD model</div><h2>CAD model</h2></div>
+  <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has 25 parts in a 46-component assembly:</p>
+  <ul class="tight">
+    <li>NACA 2415 wing panels with 26 % chord ailerons and a spar socket bored at 30 % chord</li>
+    <li>NACA 0009 tailplane seated on the booms, with an elevator fitted between lofted, tapered fins</li>
+    <li>turned motors, pusher spinner and pitot</li>
+    <li>tapered two-blade props, shown parked fore-aft (notional: BLHeli_S ESCs cannot park them)</li>
+    <li>printed boom clamps whose tops meet the wing surface at each station</li>
+    <li>PA6-CF motor mounts</li>
+    <li>gear clamps with legs and feet</li>
+  </ul>
+  <p><code>params.mjs</code> checks the pusher-to-lift-disc clearance, currently <span data-k="CADP.discClear" data-d="0" data-m="1000"></span> mm (minimum 20 mm). Parts are placed by coordinates, not mates, and SOLIDWORKS interference detection has not been run, so interfaces are visual (—).</p>
+  <p class="src">cad/BuildVtol.cs, cad/params.mjs ← analysis/results.json; outputs cad/model/VTOL_Concept.SLDASM, .STEP, .EASM</p>
+  <div class="grid2" id="cadImages"></div>
+  <p class="src">SOLIDWORKS 2025 renders (cad/images/). Open VTOL_Concept.EASM in the free eDrawings viewer, or the STEP file in any CAD tool.</p>
+
+  <h3 id="m3-viewer">Interactive concept geometry</h3>
+  <div class="seg" role="group" aria-label="Concept shown" id="vConcept">
+    <button type="button" aria-pressed="true" data-c="C0">C0 4-lift</button><button type="button" aria-pressed="false" data-c="C1">C1 8-lift</button><button type="button" aria-pressed="false" data-c="C2">C2 coax X8</button>
+  </div>
+  <div class="viewer" style="margin-top:10px">
+    <canvas id="viewer" aria-label="Rotatable concept geometry; drag to orbit, scroll to zoom"></canvas>
+    <span class="lbl">Concept geometry</span>
+    <div class="ctl">
+      <button type="button" data-view="iso">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="side">Side</button><button type="button" data-view="front">Front</button>
+      <button type="button" id="vDiscs" aria-pressed="true">Rotor discs</button><button type="button" id="vExplode" aria-pressed="false">Breakdown</button>
+    </div>
+  </div>
+  <p class="src">Same geometry as the CAD, simplified for the browser (analysis/sizing.mjs geometry()); drag to orbit, wheel to zoom; "Breakdown" shows the transport split</p>
+
+  <h3 id="m3-parts">Parts and mass (C0, sized)</h3>
+  <div class="tbl"><table id="partsTable"><thead><tr><th class="sort">Item</th><th class="sort n">Mass kg</th><th class="sort n">x from LE, m</th><th>Source</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/results.json concepts.C0.cg.items; EST rows are estimates in analysis/sizing.mjs BASE</p>
+
+  <h3 id="m3-transport">Breakdown and transport (R4)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Piece</th><th class="n">Qty</th><th class="n">Size, m</th><th>Fits 1.5 × 0.5 × 0.4 m?</th></tr></thead>
+    <tbody>
+      <tr><td>Wing half with aileron and spar socket</td><td class="n">2</td><td class="n"><span id="longest2"></span> × <span data-k="C0.sized.chord" data-d="2"></span> × <span id="wingT"></span></td><td class="ok">yes</td></tr>
+      <tr><td>Front boom with motor mounts, motors and props (props off)</td><td class="n">2</td><td class="n"><span id="segF"></span> × 0.05 × 0.08</td><td class="ok">yes</td></tr>
+      <tr><td>Tail assembly: stabiliser, elevator, fins, aft boom stubs</td><td class="n">1</td><td class="n"><span id="segR"></span> × <span data-k="C0.geo.hSpan" data-d="2"></span> × <span data-k="C0.geo.vH" data-d="2"></span></td><td class="warn">width over 0.5 m; lies flat on a seat</td></tr>
+      <tr><td>Fuselage pod with joiner, avionics, pusher</td><td class="n">1</td><td class="n">0.85 × 0.16 × 0.16 <span class="est">est</span></td><td class="ok">yes</td></tr>
+      <tr><td>Gear legs (4), flight packs (2) in the ammo can</td><td class="n">—</td><td class="n">—</td><td class="ok">yes</td></tr>
+    </tbody></table></div>
+  <p class="src">analysis/results.json geo.segs, geo.hSpan; R4 envelope is an estimate</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Built component masses.</b> <span class="how">Kitchen scale (5 kg, 1 g) on each piece as it comes off the bench, logged against the parts table.</span> <span class="fail">If the empty mass, without battery and payload, exceeds <span id="m3Empty"></span> kg + 15 %, re-run the sizing. T/W falls toward R13 and cruise time below the 25 % margin.</span></div></li>
+    <li><span class="id">M2</span><div><b>Car load space.</b> <span class="how">Tape-measure the boot of the team's actual car.</span> <span class="fail">A clear length under <span id="carMin"></span> m fails R4.</span></div></li>
+    <li><span class="id">M3</span><div><b>Assembly time.</b> <span class="how">Stopwatch two people from car to armed pre-flight, three runs.</span> <span class="fail">A median over 15 min fails R5.</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 3 CONCEPTS ============================ -->
+<section class="sec" id="concepts" data-title="Concepts" data-n="3">
+  <div class="sechead"><div class="eyebrow">3 · Concepts</div><h2>Concepts</h2></div>
+  <p class="verdict"><b>C0 (4-lift) is the only layout that fits the cap with a useful reserve.</b> With budget parts, the 8-lift (C1) is over the cap by <span id="c1Over"></span>. The coaxial X8 (C2) is over by <span id="c2Over"></span>, partly because OctaQuad needs an H7 board. C3 is C0 with X3515S motors. Its spend is <span data-k="C3.bom.total" data-c="usd"></span>, about $15 less, but it hovers on <span data-k="C3.sized.P_hover" data-d="0"></span> W against <span data-k="C0.sized.P_hover" data-d="0"></span> W. Motor heat is the tighter constraint (§12), so C0 stays.</p>
+  <div class="grid2" id="conceptCards"></div>
+  <p class="src">analysis/results.json concepts.*; docs/reference/lift-cruise-reference.png (Alia = 4-lift reference, "Lift Plus Cruise" = 8-lift reference)</p>
+  <h4 style="margin-top:14px">Considered and dropped</h4>
+  <ul class="tight">
+    <li><b>6-lift (hex)</b>: on two booms the middle rotor lands on the wing; costs like C1.</li>
+    <li><b>Tilt-rotor, tailsitter</b>: outside R1, which specifies stopped lift rotors.</li>
+  </ul>
+
+  <h3 id="c-morph">Morphological chart</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Function</th><th>Option A</th><th>Option B</th><th>Option C</th></tr></thead>
+    <tbody>
+      <tr><td>Lift layout</td><td class="ok">4 rotors, 2 booms</td><td>8 rotors, 4 booms</td><td>4 coaxial pairs, 2 booms</td></tr>
+      <tr><td>Lift motor</td><td class="ok">SunnySky X4110S 17 in</td><td>SunnySky X3515S 16 in</td><td>SunnySky V3508 15 in (8-lift)</td></tr>
+      <tr><td>ESC</td><td class="ok">BLHeli_S 45 A (no prop stop)</td><td>Hobbywing X-series integrated</td><td>Locking ESC (VL5009, over budget)</td></tr>
+      <tr><td>Pack</td><td class="ok">6S LiPo 6500 mAh</td><td>6S LiPo 8000 mAh</td><td>6S Li-ion 21700</td></tr>
+      <tr><td>Booms / spar</td><td class="ok">6061-T6 aluminium tube</td><td>Roll-wrapped carbon</td><td>Mixed (Al booms, carbon sockets)</td></tr>
+      <tr><td>Wing skin</td><td class="ok">Packing tape over XPS</td><td>Glass + epoxy</td><td>Laminating film</td></tr>
+      <tr><td>Tail</td><td class="ok">H-tail on twin booms</td><td>Inverted V</td><td>Conventional (pusher conflict)</td></tr>
+      <tr><td>Flight controller</td><td class="ok">CoreWing F405 Wing V2</td><td>Matek F405-WMO</td><td>Pixhawk 6C (over budget)</td></tr>
+      <tr><td>Prop parking</td><td class="ok">Fixed blades + stop pawl if needed</td><td>Folding props</td><td>ESC position lock</td></tr>
+    </tbody></table></div>
+  <p class="src">docs/research/*.md; highlighted cells = C0</p>
+
+  <h3 id="c-pugh">Pugh matrix (datum C0 = 0)</h3>
+  <div class="tbl"><table id="pugh">
+    <thead><tr><th>Criterion</th><th>Evidence (C0 / C1 / C2)</th><th class="n">C0 4-lift</th><th class="n">C1 8-lift</th><th class="n">C2 coax X8</th></tr></thead>
+    <tbody></tbody></table></div>
+  <p class="src">+ better than datum, − worse, 0 same; values from analysis/results.json</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Stopped-prop attitude.</b> <span class="how">Car-roof mast, one motor and prop unpowered, 20 m/s on a closed lot; film the prop.</span> <span class="fail">Windmilling, or a stop more than 30° off the airflow, adds drag beyond the R10 estimate. Fit a stop pawl, or folding props ($110 with tax).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 4 MASS & POWER ============================ -->
+<section class="sec" id="mass" data-title="Mass &amp; power" data-n="4">
+  <div class="sechead"><div class="eyebrow">4 · Mass &amp; power</div><h2>Mass &amp; power</h2></div>
+  <p class="verdict">MTOW is the output of an energy-closed loop. Mission energy sets battery mass, mass sets wing area and hover power, and those feed back into the energy. With a continuous battery the loop closes at <b data-k="C0.design.m" data-d="2"></b> kg, needing <b data-k="C0.design.Epack_req_Wh" data-d="0"></b> Wh. The real pack chosen is the cheapest one that keeps ≥ 11.5 min of cruise, a 15 % design margin <span class="est">est</span> over R10, on top of its 20 % energy reserve. It is the <b data-k="C0.pick.id" data-c="txt"></b> (<span data-k="C0.pick.Wh" data-d="1"></span> Wh), giving MTOW <b data-k="C0.sized.m" data-d="2"></b> kg.</p>
+  <p class="src">analysis/model.js F1–F12; analysis/sizing.mjs CRUISE_MARGIN_MIN</p>
+
+  <h3 id="mp-chain">Live back-calculation chain</h3>
+  <div class="seg" role="group" aria-label="Concept for chain" id="chainConcept">
+    <button type="button" aria-pressed="true" data-c="C0">C0</button><button type="button" aria-pressed="false" data-c="C1">C1</button><button type="button" aria-pressed="false" data-c="C2">C2</button>
+  </div>
+  <div class="sliders" id="sliders"></div>
+  <div class="chain" id="chain"></div>
+  <p class="src">The chain runs analysis/model.js size() in the page with a continuous battery. Defaults reproduce results.json "design". Sliders marked <span class="est">est</span> are estimates.</p>
+
+  <h3 id="mp-sens">Sensitivity</h3>
+  <figure class="chart"><figcaption>MTOW change for ±20 % on each input (current concept, continuous battery)</figcaption><div class="svgwrap"><svg id="tornado" viewBox="0 0 640 300" role="img" aria-label="Tornado chart of MTOW sensitivity"></svg></div></figure>
+  <figure class="chart"><figcaption>Real packs on C0: MTOW and cruise minutes available</figcaption><div class="svgwrap"><svg id="packChart" viewBox="0 0 640 290" role="img" aria-label="MTOW and cruise time by battery pack"></svg></div></figure>
+  <p class="src">analysis/results.json sweepC0; packs from docs/research/budget-energy-test.md §1</p>
+
+  <h3 id="mp-roll">Mass roll-up</h3>
+  <div class="tbl"><table id="rollup"><thead><tr><th>Group</th><th class="n">C0 design (cont. battery)</th><th class="n">C0 real pack</th><th class="n">C1 real pack</th><th class="n">C2 real pack</th><th>Basis</th></tr></thead><tbody></tbody></table></div>
+
+  <h3 id="mp-calib">Hover efficiency calibration (FM·η from maker data)</h3>
+  <p>F3 needs figure of merit × motor-and-ESC efficiency. Each published thrust-table point gives it directly as ideal power over measured electrical power. At C0's hover thrust, FM·η = <b data-k="C0.sized.FMeta" data-d="3"></b>.</p>
+  <div class="tbl"><table id="calib"><thead><tr><th>Unit</th><th class="n">Thrust g</th><th class="n">P_elec W</th><th class="n">P_ideal W (F2)</th><th class="n">FM·η</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">docs/research/budget-lift.md thrust-table excerpts (sunnyskyusa.com), checked 2026-10-13; ρ = 1.225 kg/m³</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Hover electrical power at full weight.</b> <span class="how">Watt meter in a 30 s tethered hover, or one motor on the thrust stand at <span data-k="C0.sized.Tunit_g" data-d="0"></span> g.</span> <span class="fail">Above <span id="mHov"></span> W, R10 fails on the selected pack. The maker-data estimate is <span data-k="C0.sized.P_hover" data-d="0"></span> W.</span></div></li>
+    <li><span class="id">M2</span><div><b>Parasite drag.</b> <span class="how">Log cruise current at 20 m/s in still air and back out drag with F7.</span> <span class="fail">Above <span id="mCr"></span> W cruise power (total CD0 above <span id="mCD0"></span>, against <span data-k="C0.sized.CD0" data-d="3"></span> estimated), R10 fails on the selected pack.</span></div></li>
+    <li><span class="id">M3</span><div><b>Stopped-rotor drag.</b> <span class="how">Car-roof mast with a luggage scale on a pivot, 20 m/s.</span> <span class="fail">The model assumes <span id="rotorBase"></span> N per stopped unit at 20 m/s. Above about <span id="rotorFail"></span> N per unit, R10 fails on the selected pack.</span></div></li>
+    <li><span class="id">M4</span><div><b>Pack usable energy.</b> <span class="how">Discharge at about 16 A (cruise current) on the charger, logging Wh.</span> <span class="fail">Under <span id="mPackDel"></span> Wh delivered, the 20 % reserve of R10 fails.</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 5 PROPULSION ============================ -->
+<section class="sec" id="propulsion" data-title="Propulsion" data-n="5">
+  <div class="sechead"><div class="eyebrow">5 · Propulsion</div><h2>Propulsion</h2></div>
+  <p class="verdict"><b>Lift: SunnySky X4110S 400KV on 17-in props with SoloGood 45 A BLHeli_S ESCs, $66.29 per station.</b> Max thrust is 3.13 kgf, for T/W <b data-k="C0.sized.TW" data-d="2"></b>. At C0's hover thrust each motor draws <b data-k="C0.sized.P_hover_per_motor" data-d="0"></b> W. <b>The pusher is a fifth X4110S on an APC 14×8.5EP</b>, so one spare motor covers every position. Energy comes from two Ovonic 6S 6500 mAh LiPos ($138.99 for the 2-pack listing) and an HTRC C150 charger. The packs ship with EC5 leads; re-terminate them to the kit's XT90-S anti-spark plugs, which are also the R20 physical disconnect.</p>
+  <p class="src">docs/research/budget-lift.md A3, ESCs; budget-energy-test.md §1–2; pusher prop PB 1c</p>
+
+  <h3 id="p-lift">Lift units</h3>
+  <div class="tbl"><table class="sortable">
+    <thead><tr><th class="sort">Part</th><th class="sort">Layout</th><th class="sort n">Max gf</th><th class="sort n">g/W @ 1.5 kg</th><th class="sort n">Motor g</th><th class="sort n">Station $</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr class="chosen"><td>SunnySky X4110S 400KV + 17×5.5 + SoloGood 45A</td><td>4-lift</td><td class="n">3,130</td><td class="n">8.34</td><td class="n">165</td><td class="n">66.29</td><td>Table on 17×5.8; some KV340 rows look wrong (KV400 rows used)</td></tr>
+      <tr><td>SunnySky X3515S 400KV + APC 16×5.5MR + SoloGood 45A</td><td>4-lift (C3)</td><td class="n">3,360</td><td class="n">7.51</td><td class="n">170</td><td class="n">63.72</td><td>Watts computed as V × A</td></tr>
+      <tr><td>SunnySky V3508 KV380 + Eolo CN15×5.5 + LANRC 35A</td><td>8-lift</td><td class="n">1,840</td><td class="n">10.30 @ 0.8 kg</td><td class="n">97</td><td class="n">59.12</td><td>8 stations; over cap as a layout</td></tr>
+      <tr><td>Hobbywing X6 SE 280KV (v0.2)</td><td>4-lift</td><td class="n">6,058</td><td class="n">8.5 @ 3.1 kg</td><td class="n">373</td><td class="n">134.98</td><td>Oversized for a 6 kg aircraft</td></tr>
+      <tr><td>Tarot 4114 320KV</td><td>4-lift</td><td class="n">≈2,650</td><td class="n">—</td><td class="n">—</td><td class="n">—</td><td>Below the 3 kgf floor; no table</td></tr>
+    </tbody></table></div>
+  <p class="src">docs/research/budget-lift.md tables A/B and flagged-table notes; station $ = motor + ESC + one prop</p>
+
+  <h3 id="p-batt">Battery</h3>
+  <div class="tbl"><table class="sortable" id="packTable"><thead><tr><th class="sort">Pack</th><th class="sort">Chem</th><th class="sort n">Wh</th><th class="sort n">kg</th><th class="sort n">Wh/kg</th><th class="sort n">Cont. A</th><th class="sort n">$</th><th class="sort n">C0 MTOW</th><th class="sort n">C0 cruise min</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">docs/research/budget-energy-test.md §1 (Wh = mAh × V_nom). LiPo C ratings (480–1,200 A) are not credible, so 60 A continuous is assumed <span class="est">est</span> (M4).</p>
+
+  <h3 id="p-current">Current and rating check (C0)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Path</th><th class="n">Hover</th><th class="n">Peak</th><th class="n">Rating</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr><td>Pack, hover</td><td class="n"><span data-k="C0.sized.I_hover" data-d="0"></span> A (<span id="iHovL"></span> A at 21.0 V)</td><td class="n">—</td><td class="n">60 A assumed</td><td class="ok">Fine</td></tr>
+      <tr><td>Pack, transition (hover + pusher at 2 × cruise power, est)</td><td class="n"><span id="iTrans"></span> A at 21.0 V</td><td class="n">111 A (4 × 27.7 A full lift)</td><td class="n">60 A assumed</td><td class="bad">Over the assumed rating; burst test M4, and set ArduPilot battery current limits</td></tr>
+      <tr><td>Each lift ESC</td><td class="n"><span id="iUnit"></span> A</td><td class="n">27.7 A</td><td class="n">45 A headline</td><td class="ok">Margin 1.6× on peak</td></tr>
+      <tr><td>FC current sensor</td><td class="n"><span data-k="C0.sized.I_hover" data-d="0"></span> A</td><td class="n">111 A</td><td class="n">90 A cont / 215 A peak</td><td class="ok">Peaks are brief</td></tr>
+      <tr><td>Pusher ESC</td><td class="n"><span data-k="C0.sized.I_cruise" data-d="0"></span> A cruise</td><td class="n">—</td><td class="n">45 A</td><td class="ok">14×8.5 current unknown (M3)</td></tr>
+    </tbody></table></div>
+  <p class="src">docs/research/budget-lift.md X4110S table (27.7 A at max); budget-avionics.md §1.2 (CoreWing sensor); I = P / 22.2 V</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Lift thrust curve on our pack.</b> <span class="how">DIY stand (20 kg load cell + HX711 + Nano, calibrated with water jugs), watt meter in line, five throttle steps.</span> <span class="fail">Max under 2.4 kgf fails R13 (4 × 2.4 kgf / <span data-k="C0.sized.m" data-d="1"></span> kg ≈ 1.6).</span></div></li>
+    <li><span class="id">M2</span><div><b>Motor heat in a mission-length hover.</b> <span class="how">Hold <span data-k="C0.sized.Tunit_g" data-d="0"></span> g for 90 s, read the can with the IR thermometer every 15 s, and let it cool below 45 °C before the next run. A mission has one hover of about 80 s at each end, with about 10 min of cruise cooling between.</span> <span class="fail">A can over 80 °C <span class="est">est</span> after one 90 s run fails R9 hover duty (the lumped model predicts <span id="thermLumped3"></span> °C). Never fly back-to-back hovers: three 90 s runs with 30 s rests reach about <span id="thermT3"></span> °C in the model. The PA6-CF mounts tolerate the base temperature; PETG mounts would not (HDT about 68 °C).</span></div></li>
+    <li><span class="id">M3</span><div><b>Pusher current and static thrust on 14×8.5EP.</b> <span class="how">Thrust stand + watt meter.</span> <span class="fail">Static thrust under 1.5 kgf at 60 % throttle, or a peak over 40 A, means dropping to a 13×8 prop.</span></div></li>
+    <li><span class="id">M4</span><div><b>Pack sag at hover current.</b> <span class="how">Watt meter on all four lift motors at hover throttle, tied down.</span> <span class="fail">Also run a 3 s full-throttle burst on all four lift motors. Below 3.4 V/cell <span class="est">est</span> at hover current, or below 3.2 V/cell in the burst, fails R13 margin. Move to the 8000 mAh pack (+$61, which exceeds the reserve).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 6 STRUCTURES ============================ -->
+<section class="sec" id="structures" data-title="Structures" data-n="6">
+  <div class="sechead"><div class="eyebrow">6 · Structures</div><h2>Structures</h2></div>
+  <p class="verdict"><b>The 6061-T6 wing joiner is the critical member. At ultimate load (4.5 g) the hand calc on the true 0.875 in joiner gives <span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa, a reserve factor of <span id="handRF"></span> on yield. That figure governs.</b> The FEA models the joiner bonded inside the socket (OD = socket ID) and gives <span data-k="SIM.spar_vm_max_fine" data-d="0"></span> MPa on a 2 mm mesh, so it confirms the load path under that idealisation. Booms are strength-rich: <span data-k="SIM.boom_vm_max_fine" data-d="0"></span> MPa on a 1.5 mm mesh, with <span data-k="SIM.boom_disp_max" data-d="1"></span> mm tip deflection at full thrust. Landing gear needs a compliant element with about 100 mm of travel if it behaves like a spring.</p>
+  <p class="src">analysis/sizing.mjs structures(); cad/Sim.cs → cad/sim/results.txt; allowables: SOLIDWORKS library 6061-T6 (SS), E 69 GPa, yield 275 MPa</p>
+
+  <h3 id="s-loads">Load cases</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Case</th><th>Load</th><th class="n">Value</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Cruise manoeuvre</td><td>n_ult = 3.0 × 1.5</td><td class="n"><span data-k="C0.struct.nUlt" data-d="1"></span> g</td><td>Limit 3.0 <span class="est">est</span>; FS 1.5</td></tr>
+      <tr><td>Hover, gust/control</td><td>2 × (W/2) at boom station</td><td class="n"><span data-k="C0.struct.Mhover" data-d="1"></span> N·m</td><td>Factor 2 <span class="est">est</span></td></tr>
+      <tr><td>Lift motor full thrust</td><td>T_max at front rotor</td><td class="n"><span data-k="C0.struct.Tmax" data-d="1"></span> N</td><td>X4110S 3,130 gf</td></tr>
+      <tr><td>Hard landing</td><td>0.3 m drop</td><td class="n">2.43 m/s</td><td>v = √(2gh); h <span class="est">est</span></td></tr>
+      <tr><td>Boom root torsion</td><td>one front motor at T_max, rear at idle</td><td class="n"><span data-k="C0.struct.Mclamp" data-d="1"></span> N·m</td><td>Socket shear <span data-k="C0.struct.tauSock" data-d="0" data-m="1e-6"></span> MPa (τ = T r / J); clamp slip checked by proof load M5</td></tr>
+    </tbody></table></div>
+
+  <h3 id="s-spar">Wing joiner and spar</h3>
+  <div class="chain">
+    <div class="box"><div class="l">Weight</div><div class="v"><span data-k="C0.sized.W" data-d="1"></span> N</div><div class="f">m g</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Root moment, ultimate</div><div class="v"><span data-k="C0.struct.Mroot" data-d="1"></span> N·m</div><div class="f">n_ult W b / (3π)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Joiner I (0.875 × 0.058 in)</div><div class="v"><span data-k="C0.struct.Ij_mm4" data-c="int"></span> mm⁴</div><div class="f">π/64 (22.23⁴ − 19.28⁴)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Joiner stress, hand</div><div class="v"><span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa</div><div class="f">M (D/2) / I</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">FEA von Mises</div><div class="v ok-t"><span data-k="SIM.spar_vm_max" data-d="0"></span> MPa</div><div class="f">SOLIDWORKS, 3 mm tets</div></div>
+  </div>
+  <p>The joiner carries the full root moment, with the foam neglected (conservative). It slides into the 1.000 × 0.058 in sockets with 0.23 mm clearance. The 0.76 m joiner gives <span id="engage"></span> m of engagement per side, about <span id="engageD"></span> diameters. The sockets sit at 30 % chord, where the 15 % section leaves about 4.6 mm of foam over each side.</p>
+
+  <h3 id="s-boom">Booms</h3>
+  <div class="chain">
+    <div class="box"><div class="l">Arm, spar to front rotor</div><div class="v"><span data-k="C0.struct.Lb" data-d="3"></span> m</div><div class="f">x_front + 0.25 c</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Moment at full thrust</div><div class="v"><span data-k="C0.struct.Mb" data-d="1"></span> N·m</div><div class="f">T_max L</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Stress hand / FEA</div><div class="v"><span data-k="C0.struct.sigB" data-d="0" data-m="1e-6"></span> / <span data-k="SIM.boom_vm_max" data-d="0"></span> MPa</div><div class="f">M c / I; FEA</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Tip deflection hand / FEA</div><div class="v"><span data-k="C0.struct.defl_max" data-d="1" data-m="1000"></span> / <span data-k="SIM.boom_disp_max" data-d="1"></span> mm</div><div class="f">P L³ / 3EI</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">First mode hand / FEA</div><div class="v warn-t"><span data-k="C0.struct.fn" data-d="0"></span> / <span data-k="SIM.boom_f1" data-d="0"></span> Hz</div><div class="f">tip mass = lift unit (motor + ESC + prop + mount) + 0.236 m_boom; rigid root</div></div>
+  </div>
+  <p>The X4110S no-load speed is 400 KV × 22.2 V = 8,880 rpm (148 Hz). Hover speed is not in the published table (—). If it lands near a multiple of <span data-k="SIM.boom_f1" data-d="0"></span> Hz the booms will resonate; the tap test (M2) settles it.</p>
+
+  <h3 id="s-land">Landing loads</h3>
+  <div class="tbl"><table id="landTable"><thead><tr><th class="n">Gear stroke, mm</th><th class="n">Damped n = 1 + h/s</th><th class="n">Spring n = 2(1 + h/s)</th><th>Verdict (spring bound)</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">Energy balance, drop h = 0.30 m <span class="est">est</span>. Bare aluminium legs act as springs, so read the right-hand column. A foam or TPU foot with about 100 mm of travel keeps n ≤ 8.</p>
+
+  <h3 id="s-joints">Joints and materials</h3>
+  <ul class="tight">
+    <li><b>Wing–fuselage:</b> 0.6 m aluminium joiner through the pod into the sockets, plus one M5 bolt per half at the trailing-edge rib for incidence and anti-rotation <span class="est">est</span>.</li>
+    <li><b>Boom–wing:</b> two printed PETG clamps per boom, seated on the wing lower surface (CAD §2), plus one M4 through-bolt per clamp to stop the boom rotating under differential thrust <span class="est">est</span>. Typical PETG HDT is 68 °C (Prusament datasheet); the purchased ELEGOO PETG has no published HDT (—).</li>
+    <li><b>Motor mounts:</b> printed PA6-CF20 saddles (HDT 173 °C, Polymaker datasheet). The lumped thermal model puts the motor near <span id="thermLumped4"></span> °C after a 90 s hover, too close to PETG's limit.</li>
+    <li><b>Wing:</b> hot-wire FOAMULAR XPS core with packing-tape skin. σ_wing = <span data-k="C0.sized.sigmaWing" data-d="2"></span> kg/m² by F11. Tape mass per area is not published, so it is estimated <span class="est">est</span> (M4).</li>
+  </ul>
+  <p class="src">docs/research/budget-airframe.md §1–§5</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Wing proof load.</b> <span class="how">Invert the wing on pod-width supports and sandbag it to limit load (3.0 × W), hold 30 s.</span> <span class="fail">Any permanent set in the joiner, or tip deflection over 10 % of semi-span, fails the wing for flight.</span></div></li>
+    <li><span class="id">M2</span><div><b>Boom natural frequency.</b> <span class="how">Tap the motor and record with a phone spectrum app.</span> <span class="fail">Within ±15 % of the hover rotor frequency (or twice it), add a strut before flight.</span></div></li>
+    <li><span class="id">M3</span><div><b>Gear stroke.</b> <span class="how">Drop the empty airframe 0.3 m onto grass; read peak g from the flight-controller log.</span> <span class="fail">Over 8 g, fit softer feet before the hover test.</span></div></li>
+    <li><span class="id">M4</span><div><b>Tape skin mass.</b> <span class="how">Weigh a 0.5 m² taped foam sample against bare foam.</span> <span class="fail">Over 0.1 kg/m² per side, update F11 and re-run the sizing (R2, R10).</span></div></li>
+    <li><span class="id">M5</span><div><b>Boom clamp proof load.</b> <span class="how">Hang 1.5 × T_max (<span data-k="C0.struct.Tmax" data-d="0" data-m="1.5"></span> N) from the front motor station with the rear free, and check for slip or rotation at the clamps.</span> <span class="fail">Any rotation over 1° or any crack fails the boom joint (R9).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 7 BUDGET ============================ -->
+<section class="sec" id="budget" data-title="Budget &amp; BOM" data-n="7">
+  <div class="sechead"><div class="eyebrow">7 · Budget &amp; BOM</div><h2>Budget &amp; BOM</h2></div>
+  <p class="verdict"><b class="ok-t">C0 fits the fixed $2,000 cap.</b> Goods are <b data-k="C0.bom.goods" data-c="usd"></b>. Adding <span data-k="C0.bom.tax" data-c="usd"></span> of tax (10.25 %) and a $100 shipping allowance gives <b data-k="C0.bom.total" data-c="usd"></b> committed, which leaves <b data-k="C0.bom.crash" data-c="usd"></b> for crash repair. The 8-lift and coaxial layouts do not fit. FAA registration and AMA membership ($94) are fees, not hardware, so they sit outside the cap.</p>
+  <div class="kpis">
+    <div class="kpi"><div class="l">C0 committed</div><div class="v ok" data-k="C0.bom.total" data-c="usd"></div><div class="s">goods <span data-k="C0.bom.goods" data-c="usd"></span></div></div>
+    <div class="kpi"><div class="l">C0 reserve</div><div class="v warn" data-k="C0.bom.crash" data-c="usd"></div><div class="s">target ≥ $100 (R7): met, thin</div></div>
+    <div class="kpi"><div class="l">C1 8-lift</div><div class="v bad" data-k="C1.bom.total" data-c="usd"></div><div class="s">over the cap</div></div>
+    <div class="kpi"><div class="l">C2 coax X8</div><div class="v bad" data-k="C2.bom.total" data-c="usd"></div><div class="s">over the cap</div></div>
+  </div>
+
+  <h3 id="b-cap">Spend against the cap</h3>
+  <figure class="chart"><figcaption>C0 spend by category, tax and shipping, and the reserve left under $2,000</figcaption><div class="svgwrap"><svg id="capChart" viewBox="0 0 640 210" role="img" aria-label="Stacked spend against the cap"></svg></div></figure>
+
+  <h3 id="b-side">Side by side</h3>
+  <div class="tbl"><table id="bomSide"><thead><tr><th>Category</th><th class="n">C0 4-lift</th><th class="n">C1 8-lift</th><th class="n">C2 coax X8</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/results.json concepts.*.bom; tax 10.25 % (CDTFA, Berkeley, effective 2026-10-01) on all goods; shipping $100 allowance <span class="est">est</span>: Amazon free, JeeFly $4.99; OnlineMetals UPS, SunnySky USA and Holybro (CN) shipping and duty are not shown until checkout</p>
+  <p><b>Still unpriced (—), to be absorbed by the reserve:</b> charger output adapter, 3.5 mm motor bullets if the X4110S ships without them, prop adapters for the JeeFly and APC props, and Holybro import duty. The EC5-to-XT90-S re-termination uses the kit's connectors.</p>
+
+  <h3 id="b-bom">Itemised BOM (C0)</h3>
+  <p>A purchasing copy grouped by vendor is in <code>docs/purchasing/C0_BOM.csv</code>.</p>
+  <div class="tbl"><table class="sortable" id="bomTable"><thead><tr><th class="sort">Category</th><th class="sort">Item</th><th class="sort n">Qty</th><th class="sort n">Unit $</th><th class="sort n">Ext $</th><th>Source / note</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/sizing.mjs bom(); each line cites its research file and section</p>
+
+  <h3 id="b-risk">Cost risks</h3>
+  <ul class="tight">
+    <li><b>Shipping above the allowance.</b> OnlineMetals ships 72–96 in tube by UPS, priced only at checkout (M2).</li>
+    <li><b>A crash.</b> A wing half plus a motor and props is about $120 in parts <span class="est">est</span>, which is more than the reserve. Spare foam, tube offcuts and a spare motor and props are already in the BOM, so a typical crash needs only consumables.</li>
+    <li><b>China-shipped items:</b> the Holybro airspeed sensor, and possibly the ESCs. Allow for duty and longer lead time.</li>
+    <li><b>Prices are single snapshots</b> from 2026-10-13. Re-check them before ordering.</li>
+  </ul>
+  <div class="measure"><h4>What the team must confirm</h4><ol>
+    <li><span class="id">M1</span><div><b>Cart totals before ordering.</b> <span class="how">Build each vendor cart to the shipping page without paying.</span> <span class="fail">If any cart pushes the reserve under $100 (R7), borrow a hot-wire cutter first ($44), then drop the spare motor ($52), then the airspeed sensor ($66).</span></div></li>
+    <li><span class="id">M2</span><div><b>OnlineMetals UPS quote</b> for 2 × 72 in + 96 in + 36 in tube. <span class="fail">Over $40 means buying the joiner tube locally.</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 8 TESTING ============================ -->
+<section class="sec" id="testing" data-title="Testing &amp; failure" data-n="8">
+  <div class="sechead"><div class="eyebrow">8 · Testing &amp; failure</div><h2>Testing &amp; failure</h2></div>
+  <p class="verdict"><b>Weakest link: a lift-motor or ESC failure in hover. C0 has no recovery from it.</b> Next are a hard landing on stiff gear and an unproven BLHeli_S ESC under sustained hover current. The $69 test and safety kit (LiPo bag, ammo can, load cell, Nano, watt meter, IR thermometer) qualifies every motor and ESC before flight. The flight build-up is in §13.</p>
+
+  <h3 id="t-stand">Thrust-stand test plan</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Test</th><th>Setup</th><th>Pass</th><th>Requirement</th></tr></thead>
+    <tbody>
+      <tr><td>T1</td><td>Stand calibration</td><td>Known masses 0–10 kg on the 20 kg load cell</td><td>Error ≤ 2 % FS</td><td>—</td></tr>
+      <tr><td>T2</td><td>Lift thrust curve, each motor</td><td>X4110S + 17 in, 5 steps, watt meter</td><td>Max ≥ 2.4 kgf</td><td>R13</td></tr>
+      <tr><td>T3</td><td>Hover-duty heat</td><td><span data-k="C0.sized.Tunit_g" data-d="0"></span> g × 90 s, cool to 45 °C, repeat ×3</td><td>Can ≤ 80 °C <span class="est">est</span> after each run, no ESC cut-out</td><td>R9, R10</td></tr>
+      <tr><td>T4</td><td>Pusher curve, 14×8.5EP</td><td>X4110S, watt meter</td><td>Static ≥ 1.5 kgf @ 60 %</td><td>R11</td></tr>
+      <tr><td>T5</td><td>Stopped-prop behaviour</td><td>Car-roof mast at 20 m/s</td><td>No windmilling</td><td>R10</td></tr>
+      <tr><td>T6</td><td>System bench run</td><td>4 lift + pusher, airframe tied down</td><td>Pack ≥ 3.4 V/cell at hover draw</td><td>R10</td></tr>
+    </tbody></table></div>
+
+  <h3 id="t-duty">Mission duty cycle (C0)</h3>
+  <figure class="chart"><figcaption>Electrical power through one mission</figcaption><div class="svgwrap"><svg id="dutyChart" viewBox="0 0 640 240" role="img" aria-label="Power versus time over the mission"></svg></div></figure>
+  <p class="src">R10 phase durations; P_hover and P_cruise from analysis/results.json; transitions at hover power <span class="est">est</span></p>
+
+  <h3 id="t-motorout">Motor-out behaviour</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Event</th><th>C0 4-lift</th><th>C1 8-lift</th><th>C2 coax X8</th></tr></thead>
+    <tbody>
+      <tr><td>Lift motor out, hover</td><td class="bad">Loses roll/yaw authority</td><td class="ok">T/W <span data-k="C1.sized.TW_motorOut" data-d="2"></span> on 6 balanced</td><td class="ok">T/W <span data-k="C2.sized.TW_motorOut" data-d="2"></span></td></tr>
+      <tr><td>Lift motor out, cruise</td><td class="ok">No effect (stopped)</td><td class="ok">Same</td><td class="ok">Same</td></tr>
+      <tr><td>Pusher out, cruise</td><td class="ok">Q_ASSIST below 12 m/s → QLAND</td><td class="ok">Same</td><td class="ok">Same</td></tr>
+      <tr><td>Link loss</td><td colspan="3">RTL then QLAND (R20), §10</td></tr>
+    </tbody></table></div>
+
+  <h3 id="t-weak">Weakest-link ranking</h3>
+  <div class="tbl"><table class="sortable">
+    <thead><tr><th class="sort n">Rank</th><th>Failure</th><th class="sort">Likelihood</th><th class="sort">Severity</th><th>Margin now</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td class="n">1</td><td>Lift motor/ESC failure in hover (C0)</td><td class="warn">med</td><td class="bad">loss of aircraft</td><td>none</td><td>T2/T3 on every unit; hover ≤ 5 m AGL, ≤ 60 s</td></tr>
+      <tr><td class="n">2</td><td>Hard landing, stiff gear</td><td class="bad">high</td><td class="warn">mount/boom damage</td><td>32 g at 20 mm (spring bound)</td><td>Compliant feet, about 100 mm travel</td></tr>
+      <tr><td class="n">3</td><td>BLHeli_S ESC overheating</td><td class="warn">med</td><td class="warn">power loss</td><td>9 A hover vs 45 A</td><td>T3 with ESC temperature</td></tr>
+      <tr><td class="n">4</td><td>Transition stall</td><td class="warn">med</td><td class="warn">altitude loss</td><td>AIRSPEED_MIN 15 vs stall 12 m/s</td><td>Airspeed sensor; ≥ 30 m AGL; into wind</td></tr>
+      <tr><td class="n">5</td><td>Beta firmware fault</td><td>low</td><td class="warn">mode errors</td><td>—</td><td>Bench HIL; move to stable when released</td></tr>
+      <tr><td class="n">6</td><td>Wing joiner</td><td>low</td><td class="bad">loss of aircraft</td><td>RF <span data-k="SIM.spar_RF_yield" data-d="2"></span> on yield</td><td>Proof load §6 M1</td></tr>
+    </tbody></table></div>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Temperatures after each flight.</b> <span class="how">IR thermometer within 30 s of landing on every motor, ESC and the pack.</span> <span class="fail">Pack over 60 °C <span class="est">est</span>, or any unit 15 °C hotter than its neighbours, grounds the aircraft (R9).</span></div></li>
+    <li><span class="id">M2</span><div><b>Hover throttle in calm air.</b> <span class="how">Mean lift output from a 30 s hover log.</span> <span class="fail">Above 60 % <span class="est">est</span> means thrust is short of the maker curve and R13 is at risk. Re-run T2 before transition tests.</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 9 CG ============================ -->
+<section class="sec" id="cg" data-title="CG &amp; stability" data-n="9">
+  <div class="sechead"><div class="eyebrow">9 · CG &amp; stability</div><h2>CG &amp; stability</h2></div>
+  <p class="verdict"><b>The CG target is 28 % MAC, and the lift thrust centroid is placed on it by construction.</b> Static margin is <span id="smWith"></span> % with the payload allowance and <span id="smNo"></span> % without it. The vortex-lattice model independently puts the neutral point at <span data-k="AERO.neutral_point_pct_mac" data-d="1"></span> % MAC, against <span data-k="C0.geo.hn" data-d="1" data-m="100"></span> % from the tail-volume formula. Without the payload the CG moves aft and the rear rotors carry <span id="hoverSplit"></span> % more thrust, so carry ballast in the payload bay.</p>
+  <figure class="chart"><figcaption>C0 CG envelope against neutral point and thrust centroid (% MAC from leading edge)</figcaption><div class="svgwrap"><svg id="cgChart" viewBox="0 0 640 170" role="img" aria-label="CG envelope chart"></svg></div></figure>
+  <p class="src">analysis/sizing.mjs cg(), geometry(); analysis/vlm.mjs → aero.json; fuselage destabilising term not included in either</p>
+  <h3 id="cg-items">CG build-up</h3>
+  <div class="tbl"><table id="cgTable"><thead><tr><th class="sort">Item</th><th class="sort n">kg</th><th class="sort n">x, m</th><th class="sort n">kg·m</th></tr></thead><tbody></tbody></table></div>
+  <h3 id="cg-stab">Stability numbers</h3>
+  <div class="tbl"><table id="stabTable"><thead><tr><th>Quantity</th><th class="n">C0</th><th class="n">C1</th><th class="n">C2</th><th>Formula</th></tr></thead><tbody></tbody></table></div>
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Actual CG.</b> <span class="how">Two kitchen scales under the wing at known stations.</span> <span class="fail">Aft of <span id="cgAft"></span> % MAC (SM under 8 % <span class="est">est</span>) fails cruise stability. Fly without the payload only with ballast in the bay, and move the battery to bring the CG within 2 cm of the thrust centroid.</span></div></li>
+    <li><span class="id">M2</span><div><b>Hover pitch trim.</b> <span class="how">Front vs rear motor outputs in a 30 s hover log.</span> <span class="fail">A split over 15 % means the CG is off the thrust centroid by more than about <span id="cgSplit"></span> cm, which eats hover control margin (R13).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 10 CONTROLS ============================ -->
+<section class="sec" id="controls" data-title="Controls" data-n="10">
+  <div class="sechead"><div class="eyebrow">10 · Controls</div><h2>Controls</h2></div>
+  <p class="verdict"><b>ArduPilot Plane QuadPlane on a CoreWing F405 Wing APP V2.</b> The board has 12 outputs (10 used), a 90 A current sensor and an 8 A servo BEC set to 6 V for the five ES3005HV servos. Transition completes at AIRSPEED_MIN = 16 m/s, which meets R11's 1.3 × stall, measured by the MS5525 airspeed sensor. Lift motors taper out over 5 s, and Q_ASSIST_SPEED is 13 m/s. Telemetry runs over ELRS MAVLink, so no separate radio is needed.</p>
+  <p class="src">docs/research/budget-avionics.md §1–§6; docs/research/avionics-autopilot.md §1.2–1.3 (parameter names and defaults, checked 2026-10-13)</p>
+
+  <h3 id="ctl-fc">Flight controller choice</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Board</th><th class="n">Outputs</th><th>Current sensor</th><th>ArduPilot target</th><th class="n">$</th><th>Verdict</th></tr></thead>
+    <tbody>
+      <tr class="chosen"><td>CoreWing F405 Wing APP V2</td><td class="n">12</td><td>90 A cont / 215 A peak</td><td class="warn">4.7.2-beta only</td><td class="n">67.26</td><td>Chosen</td></tr>
+      <tr><td>Matek F405-WMO</td><td class="n">9–10</td><td>"132 A" vs "13.2 A" on page</td><td class="ok">stable</td><td class="n">69.99</td><td>Fallback</td></tr>
+      <tr><td>Holybro Kakute H743-Wing</td><td class="n">14</td><td>120 A</td><td class="ok">stable, full features</td><td class="n">105.00</td><td>Needed only for C2 (OctaQuad)</td></tr>
+      <tr><td>Holybro Pixhawk 6C Mini (v0.2)</td><td class="n">14</td><td>external PM</td><td class="ok">stable</td><td class="n">179.00</td><td>Over budget with PM08</td></tr>
+    </tbody></table></div>
+
+  <h3 id="ctl-state">Flight-mode state diagram</h3>
+  <figure class="chart state"><figcaption>QuadPlane modes and transitions (C0)</figcaption><div class="svgwrap"><svg id="stateSvg" viewBox="0 0 700 330" role="img" aria-label="Flight mode state diagram"></svg></div></figure>
+
+  <h3 id="ctl-trans">Transition and threshold table</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Parameter</th><th class="n">Value</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr><td>Q_FRAME_CLASS / Q_FRAME_TYPE</td><td class="n">1 Quad / 1 X</td><td>Included in F405 builds</td></tr>
+      <tr><td>AIRSPEED_STALL</td><td class="n">12 m/s</td><td>R11</td></tr>
+      <tr><td>AIRSPEED_MIN (transition complete)</td><td class="n">16 m/s</td><td>R11: ≥ 1.3 × 12 = 15.6 m/s (docs suggest ≥ 20 % above stall)</td></tr>
+      <tr><td>AIRSPEED_CRUISE</td><td class="n">20 m/s</td><td>R11</td></tr>
+      <tr><td>Q_ASSIST_SPEED</td><td class="n">13 m/s</td><td>Docs: 3 m/s below AIRSPEED_MIN with a sensor (5 m/s without)</td></tr>
+      <tr><td>Q_TRANSITION_MS</td><td class="n">5000</td><td>Default</td></tr>
+      <tr><td>Q_TRANS_FAIL / ACT</td><td class="n">15 s / QRTL</td><td>Default 0 = no limit; 15 s <span class="est">est</span></td></tr>
+      <tr><td>Minimum transition altitude</td><td class="n">30 m AGL</td><td>PX4 guidance ≥ 20 m + margin</td></tr>
+      <tr><td>Geofence ceiling</td><td class="n">120 m AGL</td><td>§ 44809(a); R18</td></tr>
+      <tr><td>Hover limits (test phase)</td><td class="n">≤ 5 m AGL, ≤ 60 s</td><td>R14 mitigation; motor heat (§12)</td></tr>
+      <tr><td>Arming / disconnect (R20)</td><td class="n">RC arm switch + XT90-S</td><td>Battery plugged in last, props off for bench work; ArduPilot arming checks on</td></tr>
+      <tr><td>Battery current limit</td><td class="n">set ≤ 60 A</td><td>Transition case (§5); parameter name per ArduPilot docs (—)</td></tr>
+    </tbody></table></div>
+
+  <h3 id="ctl-pins">Outputs and wiring (C0)</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Output / port</th><th>Connects</th><th>Notes</th></tr></thead>
+    <tbody>
+      <tr><td>S1, S2</td><td>Aileron L, aileron R</td><td>ES3005HV at 6 V</td></tr>
+      <tr><td>S3</td><td>Pusher ESC (throttle)</td><td>SoloGood 45 A</td></tr>
+      <tr><td>S4</td><td>Elevator</td><td>ES3005HV</td></tr>
+      <tr><td>S5, S6</td><td>Rudder L, rudder R</td><td>ES3005HV; same function, one reversed</td></tr>
+      <tr><td>S7–S10</td><td>Lift motors 1–4</td><td>DShot-capable outputs (1–10 on this board)</td></tr>
+      <tr><td>S11–S12</td><td>Spare</td><td>—</td></tr>
+      <tr><td>UART + I²C</td><td>HGLRC M100-5883 GPS + compass</td><td>u-blox M10</td></tr>
+      <tr><td>UART</td><td>RP3 V2 ELRS receiver (CRSF + MAVLink)</td><td>ELRS 3.5+ for MAVLink telemetry</td></tr>
+      <tr><td>I²C</td><td>MS5525DSO airspeed + PT40 pitot (wing tip)</td><td>DLVR not supported on F405</td></tr>
+      <tr><td>5 V pad</td><td>BeeID Remote ID broadcast module</td><td>FAA DoC RID000001995</td></tr>
+    </tbody></table></div>
+  <p class="src">docs/research/budget-avionics.md §1.2 (CoreWing outputs, BEC), §3 (airspeed support), §4 (Remote ID), §5 (ELRS MAVLink). Exact pad names: check the CoreWing ArduPilot board page before wiring.</p>
+
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>Airspeed calibration.</b> <span class="how">Constant-throttle circuit, compare against GPS on reciprocal legs (or ARSPD autocal).</span> <span class="fail">An error over 10 % puts the true transition speed at 14.4 m/s, below R11's 15.6 m/s.</span></div></li>
+    <li><span class="id">M2</span><div><b>Transition distance and time.</b> <span class="how">Log groundspeed from Q-mode exit to AIRSPEED_MIN at 30 m AGL, into wind.</span> <span class="fail">Over 15 s or 100 m means the pusher is short (§5 M3) and R9 is at risk.</span></div></li>
+    <li><span class="id">M3</span><div><b>Servo load.</b> <span class="how">Spring-scale hinge moment on a built aileron.</span> <span class="fail">Over 4 kg·cm (half of the ES3005HV's 8 kg·cm at 6 V) needs a stronger servo (R9 control authority).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 11 SCHEDULE ============================ -->
+<section class="sec" id="schedule" data-title="Schedule &amp; compliance" data-n="11">
+  <div class="sechead"><div class="eyebrow">11 · Schedule &amp; compliance</div><h2>Schedule &amp; compliance</h2></div>
+  <p class="verdict"><b>Plan: design freeze 2026-12-04, SITL rehearsal January to February, first hover 2027-03-13, full mission 2027-04-17, a 13-day buffer.</b> The site decision (by 2026-11-06) is the critical path. File flight requests for primary and backup dates at once, because each needs 7 business days. The academic calendar and team availability over winter break are not reconciled here (—).</p>
+  <figure class="chart"><figcaption>Milestones, 2026-10 to 2027-04</figcaption><div class="svgwrap"><svg id="gantt" viewBox="0 0 700 420" role="img" aria-label="Schedule chart"></svg></div></figure>
+  <p class="src">Dates are this review's plan <span class="est">est</span>; lead times from docs/research/budget-*.md</p>
+
+  <h3 id="sch-order">Order-by dates</h3>
+  <div class="tbl"><table class="sortable">
+    <thead><tr><th class="sort">Order</th><th class="sort">Items</th><th>Lead time (source)</th><th class="sort">Order by</th><th class="sort">Needed</th></tr></thead>
+    <tbody>
+      <tr><td>A, early test</td><td>2 × X4110S + props, 1 ESC 4-pack, test kit, packs + charger</td><td>SunnySky USA (Ohio): —; JeeFly props 10–20 days (likely CN); Amazon Prime: days</td><td>2026-11-02</td><td>T1–T5 from 2026-11-16</td></tr>
+      <tr><td>B, airframe</td><td>Aluminium tube, foam, tape, hardware kit, PETG</td><td>OnlineMetals UPS: —; Home Depot El Cerrito in stock; Amazon Prime</td><td>2026-12-07</td><td>Build from 2027-01-04</td></tr>
+      <tr><td>B, propulsion and avionics</td><td>4 × X4110S, 2nd ESC pack, servos, FC, GPS, BeeID, radio, airspeed</td><td>ReadyMadeRC/RaceDayQuads US; Holybro ships CN: —</td><td>2026-12-07</td><td>Integration 2027-02-22</td></tr>
+    </tbody></table></div>
+
+  <h3 id="sch-comp">Compliance checklist</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Item</th><th>Rule</th><th>Cost</th><th>Due</th><th>Status</th></tr></thead>
+    <tbody>
+      <tr><td>Legal path</td><td>§ 44809 (§ 350 higher-education note) or Part 107</td><td>$0 / $175</td><td>2026-11-06</td><td><span class="chip open">open</span></td></tr>
+      <tr><td>TRUST, each pilot</td><td>44809(a)(7)</td><td>free</td><td>2027-02-28</td><td><span class="chip open">open</span></td></tr>
+      <tr><td>FAA registration + marking</td><td>44809(a)(8)</td><td>$5 (outside cap)</td><td>2027-02-28</td><td><span class="chip open">open</span></td></tr>
+      <tr><td>Remote ID broadcast module</td><td>14 CFR 89.115(a); BeeID on FAA DoC list (RID000001995)</td><td>$36.99 (in BOM)</td><td>verify serial on receipt</td><td><span class="chip met">selected</span></td></tr>
+      <tr><td>VLOS; ≤ 400 ft AGL in Class G</td><td>44809(a)(3),(6)</td><td>—</td><td>every flight</td><td><span class="chip met">planned</span></td></tr>
+      <tr><td>Liability ≥ $1M per pilot (AMA Full: $2.5M)</td><td>UC Berkeley UAS policy</td><td>$89/yr per pilot (outside cap)</td><td>2027-03-01</td><td><span class="chip open">open</span></td></tr>
+      <tr><td>Flight request, each on-campus flight</td><td>≥ 7 business days ahead</td><td>—</td><td>first by 2027-03-03</td><td><span class="chip open">open</span></td></tr>
+      <tr><td>Post-flight report</td><td>within 3 business days</td><td>—</td><td>after each flight</td><td><span class="chip open">open</span></td></tr>
+    </tbody></table></div>
+  <p class="src">law.cornell.edu (49 U.S.C. § 44809; 14 CFR 89.115, 107.51); oercs.berkeley.edu UAS policy; FAA DoC list via docs/research/budget-avionics.md §4. All checked 2026-10-13.</p>
+  <div class="measure"><h4>What the team must measure / confirm</h4><ol>
+    <li><span class="id">M1</span><div><b>Field length.</b> <span class="how">GPS-walk the usable straight at the approved site.</span> <span class="fail">Under 200 m <span class="est">est</span>, or a ceiling under 30 m AGL, blocks R9 at that site.</span></div></li>
+    <li><span class="id">M2</span><div><b>Actual lead times.</b> <span class="how">Ship-date emails at order.</span> <span class="fail">Any item arriving after 2027-02-15 pushes first hover past 2027-03-13.</span></div></li>
+    <li><span class="id">M3</span><div><b>Remote ID serial.</b> <span class="how">Look up the received BeeID serial at uasdoc.faa.gov.</span> <span class="fail">If it isn't listed, flying outside a FRIA breaks 14 CFR 89.115.</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 12 SIMULATION ============================ -->
+<section class="sec" id="simulation" data-title="Simulation &amp; verification" data-n="12">
+  <div class="sechead"><div class="eyebrow">12 · Simulation &amp; verification</div><h2>Simulation &amp; verification</h2></div>
+  <p class="verdict"><b>Every SOLIDWORKS Simulation result agrees with its hand calculation within 15 %, and every margin passes.</b> Each FEA model uses the same idealisation as its hand calc (rigid root, bonded joiner), so the FEA confirms the hand calcs rather than independently validating them. Clamp compliance would lower the boom frequency. The studies are FEA of the boom and the spar/joiner, a boom modal study and a lift-motor thermal study. A vortex-lattice model confirms the neutral point and the lift slope. An independent Python check re-derives every sizing formula and the BOM. Aerodynamic CFD was not run because SOLIDWORKS Flow Simulation would not load on this licence.</p>
+  <p class="src">cad/Sim.cs → cad/sim/results.txt and *.SLDPRT (studies inside); analysis/vlm.mjs → aero.json; analysis/verify.py</p>
+
+  <h3 id="sim-table">Results against hand calcs</h3>
+  <div class="tbl"><table id="simTable"><thead><tr><th>Study</th><th>Quantity</th><th class="n">FEA / model</th><th class="n">Hand / sizing</th><th class="n">Diff</th><th>Margin</th></tr></thead><tbody></tbody></table></div>
+  <div class="grid2" id="simImages"></div>
+  <p class="src">SOLIDWORKS 2025 Simulation (Educational licence, watermark on plots). Linear static, 2nd-order tets ≈ 3 mm; 6061-T6 (SS) library material. Simplified load-path models: boom arm cantilevered at the spar clamp with a tip block sized to the lift-unit mass (motor + ESC + prop + mount, <span data-k="SIM.boom_tip_mass_target" data-d="3"></span> kg); spar + joiner half-span fixed at the centreline, carrying a uniform load scaled to the elliptic root moment.</p>
+
+  <h3 id="sim-thermal">Motor heat: steady FEA and 90 s hover</h3>
+  <p>Heat into each lift motor is estimated at 20 % of the hover input (<span data-k="SIM.motor_Q" data-d="1"></span> W) <span class="est">est</span>, with prop-wash convection at 50 W/m²K <span class="est">est</span> and 35 °C ambient. Steady-state FEA gives <span data-k="SIM.motor_T_steady" data-d="0"></span> °C, a bulk-temperature estimate for unlimited hover. Hover lasts 60–90 s, so the time response decides. The lumped estimate for a 90 s hover is <b id="thermLumped"></b> °C (band <span id="thermBand"></span> °C for c = 385–500 J/kgK; time constant <span id="thermTau"></span> s). Three back-to-back 90 s runs with 30 s rests would reach about <span id="thermT3b"></span> °C, so T3 cools the motor to 45 °C between runs.</p>
+  <div class="chain">
+    <div class="box"><div class="l">h·A from steady FEA</div><div class="v"><span id="thermHA"></span> W/K</div><div class="f">Q / (T_ss − T_amb)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Heat capacity</div><div class="v"><span id="thermMC"></span> J/K</div><div class="f">m c = 0.165 kg × 470 J/kgK (est, Cu/steel/Al mix)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">T after 90 s</div><div class="v ok-t"><span id="thermLumped2"></span> °C</div><div class="f">T_amb + ΔT_ss (1 − e^(−t/τ))</div></div>
+  </div>
+  <p class="src">Transient thermal through the Simulation API returned no saved time steps (tested 2026-10-13), so the 90 s value is lumped capacitance. Motor heat capacity uses a mass-weighted c of 470 J/kgK <span class="est">est</span>. Copper (385) and steel (460) have lower c than aluminium (896), so an all-aluminium assumption would understate the temperature rise.</p>
+
+  <h3 id="sim-aero">Aerodynamics: vortex lattice</h3>
+  <div class="tbl"><table id="aeroTable"><thead><tr><th>Quantity</th><th class="n">VLM</th><th class="n">Sizing estimate</th><th>Comment</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/vlm.mjs: horseshoe vortices, wing 48 × 4 + tail 16 × 2 panels, cosine spanwise spacing (Katz &amp; Plotkin, Low-Speed Aerodynamics, ch. 12). Inviscid; stopped rotors, booms and fuselage excluded.</p>
+  <div class="decision"><b class="q">Run CFD for stopped-rotor drag if Flow Simulation can be licensed.</b><div>Stopped-rotor and boom drag (ΣCdA) is the largest unmeasured term in cruise power. Flow Simulation is installed but would not start through the API, and the licence lists only the base SOLIDWORKS serial.</div><div class="rec"><b>Recommended:</b> ask the department whether the SOLIDWORKS Education licence includes Flow Simulation. If it does, re-run with an external-flow project at 20 m/s on cad/model/VTOL_Concept.SLDASM. <b>Alternative:</b> the car-roof drag test (§4 M3) measures the same term directly.</div></div>
+
+  <h3 id="sim-verify">Independent checks (analysis/verify.py)</h3>
+  <div class="tbl"><table id="verifyTable"><thead><tr><th>Check group</th><th>What is re-derived</th><th>Result</th></tr></thead><tbody>
+    <tr><td>Sizing F1–F12</td><td>Every formula for C0–C3, from the stored inputs, without model.js</td><td class="ok">pass</td></tr>
+    <tr><td>BOM</td><td>Line sums, tax, committed total, reserve, cap</td><td class="ok">pass (C1/C2 flagged over cap)</td></tr>
+    <tr><td>Structures</td><td>Root moment, joiner stress, boom deflection</td><td class="ok">pass</td></tr>
+    <tr><td>FEA vs hand</td><td>Boom stress, deflection, mode; spar stress; motor steady temperature (±15 %)</td><td class="ok">pass</td></tr>
+    <tr><td>VLM vs sizing</td><td>Neutral point and lift slope (±10 %); e assumption below inviscid e</td><td class="ok">pass</td></tr>
+    <tr><td>Project audit (workflow)</td><td>Six reviewers (citations, engineering, budget, requirements, CAD/sim, page), an adversarial verifier and a completeness critic</td><td class="warn">79 confirmed findings fixed in v0.3.1 or listed as open items; 2 rejected</td></tr>
+  </tbody></table></div>
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>FEA boundary check.</b> <span class="how">Dial gauge or ruler on the boom tip with the measured clamp, under a known hanging weight.</span> <span class="fail">Deflection over 1.5 × the FEA value means clamp compliance dominates. Re-run the boom modal study with the measured stiffness before transition tests (R9).</span></div></li>
+    <li><span class="id">M2</span><div><b>Motor temperature curve.</b> <span class="how">IR thermometer every 15 s during T3.</span> <span class="fail">A measured time constant under 100 s, or a 90 s value over 80 °C, invalidates the lumped model and the hover limits (R9).</span></div></li>
+  </ol></div>
+</section>
+
+<!-- ============================ 13 FLIGHT TEST & OPERATIONS ============================ -->
+<section class="sec" id="flighttest" data-title="Flight test &amp; operations" data-n="13">
+  <div class="sechead"><div class="eyebrow">13 · Flight test &amp; operations</div><h2>Flight test &amp; operations</h2></div>
+  <p class="verdict"><b>Fly a strict build-up: SITL, bench, tethered hover, free hover, Q-mode handling, partial transitions, full transition, then the mission.</b> Each step has entry, abort and success criteria. C0 has no hover motor-out tolerance and runs beta firmware, so the early steps stay low and short.</p>
+  <h3 id="ft-matrix">Build-up test matrix</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>#</th><th>Step</th><th>Entry criteria</th><th>Abort if</th><th>Success</th></tr></thead>
+    <tbody>
+      <tr><td>F0</td><td>ArduPilot SITL (QuadPlane, C0 parameter file)</td><td>Parameters from §10</td><td>—</td><td>Transition, back-transition, RTL→QLAND, Q_ASSIST and failsafes rehearsed by every pilot</td></tr>
+      <tr><td>F1</td><td>Bench and tie-down run</td><td>T1–T6 passed; CG measured (§9 M1)</td><td>Any ESC desync or vibration warning</td><td>All outputs correct; motor directions; failsafe on link loss</td></tr>
+      <tr><td>F2</td><td>Tethered hover</td><td>F1; site request approved</td><td>Oscillation, or attitude error &gt; 15°</td><td>30 s stable at 1 m; logs show &lt; 60 % lift output</td></tr>
+      <tr><td>F3</td><td>Free hover, QLOITER</td><td>F2; vibration logs clean</td><td>Motor &gt; 80 °C after landing; any warning</td><td>3 × 60 s at ≤ 5 m AGL, motors cooled below 45 °C between hovers</td></tr>
+      <tr><td>F4</td><td>Q-mode handling, low forward speed</td><td>F3; tuning done</td><td>Q_ASSIST triggered unexpectedly</td><td>Box pattern at 5–8 m/s</td></tr>
+      <tr><td>F5</td><td>Partial transitions</td><td>F4; ≥ 30 m AGL; wind ≤ 5 m/s; into wind</td><td>Airspeed not rising within 6 s</td><td>Accelerate to 12 m/s, back to hover</td></tr>
+      <tr><td>F6</td><td>Full transition and back-transition</td><td>F5 three times</td><td>Q_TRANS_FAIL (15 s)</td><td>Fixed-wing circuit, back-transition, QLAND</td></tr>
+      <tr><td>F7</td><td>Full mission (R9, R10)</td><td>F6 twice</td><td>Pack below the 20 % reserve</td><td>10 min cruise, landing ≥ 20 % pack energy</td></tr>
+    </tbody></table></div>
+  <h3 id="ft-ops">Crew, field procedure and charging</h3>
+  <ul class="tight">
+    <li><b>Crew roles:</b> pilot in command (TRUST holder), visual observer, ground-station operator, and safety officer with the fire bag and extinguisher. Names: —.</li>
+    <li><b>Before each flight:</b> props checked; CG checked; Remote ID broadcasting; geofence loaded; battery plugged in last through the XT90-S; area clear.</li>
+    <li><b>LiPo procedure:</b> charge only in the LiPo bag inside the ammo can and never unattended. Inspect each pack for swelling and store at storage voltage. A crashed pack is isolated outdoors for 30 min.</li>
+    <li><b>Field charging cadence:</b> the HTRC C150 gives about 6 A on 6S, roughly 1.1 h per 6500 mAh pack <span class="est">est</span>. With two packs, a 2–3 h session supports about 3–4 flights. A field power source is needed (—).</li>
+  </ul>
+  <h3 id="ft-risk">Risk register</h3>
+  <div class="tbl"><table class="sortable">
+    <thead><tr><th class="sort">Risk</th><th class="sort">Likelihood</th><th class="sort">Impact</th><th>Trigger</th><th>Response</th><th>Owner</th></tr></thead>
+    <tbody>
+      <tr><td>Site approval delayed</td><td class="warn">med</td><td class="bad">high</td><td>No RFS approval by 2026-12-01</td><td>Off-campus AMA field under its rules</td><td>—</td></tr>
+      <tr><td>Crash during transition tests</td><td class="warn">med</td><td class="bad">high</td><td>Any airframe damage</td><td>Spares on hand; re-order motor/props the same day; buffer 13 days</td><td>—</td></tr>
+      <tr><td>Stable firmware not released</td><td class="warn">med</td><td class="warn">med</td><td>2027-02-22 go/no-go</td><td>Swap to Matek F405-WMO</td><td>—</td></tr>
+      <tr><td>Cart totals exceed allowance</td><td class="warn">med</td><td class="warn">med</td><td>Reserve &lt; $100</td><td>Borrow hot-wire; drop spare motor; then airspeed sensor</td><td>—</td></tr>
+      <tr><td>Motor heat in hover</td><td class="warn">med</td><td class="warn">med</td><td>T3 &gt; 80 °C</td><td>Shorter hovers; ducted cooling; MN-class motor (over budget)</td><td>—</td></tr>
+      <tr><td>Long-lead item late</td><td class="ok">low</td><td class="warn">med</td><td>Ship date after 2027-02-15</td><td>Order A/B early; US-stock alternatives</td><td>—</td></tr>
+    </tbody></table></div>
+  <h3 id="ft-fab">Fabrication plan</h3>
+  <ul class="tight">
+    <li><b>Wing cores:</b> hot-wire cut from FOAMULAR with printed NACA 2415 root and tip templates. Socket channel cut with a heated tube; skins are packing tape.</li>
+    <li><b>Prints:</b> 4 motor mounts (PA6-CF, hardened nozzle — check printer), 4 boom clamps, 4 gear clamps, pod frames, servo mounts (PETG). Print hours: —.</li>
+    <li><b>Build order:</b> wing cores and sockets, then booms and clamps, then tail, then pod and avionics, then wiring harness from the CAD positions, then CG and the proof loads (§6).</li>
+    <li><b>Team ownership:</b> assign an owner to each workstream (§1) and each M-item. The course deliverable dates belong on the §11 schedule (—).</li>
+  </ul>
+  <div class="measure"><h4>What the team must measure</h4><ol>
+    <li><span class="id">M1</span><div><b>SITL rehearsal pass.</b> <span class="how">Each pilot flies F0 scenarios in ArduPilot SITL with the C0 parameter file.</span> <span class="fail">Any pilot who cannot recover a failed transition in SITL does not fly F5–F7 (R9).</span></div></li>
+    <li><span class="id">M2</span><div><b>Field charge time.</b> <span class="how">Time one full charge at the field supply.</span> <span class="fail">Over 1.5 h per pack <span class="est">est</span> means fewer than 3 flights per session. Plan more sessions before 2027-04-17 (R8).</span></div></li>
+  </ol></div>
+</section>
+
+</main>
+</div>
+</div>
