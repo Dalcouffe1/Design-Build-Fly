@@ -7,7 +7,7 @@ Everything here is generated from `analysis/results.json`. After changing the si
 | File | Purpose |
 |---|---|
 | `params.mjs` | Converts the sizing results into build parameters and component placements → `params.txt` |
-| `BuildVtol.cs` | SOLIDWORKS API builder: 25 parts + 46-component assembly; exports SLDASM, STEP, EASM |
+| `BuildVtol.cs` | SOLIDWORKS API builder: 27 parts + 49-component assembly; exports SLDASM, STEP, EASM |
 | `build.ps1` | Runs `params.mjs`, compiles and runs the builder (needs SOLIDWORKS 2025 + .NET Framework 4 `csc`) |
 | `Snap.cs` | Saves iso/top/side/front PNGs of the assembly → `images/` |
 | `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside |
@@ -21,6 +21,7 @@ Everything here is generated from `analysis/results.json`. After changing the si
 - **Tail:** NACA 0009 stabiliser seated on the booms, with a separate 30 % chord elevator fitted between the fins. Fins are NACA 0009, lofted to a 65 % tip chord with a swept leading edge.
 - **Booms:** 6061-T6 1.000 × 0.035 in front booms, split at the rear motor mount, with aft stubs carrying the tail.
 - **Joiner and sockets:** 0.76 m 6061-T6 joiner (0.30 m engagement per side), with 0.23 mm diametral clearance.
+- **Wing root:** a centre-section saddle (XPS block cut from the budgeted FOAMULAR sheet, taped, with printed PETG root plates; volume 874 cm³, mass not in the sizing, est. tens of grams) carries the root aerofoil across the pod and is bored for the joiner, so the panels butt onto a flat root face rather than the round, tapering pod. One M5 stainless screw per side at 70 % chord, from the budgeted hardware kit, threads into a captive nut in the saddle; the joiner carries the bending load.
 - **Propulsion:** turned outrunner envelopes (base flange, stator neck, bell, prop adapter), tapered two-blade props shown parked fore-aft (notional: the BLHeli_S ESCs cannot park them), a pusher spinner, and PA6-CF motor mounts.
 - **Clamps:** front and rear boom clamps, with tops sized to meet the wing lower surface at each station, plus gear clamps under the booms.
 - **Disc clearance:** booms sit outboard so the rear lift discs clear the pusher disc by 61 mm. `params.mjs` throws if the clearance drops below 20 mm.

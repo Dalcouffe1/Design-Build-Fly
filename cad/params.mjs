@@ -24,7 +24,7 @@ const xs = -xSp*chord, ys = m/pp**2*(2*pp*xSp - xSp*xSp)*chord;   // on the camb
 // lower-surface height of the section at chord fraction x (for seating the boom clamps)
 const ytAt = x => 5*t*(0.2969*Math.sqrt(x) - 0.1260*x - 0.3516*x*x + 0.2843*x**3 - 0.1015*x**4);
 const ycAt = x => x < pp ? m/pp**2*(2*pp*x - x*x) : m/(1-pp)**2*((1-2*pp) + 2*pp*x - x*x);
-const yLower = x => (ycAt(x) - ytAt(x))*chord;
+const yLower = x => (ycAt(x) - ytAt(x))*chord, yUpper = x => (ycAt(x) + ytAt(x))*chord;
 P.tc = t; P.sparXfrac = xSp;
 // v0.3 tubes: 6061-T6 (docs/research/budget-airframe.md §1)
 Object.assign(P, { sparX: xs, sparY: ys, sparOD: 1.000*IN, sparID: (1.000-2*0.058)*IN, sparLen: 0.8,
@@ -64,6 +64,11 @@ add('Wing_Panel_R', 0, 0, fusR); add('Wing_Panel_L', 0, 0, -fusR);
 add('Aileron_R', 0, 0, fusR + Lin + 0.002); add('Aileron_L', 0, 0, -(fusR + Lin + 0.002));
 add('Spar_Tube', xs, ys, fusR); add('Spar_Tube', xs, ys, -fusR - P.sparLen);
 add('Wing_Joiner', xs, ys, -P.joinLen/2);
+// wing centre-section saddle: the root section carried across the pod (XPS block + PETG root plates over the joiner; no new BOM line),
+// so the panels butt onto it instead of onto the round, tapering pod; one M5 screw per side at 70 % chord (existing hardware kit)
+add('Wing_Saddle', 0, 0, 0);
+P.boltZ = fusR - 0.015;
+for (const zz of [-P.boltZ, P.boltZ]) add('Wing_Bolt', -0.70*chord, yUpper(0.70), zz);
 add('Battery_6S_LiPo', cg.x, -0.05, 0);
 for (const zz of [-g.yIn, g.yIn]) {
   add('Boom_Front', g.xRear - 0.03, yB, zz); add('Boom_Rear_Stub', g.booms[0].x0, yB, zz);

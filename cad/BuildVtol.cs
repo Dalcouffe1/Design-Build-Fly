@@ -68,6 +68,8 @@ class BuildVtol
         parts["H_Tail"] = Tailplane("H_Tail", false);
         parts["Elevator"] = Tailplane("Elevator", true);
         parts["Fin"] = Fin();
+        parts["Wing_Saddle"] = WingSaddle();
+        parts["Wing_Bolt"] = Revolve("Wing_Bolt", 'Y', new double[,] { { -0.030, 0 }, { -0.030, 0.0025 }, { 0, 0.0025 }, { 0, 0.00475 }, { 0.0028, 0.00475 }, { 0.0028, 0 } }, true, ALU, "M5 x 30 stainless button screw into a captive nut in the saddle (hardware kit, budget-airframe.md §3a item 5)");
 
         // ---------- assembly ----------
         ModelDoc2 asmDoc = (ModelDoc2)sw.NewDocument(AsmTpl, 0, 0, 0);
@@ -347,6 +349,17 @@ class BuildVtol
         }
         if (cut == null) throw new Exception("spar socket cut failed");
         return Finish(d, name, FOAM, (left ? "Left" : "Right") + " wing panel, NACA 2413 (EST), XPS core + tape skin, chord " + P["chord"] + " m");
+    }
+    static string WingSaddle()
+    {   // root section carried across the pod (2 x fusR wide), bored for the joiner; the panels butt onto its faces
+        ModelDoc2 d = NewPart(); double c = D("chord");
+        var foil = Naca(0.02, 0.4, D("tc"), 40);
+        var sm = Sk(d, "Front Plane"); SectionPart(sm, foil, c, 0, 1.0); EndSk(d);
+        Ext(d, 2 * D("fusR"), false, true);
+        sm = Sk(d, "Front Plane"); sm.CreateCircleByRadius(D("sparX"), D("sparY"), 0, D("joinOD") / 2 + 0.000115); EndSk(d);
+        d.FeatureManager.FeatureCut4(true, false, false, (int)swEndConditions_e.swEndCondMidPlane, 0, 2 * D("fusR") + 0.002, 0, false, false, false, false, 0, 0,
+            false, false, false, false, false, true, true, true, true, false, 0, 0, false, false);
+        return Finish(d, "Wing_Saddle", PRINT, "Wing centre-section saddle over the joiner: XPS block from the budgeted FOAMULAR sheet, taped, with printed PETG root plates (EST); shown dark to mark the interface");
     }
     static string Aileron(string name, bool left)
     {   // 74-100 % chord (2 % hinge gap), outer 55 % of the panel, 4 mm tip clearance
