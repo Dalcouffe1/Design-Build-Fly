@@ -20,9 +20,12 @@ not a narrative essay and not a line-by-line code walkthrough.
   in-section index and previous / next cards.
 - Light and dark themes via CSS tokens on `:root`, dark under
   `prefers-color-scheme` plus `[data-theme]` overrides.
-- Palette: indigo accent on blue-biased grays. Semantic colors: ok (green),
+- Palette (VTOL revision 2026-10-13, client-facing): ink on near-white paper, cool-neutral
+  grays, one high-visibility orange accent used sparingly. Semantic colors: ok (green),
   warn (amber), bad (red), open (violet). Six categorical chart colors.
-- Type: display grotesk for h1/h2, sans body (15 px, line-height 1.55),
+- Type: condensed technical grotesk for headings (Barlow Semi Condensed), humanist sans
+  body (Source Sans 3, 16 px, line-height 1.6), mono (Red Hat Mono) for labels, data and code;
+  square hairline geometry, no drop shadows or pill badges. Original gripper spec: display grotesk,
   mono for code. Tabular numbers everywhere. Paragraphs capped at ~72 ch.
 - 44 px minimum touch targets; works at phone width.
 
