@@ -1,5 +1,6 @@
 // Assembles review/vtol-review.html from review/src/* + analysis/model.js + analysis/results.json
 import { readFileSync, writeFileSync } from 'fs';
+import { packMesh } from './mesh.mjs';
 const r = p => readFileSync(new URL(p, import.meta.url), 'utf8');
 const data = JSON.parse(r('../analysis/results.json'));
 const v02 = JSON.parse(r('../analysis/results_v0.2_baseline.json'));
@@ -15,6 +16,7 @@ const b64 = f => 'data:image/png;base64,' + readFileSync(new URL(f, import.meta.
 const imgs = { cad_iso:'../cad/images/VTOL_Concept_iso.png', cad_top:'../cad/images/VTOL_Concept_top.png', cad_side:'../cad/images/VTOL_Concept_side.png',
   cad_front:'../cad/images/VTOL_Concept_front.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
+const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
 const html = `<title>Lift + Cruise VTOL Review</title>
 <meta name="description" content="Concept-stage engineering design review of a student lift + cruise VTOL">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,12 +25,17 @@ const html = `<title>Lift + Cruise VTOL Review</title>
 ${r('./src/style.css')}
 </style>
 ${r('./src/body.html')}
-<script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)};</script>
+<script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; const MESH = ${JSON.stringify(MESH)};</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 ${r('../analysis/model.js')}
 </script>
 <script>
 ${r('./src/viewer.js')}
+</script>
+<script>
+${r('./src/cadviewer.js')}
 </script>
 <script>
 ${r('./src/app.js')}

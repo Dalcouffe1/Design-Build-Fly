@@ -424,8 +424,18 @@ function initViewer(){ if(V) return; V = Viewer($('#viewer')); V.build(viewerGeo
   $('#vExplode').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',V.toggleExplode()));
   $$('#vConcept button').forEach(b=>b.addEventListener('click',()=>{ vKey=b.dataset.c; $$('#vConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); V.build(viewerGeom(vKey)); })); }
 
+// ---------- SOLIDWORKS model viewer ----------
+let CV=null;
+function initCad(){ if(CV!==null) { CV && CV.refresh(); return; }
+  $('#cadTris').textContent=MESH.tris.toLocaleString('en-US'); $('#cadComps').textContent=MESH.comps.length;
+  CV = CadViewer($('#cadView'), MESH) || false; if(!CV) return;
+  $$('#cadView [data-cview]').forEach(b=>b.addEventListener('click',()=>CV.view(b.dataset.cview)));
+  $('#cadXray').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleXray()));
+  $('#cadExplode').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleExplode()));
+  $('#cadEdges').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleEdges())); }
+
 function redrawSection(id){
-  if(id==='model3d'){ initViewer(); V.build(viewerGeom(vKey)); }
+  if(id==='model3d'){ initCad(); initViewer(); V.build(viewerGeom(vKey)); }
   if(id==='mass'){ drawTornado(); drawPack(); }
   if(id==='budget') drawCap();
   if(id==='testing') drawDuty();

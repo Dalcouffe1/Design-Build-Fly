@@ -10,3 +10,8 @@ $exe = Join-Path $root 'cad\BuildVtol.exe'
 if ($LASTEXITCODE -ne 0) { throw 'compile failed' }
 Copy-Item "$sw\SolidWorks.Interop.sldworks.dll","$sw\SolidWorks.Interop.swconst.dll" (Join-Path $root 'cad') -Force
 & $exe (Join-Path $root 'cad\params.txt') (Join-Path $root 'cad\model')
+# Part meshes for the interactive viewer in the review page (cad/mesh/*.STL + meta.json); then rebuild with: node review/build.mjs
+$mx = Join-Path $root 'cad\ExportMesh.exe'
+& $csc /nologo /platform:x64 /out:$mx /r:"$sw\SolidWorks.Interop.sldworks.dll" /r:"$sw\SolidWorks.Interop.swconst.dll" (Join-Path $root 'cad\ExportMesh.cs')
+if ($LASTEXITCODE -ne 0) { throw 'ExportMesh compile failed' }
+& $mx (Join-Path $root 'cad\model') (Join-Path $root 'cad\mesh')

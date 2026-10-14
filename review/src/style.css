@@ -283,3 +283,11 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   section.sec{display:block!important;break-before:page}
   .tbl{max-height:none;overflow:visible}
 }
+
+/* ---------- SOLIDWORKS model viewer ---------- */
+.cadview{margin-top:14px}
+.cadview canvas{height:540px;background:var(--surface)}
+.cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.84rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
+.cadview .tip b{display:block;font:600 .95rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
+.cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
+@media (max-width:560px){.cadview canvas{height:380px}.cadview .tip{top:auto;bottom:66px}}

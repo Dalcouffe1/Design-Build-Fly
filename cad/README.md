@@ -10,6 +10,7 @@ Everything here is generated from `analysis/results.json`. After changing the si
 | `BuildVtol.cs` | SOLIDWORKS API builder: 27 parts + 49-component assembly; exports SLDASM, STEP, EASM |
 | `build.ps1` | Runs `params.mjs`, compiles and runs the builder (needs SOLIDWORKS 2025 + .NET Framework 4 `csc`) |
 | `Snap.cs` | Saves iso/top/side/front PNGs of the assembly → `images/` |
+| `ExportMesh.cs` | Exports each part as a binary STL (metres, part frame) plus colour and description → `mesh/`; `review/mesh.mjs` packs them for the interactive viewer in the review page (run by `build.ps1`) |
 | `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside |
 | `ListDocs.cs` | Lists open SOLIDWORKS documents; `ListDocs.exe close` closes only files under this folder |
 | `TlbImp.cs`, `Probe.cs` | Tools used to inspect the Flow Simulation API and add-in availability |

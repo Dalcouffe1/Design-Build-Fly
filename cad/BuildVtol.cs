@@ -1,7 +1,7 @@
-// Builds the concept CAD model of the lift + cruise VTOL in SOLIDWORKS through its API (v0.3 design).
+﻿// Builds the concept CAD model of the lift + cruise VTOL in SOLIDWORKS through its API (v0.3 design).
 // Inputs: cad/params.txt (from cad/params.mjs <- analysis/results.json). Outputs: cad/model/*.SLDPRT,
 // VTOL_Concept.SLDASM, .STEP, .EASM. Frame: X forward (wing LE at X=0), Y up, Z right; metres.
-// Detail level: real aerofoil sections (NACA 2413 wing, NACA 0009 tail), split control surfaces with hinge
+// Detail level: real aerofoil sections (NACA 24xx wing (t/c from params), NACA 0009 tail), split control surfaces with hinge
 // gaps, turned motors/spinner/pitot (revolves), tapered two-blade props, printed saddle clamps and motor
 // mounts, gear legs with feet. Dimensions marked EST in params.mjs are estimates.
 using System;
@@ -48,7 +48,7 @@ class BuildVtol
         parts["Aileron_R"] = Aileron("Aileron_R", false);
         parts["Aileron_L"] = Aileron("Aileron_L", true);
         parts["Spar_Tube"] = Tube("Spar_Tube", 'Z', D("sparOD"), D("sparID"), D("sparLen"), ALU, "6061-T6 1.000 x 0.058 in spar socket, 0.8 m");
-        parts["Wing_Joiner"] = Tube("Wing_Joiner", 'Z', D("joinOD"), D("joinID"), D("joinLen"), ALU, "6061-T6 0.875 x 0.058 in joiner, 0.6 m");
+        parts["Wing_Joiner"] = Tube("Wing_Joiner", 'Z', D("joinOD"), D("joinID"), D("joinLen"), ALU, "6061-T6 0.875 x 0.058 in joiner, " + D("joinLen").ToString("0.00", IC) + " m");
         parts["Boom_Front"] = Tube("Boom_Front", 'X', bOD, bID, D("segF"), ALU, "Front boom, 6061-T6 1.000 x 0.035 in");
         parts["Boom_Rear_Stub"] = Tube("Boom_Rear_Stub", 'X', bOD, bID, D("segR"), ALU, "Rear boom stub carrying the tail, 6061-T6");
         parts["Lift_Motor"] = Motor("Lift_Motor", 'Y');
@@ -69,7 +69,7 @@ class BuildVtol
         parts["Elevator"] = Tailplane("Elevator", true);
         parts["Fin"] = Fin();
         parts["Wing_Saddle"] = WingSaddle();
-        parts["Wing_Bolt"] = Revolve("Wing_Bolt", 'Y', new double[,] { { -0.030, 0 }, { -0.030, 0.0025 }, { 0, 0.0025 }, { 0, 0.00475 }, { 0.0028, 0.00475 }, { 0.0028, 0 } }, true, ALU, "M5 x 30 stainless button screw into a captive nut in the saddle (hardware kit, budget-airframe.md §3a item 5)");
+        parts["Wing_Bolt"] = Revolve("Wing_Bolt", 'Y', new double[,] { { -0.030, 0 }, { -0.030, 0.0025 }, { 0, 0.0025 }, { 0, 0.00475 }, { 0.0028, 0.00475 }, { 0.0028, 0 } }, true, ALU, "M5 x 30 stainless button screw into a captive nut in the saddle (hardware kit, budget-airframe.md Â§3a item 5)");
 
         // ---------- assembly ----------
         ModelDoc2 asmDoc = (ModelDoc2)sw.NewDocument(AsmTpl, 0, 0, 0);
@@ -89,7 +89,7 @@ class BuildVtol
         asmDoc.ClearSelection2(true); asmDoc.Extension.SelectAll(); asm.FixComponent(); asmDoc.ClearSelection2(true);
         asmDoc.ShowNamedView2("*Isometric", 7); asmDoc.ViewZoomtofit2(); asmDoc.EditRebuild3();
         CustomPropertyManager cpm = asmDoc.Extension.get_CustomPropertyManager("");
-        cpm.Add3("Description", 30, "Lift + cruise VTOL concept v0.3 (budget design)", 2);
+        cpm.Add3("Description", 30, "Lift + cruise VTOL concept v0.3.1 (budget design)", 2);
         cpm.Add3("Source", 30, "analysis/results.json via cad/params.mjs; build cad/build.ps1", 2);
         string asmPath = Path.Combine(OutDir, "VTOL_Concept.SLDASM");
         Save(asmDoc, asmPath);
@@ -144,7 +144,7 @@ class BuildVtol
         d.MaterialPropertyValues = new double[] { rgb[0], rgb[1], rgb[2], 0.5, 0.85, 0.45, 0.35, 0, 0 };
         CustomPropertyManager cpm = d.Extension.get_CustomPropertyManager("");
         cpm.Add3("Description", (int)swCustomInfoType_e.swCustomInfoText, desc, (int)swCustomPropertyAddOption_e.swCustomPropertyReplaceValue);
-        cpm.Add3("Source", (int)swCustomInfoType_e.swCustomInfoText, "Concept geometry from analysis/results.json via cad/params.mjs (v0.3, 2026-10-13)", (int)swCustomPropertyAddOption_e.swCustomPropertyReplaceValue);
+        cpm.Add3("Source", (int)swCustomInfoType_e.swCustomInfoText, "Concept geometry from analysis/results.json via cad/params.mjs (v0.3.1, 2026-10-13)", (int)swCustomPropertyAddOption_e.swCustomPropertyReplaceValue);
         d.EditRebuild3();
         string path = Path.Combine(OutDir, name + ".SLDPRT");
         Save(d, path);
@@ -257,7 +257,7 @@ class BuildVtol
         var sm = Sk(d, pusher ? "Right Plane" : "Top Plane");
         foreach (double s in new[] { 1.0, -1.0 })
         {
-            double r0 = 0.012, cr = dia * 0.045, cm = dia * 0.075, ct = dia * 0.035;   // chord: root, max (30 % R), tip — EST planform
+            double r0 = 0.012, cr = dia * 0.045, cm = dia * 0.075, ct = dia * 0.035;   // chord: root, max (30 % R), tip â€” EST planform
             var pts = new double[,] { { s * r0, -cr / 2 }, { s * Rt * 0.30, -cm * 0.55 }, { s * Rt * 0.85, -ct * 0.55 }, { s * Rt * 0.98, -ct * 0.20 },
                 { s * Rt, 0 }, { s * Rt * 0.98, ct * 0.30 }, { s * Rt * 0.85, ct * 0.45 }, { s * Rt * 0.30, cm * 0.45 }, { s * r0, cr / 2 } };
             if (pusher) for (int i = 0; i < pts.GetLength(0); i++) { double a = pts[i, 0]; pts[i, 0] = pts[i, 1]; pts[i, 1] = a; }
@@ -331,7 +331,7 @@ class BuildVtol
         return Finish(d, "Canopy", CANOPY, "Avionics hatch blister (EST)");
     }
     static string WingPanel(string name, bool left)
-    {   // NACA 2413 panel: full chord inboard of the aileron, 0-72 % chord along the aileron span; spar socket bored 0.8 m
+    {   // NACA 24xx panel (t/c from params): full chord inboard of the aileron, 0-72 % chord along the aileron span; spar socket bored 0.8 m
         ModelDoc2 d = NewPart(); double c = D("chord"), L = D("panelLen"), Lail = L * 0.55, Lin = L - Lail;
         var foil = Naca(0.02, 0.4, D("tc"), 40);
         var sm = Sk(d, "Front Plane"); SectionPart(sm, foil, c, 0, 0.72); EndSk(d);
@@ -348,7 +348,7 @@ class BuildVtol
             cut = Cut(d, D("sparLen"), !left);
         }
         if (cut == null) throw new Exception("spar socket cut failed");
-        return Finish(d, name, FOAM, (left ? "Left" : "Right") + " wing panel, NACA 2413 (EST), XPS core + tape skin, chord " + P["chord"] + " m");
+        return Finish(d, name, FOAM, (left ? "Left" : "Right") + " wing panel, NACA 24" + Math.Round(100 * D("tc")).ToString("00") + " (EST), XPS core + tape skin, chord " + (1000 * D("chord")).ToString("0", IC) + " mm");
     }
     static string WingSaddle()
     {   // root section carried across the pod (2 x fusR wide), bored for the joiner; the panels butt onto its faces
