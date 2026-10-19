@@ -286,8 +286,9 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 /* ---------- print ---------- */
 @media print{
+  /* print always uses the light palette, whatever the screen theme */
+  :root,:root[data-theme="dark"],:root:not([data-theme="light"]){--bg:#fbfbfa; --surface:#ffffff; --surface-2:#f4f5f6; --surface-3:#eceef0; --zebra:#fafafa; --line:#e3e5e8; --line-2:#cbcfd4; --line-3:#9ea4ac; --fg:#16191d; --fg-2:#474e57; --fg-3:#6c737c; --accent:#b8481b; --accent-2:#963a14; --accent-soft:#f7ece6; --accent-line:#e4bfae; --accent-fg:#ffffff; --ink:#16191d; --ink-fg:#ffffff; --ok:#23744a; --ok-soft:#e7f2ec; --warn:#94600a; --warn-soft:#f6efe1; --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6; --open-line:#a49ec5; --bad-line:#c57e79; --c1:#2f5d8a; --c2:#2e7f78; --c3:#b7791f; --c4:#8e3b6e; --c5:#5b6b7c; --c6:#6b7f2a; --band:#ffffff; --band-line:#cbcfd4; color-scheme:light}
   nav.side,nav.tabs,.themebtn,.secidx,.skip,.gate,.viewer,.sliders,.seg,.cadparts,.loadmsg{display:none!important}
-  body{background:#fff;color:#000}
   .tbl{border:0}
   figure.chart,.decision,.measure,table,.kpis{break-inside:avoid}
   .layout{display:block}
