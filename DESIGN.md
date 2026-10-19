@@ -276,6 +276,8 @@ Every colour has a dark-theme partner token with the suffix `-dark`, for example
 
 **The Verdict Colours Rule.** Green, amber, red and violet mean met, risk, fail and open, and nothing else. Never use them for decoration or chart series.
 
+**The Never-Colour-Alone Rule.** Every status shown by colour is also stated in words or form. A status cell carries a short note ("below margin", "within ±15 %") in its own status colour. A chosen option is bold and named in its column header. Paired chart series differ in lightness or outline, not only hue.
+
 ## Typography
 
 **Display Font:** Barlow Semi Condensed (with Arial Narrow, Helvetica Neue, Arial)
@@ -379,6 +381,7 @@ There are no pills, circles, dots or status lights.
 - **Header:** mono caps and sticky, on the Vellum ground. A sortable header holds a full-cell button (no visual change) whose arrow shows the state: ↕ unsorted, an orange ↑ or ↓ when sorted.
 - **Columns and rows:** number columns are right-aligned and tabular. Rows show a Sheet Tint on hover. Sortable headers show ↕, and the sorted column shows an orange arrow.
 - **Chosen row:** International Orange Wash.
+- **Status cells:** a Status Met, Risk or Fail wash with the value in the status colour and a short note in words, also in the status colour.
 - **Total row:** a 1px ink rule above it.
 
 ### "What the team must measure" list
@@ -390,6 +393,9 @@ There are no pills, circles, dots or status lights.
 
 ### Skip link
 - **Style:** a Drafting Ink tag with white mono text, hidden above the page until focused, then shown at the top left. Activating it moves focus to the current section heading.
+
+### Windows High Contrast
+- **Style:** text, frames and controls follow the system colours. Chart drawing areas and 3D canvases opt out (`forced-color-adjust: none`) and keep their own token palette on Sheet White, so the chart encodings survive.
 
 ### Print
 - **Style:** printing drops the interactive-only parts (viewers, sliders, segmented controls, parts list, skip link, touch gates), shows every section, keeps the static renders, and avoids breaking figures, decisions, tables and measurement lists across pages.

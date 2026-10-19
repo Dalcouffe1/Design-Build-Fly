@@ -221,7 +221,7 @@ function bom(res, lean=false){
   return { lines:L, goods:+goods.toFixed(2), shipping, tax:+tax.toFixed(2), crash:+crash.toFixed(2), total:+total.toFixed(2), tubes25:tubes, fees, cap:2000 };
 }
 
-const out = { generated:'2026-10-13', base:BASE, packs:PACKS, concepts:{} };
+const out = { generated:'2026-10-13', base:BASE, cruiseMarginMin:CRUISE_MARGIN_MIN, packs:PACKS, concepts:{} };
 for(const k of Object.keys(CONCEPTS)){
   const res = run(k);
   res.bom = bom(res); res.bomLean = bom(res, true);

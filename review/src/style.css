@@ -49,7 +49,7 @@ body{background:var(--bg);color:var(--fg);font:1rem/1.6 var(--f-body);font-varia
 h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0;color:var(--fg);font-weight:600}
 h1{font-size:2.625rem;letter-spacing:-.01em;line-height:1.05}
 h2{font-size:1.875rem;letter-spacing:-.005em}
-h2 .secno{font:500 .75em/1 var(--f-mono);color:var(--accent);margin-right:.6em;vertical-align:.12em;letter-spacing:0}
+h2 .secno{font:500 .75em/1 var(--f-mono);color:var(--accent);margin-right:.3em;vertical-align:.12em;letter-spacing:0}
 h3{font-size:1.25rem;margin-top:2.75rem;margin-bottom:.4rem;padding-top:1rem;border-top:1px solid var(--line);scroll-margin-top:64px}
 h4{font-size:1rem;letter-spacing:.005em}
 p,li{max-width:70ch}
@@ -198,7 +198,9 @@ tbody tr.total td,tr.total td{font-weight:700;border-top:1px solid var(--ink);ba
 td.ok{color:var(--ok);background:var(--ok-soft)}
 td.warn{color:var(--warn);background:var(--warn-soft)}
 td.bad{color:var(--bad);background:var(--bad-soft)}
+.morph td.ok{font-weight:600}
 td small,.small{color:var(--fg-3);font-size:.8125rem}
+td.ok small,td.warn small,td.bad small{color:inherit}
 
 /* ---------- back-calculation chain ---------- */
 .chain{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:18px 0}
@@ -281,7 +283,13 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .tbl{max-height:none}
   .pn{grid-template-columns:1fr}
   .decision{padding:14px 14px 12px}
-  .thbtn{padding-block:14px}
+  .thbtn{padding-block:14px;min-height:44px}
+}
+
+/* ---------- Windows High Contrast: charts and viewers keep their own palette so their encodings survive ---------- */
+@media (forced-colors: active){
+  figure.chart .svgwrap,.viewer canvas{forced-color-adjust:none;background:var(--surface)}
+  .chip,.est,.thbtn:focus-visible,.decision{border-color:CanvasText}
 }
 
 /* ---------- print ---------- */

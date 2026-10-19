@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-19T03:11:23.466Z",
+  "generatedAt": "2026-10-19T03:18:00.524Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
@@ -1111,6 +1111,11 @@
       {
         "name": "The Verdict Colours Rule",
         "body": "Green, amber, red and violet mean met, risk, fail and open, and nothing else. Never use them for decoration or chart series.",
+        "section": "colors"
+      },
+      {
+        "name": "The Never-Colour-Alone Rule",
+        "body": "Every status shown by colour is also stated in words or form. A status cell carries a short note (\"below margin\", \"within ±15 %\") in its own status colour. A chosen option is bold and named in its column header. Paired chart series differ in lightness or outline, not only hue.",
         "section": "colors"
       },
       {

@@ -41,6 +41,7 @@
   "Vpack": 22.2,
   "m_guess": 7
  },
+ "cruiseMarginMin": 11.5,
  "packs": [
   {
    "id": "Ovonic 6S 6500 100C (2-pack)",

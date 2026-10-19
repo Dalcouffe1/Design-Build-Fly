@@ -27,7 +27,7 @@ function buildNav(){
   const side = document.createElement('ol'), tabs = $('#tabs');
   secs.forEach(s=>{
     const li = document.createElement('li'); li.dataset.id = s.id;
-    li.innerHTML = `<a href="#${s.id}"><span class="n">${s.dataset.n}</span>${s.dataset.title}</a>`;
+    li.innerHTML = `<a href="#${s.id}"><span class="n">${s.dataset.n}</span> ${s.dataset.title}</a>`;
     const subs = s.querySelectorAll('h3[id]');
     if(subs.length){ const ol=document.createElement('ol'); ol.className='sub';
       subs.forEach(h=>{ ol.insertAdjacentHTML('beforeend',`<li><a href="#${h.id}" data-sec="${s.id}">${h.textContent}</a></li>`); }); li.appendChild(ol); }
@@ -38,8 +38,8 @@ function buildNav(){
     let h = `<div class="secidx"><div class="eyebrow">In this section</div><ol>`;
     subs.forEach(x=>h+=`<li><a href="#${x.id}" data-sec="${s.id}">${x.textContent}</a></li>`);
     h += `</ol><div class="pn">`;
-    h += prev ? `<a class="prev" href="#${prev.id}"><span class="eyebrow">← Previous · ${prev.dataset.n}</span>${prev.dataset.title}</a>` : '<span></span>';
-    h += next ? `<a class="next" href="#${next.id}"><span class="eyebrow">Next · ${next.dataset.n} →</span>${next.dataset.title}</a>` : '<span></span>';
+    h += prev ? `<a class="prev" href="#${prev.id}"><span class="eyebrow">← Previous · ${prev.dataset.n}</span> ${prev.dataset.title}</a>` : '<span></span>';
+    h += next ? `<a class="next" href="#${next.id}"><span class="eyebrow">Next · ${next.dataset.n} →</span> ${next.dataset.title}</a>` : '<span></span>';
     s.insertAdjacentHTML('beforeend', h+'</div></div>');
   });
   $('#side').appendChild(side);
@@ -169,7 +169,7 @@ function tables(){
     pp.thrustTable.forEach(([T,P])=>{ const f=VTOLModel.calibFMeta(T,P,pp.liftD,1.225); ct.insertAdjacentHTML('beforeend',`<tr><td>${n}</td><td class="n">${T}</td><td class="n">${fmt(P,1)}</td><td class="n">${fmt(f*P,1)}</td><td class="n">${fmt(f,3)}</td></tr>`); }); });
   // packs
   const pk = $('#packTable tbody');
-  D.packs.forEach((p,i)=>{ const sw=D.sweepC0[i]; pk.insertAdjacentHTML('beforeend',`<tr${p.id===C0.pick.id?' class="chosen"':''}><td>${p.id}</td><td>${p.chem}</td><td class="n">${fmt(p.Wh,1)}</td><td class="n">${fmt(p.kg,3)}</td><td class="n">${fmt(p.Wh/p.kg,0)}</td><td class="n">${p.contA}</td><td class="n">${fmt(p.usd,2)}</td><td class="n">${fmt(sw.m,2)}</td><td class="n ${sw.cruise_min>=12.5?'ok':'warn'}">${fmt(sw.cruise_min,1)}</td></tr>`); });
+  D.packs.forEach((p,i)=>{ const sw=D.sweepC0[i]; pk.insertAdjacentHTML('beforeend',`<tr${p.id===C0.pick.id?' class="chosen"':''}><td>${p.id}</td><td>${p.chem}</td><td class="n">${fmt(p.Wh,1)}</td><td class="n">${fmt(p.kg,3)}</td><td class="n">${fmt(p.Wh/p.kg,0)}</td><td class="n">${p.contA}</td><td class="n">${fmt(p.usd,2)}</td><td class="n">${fmt(sw.m,2)}</td><td class="n ${sw.cruise_min>=D.cruiseMarginMin?'ok':'warn'}">${fmt(sw.cruise_min,1)}${sw.cruise_min<D.cruiseMarginMin?' <small>below margin</small>':''}</td></tr>`); });
   // landing
   const lt = $('#landTable tbody');
   C0.struct.strokes.forEach(s=>{ const ns=s.nSpring||2*s.n, cls = ns>10?'bad':ns>8?'warn':'ok'; lt.insertAdjacentHTML('beforeend',`<tr><td class="n">${s.stroke*1000}</td><td class="n">${fmt(s.n,1)}</td><td class="n">${fmt(ns,1)}</td><td class="${cls}">${ns>10?'damages mounts/booms':ns>8?'marginal':'acceptable'}</td></tr>`); });
@@ -209,7 +209,7 @@ function tables(){
    ['Spar + joiner static, 2 mm mesh (idealised OD)','von Mises max, MPa', SIM.spar_vm_max_fine, SIM.spar_hand_sigJ, 'hand calc governs: RF '+fmt(C0.struct.SIG_DESIGN/C0.struct.sigJ,2)],
    ['Spar + joiner static, 3 mm mesh','von Mises max, MPa', SIM.spar_vm_max, SIM.spar_hand_sigJ, 'mesh change '+fmt((SIM.spar_vm_max_fine/SIM.spar_vm_max-1)*100,0)+' %'],
    ['Lift motor thermal','steady temperature, °C', SIM.motor_T_steady, SIM.motor_T_steady_hand, TH?('90 s ≈ '+fmt(TH.T90,0)+' °C; 3 back-to-back ≈ '+fmt(TH.T3,0)+' °C'):'—']]
-   .forEach(([a,q,f,h,m])=>{ if(f===undefined||h===undefined) return; const d=pct(f,h); sm.insertAdjacentHTML('beforeend',`<tr><td>${a}</td><td>${q}</td><td class="n">${fmt(f,1)}</td><td class="n">${fmt(h,1)}</td><td class="n ${Math.abs(d)<=15?'ok':'warn'}">${d>0?'+':''}${fmt(d,1)} %</td><td>${m}</td></tr>`); });
+   .forEach(([a,q,f,h,m])=>{ if(f===undefined||h===undefined) return; const d=pct(f,h); sm.insertAdjacentHTML('beforeend',`<tr><td>${a}</td><td>${q}</td><td class="n">${fmt(f,1)}</td><td class="n">${fmt(h,1)}</td><td class="n ${Math.abs(d)<=15?'ok':'warn'}">${d>0?'+':''}${fmt(d,1)} % <small>${Math.abs(d)<=15?'within ±15 %':'outside ±15 %'}</small></td><td>${m}</td></tr>`); });
   const at = $('#aeroTable tbody');
   [['Wing lift slope, /rad', AERO.wing_CLa_per_rad, AERO.helmbold_CLa_per_rad, 2, 'Helmbold estimate used in the sizing'],
    ['Aircraft lift slope (wing + tail), /rad', AERO.full_CLa_per_rad, null, 2, '—'],
@@ -300,9 +300,9 @@ function drawTornado(){
   const lab = Object.fromEntries(SL.map(s=>[s.k,s.l]));
   res.forEach((r,i)=>{ const y=top+i*rowH;
     el('text',{x:x0-8,y:y+13,'text-anchor':'end'},svg,lab[r.k]);
-    el('rect',{x:Math.min(sx(r.lo),mid),y:y+3,width:Math.abs(sx(r.lo)-mid),height:13,fill:css('--c2'),rx:2},svg);
+    el('rect',{x:Math.min(sx(r.lo),mid),y:y+3,width:Math.abs(sx(r.lo)-mid),height:13,fill:css('--c1'),'fill-opacity':0.35,stroke:css('--c1'),'stroke-width':1,rx:2},svg);
     el('rect',{x:Math.min(sx(r.hi),mid),y:y+3,width:Math.abs(sx(r.hi)-mid),height:13,fill:css('--c1'),rx:2},svg); });
-  el('rect',{x:x0,y:top+res.length*rowH+20,width:10,height:10,fill:css('--c2')},svg); el('text',{x:x0+14,y:top+res.length*rowH+29},svg,'input −20 %');
+  el('rect',{x:x0,y:top+res.length*rowH+20,width:10,height:10,fill:css('--c1'),'fill-opacity':0.35,stroke:css('--c1')},svg); el('text',{x:x0+14,y:top+res.length*rowH+29},svg,'input −20 %');
   el('rect',{x:x0+100,y:top+res.length*rowH+20,width:10,height:10,fill:css('--c1')},svg); el('text',{x:x0+114,y:top+res.length*rowH+29},svg,'input +20 %');
   describe(svg, `Tornado chart: change in MTOW from a base of ${fmt(base,2)} kg when each input moves ±20 %, largest first. `+res.map(r=>`${lab[r.k]}: ${sgn(r.lo)} kg at −20 %, ${sgn(r.hi)} kg at +20 %`).join('; ')+'.');
 }
@@ -326,8 +326,8 @@ function drawPack(){
   let pth=''; data.forEach((d,i)=>pth+=(i?'L':'M')+xs(i)+' '+ym(d.m)); el('path',{d:pth,fill:'none',stroke:css('--c3'),'stroke-width':2},svg);
   data.forEach((d,i)=>{ el('circle',{cx:xs(i),cy:ym(d.m),r:3.5,fill:css('--c3')},svg); el('text',{x:xs(i),y:ym(d.m)-8,'text-anchor':'middle'},svg,fmt(d.m,2)); });
   if(mMax>=8){ el('line',{x1:l,x2:W-r,y1:ym(8),y2:ym(8),stroke:css('--warn'),'stroke-dasharray':'2 3'},svg); el('text',{x:W-r-4,y:ym(8)-4,'text-anchor':'end',fill:css('--warn')},svg,'R2: 8 kg target floor'); }
-  el('line',{x1:l,x2:W-r,y1:yc(11.5),y2:yc(11.5),stroke:css('--ok'),'stroke-dasharray':'2 3'},svg); el('text',{x:l+4,y:yc(11.5)-4,fill:css('--ok')},svg,'design margin 11.5 min');
-  describe(svg, 'Battery packs on C0, MTOW and cruise minutes available (R10 needs 10 min; design margin 11.5 min). '+data.map(d=>`${d.pack}: ${fmt(d.m,2)} kg, ${fmt(d.cruise_min,1)} min`).join('; ')+'.');
+  const mg=D.cruiseMarginMin; el('line',{x1:l,x2:W-r,y1:yc(mg),y2:yc(mg),stroke:css('--ok'),'stroke-dasharray':'2 3'},svg); el('text',{x:l+4,y:yc(mg)-4,fill:css('--ok')},svg,`design margin ${fmt(mg,1)} min`);
+  describe(svg, 'Battery packs on C0, MTOW and cruise minutes available (R10 needs 10 min; design margin '+fmt(D.cruiseMarginMin,1)+' min). '+data.map(d=>`${d.pack}: ${fmt(d.m,2)} kg, ${fmt(d.cruise_min,1)} min`).join('; ')+'.');
 }
 function drawCap(){
   const svg=$('#capChart'); if(!svg) return; clear(svg);
