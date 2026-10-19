@@ -6,11 +6,30 @@
     <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. Student capstone.</p>
     <dl class="facts">
       <div><dt>Project</dt><dd>Design-Build-Fly</dd></div>
-      <div><dt>Review date</dt><dd>2026-10-13</dd></div>
+      <div><dt>Document</dt><dd>DBF-RPT-001</dd></div>
+      <div><dt>Issue</dt><dd>2 · 2026-10-18</dd></div>
+      <div><dt>Design revision</dt><dd>0.3.1</dd></div>
       <div><dt>Stage</dt><dd>Concept · budget redesign</dd></div>
-      <div><dt>Revision</dt><dd>v0.3.1</dd></div>
-      <div><dt>Sources</dt><dd><code>docs/</code> · <code>analysis/</code> · <code>cad/</code></dd></div>
     </dl>
+    <div class="doccontrol">
+      <table class="dc">
+        <caption>Issue history</caption>
+        <thead><tr><th>Issue</th><th>Date</th><th class="rev">Design rev.</th><th>Change</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>2026-10-13</td><td class="rev">0.3.1</td><td>Design review after the budget redesign and the six-reviewer audit</td></tr>
+          <tr><td>2</td><td>2026-10-18</td><td class="rev">0.3.1</td><td>Drawing set DBF-DRW-001 (5 sheets), wing saddle, interactive CAD model, accessibility fixes</td></tr>
+        </tbody>
+      </table>
+      <table class="dc">
+        <caption>Approval</caption>
+        <thead><tr><th>Role</th><th>Name</th><th>Date</th></tr></thead>
+        <tbody>
+          <tr><td>Prepared</td><td>Design-Build-Fly team</td><td>2026-10-18</td></tr>
+          <tr><td>Checked</td><td>—</td><td>—</td></tr>
+          <tr><td>Approved (client)</td><td>—</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
   </div>
   <button class="themebtn" id="themeBtn" type="button">Theme: system</button>
 </header>
@@ -153,6 +172,21 @@
   <p class="src">cad/BuildVtol.cs, cad/params.mjs ← analysis/results.json; outputs cad/model/VTOL_Concept.SLDASM, .STEP, .EASM</p>
   <div class="grid2" id="cadImages"></div>
   <p class="src">SOLIDWORKS 2025 renders (cad/images/). Open VTOL_Concept.EASM in the free eDrawings viewer, or the STEP file in any CAD tool.</p>
+
+  <h3 id="m3-drw">Engineering drawings</h3>
+  <p>Drawing DBF-DRW-001, revision 0.3.1, is a five-sheet ANSI B set generated from the SOLIDWORKS model. Every dimension is a driven dimension placed at model coordinates from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. The sheets are concept drawings for this review and are marked not released for manufacture. Select a sheet to view it at full size.</p>
+  <div class="tbl"><table>
+    <thead><tr><th>Sheet</th><th>Title</th><th class="n">Scale</th><th>Contents</th></tr></thead>
+    <tbody>
+      <tr><td>1</td><td>General arrangement</td><td class="n">1:15</td><td>Front elevation, plan, side elevation, isometric; span, boom spacing, length, rotor spacing, height, prop diameters, pusher ground clearance</td></tr>
+      <tr><td>2</td><td>Parts list</td><td class="n">1:17</td><td>Ballooned isometric and the SOLIDWORKS bill of materials (27 parts)</td></tr>
+      <tr><td>3</td><td>Wing panel and wing saddle</td><td class="n">1:10, 1:4, 1:2</td><td>Panel plan, root section, aileron cut-out, spar socket position and depth, saddle bore</td></tr>
+      <tr><td>4</td><td>Printed parts</td><td class="n">1:1</td><td>Motor mount, front and rear boom clamps, gear clamp</td></tr>
+      <tr><td>5</td><td>Tube cut list and landing leg</td><td class="n">1:2</td><td>Cut lengths for every 6061-T6 tube; landing leg</td></tr>
+    </tbody></table></div>
+  <div class="drawings" id="drawings"></div>
+  <p class="src">cad/Drawings.cs → cad/drawings/DBF-DRW-001.SLDDRW and DBF-DRW-001.PDF (vector, all sheets); dimensions from cad/params.txt ← analysis/results.json</p>
+  <dialog class="lightbox" id="lightbox" aria-label="Drawing sheet at full size"><div class="lb-bar"><span id="lbTitle"></span><button type="button" id="lbClose">Close</button></div><div class="lb-body" id="lbBody"></div></dialog>
 
   <h3 id="m3-cad">Interactive SOLIDWORKS model</h3>
   <p>The full C0 assembly, rendered from the SOLIDWORKS part geometry. Drag to orbit, right-drag or two-finger drag to pan, and scroll or pinch to zoom. On a touch screen, tap the model once to start; swipes before that scroll the page. Hover over a part, or tap it, to see what it is, or use the parts list below the viewer. <b>X-ray</b> fades the foam and skin to show the booms, spar sockets, joiner and battery inside; <b>Explode</b> pulls the parts apart.</p>

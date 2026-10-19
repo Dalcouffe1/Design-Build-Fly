@@ -26,6 +26,8 @@ function b64(f) {
 const imgs = { cad_iso:'../cad/images/VTOL_Concept_iso.png', cad_top:'../cad/images/VTOL_Concept_top.png', cad_side:'../cad/images/VTOL_Concept_side.png',
   cad_front:'../cad/images/VTOL_Concept_front.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
+// SOLIDWORKS drawing sheets (cad/Drawings.cs) stay PNG: crisp line art at ~20 KB a sheet
+for (let i = 1; i <= 5; i++) { try { IMG['drw' + i] = 'data:image/png;base64,' + readFileSync(new URL(`../cad/drawings/DBF-DRW-001_sheet${i}.png`, import.meta.url)).toString('base64'); } catch (e) { console.log('missing drawing sheet', i); } }
 const BASIS_VER = (r('../docs/DESIGN-BASIS.md').match(/\(v(\d+\.\d+(?:\.\d+)?)/) || [])[1];
 if (!BASIS_VER) throw new Error('design-basis version not found');
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');

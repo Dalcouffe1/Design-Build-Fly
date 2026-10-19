@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-19T03:18:00.524Z",
+  "generatedAt": "2026-10-19T04:07:33.350Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
@@ -1126,6 +1126,11 @@
       {
         "name": "The Readable Floor Rule",
         "body": "Nothing functional is set below 12 px, and citations are never below 13 px. The client has to be able to read the sources.",
+        "section": "typography"
+      },
+      {
+        "name": "The Report Numbering Rule",
+        "body": "Sections, subsections and figures are numbered the way an engineering report numbers them: section 4, subsection 4.2, Figure 4.3. The numbers come from the page structure at load, never typed by hand, so inserting a subsection renumbers everything after it.",
         "section": "typography"
       },
       {

@@ -15,3 +15,8 @@ $mx = Join-Path $root 'cad\ExportMesh.exe'
 & $csc /nologo /platform:x64 /out:$mx /r:"$sw\SolidWorks.Interop.sldworks.dll" /r:"$sw\SolidWorks.Interop.swconst.dll" (Join-Path $root 'cad\ExportMesh.cs')
 if ($LASTEXITCODE -ne 0) { throw 'ExportMesh compile failed' }
 & $mx (Join-Path $root 'cad\model') (Join-Path $root 'cad\mesh')
+# Drawing set DBF-DRW-001 (cad/drawings): SLDDRW, vector PDF, sheet PNGs for the review page
+$dx = Join-Path $root 'cad\Drawings.exe'
+& $csc /nologo /platform:x64 /out:$dx /r:"$sw\SolidWorks.Interop.sldworks.dll" /r:"$sw\SolidWorks.Interop.swconst.dll" (Join-Path $root 'cad\Drawings.cs')
+if ($LASTEXITCODE -ne 0) { throw 'Drawings compile failed' }
+& $dx (Join-Path $root 'cad\model') (Join-Path $root 'cad\drawings') (Join-Path $root 'cad\params.txt')

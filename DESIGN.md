@@ -297,12 +297,15 @@ The type scale has ten steps: 12, 13, 14, 16, 18, 20, 24, 30, 32 and 42 px. Don'
 - **Body** (400, 16 px, 1.6, tabular): running text, capped at 70ch.
 - **Small** (400, 0.875rem / 14 px): tables, navigation, KPI qualifiers, buttons, slider labels and the viewer's part label.
 - **Source** (mono 400, 0.8125rem / 13 px, 1.55): citation lines prefixed "Source", formulas, measurement IDs and subsection links.
-- **Label** (mono 500, 0.75rem / 12 px, uppercase, 0.06–0.1em tracking): title-block field names, KPI labels, table headers, status chips and EST tags. Never set a label smaller than 12 px.
+- **Label** (body 600, 0.8125rem / 13 px, sentence case): table headers, key-parameter names, status chips and control captions. Title-block field names are the one place labels stay uppercase (body 600, 0.75rem, 0.04em tracking), as on a drawing title block. Never set a label smaller than 12 px.
+- **Mono** (Red Hat Mono): data only: file paths, citations, measurement IDs (M1 …), code. Mono is never used to make a label look technical.
 
 ### Named Rules
 **The Tabular Numbers Rule.** Every digit on the page uses tabular numerals, so columns of figures line up like a parts list.
 
 **The Readable Floor Rule.** Nothing functional is set below 12 px, and citations are never below 13 px. The client has to be able to read the sources.
+
+**The Report Numbering Rule.** Sections, subsections and figures are numbered the way an engineering report numbers them: section 4, subsection 4.2, Figure 4.3. The numbers come from the page structure at load, never typed by hand, so inserting a subsection renumbers everything after it.
 
 **The Lettering Rule.** Condensed display type is for headings and figures only. Running text never uses it, and labels are always mono caps, never small caps in the body face.
 
@@ -360,15 +363,20 @@ There are no pills, circles, dots or status lights.
 - **States:** the four states are met, risk, fail and open.
 - **EST tag:** the same shape in Status Risk, used inline to flag an estimate.
 
+### Document control (page cover)
+- **Style:** under the title block, two ruled tables side by side: issue history (issue, date, design revision, change) and approval (role, name, date). Roles not yet signed show "—". On phones they stack and the issue history drops its design-revision column.
+
+### Drawing sheets
+- **Style:** SOLIDWORKS sheets shown as numbered figures on a white sheet with a 1px Frame Rule border; selecting one opens it at full size in a dialog with a title bar and a Close button.
+
 ### Title block
 - **Style:** a five-cell ruled grid on Sheet White. The 1px Frame Rule lines come from 1px gaps over a Frame Rule ground, so the rules stay clean at any column count.
 - **Cells:** each has a mono caps field name above a condensed value, for example PROJECT / Design-Build-Fly or REVIEW DATE / 2026-10-13. The project name lives here, not in a label above the title.
 - **Placement:** at the foot of the cover, under the subtitle, with a 2px ink rule below the whole cover.
 
-### Key-figure strip
-- **Style:** an open strip under a 2px ink rule, not a set of cards.
-- **Content:** each figure has a mono caps label, a large condensed value (coloured by verdict where one applies) and a one-line qualifier.
-- **Dividers:** hairlines between figures. On phones the strip stacks, with hairlines between rows.
+### Key-parameter table
+- **Style:** a ruled table under a 2px ink rule, one parameter per row: name (body 600), value (condensed 600, 1.25rem, right-aligned, coloured by verdict where one applies) and a one-line qualifier. It is a data-sheet table, not a strip of big numbers.
+- **Phones:** name and value on one line, qualifier below.
 
 ### Decision cards
 - **Style:** a full 1px frame in Status Open Frame, or Status Fail Frame when the decision is blocking. There is no side stripe.

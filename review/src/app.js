@@ -118,6 +118,28 @@ function derived(){
   set('marginPct', fmt((s0.t_cruise_avail_min/10-1)*100,0));
 }
 
+// ---------- drawings ----------
+function drawings(){
+  const box=$('#drawings'); if(!box) return;
+  const t=['General arrangement','Parts list','Wing panel and wing saddle','Printed parts','Tube cut list and landing leg'];
+  t.forEach((title,i)=>{ const k='drw'+(i+1); if(!IMG[k]) return;
+    box.insertAdjacentHTML('beforeend', `<figure class="chart sheet"><button type="button" class="sheetbtn" data-k="${k}" data-t="Sheet ${i+1}: ${title}"><img class="cadimg" src="${IMG[k]}" alt="Drawing DBF-DRW-001 sheet ${i+1}, ${title}" loading="lazy"></button><figcaption>Sheet ${i+1} of 5. ${title}</figcaption></figure>`); });
+  const lb=$('#lightbox');
+  $$('.sheetbtn').forEach(b=>b.addEventListener('click',()=>{ const im=document.createElement('img'); im.src=IMG[b.dataset.k]; im.alt='Drawing DBF-DRW-001, '+b.dataset.t; $('#lbBody').replaceChildren(im); $('#lbTitle').textContent='DBF-DRW-001 · '+b.dataset.t;
+    if(lb.showModal) lb.showModal(); else lb.setAttribute('open',''); }));
+  $('#lbClose').addEventListener('click',()=>lb.close ? lb.close() : lb.removeAttribute('open'));
+  lb.addEventListener('click',e=>{ if(e.target===lb) lb.close(); });
+}
+// report numbering: subsections n.k and figures n.k, from the section number
+function numberHeadings(){
+  $$('section.sec').forEach(s=>{ const n=s.dataset.n; let k=0;
+    s.querySelectorAll('h3[id]').forEach(h=>{ k++; if(!h.querySelector('.subno')) h.insertAdjacentHTML('afterbegin',`<span class="subno">${n}.${k}</span> `); }); });
+}
+function numberFigures(){
+  $$('section.sec').forEach(s=>{ const n=s.dataset.n; let k=0;
+    s.querySelectorAll('figure figcaption').forEach(c=>{ k++; const old=c.querySelector('.figno'); if(old) old.remove(); c.insertAdjacentHTML('afterbegin',`<span class="figno">Figure ${n}.${k}.</span> `); }); });
+}
+
 // ---------- tables ----------
 function img(id, list){
   const box = $(id); if(!box) return;
@@ -493,7 +515,7 @@ function redrawSection(id){
 function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cur) redrawSection(cur.id); }
 
 // ---------- boot ----------
-buildNav(); fill(); derived(); tables(); sortable();
+numberHeadings(); buildNav(); fill(); derived(); tables(); drawings(); numberFigures(); sortable();
 $$('[data-cad="parts"]').forEach(e=>e.textContent=Object.keys(MESH.parts).length); $$('[data-cad="comps"]').forEach(e=>e.textContent=MESH.comps.length);
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
