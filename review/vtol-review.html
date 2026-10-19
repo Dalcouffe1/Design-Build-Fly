@@ -1284,7 +1284,7 @@ function CadViewer(wrap, M){
     const v = camera.fov * Math.PI / 360, h = Math.atan(Math.tan(v) * camera.aspect);
     const fovFit = radius / Math.sin(Math.min(v, h)) * 0.7;
     const to = centre.clone().add(d.multiplyScalar(fovFit));
-    if (instant){ camera.position.copy(to); controls.target.copy(centre); controls.update(); need = true; return; }
+    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(to); controls.target.copy(centre); controls.update(); need = true; return; }
     tween = {t0: performance.now(), p0: camera.position.clone(), q0: controls.target.clone(), p1: to, q1: centre.clone()};
   }
   function setXray(on){
@@ -1308,7 +1308,7 @@ function CadViewer(wrap, M){
       if (u >= 1) tween = null; need = true;
     }
     if (explodeT !== explodeTo){
-      explodeT += Math.sign(explodeTo - explodeT) * Math.min(Math.abs(explodeTo - explodeT), 0.06);
+      explodeT += Math.sign(explodeTo - explodeT) * Math.min(Math.abs(explodeTo - explodeT), matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.06);
       const e = explodeT < 0.5 ? 2*explodeT*explodeT : 1 - Math.pow(-2*explodeT + 2, 2) / 2;
       for (const it of items) it.g.position.copy(it.home).addScaledVector(it.dir, e);
       need = true;

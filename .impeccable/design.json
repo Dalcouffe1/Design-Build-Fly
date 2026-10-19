@@ -1,0 +1,622 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-19T02:36:03.784Z",
+  "title": "Design System: Design-Build-Fly Design Review",
+  "extensions": {
+    "colorMeta": {
+      "international-orange": {
+        "role": "primary",
+        "displayName": "International Orange",
+        "canonical": "#b8481b",
+        "tonalRamp": [
+          "#270000",
+          "#4d0000",
+          "#751b00",
+          "#9f3603",
+          "#c6562c",
+          "#e47e5a",
+          "#ffad8e",
+          "#ffd9be"
+        ]
+      },
+      "international-orange-deep": {
+        "role": "primary",
+        "displayName": "International Orange Deep",
+        "canonical": "#963a14",
+        "tonalRamp": [
+          "#270000",
+          "#4c0000",
+          "#751b00",
+          "#993d17",
+          "#be5e3b",
+          "#e37f5c",
+          "#ffad8d",
+          "#ffd9be"
+        ]
+      },
+      "international-orange-wash": {
+        "role": "primary",
+        "displayName": "International Orange Wash",
+        "canonical": "#f7ece6",
+        "tonalRamp": [
+          "#100906",
+          "#2a221e",
+          "#463e39",
+          "#655b56",
+          "#857b76",
+          "#a69c97",
+          "#cfc5bf",
+          "#f7ece6"
+        ]
+      },
+      "international-orange-rule": {
+        "role": "primary",
+        "displayName": "International Orange Rule",
+        "canonical": "#e4bfae",
+        "tonalRamp": [
+          "#1b0400",
+          "#371c0e",
+          "#553829",
+          "#755546",
+          "#967565",
+          "#b99685",
+          "#e3bead",
+          "#ffe5d4"
+        ]
+      },
+      "drafting-ink": {
+        "role": "neutral",
+        "displayName": "Drafting Ink",
+        "canonical": "#16191d",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "ink-graphite": {
+        "role": "neutral",
+        "displayName": "Ink Graphite",
+        "canonical": "#474e57",
+        "tonalRamp": [
+          "#060c12",
+          "#1e252d",
+          "#3a4049",
+          "#575e68",
+          "#767e88",
+          "#979fa9",
+          "#c0c8d3",
+          "#e7effa"
+        ]
+      },
+      "ink-pencil": {
+        "role": "neutral",
+        "displayName": "Ink Pencil",
+        "canonical": "#6c737c",
+        "tonalRamp": [
+          "#070c12",
+          "#1f252c",
+          "#3a4048",
+          "#575e67",
+          "#777e87",
+          "#989fa9",
+          "#c0c8d2",
+          "#e7effa"
+        ]
+      },
+      "vellum": {
+        "role": "neutral",
+        "displayName": "Vellum",
+        "canonical": "#fbfbfa",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242423",
+          "#40403f",
+          "#5e5e5d",
+          "#7d7d7c",
+          "#9e9e9d",
+          "#c7c7c6",
+          "#eeeeed"
+        ]
+      },
+      "sheet-white": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "sheet-tint": {
+        "role": "neutral",
+        "displayName": "Sheet Tint",
+        "canonical": "#f4f5f6",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#232425",
+          "#3f4041",
+          "#5d5e5e",
+          "#7c7d7e",
+          "#9d9e9f",
+          "#c6c7c8",
+          "#edeeef"
+        ]
+      },
+      "sheet-tint-2": {
+        "role": "neutral",
+        "displayName": "Sheet Tint 2",
+        "canonical": "#eceef0",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4041",
+          "#5c5e5f",
+          "#7c7d7f",
+          "#9d9fa0",
+          "#c5c7c9",
+          "#edeff1"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#e3e5e8",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7b7d80",
+          "#9d9ea1",
+          "#c5c7ca",
+          "#edeff2"
+        ]
+      },
+      "frame-rule": {
+        "role": "neutral",
+        "displayName": "Frame Rule",
+        "canonical": "#cbcfd4",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cd",
+          "#ebeff4"
+        ]
+      },
+      "construction-line": {
+        "role": "neutral",
+        "displayName": "Construction Line",
+        "canonical": "#9ea4ac",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3b4047",
+          "#595e65",
+          "#787e85",
+          "#999fa7",
+          "#c2c8d0",
+          "#e9eff8"
+        ]
+      },
+      "status-met": {
+        "role": "tertiary",
+        "displayName": "Status Met",
+        "canonical": "#23744a",
+        "tonalRamp": [
+          "#001500",
+          "#00310c",
+          "#004f28",
+          "#1c6e45",
+          "#428f64",
+          "#64b284",
+          "#8edcac",
+          "#b9ffd4"
+        ]
+      },
+      "status-met-wash": {
+        "role": "tertiary",
+        "displayName": "Status Met Wash",
+        "canonical": "#e7f2ec",
+        "tonalRamp": [
+          "#060d09",
+          "#1e2622",
+          "#39423d",
+          "#57605b",
+          "#76807b",
+          "#97a19c",
+          "#c0cac4",
+          "#e7f2ec"
+        ]
+      },
+      "status-risk": {
+        "role": "tertiary",
+        "displayName": "Status Risk",
+        "canonical": "#94600a",
+        "tonalRamp": [
+          "#210000",
+          "#431400",
+          "#623200",
+          "#845100",
+          "#a67125",
+          "#c9924a",
+          "#f5bb73",
+          "#ffe4a7"
+        ]
+      },
+      "status-risk-wash": {
+        "role": "tertiary",
+        "displayName": "Status Risk Wash",
+        "canonical": "#f6efe1",
+        "tonalRamp": [
+          "#0f0a03",
+          "#292319",
+          "#453f34",
+          "#635d51",
+          "#837d70",
+          "#a49e91",
+          "#cdc7b9",
+          "#f5eee0"
+        ]
+      },
+      "status-fail": {
+        "role": "tertiary",
+        "displayName": "Status Fail",
+        "canonical": "#ad2a1f",
+        "tonalRamp": [
+          "#280000",
+          "#4d0000",
+          "#76160f",
+          "#a13126",
+          "#c85244",
+          "#e67b6c",
+          "#ffaa9b",
+          "#ffd7c9"
+        ]
+      },
+      "status-fail-wash": {
+        "role": "tertiary",
+        "displayName": "Status Fail Wash",
+        "canonical": "#f8e9e7",
+        "tonalRamp": [
+          "#120908",
+          "#2c2120",
+          "#483d3b",
+          "#675a59",
+          "#877a78",
+          "#a99b99",
+          "#d2c3c2",
+          "#faebe9"
+        ]
+      },
+      "status-open": {
+        "role": "tertiary",
+        "displayName": "Status Open",
+        "canonical": "#57489a",
+        "tonalRamp": [
+          "#0e0030",
+          "#251256",
+          "#402e7e",
+          "#5d4ea1",
+          "#7b6ec4",
+          "#9c90e9",
+          "#c4bbff",
+          "#ebe5ff"
+        ]
+      },
+      "status-open-wash": {
+        "role": "tertiary",
+        "displayName": "Status Open Wash",
+        "canonical": "#efedf6",
+        "tonalRamp": [
+          "#0c0a10",
+          "#242329",
+          "#403e46",
+          "#5e5c64",
+          "#7e7c84",
+          "#9f9da5",
+          "#c8c6ce",
+          "#efedf6"
+        ]
+      },
+      "series-1": {
+        "role": "tertiary",
+        "displayName": "Series 1 Ink Blue",
+        "canonical": "#2f5d8a",
+        "tonalRamp": [
+          "#00072e",
+          "#00244d",
+          "#12426d",
+          "#33618e",
+          "#5281b0",
+          "#73a3d4",
+          "#9bccff",
+          "#c1f4ff"
+        ]
+      },
+      "series-2": {
+        "role": "tertiary",
+        "displayName": "Series 2 Teal",
+        "canonical": "#2e7f78",
+        "tonalRamp": [
+          "#001411",
+          "#002f2a",
+          "#004c47",
+          "#136c65",
+          "#3d8c85",
+          "#60aea7",
+          "#8ad8d0",
+          "#b1fff7"
+        ]
+      },
+      "series-3": {
+        "role": "tertiary",
+        "displayName": "Series 3 Ochre",
+        "canonical": "#b7791f",
+        "tonalRamp": [
+          "#210000",
+          "#441200",
+          "#672e00",
+          "#894e00",
+          "#ab6e0a",
+          "#cf903c",
+          "#f7ba70",
+          "#ffe4a7"
+        ]
+      },
+      "series-4": {
+        "role": "tertiary",
+        "displayName": "Series 4 Plum",
+        "canonical": "#8e3b6e",
+        "tonalRamp": [
+          "#220014",
+          "#460030",
+          "#6b1a4f",
+          "#8e3b6e",
+          "#b15b8e",
+          "#d67cb0",
+          "#fda9d8",
+          "#ffd5fd"
+        ]
+      },
+      "series-5": {
+        "role": "tertiary",
+        "displayName": "Series 5 Slate",
+        "canonical": "#5b6b7c",
+        "tonalRamp": [
+          "#020c18",
+          "#172534",
+          "#324151",
+          "#505f70",
+          "#6f7f91",
+          "#8fa0b3",
+          "#b8cadd",
+          "#def1ff"
+        ]
+      },
+      "series-6": {
+        "role": "tertiary",
+        "displayName": "Series 6 Olive",
+        "canonical": "#6b7f2a",
+        "tonalRamp": [
+          "#070f00",
+          "#1d2a00",
+          "#374800",
+          "#546707",
+          "#738733",
+          "#93a956",
+          "#bcd37e",
+          "#e4f9b1"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The report title only."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section titles (h2)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Subsection titles (h3), each under a hairline."
+      },
+      "figure": {
+        "displayName": "Figure",
+        "purpose": "KPI values in the key-figure strip."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text, max 70ch."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Section-opening verdict paragraph, max 74ch."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Mono caps for eyebrows, field names, KPI labels, table headers, chips."
+      },
+      "source": {
+        "displayName": "Source",
+        "purpose": "Citation line under every claim block."
+      }
+    },
+    "shadows": [],
+    "motion": [
+      {
+        "name": "state",
+        "value": "0.12s–0.15s ease (colour and border only)",
+        "purpose": "Hover and pressed transitions on controls and links."
+      },
+      {
+        "name": "camera",
+        "value": "450 ms ease-in-out quad",
+        "purpose": "SOLIDWORKS viewer camera moves and explode; both jump instantly under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "560px"
+      },
+      {
+        "name": "title-block-2x2",
+        "value": "760px"
+      },
+      {
+        "name": "contents-column",
+        "value": "1100px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Segmented control",
+      "kind": "button",
+      "refersTo": "button-segment",
+      "description": "Toggle group; pressed segment fills with drafting ink.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-b\" aria-pressed=\"true\">C0 4-lift</button><button class=\"ds-seg-b\">C1 8-lift</button><button class=\"ds-seg-b\">C2 coax X8</button></div>",
+      "css": ".ds-seg{display:inline-flex;border:1px solid #cbcfd4;border-radius:2px;overflow:hidden;background:#fff}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #cbcfd4;background:#fff;color:#474e57;font:500 .86rem 'Source Sans 3',system-ui,sans-serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#f4f5f6;color:#16191d}.ds-seg-b:focus-visible{outline:2px solid #b8481b;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#16191d;color:#fff}"
+    },
+    {
+      "name": "Theme button",
+      "kind": "button",
+      "refersTo": "button-theme",
+      "description": "Transparent mono-label button for the theme toggle.",
+      "html": "<button class=\"ds-theme\">Theme: system</button>",
+      "css": ".ds-theme{min-height:44px;padding:0 14px;border:1px solid #cbcfd4;background:transparent;color:#474e57;border-radius:2px;font:500 .74rem 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.04em;cursor:pointer;transition:border-color .15s,color .15s}.ds-theme:hover{border-color:#16191d;color:#16191d}.ds-theme:focus-visible{outline:2px solid #b8481b;outline-offset:2px}"
+    },
+    {
+      "name": "Status chips",
+      "kind": "chip",
+      "refersTo": "chip-met",
+      "description": "Requirement verdicts: outlined mono caps; fail adds its wash.",
+      "html": "<span class=\"ds-chip ds-met\">Met</span> <span class=\"ds-chip ds-risk\">Risk</span> <span class=\"ds-chip ds-fail\">Fail</span> <span class=\"ds-chip ds-open\">Open</span> <span class=\"ds-est\">EST</span>",
+      "css": ".ds-chip{display:inline-block;font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#23744a}.ds-risk{color:#94600a}.ds-fail{color:#ad2a1f;background:#f8e9e7}.ds-open{color:#57489a}.ds-est{display:inline-block;font:500 .62rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94600a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
+    },
+    {
+      "name": "Title block",
+      "kind": "custom",
+      "refersTo": "title-block-cell",
+      "description": "Cover title block: ruled cells with mono field names over condensed values.",
+      "html": "<dl class=\"ds-tb\"><div><dt>Review date</dt><dd>2026-10-13</dd></div><div><dt>Stage</dt><dd>Concept · budget redesign</dd></div><div><dt>Revision</dt><dd>v0.3.1</dd></div><div><dt>Sources</dt><dd>docs/ · analysis/ · cad/</dd></div></dl>",
+      "css": ".ds-tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border:1px solid #cbcfd4;background:#fff}.ds-tb>div{padding:10px 14px 12px;border-right:1px solid #cbcfd4}.ds-tb>div:last-child{border-right:0}.ds-tb dt{font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6c737c;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d}"
+    },
+    {
+      "name": "Key-figure strip",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Open KPI strip under a 2px ink rule; values coloured by verdict.",
+      "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><div class=\"ds-l\">Committed spend (R6)</div><div class=\"ds-v ds-ok\">$1,898</div><div class=\"ds-s\">cap $2,000 incl. tax + shipping</div></div><div class=\"ds-kpi\"><div class=\"ds-l\">Crash reserve (R7)</div><div class=\"ds-v ds-warn\">$102</div><div class=\"ds-s\">target ≥ $100: met, thin</div></div></div>",
+      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #e3e5e8}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .68rem/1.35 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2.1rem/1.05 'Barlow Semi Condensed','Arial Narrow',sans-serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#16191d}.ds-ok{color:#23744a}.ds-warn{color:#94600a}.ds-s{font:400 .84rem/1.45 'Source Sans 3',system-ui,sans-serif;color:#474e57}"
+    },
+    {
+      "name": "Decision card",
+      "kind": "card",
+      "refersTo": "decision-card",
+      "description": "Open (violet frame) or blocking (red frame) decision with recommendation panel.",
+      "html": "<div class=\"ds-dec ds-red\"><b class=\"ds-q\">Which legal path and which flying field?</b><div class=\"ds-body\">Only Richmond Field Station allows the 30 m a transition needs.</div><div class=\"ds-rec\"><b>Recommended:</b> request RFS by 2026-11-06.</div></div>",
+      "css": ".ds-dec{border:1px solid color-mix(in srgb,#57489a 45%,#e3e5e8);border-radius:2px;padding:16px 20px 14px;background:#fff;color:#474e57;font:400 1rem/1.6 'Source Sans 3',system-ui,sans-serif}.ds-dec.ds-red{border-color:color-mix(in srgb,#ad2a1f 55%,#e3e5e8)}.ds-q{display:block;font:600 1.12rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d;margin-bottom:8px}.ds-q::before{content:'Open decision';display:block;font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:#57489a;margin-bottom:10px}.ds-red .ds-q::before{content:'Blocking decision';color:#ad2a1f}.ds-rec{margin-top:12px;padding:10px 14px;background:#f4f5f6;border-radius:2px;color:#16191d}.ds-red .ds-rec{background:#f8e9e7}"
+    },
+    {
+      "name": "Ruled table",
+      "kind": "custom",
+      "refersTo": "table-head",
+      "description": "Data table: ink rule top, mono caps sticky header, chosen row in orange wash.",
+      "html": "<table class=\"ds-t\"><thead><tr><th>Pack</th><th class=\"ds-n\">Cruise min</th><th class=\"ds-n\">Price</th></tr></thead><tbody><tr class=\"ds-ch\"><td>Ovonic 6S 6500 ×2</td><td class=\"ds-n\">11.9</td><td class=\"ds-n\">$69.50</td></tr><tr><td>HOOVO 6S 8000</td><td class=\"ds-n\">—</td><td class=\"ds-n\">—</td></tr></tbody></table>",
+      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4;font:400 .88rem/1.45 'Source Sans 3',system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#16191d}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #e3e5e8;text-align:left}.ds-t th{font:500 .68rem/1.3 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:#474e57;border-bottom-color:#cbcfd4}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#f4f5f6}.ds-t tr.ds-ch td{background:#f7ece6}.ds-t tr.ds-ch td:first-child{font-weight:600}"
+    },
+    {
+      "name": "Contents navigation",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "Plain-text numbered contents; current section bold with orange number.",
+      "html": "<nav class=\"ds-nav\"><div class=\"ds-nh\">Contents</div><a><span>1</span>Overview</a><a class=\"ds-cur\"><span>2</span>CAD model</a><a><span>3</span>Concepts</a></nav>",
+      "css": ".ds-nav{width:220px;font:400 .92rem/1.3 'Source Sans 3',system-ui,sans-serif}.ds-nh{font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#6c737c;padding-bottom:12px;border-bottom:1px solid #cbcfd4;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#474e57;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .72rem 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;width:1.5em;text-align:right}.ds-nav a:hover{color:#16191d}.ds-nav a.ds-cur{color:#16191d;font-weight:600}.ds-nav a.ds-cur span{color:#b8481b;font-weight:600}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Drawing Title Block",
+    "overview": "The review reads like a released engineering drawing, not a web page. Its cover is a title block: a ruled grid of cells for review date, stage, revision and sources, sitting under a heavy ink rule. Everything below follows the drawing sheet: black drafting ink on near-white vellum, square corners, hairline frames, and condensed technical lettering for headings. Authority comes from precision, so the system has no gradients, shadows or rounded cards, and nothing that reads as a marketing site or a generated template.\n\nThe page is dense on purpose. It carries numbers inline with units, cites a source under every claim, and puts structure in rules rather than boxes. A 2px ink rule opens each major block (key figures, tables, figures, the measurement list) and 1px hairlines divide what's inside. Colour is held back for meaning: International Orange marks where you are, and the four status colours mark verdicts. The client has to be able to trust what they're reading before they approve the spend, and the restraint is what earns that.\n\nThe page is precise and restrained. Detail shows in alignment, tabular numerals and consistent rules, never in ornament.",
+    "keyCharacteristics": [
+      "A ruled title-block cover under a 2px ink rule",
+      "Ink on vellum, with one International Orange accent used sparingly",
+      "Square geometry (2px or less), no shadows, structure carried by rules",
+      "Condensed technical headings, a humanist sans body, mono labels and citations",
+      "Tabular numerals everywhere",
+      "Full light and dark themes from the same tokens"
+    ],
+    "rules": [
+      {
+        "name": "The Position-Not-Paint Rule",
+        "body": "International Orange marks where the reader is, or what the reader is acting on. It never fills a large area, never sits behind body text, and never stands in for a verdict.",
+        "section": "colors"
+      },
+      {
+        "name": "The Verdict Colours Rule",
+        "body": "Green, amber, red and violet mean met, risk, fail and open, and nothing else. Never use them for decoration or chart series.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Numbers Rule",
+        "body": "Every digit on the page uses tabular numerals, so columns of figures line up like a parts list.",
+        "section": "typography"
+      },
+      {
+        "name": "The Lettering Rule",
+        "body": "Condensed display type is for headings and figures only. Running text never uses it, and labels are always mono caps, never small caps in the body face.",
+        "section": "typography"
+      },
+      {
+        "name": "The Ruled Block Rule",
+        "body": "A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-figure strip, data tables, figures, the measurement list and the section index. Don't wrap these blocks in boxes.",
+        "section": "layout"
+      },
+      {
+        "name": "The Flat Sheet Rule",
+        "body": "Nothing floats. If an element needs to stand apart, give it a rule, a frame or an ink fill, never a shadow, glow or blur.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Square Corner Rule",
+        "body": "Radius never exceeds 2px.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "**Do** open each major block with a 2px Drafting Ink rule and close it with a 1px Frame Rule.",
+      "**Do** keep International Orange to position, focus and selection.",
+      "**Do** set labels, IDs, units, field names and citations in Red Hat Mono caps with 0.06–0.1em tracking.",
+      "**Do** use tabular numerals and right-align number columns.",
+      "**Do** put a Source citation under every claim block, and mark estimates with the EST tag.",
+      "**Do** keep radii at 2px or less, and keep controls at least 44px tall.",
+      "**Do** define every colour as a token on `:root`, with dark values under `prefers-color-scheme` and `[data-theme]`."
+    ],
+    "donts": [
+      "**Don't** use box shadows, glows, gradients or blur. The system is flat (user direction: it must not look AI-generated).",
+      "**Don't** use rounded cards, pill badges, dot status icons or coloured side or top stripes on cards.",
+      "**Don't** return to the earlier indigo-on-blue-grey theme or the Archivo/IBM Plex pairing. That's the look this system replaced.",
+      "**Don't** use International Orange as a verdict colour or a large fill.",
+      "**Don't** use zebra stripes or filled header rows in tables.",
+      "**Don't** set running text in the condensed display face."
+    ]
+  }
+}
