@@ -77,36 +77,40 @@ function CadViewer(wrap, M){
     lineMat.color.set(css('--fg') || '#16191d');
     const gm = Array.isArray(grid.material) ? grid.material : [grid.material];
     gm.forEach(m => { m.color.set(css('--line-2') || '#cbcfd4'); m.transparent = true; m.opacity = 0.45; });
-    need = true;
+    kick();
   }
 
   // ---- views and animation ----
   const VIEWS = { iso:[0.95, 0.62, 1.0], top:[-0.001, 1, 0], side:[0, 0.02, 1], front:[1, 0.06, 0] };
-  let tween = null, need = true, explodeT = 0, explodeTo = 0, xray = false;
+  let tween = null, need = true, explodeT = 0, explodeTo = 0, xray = false, running = false, interacting = false;
+  function kick(){ need = true; if (!running){ running = true; requestAnimationFrame(loop); } }
   function view(name, instant){
     const d = new THREE.Vector3(...VIEWS[name]).normalize();
     const v = camera.fov * Math.PI / 360, h = Math.atan(Math.tan(v) * camera.aspect);
     const fovFit = radius / Math.sin(Math.min(v, h)) * 0.7;
     const to = centre.clone().add(d.multiplyScalar(fovFit));
-    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(to); controls.target.copy(centre); controls.update(); need = true; return; }
-    tween = {t0: performance.now(), p0: camera.position.clone(), q0: controls.target.clone(), p1: to, q1: centre.clone()};
+    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(to); controls.target.copy(centre); controls.update(); kick(); return; }
+    tween = {t0: performance.now(), p0: camera.position.clone(), q0: controls.target.clone(), p1: to, q1: centre.clone()}; kick();
   }
   function setXray(on){
     xray = on;
     for (const it of items){ const m = it.mesh.material;
       if (SHELL.test(it.name)){ m.transparent = on; m.opacity = on ? 0.16 : 1; m.depthWrite = !on; }
     }
-    need = true;
+    kick();
   }
   function resize(){
     const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
-    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); need = true;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); kick();
   }
-  controls.addEventListener('change', () => need = true);
+  controls.addEventListener('change', kick);
+  controls.addEventListener('start', () => { interacting = true; kick(); });
+  controls.addEventListener('end', () => { interacting = false; kick(); });
+  // renders on demand: the loop stops when nothing moves and restarts on input (kick)
   function loop(now){
-    requestAnimationFrame(loop);
-    if (!canvas.offsetParent) return;   // section hidden
-    if (tween){
+    if (!canvas.offsetParent){ running = false; return; }   // section hidden
+    let active = false;
+    if (tween){ active = true;
       const u = Math.min(1, (now - tween.t0) / 450), e = u < 0.5 ? 2*u*u : 1 - Math.pow(-2*u + 2, 2) / 2;
       camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.q0, tween.q1, e);
       if (u >= 1) tween = null; need = true;
@@ -115,10 +119,11 @@ function CadViewer(wrap, M){
       explodeT += Math.sign(explodeTo - explodeT) * Math.min(Math.abs(explodeTo - explodeT), matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.06);
       const e = explodeT < 0.5 ? 2*explodeT*explodeT : 1 - Math.pow(-2*explodeT + 2, 2) / 2;
       for (const it of items) it.g.position.copy(it.home).addScaledVector(it.dir, e);
-      need = true;
+      need = true; active = true;
     }
-    if (controls.update()) need = true;
+    if (controls.update()){ need = true; active = true; }
     if (need){ renderer.render(scene, camera); need = false; }
+    if (active || interacting) requestAnimationFrame(loop); else running = false;
   }
 
   // ---- part names on hover / tap ----
@@ -141,17 +146,17 @@ function CadViewer(wrap, M){
   new ResizeObserver(resize).observe(canvas);
   new MutationObserver(theme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
-  theme(); resize(); view('iso', true); requestAnimationFrame(loop);
+  theme(); resize(); view('iso', true); kick();
   return {
     view: n => view(n),
-    toggleExplode(){ explodeTo = explodeTo ? 0 : 1; return !!explodeTo; },
+    toggleExplode(){ explodeTo = explodeTo ? 0 : 1; kick(); return !!explodeTo; },
     toggleXray(){ setXray(!xray); return xray; },
-    toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); need = true; return items[0].ln.visible; },
+    toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); kick(); return items[0].ln.visible; },
     highlight(name){
       for (const [n, m] of Object.entries(mats)) { m.emissive.set(n === name ? (css('--accent') || '#b8481b') : '#000000'); m.emissiveIntensity = n === name ? 0.55 : 0; }
       if (name){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[name].d; tip.hidden = false; } else tip.hidden = true;
-      need = true;
+      kick();
     },
-    refresh(){ resize(); need = true; }
+    refresh(){ resize(); kick(); }
   };
 }

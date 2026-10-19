@@ -388,6 +388,9 @@ There are no pills, circles, dots or status lights.
 ### Section headings
 - **Style:** the h2 carries its own section number in mono International Orange, followed by the title. The numbers are real references: the text cites §3 or §12. There is no small label above any heading.
 
+### Skip link
+- **Style:** a Drafting Ink tag with white mono text, hidden above the page until focused, then shown at the top left. Activating it moves focus to the current section heading.
+
 ### Navigation
 - **Contents column:**
   - A mono "CONTENTS" label sits above a rule.
@@ -401,6 +404,8 @@ There are no pills, circles, dots or status lights.
 - **Controls:** a Sheet Tint control bar, with buttons following the segmented-control rules.
 - **Part label:** hovering over a part shows a small framed label with a condensed part name and a body-text description.
 - **Rendering:** CAD colours, hairline feature edges in the theme's ink, and a faint ground grid in Frame Rule.
+- **Size:** the canvas height is capped by both the width breakpoints and the screen height (`clamp(260px, 100svh − 140px, 540px)`), so a landscape phone shows the model and its controls together.
+- **Rendering on demand:** the viewer draws frames only while something moves (orbit, damping, camera move, explode) and stops when idle.
 - **Loading:** the 3D library loads only when the CAD section opens. Until then a mono "Loading the 3D model…" caption sits on the empty frame.
 - **Touch:** on touch screens the canvas ignores gestures until the reader taps a "Tap to rotate the model" tag (mono caps on Sheet White, Frame Rule border). Tapping outside the viewer, or scrolling it out of view, turns gestures off again, so swipes always scroll the page.
 - **Parts list:** a "Parts in the model" disclosure under the controls holds one 44px button per part. Hover or keyboard focus highlights that part in International Orange and shows its label.

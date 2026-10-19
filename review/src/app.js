@@ -60,10 +60,12 @@ function route(hash, focus){
   const h = (hash!==undefined ? hash : location.hash).replace(/^#/,'');
   if(!h){ let s=null; try{ s=localStorage.getItem('vtolSec'); }catch(e){} show(s||'overview'); return; }
   const el = document.getElementById(h); if(!el) return show('overview');
-  const sec = el.closest('section.sec'); show(sec.id, el===sec ? null : h, focus);
+  const sec = el.closest('section.sec'); if(!sec) return show(secs.find(s=>s.classList.contains('cur'))?.id||'overview');
+  show(sec.id, el===sec ? null : h, focus);
 }
 window.addEventListener('hashchange', ()=>route(undefined, true));
 document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="#"]'); if(!a) return; const h=a.getAttribute('href');
+  if(a.classList.contains('skip')){ e.preventDefault(); const t=$('section.sec.cur h2')||$('#main'); t.setAttribute('tabindex','-1'); t.focus(); return; }
   if(!document.getElementById(h.slice(1))) return; e.preventDefault(); try{ history.pushState(null,'',h); }catch(err){} route(h, true); });
 
 // ---------- data binding ----------
@@ -258,11 +260,13 @@ function resetParams(){ const c=D.concepts[chainKey].params; P = {...c}; delete 
 function buildSliders(){
   const box=$('#sliders'); box.innerHTML='';
   SL.forEach(s=>{ const raw = P[s.k]/(s.scale||1);
-    box.insertAdjacentHTML('beforeend',`<div class="sl"><label for="sl_${s.k}"><span>${s.l} ${s.est?'<span class="est">est</span>':`<small>${s.src}</small>`}</span><output id="o_${s.k}">${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}</output></label><input type="range" id="sl_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${raw}"></div>`); });
+    box.insertAdjacentHTML('beforeend',`<div class="sl"><label for="sl_${s.k}"><span>${s.l} ${s.est?'<span class="est">est</span>':`<small>${s.src}</small>`}</span><output id="o_${s.k}">${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}</output></label><input type="range" id="sl_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${raw}" aria-valuetext="${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}"></div>`); });
   box.insertAdjacentHTML('beforeend',`<div class="sl" style="align-self:end"><button type="button" class="themebtn" id="slReset">Reset to review values</button></div>`);
-  SL.forEach(s=>$('#sl_'+s.k).addEventListener('input',e=>{ const v=Number(e.target.value); P[s.k]=v*(s.scale||1); $('#o_'+s.k).textContent=`${fmt(v, s.st<0.01?4:s.st<1?2:0)} ${s.u}`; renderChain(); drawTornado(); }));
+  SL.forEach(s=>$('#sl_'+s.k).addEventListener('input',e=>{ const v=Number(e.target.value); P[s.k]=v*(s.scale||1); const vt=`${fmt(v, s.st<0.01?4:s.st<1?2:0)} ${s.u}`; $('#o_'+s.k).textContent=vt; e.target.setAttribute('aria-valuetext',vt); renderChain(); drawTornado(); announceChain(); }));
   $('#slReset').addEventListener('click',()=>{ resetParams(); buildSliders(); renderChain(); drawTornado(); });
 }
+let announceT=0;
+function announceChain(){ clearTimeout(announceT); announceT=setTimeout(()=>{ const r=VTOLModel.size(P); $('#chainLive').textContent=`MTOW ${fmt(r.m,2)} kg, hover power ${fmt(r.P_hover,0)} W, cruise power ${fmt(r.P_cruise,0)} W, hover thrust-to-weight ${fmt(r.TW,2)}.`; }, 600); }
 function renderChain(){
   const r = VTOLModel.size(P), c=$('#chain');
   const box=(l,v,f,cls='')=>`<div class="box"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="f">${f}</div></div>`;

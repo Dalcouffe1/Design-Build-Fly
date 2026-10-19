@@ -235,7 +235,7 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 
 /* ---------- 3D viewer ---------- */
 .viewer{position:relative;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden}
-.viewer canvas{display:block;width:100%;height:460px;touch-action:none;cursor:grab;background:var(--surface)}
+.viewer canvas{display:block;width:100%;height:clamp(260px,calc(100vh - 140px),460px);height:clamp(260px,calc(100svh - 140px),460px);touch-action:none;cursor:grab;background:var(--surface)}
 .viewer canvas:active{cursor:grabbing}
 .viewer .lbl{position:absolute;left:12px;top:10px;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-2);background:var(--surface);padding:5px 7px;border:1px solid var(--line-2);border-radius:var(--r-s)}
 .viewer .ctl{display:flex;gap:6px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line-2);background:var(--surface-2)}
@@ -253,6 +253,12 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .pn a:hover{color:var(--accent);border-top-color:var(--accent)}
 .pn a .eyebrow{display:block;margin-bottom:6px}
 .pn a.next{text-align:right}
+
+/* ---------- skip link + screen-reader text ---------- */
+.skip{position:absolute;left:16px;top:calc(env(safe-area-inset-top,0px) - 80px);z-index:20;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;background:var(--ink);color:var(--ink-fg);font:500 .75rem var(--f-mono);letter-spacing:.04em;text-decoration:none;border-radius:var(--r-s)}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + 8px)}
+.skip:hover{color:var(--ink-fg)}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 
 /* ---------- misc ---------- */
 .cadimg{width:100%;height:auto;display:block;border-radius:var(--r-s)}
@@ -276,7 +282,8 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .kpi{border-right:0;margin-right:0;border-bottom:1px solid var(--line)}
   .kpi:last-child{border-bottom:0}
   .kpi .v{font-size:1.875rem}
-  .viewer canvas{height:340px}
+  .viewer canvas{height:clamp(260px,calc(100svh - 140px),340px)}
+  .tbl{max-height:none}
   .pn{grid-template-columns:1fr}
   .decision{padding:14px 14px 12px}
   thead th.sort{padding-block:14px}
@@ -292,7 +299,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 /* ---------- SOLIDWORKS model viewer ---------- */
 .cadview{margin-top:14px}
-.cadview canvas{height:540px;background:var(--surface)}
+.cadview canvas{height:clamp(260px,calc(100vh - 140px),540px);height:clamp(260px,calc(100svh - 140px),540px);background:var(--surface)}
 .cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.875rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
 .cadview .tip b{display:block;font:600 1rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
 .cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
@@ -311,11 +318,12 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .viewer .gate{display:flex;position:absolute;left:0;right:0;top:0;align-items:center;justify-content:center;padding:0;border:0;background:transparent;cursor:pointer}
   .viewer .gate span{font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:10px 12px}
 }
-@media (max-width:560px){.cadview canvas{height:380px}.cadview .tip{top:auto;bottom:66px}}
+@media (max-width:560px){.cadview canvas{height:clamp(260px,calc(100svh - 140px),380px)}.cadview .tip{top:auto;bottom:66px}}
 
 </style>
 </head><body>
 
+<a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
   <div class="cover">
@@ -576,6 +584,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   </div>
   <div class="sliders" id="sliders"></div>
   <div class="chain" id="chain"></div>
+  <p class="sr-only" id="chainLive" aria-live="polite"></p>
   <p class="src">The chain runs analysis/model.js size() in the page with a continuous battery. Defaults reproduce results.json "design". Sliders marked <span class="est">est</span> are estimates.</p>
 
   <h3 id="mp-sens">Sensitivity</h3>
@@ -1293,36 +1302,40 @@ function CadViewer(wrap, M){
     lineMat.color.set(css('--fg') || '#16191d');
     const gm = Array.isArray(grid.material) ? grid.material : [grid.material];
     gm.forEach(m => { m.color.set(css('--line-2') || '#cbcfd4'); m.transparent = true; m.opacity = 0.45; });
-    need = true;
+    kick();
   }
 
   // ---- views and animation ----
   const VIEWS = { iso:[0.95, 0.62, 1.0], top:[-0.001, 1, 0], side:[0, 0.02, 1], front:[1, 0.06, 0] };
-  let tween = null, need = true, explodeT = 0, explodeTo = 0, xray = false;
+  let tween = null, need = true, explodeT = 0, explodeTo = 0, xray = false, running = false, interacting = false;
+  function kick(){ need = true; if (!running){ running = true; requestAnimationFrame(loop); } }
   function view(name, instant){
     const d = new THREE.Vector3(...VIEWS[name]).normalize();
     const v = camera.fov * Math.PI / 360, h = Math.atan(Math.tan(v) * camera.aspect);
     const fovFit = radius / Math.sin(Math.min(v, h)) * 0.7;
     const to = centre.clone().add(d.multiplyScalar(fovFit));
-    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(to); controls.target.copy(centre); controls.update(); need = true; return; }
-    tween = {t0: performance.now(), p0: camera.position.clone(), q0: controls.target.clone(), p1: to, q1: centre.clone()};
+    if (instant || matchMedia('(prefers-reduced-motion: reduce)').matches){ camera.position.copy(to); controls.target.copy(centre); controls.update(); kick(); return; }
+    tween = {t0: performance.now(), p0: camera.position.clone(), q0: controls.target.clone(), p1: to, q1: centre.clone()}; kick();
   }
   function setXray(on){
     xray = on;
     for (const it of items){ const m = it.mesh.material;
       if (SHELL.test(it.name)){ m.transparent = on; m.opacity = on ? 0.16 : 1; m.depthWrite = !on; }
     }
-    need = true;
+    kick();
   }
   function resize(){
     const w = canvas.clientWidth, h = canvas.clientHeight; if (!w || !h) return;
-    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); need = true;
+    renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); kick();
   }
-  controls.addEventListener('change', () => need = true);
+  controls.addEventListener('change', kick);
+  controls.addEventListener('start', () => { interacting = true; kick(); });
+  controls.addEventListener('end', () => { interacting = false; kick(); });
+  // renders on demand: the loop stops when nothing moves and restarts on input (kick)
   function loop(now){
-    requestAnimationFrame(loop);
-    if (!canvas.offsetParent) return;   // section hidden
-    if (tween){
+    if (!canvas.offsetParent){ running = false; return; }   // section hidden
+    let active = false;
+    if (tween){ active = true;
       const u = Math.min(1, (now - tween.t0) / 450), e = u < 0.5 ? 2*u*u : 1 - Math.pow(-2*u + 2, 2) / 2;
       camera.position.lerpVectors(tween.p0, tween.p1, e); controls.target.lerpVectors(tween.q0, tween.q1, e);
       if (u >= 1) tween = null; need = true;
@@ -1331,10 +1344,11 @@ function CadViewer(wrap, M){
       explodeT += Math.sign(explodeTo - explodeT) * Math.min(Math.abs(explodeTo - explodeT), matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 0.06);
       const e = explodeT < 0.5 ? 2*explodeT*explodeT : 1 - Math.pow(-2*explodeT + 2, 2) / 2;
       for (const it of items) it.g.position.copy(it.home).addScaledVector(it.dir, e);
-      need = true;
+      need = true; active = true;
     }
-    if (controls.update()) need = true;
+    if (controls.update()){ need = true; active = true; }
     if (need){ renderer.render(scene, camera); need = false; }
+    if (active || interacting) requestAnimationFrame(loop); else running = false;
   }
 
   // ---- part names on hover / tap ----
@@ -1357,18 +1371,18 @@ function CadViewer(wrap, M){
   new ResizeObserver(resize).observe(canvas);
   new MutationObserver(theme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
   window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
-  theme(); resize(); view('iso', true); requestAnimationFrame(loop);
+  theme(); resize(); view('iso', true); kick();
   return {
     view: n => view(n),
-    toggleExplode(){ explodeTo = explodeTo ? 0 : 1; return !!explodeTo; },
+    toggleExplode(){ explodeTo = explodeTo ? 0 : 1; kick(); return !!explodeTo; },
     toggleXray(){ setXray(!xray); return xray; },
-    toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); need = true; return items[0].ln.visible; },
+    toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); kick(); return items[0].ln.visible; },
     highlight(name){
       for (const [n, m] of Object.entries(mats)) { m.emissive.set(n === name ? (css('--accent') || '#b8481b') : '#000000'); m.emissiveIntensity = n === name ? 0.55 : 0; }
       if (name){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[name].d; tip.hidden = false; } else tip.hidden = true;
-      need = true;
+      kick();
     },
-    refresh(){ resize(); need = true; }
+    refresh(){ resize(); kick(); }
   };
 }
 
@@ -1436,10 +1450,12 @@ function route(hash, focus){
   const h = (hash!==undefined ? hash : location.hash).replace(/^#/,'');
   if(!h){ let s=null; try{ s=localStorage.getItem('vtolSec'); }catch(e){} show(s||'overview'); return; }
   const el = document.getElementById(h); if(!el) return show('overview');
-  const sec = el.closest('section.sec'); show(sec.id, el===sec ? null : h, focus);
+  const sec = el.closest('section.sec'); if(!sec) return show(secs.find(s=>s.classList.contains('cur'))?.id||'overview');
+  show(sec.id, el===sec ? null : h, focus);
 }
 window.addEventListener('hashchange', ()=>route(undefined, true));
 document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="#"]'); if(!a) return; const h=a.getAttribute('href');
+  if(a.classList.contains('skip')){ e.preventDefault(); const t=$('section.sec.cur h2')||$('#main'); t.setAttribute('tabindex','-1'); t.focus(); return; }
   if(!document.getElementById(h.slice(1))) return; e.preventDefault(); try{ history.pushState(null,'',h); }catch(err){} route(h, true); });
 
 // ---------- data binding ----------
@@ -1634,11 +1650,13 @@ function resetParams(){ const c=D.concepts[chainKey].params; P = {...c}; delete 
 function buildSliders(){
   const box=$('#sliders'); box.innerHTML='';
   SL.forEach(s=>{ const raw = P[s.k]/(s.scale||1);
-    box.insertAdjacentHTML('beforeend',`<div class="sl"><label for="sl_${s.k}"><span>${s.l} ${s.est?'<span class="est">est</span>':`<small>${s.src}</small>`}</span><output id="o_${s.k}">${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}</output></label><input type="range" id="sl_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${raw}"></div>`); });
+    box.insertAdjacentHTML('beforeend',`<div class="sl"><label for="sl_${s.k}"><span>${s.l} ${s.est?'<span class="est">est</span>':`<small>${s.src}</small>`}</span><output id="o_${s.k}">${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}</output></label><input type="range" id="sl_${s.k}" min="${s.min}" max="${s.max}" step="${s.st}" value="${raw}" aria-valuetext="${fmt(raw, s.st<0.01?4:s.st<1?2:0)} ${s.u}"></div>`); });
   box.insertAdjacentHTML('beforeend',`<div class="sl" style="align-self:end"><button type="button" class="themebtn" id="slReset">Reset to review values</button></div>`);
-  SL.forEach(s=>$('#sl_'+s.k).addEventListener('input',e=>{ const v=Number(e.target.value); P[s.k]=v*(s.scale||1); $('#o_'+s.k).textContent=`${fmt(v, s.st<0.01?4:s.st<1?2:0)} ${s.u}`; renderChain(); drawTornado(); }));
+  SL.forEach(s=>$('#sl_'+s.k).addEventListener('input',e=>{ const v=Number(e.target.value); P[s.k]=v*(s.scale||1); const vt=`${fmt(v, s.st<0.01?4:s.st<1?2:0)} ${s.u}`; $('#o_'+s.k).textContent=vt; e.target.setAttribute('aria-valuetext',vt); renderChain(); drawTornado(); announceChain(); }));
   $('#slReset').addEventListener('click',()=>{ resetParams(); buildSliders(); renderChain(); drawTornado(); });
 }
+let announceT=0;
+function announceChain(){ clearTimeout(announceT); announceT=setTimeout(()=>{ const r=VTOLModel.size(P); $('#chainLive').textContent=`MTOW ${fmt(r.m,2)} kg, hover power ${fmt(r.P_hover,0)} W, cruise power ${fmt(r.P_cruise,0)} W, hover thrust-to-weight ${fmt(r.TW,2)}.`; }, 600); }
 function renderChain(){
   const r = VTOLModel.size(P), c=$('#chain');
   const box=(l,v,f,cls='')=>`<div class="box"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="f">${f}</div></div>`;
