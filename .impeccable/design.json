@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-19T02:36:03.784Z",
+  "generatedAt": "2026-10-19T02:41:58.368Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
@@ -334,6 +334,516 @@
           "#efedf6"
         ]
       },
+      "status-open-frame": {
+        "role": "tertiary",
+        "displayName": "Status Open Frame",
+        "canonical": "#a49ec5",
+        "tonalRamp": [
+          "#0d0520",
+          "#251e3d",
+          "#403a5b",
+          "#5e587b",
+          "#7d779d",
+          "#9f99bf",
+          "#c7c1ea",
+          "#efe8ff"
+        ]
+      },
+      "status-fail-frame": {
+        "role": "tertiary",
+        "displayName": "Status Fail Frame",
+        "canonical": "#c57e79",
+        "tonalRamp": [
+          "#260000",
+          "#460a0d",
+          "#672928",
+          "#894844",
+          "#ac6763",
+          "#d08883",
+          "#fcb1ab",
+          "#ffd8d1"
+        ]
+      },
+      "international-orange-dark": {
+        "role": "primary",
+        "displayName": "International Orange (dark)",
+        "canonical": "#ec8a58",
+        "tonalRamp": [
+          "#260000",
+          "#4b0200",
+          "#731e00",
+          "#983e00",
+          "#bd5f2c",
+          "#e2814f",
+          "#ffb086",
+          "#ffdbb8"
+        ]
+      },
+      "international-orange-deep-dark": {
+        "role": "primary",
+        "displayName": "International Orange Deep (dark)",
+        "canonical": "#f4a77f",
+        "tonalRamp": [
+          "#260000",
+          "#490800",
+          "#6a2900",
+          "#8c4821",
+          "#b06842",
+          "#d48a62",
+          "#ffb28a",
+          "#ffdcb6"
+        ]
+      },
+      "international-orange-wash-dark": {
+        "role": "primary",
+        "displayName": "International Orange Wash (dark)",
+        "canonical": "#2b1e17",
+        "tonalRamp": [
+          "#130804",
+          "#2e211a",
+          "#4b3c35",
+          "#695a52",
+          "#8a7971",
+          "#ac9a91",
+          "#d5c3ba",
+          "#fdeae1"
+        ]
+      },
+      "international-orange-rule-dark": {
+        "role": "primary",
+        "displayName": "International Orange Rule (dark)",
+        "canonical": "#6b3d27",
+        "tonalRamp": [
+          "#210000",
+          "#3f1500",
+          "#5f321c",
+          "#80503a",
+          "#a27058",
+          "#c59078",
+          "#f0b9a0",
+          "#ffe0c6"
+        ]
+      },
+      "drafting-ink-dark": {
+        "role": "neutral",
+        "displayName": "Drafting Ink (dark)",
+        "canonical": "#e6e8ea",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4041",
+          "#5c5e5f",
+          "#7c7d7f",
+          "#9d9fa0",
+          "#c5c7c9",
+          "#edeff1"
+        ]
+      },
+      "ink-graphite-dark": {
+        "role": "neutral",
+        "displayName": "Ink Graphite (dark)",
+        "canonical": "#b2b8bf",
+        "tonalRamp": [
+          "#080c10",
+          "#20242a",
+          "#3b4046",
+          "#595e64",
+          "#787e84",
+          "#999fa6",
+          "#c2c8cf",
+          "#e9eff7"
+        ]
+      },
+      "ink-pencil-dark": {
+        "role": "neutral",
+        "displayName": "Ink Pencil (dark)",
+        "canonical": "#89909a",
+        "tonalRamp": [
+          "#070b12",
+          "#1f242c",
+          "#3a4049",
+          "#585e67",
+          "#777e88",
+          "#989fa9",
+          "#c0c8d3",
+          "#e7effa"
+        ]
+      },
+      "vellum-dark": {
+        "role": "neutral",
+        "displayName": "Vellum (dark)",
+        "canonical": "#111315",
+        "tonalRamp": [
+          "#090b0d",
+          "#222426",
+          "#3e4042",
+          "#5b5e60",
+          "#7b7e80",
+          "#9c9fa1",
+          "#c5c8ca",
+          "#eceff2"
+        ]
+      },
+      "sheet-white-dark": {
+        "role": "neutral",
+        "displayName": "Sheet White (dark)",
+        "canonical": "#16191c",
+        "tonalRamp": [
+          "#090b0e",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cc",
+          "#ebeff3"
+        ]
+      },
+      "sheet-tint-dark": {
+        "role": "neutral",
+        "displayName": "Sheet Tint (dark)",
+        "canonical": "#1c2024",
+        "tonalRamp": [
+          "#080c0f",
+          "#202529",
+          "#3c4045",
+          "#595e63",
+          "#797e83",
+          "#9a9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "sheet-tint-2-dark": {
+        "role": "neutral",
+        "displayName": "Sheet Tint 2 (dark)",
+        "canonical": "#23282d",
+        "tonalRamp": [
+          "#070c10",
+          "#20252a",
+          "#3b4046",
+          "#595e64",
+          "#787e84",
+          "#999fa6",
+          "#c2c8cf",
+          "#e9eff6"
+        ]
+      },
+      "zebra-dark": {
+        "role": "neutral",
+        "displayName": "Zebra Dark",
+        "canonical": "#181b1e",
+        "tonalRamp": [
+          "#090b0e",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cc",
+          "#ebeff3"
+        ]
+      },
+      "hairline-dark": {
+        "role": "neutral",
+        "displayName": "Hairline (dark)",
+        "canonical": "#2a2f35",
+        "tonalRamp": [
+          "#070c11",
+          "#20242a",
+          "#3b4047",
+          "#595e65",
+          "#787e85",
+          "#999fa6",
+          "#c2c8d0",
+          "#e9eff7"
+        ]
+      },
+      "frame-rule-dark": {
+        "role": "neutral",
+        "displayName": "Frame Rule (dark)",
+        "canonical": "#3a4048",
+        "tonalRamp": [
+          "#070b12",
+          "#1f242c",
+          "#3a4048",
+          "#585e67",
+          "#777e87",
+          "#989fa8",
+          "#c1c8d2",
+          "#e8eff9"
+        ]
+      },
+      "construction-line-dark": {
+        "role": "neutral",
+        "displayName": "Construction Line (dark)",
+        "canonical": "#5f6670",
+        "tonalRamp": [
+          "#070b13",
+          "#1f242d",
+          "#3a4049",
+          "#575e68",
+          "#777e88",
+          "#979faa",
+          "#c0c8d3",
+          "#e7effb"
+        ]
+      },
+      "status-met-dark": {
+        "role": "tertiary",
+        "displayName": "Status Met (dark)",
+        "canonical": "#6cc595",
+        "tonalRamp": [
+          "#001500",
+          "#00320c",
+          "#005028",
+          "#007045",
+          "#359164",
+          "#5ab384",
+          "#84deac",
+          "#b7ffd7"
+        ]
+      },
+      "status-met-wash-dark": {
+        "role": "tertiary",
+        "displayName": "Status Met Wash (dark)",
+        "canonical": "#15261d",
+        "tonalRamp": [
+          "#020f07",
+          "#17281f",
+          "#33453b",
+          "#506358",
+          "#6f8377",
+          "#90a498",
+          "#b8cdc1",
+          "#dff5e8"
+        ]
+      },
+      "status-risk-dark": {
+        "role": "tertiary",
+        "displayName": "Status Risk (dark)",
+        "canonical": "#dcae5a",
+        "tonalRamp": [
+          "#1e0200",
+          "#3f1800",
+          "#5e3600",
+          "#7e5400",
+          "#a07516",
+          "#c39641",
+          "#eebf6c",
+          "#ffe8a4"
+        ]
+      },
+      "status-risk-wash-dark": {
+        "role": "tertiary",
+        "displayName": "Status Risk Wash (dark)",
+        "canonical": "#2a2213",
+        "tonalRamp": [
+          "#110a01",
+          "#2b2314",
+          "#473f2f",
+          "#665c4c",
+          "#867c6a",
+          "#a79d8b",
+          "#d0c6b3",
+          "#f8edda"
+        ]
+      },
+      "status-fail-dark": {
+        "role": "tertiary",
+        "displayName": "Status Fail (dark)",
+        "canonical": "#ef8a7f",
+        "tonalRamp": [
+          "#280000",
+          "#4d0000",
+          "#741917",
+          "#983c35",
+          "#bc5c53",
+          "#e27e73",
+          "#ffaa9f",
+          "#ffd6cc"
+        ]
+      },
+      "status-fail-wash-dark": {
+        "role": "tertiary",
+        "displayName": "Status Fail Wash (dark)",
+        "canonical": "#321917",
+        "tonalRamp": [
+          "#190404",
+          "#351c1a",
+          "#533735",
+          "#735552",
+          "#947471",
+          "#b79592",
+          "#e1beba",
+          "#ffe5e1"
+        ]
+      },
+      "status-open-dark": {
+        "role": "tertiary",
+        "displayName": "Status Open (dark)",
+        "canonical": "#a99be0",
+        "tonalRamp": [
+          "#10002e",
+          "#28154f",
+          "#43336f",
+          "#605290",
+          "#8071b3",
+          "#a193d7",
+          "#c9bbff",
+          "#f0e3ff"
+        ]
+      },
+      "status-open-wash-dark": {
+        "role": "tertiary",
+        "displayName": "Status Open Wash (dark)",
+        "canonical": "#221e33",
+        "tonalRamp": [
+          "#0c071a",
+          "#242036",
+          "#403c53",
+          "#5e5a72",
+          "#7d7993",
+          "#9e9ab6",
+          "#c7c3e0",
+          "#eeeaff"
+        ]
+      },
+      "status-open-frame-dark": {
+        "role": "tertiary",
+        "displayName": "Status Open Frame Dark",
+        "canonical": "#636082",
+        "tonalRamp": [
+          "#0b0620",
+          "#231f3c",
+          "#3e3b5b",
+          "#5c597a",
+          "#7b799c",
+          "#9c9abf",
+          "#c5c2e9",
+          "#eceaff"
+        ]
+      },
+      "status-fail-frame-dark": {
+        "role": "tertiary",
+        "displayName": "Status Fail Frame Dark",
+        "canonical": "#96615e",
+        "tonalRamp": [
+          "#210001",
+          "#401313",
+          "#5f302e",
+          "#814d4b",
+          "#a36d6a",
+          "#c68e8a",
+          "#f2b6b2",
+          "#ffddd9"
+        ]
+      },
+      "series-1-dark": {
+        "role": "tertiary",
+        "displayName": "Series 1 Ink Blue (dark)",
+        "canonical": "#7fa8d1",
+        "tonalRamp": [
+          "#000928",
+          "#002546",
+          "#1c4265",
+          "#3a6186",
+          "#5981a8",
+          "#7aa3cb",
+          "#a2ccf7",
+          "#c8f4ff"
+        ]
+      },
+      "series-2-dark": {
+        "role": "tertiary",
+        "displayName": "Series 2 Teal (dark)",
+        "canonical": "#6cbdb4",
+        "tonalRamp": [
+          "#001410",
+          "#002f2a",
+          "#004d46",
+          "#0c6c65",
+          "#3a8d85",
+          "#5eafa6",
+          "#88d9cf",
+          "#affff7"
+        ]
+      },
+      "series-3-dark": {
+        "role": "tertiary",
+        "displayName": "Series 3 Ochre (dark)",
+        "canonical": "#dcae5a",
+        "tonalRamp": [
+          "#1e0200",
+          "#3f1800",
+          "#5e3600",
+          "#7e5400",
+          "#a07516",
+          "#c39641",
+          "#eebf6c",
+          "#ffe8a4"
+        ]
+      },
+      "series-4-dark": {
+        "role": "tertiary",
+        "displayName": "Series 4 Plum (dark)",
+        "canonical": "#cf86b4",
+        "tonalRamp": [
+          "#210016",
+          "#430332",
+          "#63244f",
+          "#85436e",
+          "#a8628f",
+          "#cc83b1",
+          "#f8acdb",
+          "#ffd6ff"
+        ]
+      },
+      "series-5-dark": {
+        "role": "tertiary",
+        "displayName": "Series 5 Slate (dark)",
+        "canonical": "#9aaabb",
+        "tonalRamp": [
+          "#030c17",
+          "#182532",
+          "#344150",
+          "#515f6f",
+          "#707f8f",
+          "#91a0b1",
+          "#b9c9db",
+          "#e0f1ff"
+        ]
+      },
+      "series-6-dark": {
+        "role": "tertiary",
+        "displayName": "Series 6 Olive (dark)",
+        "canonical": "#a8bf62",
+        "tonalRamp": [
+          "#070f00",
+          "#1d2a00",
+          "#374800",
+          "#546700",
+          "#738828",
+          "#94aa4d",
+          "#bcd37c",
+          "#e5f9b0"
+        ]
+      },
+      "zebra": {
+        "role": "neutral",
+        "displayName": "Zebra",
+        "canonical": "#fafafa",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
       "series-1": {
         "role": "tertiary",
         "displayName": "Series 1 Ink Blue",
@@ -426,6 +936,34 @@
       }
     },
     "typographyMeta": {
+      "display-phone": {
+        "displayName": "Display (phone)",
+        "purpose": "Report title at 560px and below."
+      },
+      "headline-phone": {
+        "displayName": "Headline (phone)",
+        "purpose": "Section titles at 560px and below."
+      },
+      "figure-phone": {
+        "displayName": "Figure (phone)",
+        "purpose": "KPI values at 560px and below."
+      },
+      "figure-small": {
+        "displayName": "Figure small",
+        "purpose": "Calculation-chain values."
+      },
+      "callout": {
+        "displayName": "Callout",
+        "purpose": "Decision questions, figure captions, measurement-box titles, previous/next links."
+      },
+      "subhead": {
+        "displayName": "Subhead",
+        "purpose": "h4 and title-block values."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Tables, navigation, KPI qualifiers, buttons."
+      },
       "display": {
         "displayName": "Display",
         "purpose": "The report title only."
@@ -494,7 +1032,7 @@
       "refersTo": "button-segment",
       "description": "Toggle group; pressed segment fills with drafting ink.",
       "html": "<div class=\"ds-seg\"><button class=\"ds-seg-b\" aria-pressed=\"true\">C0 4-lift</button><button class=\"ds-seg-b\">C1 8-lift</button><button class=\"ds-seg-b\">C2 coax X8</button></div>",
-      "css": ".ds-seg{display:inline-flex;border:1px solid #cbcfd4;border-radius:2px;overflow:hidden;background:#fff}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #cbcfd4;background:#fff;color:#474e57;font:500 .86rem 'Source Sans 3',system-ui,sans-serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#f4f5f6;color:#16191d}.ds-seg-b:focus-visible{outline:2px solid #b8481b;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#16191d;color:#fff}"
+      "css": ".ds-seg{display:inline-flex;border:1px solid #cbcfd4;border-radius:2px;overflow:hidden;background:#fff}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #cbcfd4;background:#fff;color:#474e57;font:500 .875rem 'Source Sans 3',system-ui,sans-serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#f4f5f6;color:#16191d}.ds-seg-b:focus-visible{outline:2px solid #b8481b;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#16191d;color:#fff}"
     },
     {
       "name": "Theme button",
@@ -510,15 +1048,15 @@
       "refersTo": "chip-met",
       "description": "Requirement verdicts: outlined mono caps; fail adds its wash.",
       "html": "<span class=\"ds-chip ds-met\">Met</span> <span class=\"ds-chip ds-risk\">Risk</span> <span class=\"ds-chip ds-fail\">Fail</span> <span class=\"ds-chip ds-open\">Open</span> <span class=\"ds-est\">EST</span>",
-      "css": ".ds-chip{display:inline-block;font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#23744a}.ds-risk{color:#94600a}.ds-fail{color:#ad2a1f;background:#f8e9e7}.ds-open{color:#57489a}.ds-est{display:inline-block;font:500 .62rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94600a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
+      "css": ".ds-chip{display:inline-block;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#23744a}.ds-risk{color:#94600a}.ds-fail{color:#ad2a1f;background:#f8e9e7}.ds-open{color:#57489a}.ds-est{display:inline-block;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94600a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
     },
     {
       "name": "Title block",
       "kind": "custom",
       "refersTo": "title-block-cell",
       "description": "Cover title block: ruled cells with mono field names over condensed values.",
-      "html": "<dl class=\"ds-tb\"><div><dt>Review date</dt><dd>2026-10-13</dd></div><div><dt>Stage</dt><dd>Concept · budget redesign</dd></div><div><dt>Revision</dt><dd>v0.3.1</dd></div><div><dt>Sources</dt><dd>docs/ · analysis/ · cad/</dd></div></dl>",
-      "css": ".ds-tb{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0;border:1px solid #cbcfd4;background:#fff}.ds-tb>div{padding:10px 14px 12px;border-right:1px solid #cbcfd4}.ds-tb>div:last-child{border-right:0}.ds-tb dt{font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6c737c;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d}"
+      "html": "<dl class=\"ds-tb\"><div><dt>Project</dt><dd>Design-Build-Fly</dd></div><div><dt>Review date</dt><dd>2026-10-13</dd></div><div><dt>Stage</dt><dd>Concept · budget redesign</dd></div><div><dt>Revision</dt><dd>v0.3.1</dd></div><div><dt>Sources</dt><dd>docs/ · analysis/ · cad/</dd></div></dl>",
+      "css": ".ds-tb{display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:1px;margin:0;border:1px solid #cbcfd4;background:#cbcfd4}.ds-tb>div{padding:10px 14px 12px;background:#fff}.ds-tb dt{font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6c737c;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d}"
     },
     {
       "name": "Key-figure strip",
@@ -526,7 +1064,7 @@
       "refersTo": null,
       "description": "Open KPI strip under a 2px ink rule; values coloured by verdict.",
       "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><div class=\"ds-l\">Committed spend (R6)</div><div class=\"ds-v ds-ok\">$1,898</div><div class=\"ds-s\">cap $2,000 incl. tax + shipping</div></div><div class=\"ds-kpi\"><div class=\"ds-l\">Crash reserve (R7)</div><div class=\"ds-v ds-warn\">$102</div><div class=\"ds-s\">target ≥ $100: met, thin</div></div></div>",
-      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #e3e5e8}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .68rem/1.35 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2.1rem/1.05 'Barlow Semi Condensed','Arial Narrow',sans-serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#16191d}.ds-ok{color:#23744a}.ds-warn{color:#94600a}.ds-s{font:400 .84rem/1.45 'Source Sans 3',system-ui,sans-serif;color:#474e57}"
+      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #e3e5e8}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .75rem/1.35 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2rem/1.05 'Barlow Semi Condensed','Arial Narrow',sans-serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#16191d}.ds-ok{color:#23744a}.ds-warn{color:#94600a}.ds-s{font:400 .875rem/1.45 'Source Sans 3',system-ui,sans-serif;color:#474e57}"
     },
     {
       "name": "Decision card",
@@ -534,7 +1072,7 @@
       "refersTo": "decision-card",
       "description": "Open (violet frame) or blocking (red frame) decision with recommendation panel.",
       "html": "<div class=\"ds-dec ds-red\"><b class=\"ds-q\">Which legal path and which flying field?</b><div class=\"ds-body\">Only Richmond Field Station allows the 30 m a transition needs.</div><div class=\"ds-rec\"><b>Recommended:</b> request RFS by 2026-11-06.</div></div>",
-      "css": ".ds-dec{border:1px solid color-mix(in srgb,#57489a 45%,#e3e5e8);border-radius:2px;padding:16px 20px 14px;background:#fff;color:#474e57;font:400 1rem/1.6 'Source Sans 3',system-ui,sans-serif}.ds-dec.ds-red{border-color:color-mix(in srgb,#ad2a1f 55%,#e3e5e8)}.ds-q{display:block;font:600 1.12rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d;margin-bottom:8px}.ds-q::before{content:'Open decision';display:block;font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:#57489a;margin-bottom:10px}.ds-red .ds-q::before{content:'Blocking decision';color:#ad2a1f}.ds-rec{margin-top:12px;padding:10px 14px;background:#f4f5f6;border-radius:2px;color:#16191d}.ds-red .ds-rec{background:#f8e9e7}"
+      "css": ".ds-dec{border:1px solid #a49ec5;border-radius:2px;padding:16px 20px 14px;background:#fff;color:#474e57;font:400 1rem/1.6 'Source Sans 3',system-ui,sans-serif}.ds-dec.ds-red{border-color:#c57e79}.ds-q{display:block;font:600 1.125rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d;margin-bottom:8px}.ds-q::before{content:'Open';display:inline-block;border:1px solid currentColor;border-radius:2px;padding:4px 6px;margin-right:10px;vertical-align:.18em;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:#57489a;}.ds-red .ds-q::before{content:'Blocking';color:#ad2a1f;background:#f8e9e7}.ds-rec{margin-top:12px;padding:10px 14px;background:#f4f5f6;border-radius:2px;color:#16191d}.ds-red .ds-rec{background:#f8e9e7}"
     },
     {
       "name": "Ruled table",
@@ -542,7 +1080,7 @@
       "refersTo": "table-head",
       "description": "Data table: ink rule top, mono caps sticky header, chosen row in orange wash.",
       "html": "<table class=\"ds-t\"><thead><tr><th>Pack</th><th class=\"ds-n\">Cruise min</th><th class=\"ds-n\">Price</th></tr></thead><tbody><tr class=\"ds-ch\"><td>Ovonic 6S 6500 ×2</td><td class=\"ds-n\">11.9</td><td class=\"ds-n\">$69.50</td></tr><tr><td>HOOVO 6S 8000</td><td class=\"ds-n\">—</td><td class=\"ds-n\">—</td></tr></tbody></table>",
-      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4;font:400 .88rem/1.45 'Source Sans 3',system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#16191d}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #e3e5e8;text-align:left}.ds-t th{font:500 .68rem/1.3 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:#474e57;border-bottom-color:#cbcfd4}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#f4f5f6}.ds-t tr.ds-ch td{background:#f7ece6}.ds-t tr.ds-ch td:first-child{font-weight:600}"
+      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4;font:400 .875rem/1.45 'Source Sans 3',system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#16191d}.ds-t th:first-child,.ds-t td:first-child{padding-left:8px}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #e3e5e8;text-align:left}.ds-t th{font:500 .75rem/1.3 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:#474e57;border-bottom-color:#cbcfd4}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#f4f5f6}.ds-t tr.ds-ch td{background:#f7ece6}.ds-t tr.ds-ch td:first-child{font-weight:600}"
     },
     {
       "name": "Contents navigation",
@@ -550,7 +1088,7 @@
       "refersTo": null,
       "description": "Plain-text numbered contents; current section bold with orange number.",
       "html": "<nav class=\"ds-nav\"><div class=\"ds-nh\">Contents</div><a><span>1</span>Overview</a><a class=\"ds-cur\"><span>2</span>CAD model</a><a><span>3</span>Concepts</a></nav>",
-      "css": ".ds-nav{width:220px;font:400 .92rem/1.3 'Source Sans 3',system-ui,sans-serif}.ds-nh{font:500 .66rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#6c737c;padding-bottom:12px;border-bottom:1px solid #cbcfd4;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#474e57;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .72rem 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;width:1.5em;text-align:right}.ds-nav a:hover{color:#16191d}.ds-nav a.ds-cur{color:#16191d;font-weight:600}.ds-nav a.ds-cur span{color:#b8481b;font-weight:600}"
+      "css": ".ds-nav{width:220px;font:400 .875rem/1.3 'Source Sans 3',system-ui,sans-serif}.ds-nh{font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#6c737c;padding-bottom:12px;border-bottom:1px solid #cbcfd4;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#474e57;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .75rem 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;width:1.5em;text-align:right}.ds-nav a:hover{color:#16191d}.ds-nav a.ds-cur{color:#16191d;font-weight:600}.ds-nav a.ds-cur span{color:#b8481b;font-weight:600}"
     }
   ],
   "narrative": {
@@ -578,6 +1116,11 @@
       {
         "name": "The Tabular Numbers Rule",
         "body": "Every digit on the page uses tabular numerals, so columns of figures line up like a parts list.",
+        "section": "typography"
+      },
+      {
+        "name": "The Readable Floor Rule",
+        "body": "Nothing functional is set below 12 px, and citations are never below 13 px. The client has to be able to read the sources.",
         "section": "typography"
       },
       {
@@ -616,7 +1159,9 @@
       "**Don't** return to the earlier indigo-on-blue-grey theme or the Archivo/IBM Plex pairing. That's the look this system replaced.",
       "**Don't** use International Orange as a verdict colour or a large fill.",
       "**Don't** use zebra stripes or filled header rows in tables.",
-      "**Don't** set running text in the condensed display face."
+      "**Don't** set running text in the condensed display face.",
+      "**Don't** put a small label or kicker above any heading. Section numbers go inside the heading, and status goes in a chip on the same line.",
+      "**Don't** set functional text below 12 px, or citations below 13 px."
     ]
   }
 }

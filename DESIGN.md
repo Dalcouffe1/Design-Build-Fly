@@ -24,6 +24,40 @@ colors:
   status-fail-wash: "#f8e9e7"
   status-open: "#57489a"
   status-open-wash: "#efedf6"
+  status-open-frame: "#a49ec5"
+  status-fail-frame: "#c57e79"
+  international-orange-dark: "#ec8a58"
+  international-orange-deep-dark: "#f4a77f"
+  international-orange-wash-dark: "#2b1e17"
+  international-orange-rule-dark: "#6b3d27"
+  drafting-ink-dark: "#e6e8ea"
+  ink-graphite-dark: "#b2b8bf"
+  ink-pencil-dark: "#89909a"
+  vellum-dark: "#111315"
+  sheet-white-dark: "#16191c"
+  sheet-tint-dark: "#1c2024"
+  sheet-tint-2-dark: "#23282d"
+  zebra-dark: "#181b1e"
+  hairline-dark: "#2a2f35"
+  frame-rule-dark: "#3a4048"
+  construction-line-dark: "#5f6670"
+  status-met-dark: "#6cc595"
+  status-met-wash-dark: "#15261d"
+  status-risk-dark: "#dcae5a"
+  status-risk-wash-dark: "#2a2213"
+  status-fail-dark: "#ef8a7f"
+  status-fail-wash-dark: "#321917"
+  status-open-dark: "#a99be0"
+  status-open-wash-dark: "#221e33"
+  status-open-frame-dark: "#636082"
+  status-fail-frame-dark: "#96615e"
+  series-1-dark: "#7fa8d1"
+  series-2-dark: "#6cbdb4"
+  series-3-dark: "#dcae5a"
+  series-4-dark: "#cf86b4"
+  series-5-dark: "#9aaabb"
+  series-6-dark: "#a8bf62"
+  zebra: "#fafafa"
   series-1: "#2f5d8a"
   series-2: "#2e7f78"
   series-3: "#b7791f"
@@ -33,49 +67,87 @@ colors:
 typography:
   display:
     fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "2.6rem"
+    fontSize: "2.625rem"
     fontWeight: 600
     lineHeight: 1.05
     letterSpacing: "-0.01em"
+  display-phone:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "2rem"
+    fontWeight: 600
+    lineHeight: 1.05
+    letterSpacing: "-0.01em"
+  figure:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "2rem"
+    fontWeight: 600
+    lineHeight: 1.05
+    fontFeature: "\"tnum\" 1"
   headline:
     fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "1.9rem"
+    fontSize: "1.875rem"
     fontWeight: 600
     lineHeight: 1.15
     letterSpacing: "-0.005em"
+  figure-phone:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.875rem"
+    fontWeight: 600
+    lineHeight: 1.05
+    fontFeature: "\"tnum\" 1"
+  headline-phone:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    lineHeight: 1.15
+  figure-small:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1.5rem"
+    fontWeight: 600
+    lineHeight: 1.15
   title:
     fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
     fontSize: "1.25rem"
     fontWeight: 600
     lineHeight: 1.15
-  figure:
+  callout:
     fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
-    fontSize: "2.1rem"
+    fontSize: "1.125rem"
     fontWeight: 600
-    lineHeight: 1.05
-    fontFeature: "\"tnum\" 1"
+    lineHeight: 1.35
+  lede:
+    fontFamily: "Source Sans 3, Segoe UI, system-ui, -apple-system, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.62
+  subhead:
+    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontSize: "1rem"
+    fontWeight: 600
+    lineHeight: 1.25
   body:
     fontFamily: "Source Sans 3, Segoe UI, system-ui, -apple-system, sans-serif"
-    fontSize: "16px"
+    fontSize: "1rem"
     fontWeight: 400
     lineHeight: 1.6
     fontFeature: "\"tnum\" 1"
-  lede:
+  small:
     fontFamily: "Source Sans 3, Segoe UI, system-ui, -apple-system, sans-serif"
-    fontSize: "1.1rem"
+    fontSize: "0.875rem"
     fontWeight: 400
-    lineHeight: 1.62
+    lineHeight: 1.45
+    fontFeature: "\"tnum\" 1"
+  source:
+    fontFamily: "Red Hat Mono, ui-monospace, Consolas, monospace"
+    fontSize: "0.8125rem"
+    fontWeight: 400
+    lineHeight: 1.55
   label:
     fontFamily: "Red Hat Mono, ui-monospace, Consolas, monospace"
-    fontSize: "0.68rem"
+    fontSize: "0.75rem"
     fontWeight: 500
     lineHeight: 1.3
     letterSpacing: "0.07em"
-  source:
-    fontFamily: "Red Hat Mono, ui-monospace, Consolas, monospace"
-    fontSize: "0.74rem"
-    fontWeight: 400
-    lineHeight: 1.55
 rounded:
   none: "0px"
   hairline: "2px"
@@ -192,6 +264,9 @@ Drafting ink on cool, neutral vellum, with one International Orange accent and a
 - **Status Risk** (#94600a, wash #f6efe1): met but thin, or an estimate (EST tags).
 - **Status Fail** (#ad2a1f, wash #f8e9e7): a failed requirement or blocking decision. Fail is the only status that also gets a filled wash.
 - **Status Open** (#57489a, wash #efedf6): an open decision.
+- **Status Open Frame** (#a49ec5) and **Status Fail Frame** (#c57e79): the 1px frames around open and blocking decision cards, and around the blocked banner.
+
+Every colour has a dark-theme partner token with the suffix `-dark`, for example `drafting-ink-dark`. The dark set mirrors the light one role for role, with lighter accents and verdicts so they hold contrast on the dark vellum.
 
 ### Chart series
 - Six muted categorical colours, **Series 1–6** (#2f5d8a ink blue, #2e7f78 teal, #b7791f ochre, #8e3b6e plum, #5b6b7c slate, #6b7f2a olive), for charts and the concept viewer only. Each has a lighter dark-theme value.
@@ -210,17 +285,22 @@ Drafting ink on cool, neutral vellum, with one International Orange accent and a
 **Character:** The condensed grotesk recalls the lettering on aircraft markings and drawing title blocks. The humanist sans keeps long technical paragraphs easy to read. The mono face gives labels, units, IDs and citations the look of a drawing's notes.
 
 ### Hierarchy
-- **Display** (600, 2.6rem, 1.05; 2rem on phones): the report title only.
-- **Headline** (600, 1.9rem, 1.15): section titles (h2).
-- **Title** (600, 1.25rem, 1.15): subsection titles (h3). A hairline sits above each one, with about 2.75rem before it.
-- **Figure** (600, 2.1rem, 1.05, tabular): the KPI values in the key-figure strip.
-- **Body** (400, 16px, 1.6, tabular): running text, capped at 70ch.
-- **Lede** (400, 1.1rem, 1.62): the verdict paragraph that opens each section, capped at 74ch.
-- **Label** (mono 500, 0.66–0.72rem, uppercase, 0.06–0.1em tracking): eyebrows, title-block field names, KPI labels, table headers and status chips.
-- **Source** (mono 400, 0.74rem, 1.55): the citation line under each claim, prefixed "Source".
+The type scale has ten steps: 12, 13, 14, 16, 18, 20, 24, 30, 32 and 42 px. Don't add a step between them.
+- **Display** (600, 2.625rem / 42 px, 1.05; 2rem on phones): the report title only.
+- **Headline** (600, 1.875rem / 30 px, 1.15; 1.5rem on phones): section titles (h2). Each starts with its section number in mono orange at 0.75em, so the sheet number sits on the same line as the title.
+- **Figure** (600, 2rem / 32 px, tabular; 1.875rem on phones): KPI values. **Figure small** (1.5rem) is used for the calculation-chain values.
+- **Title** (600, 1.25rem / 20 px, 1.15): subsection titles (h3). A hairline sits above each one, with about 2.75rem before it.
+- **Callout** (600, 1.125rem / 18 px): decision questions, figure captions, measurement-box titles and previous/next links.
+- **Lede** (400, 1.125rem / 18 px, 1.62): the cover subtitle and the verdict paragraph that opens each section, capped at 74ch.
+- **Body** (400, 16 px, 1.6, tabular): running text, capped at 70ch.
+- **Small** (400, 0.875rem / 14 px): tables, navigation, KPI qualifiers, buttons, slider labels and the viewer's part label.
+- **Source** (mono 400, 0.8125rem / 13 px, 1.55): citation lines prefixed "Source", formulas, measurement IDs and subsection links.
+- **Label** (mono 500, 0.75rem / 12 px, uppercase, 0.06–0.1em tracking): title-block field names, KPI labels, table headers, status chips and EST tags. Never set a label smaller than 12 px.
 
 ### Named Rules
 **The Tabular Numbers Rule.** Every digit on the page uses tabular numerals, so columns of figures line up like a parts list.
+
+**The Readable Floor Rule.** Nothing functional is set below 12 px, and citations are never below 13 px. The client has to be able to read the sources.
 
 **The Lettering Rule.** Condensed display type is for headings and figures only. Running text never uses it, and labels are always mono caps, never small caps in the body face.
 
@@ -228,7 +308,7 @@ Drafting ink on cool, neutral vellum, with one International Orange accent and a
 
 The page is a single column of report sheets.
 - **Width and gutters:** a 1280px maximum, with 24px side gutters (16px at 560px and below).
-- **Cover:** the title and subtitle, then the title-block grid across the full width. The title block has four cells, which become a 2×2 grid at 760px and below.
+- **Cover:** the title and subtitle, then the title-block grid across the full width. The title block has five cells (Project, Review date, Stage, Revision, Sources), with the Project cell slightly wider. At 760px and below it becomes two columns, with Project spanning the full width.
 - **Desktop (1100px and wider):** a 220px contents column sits on the left and stays in view while scrolling. It lists the numbered sections in plain text, and the current one expands to show its subsections.
 - **Below 1100px:** a horizontally scrolling tab strip replaces the contents column and stays fixed to the top while scrolling.
 - **One section at a time:** only one section is shown. Each ends with an in-section index and previous/next links.
@@ -266,7 +346,7 @@ There are no pills, circles, dots or status lights.
 
 ### Buttons and segmented controls
 - **Character:** precise and restrained, like the switches on a test rig.
-- **Shape:** near-square (2px), at least 44px tall, with 1px Frame Rule borders. Segments share their dividers.
+- **Shape:** near-square (2px), at least 44px tall. A segmented control is a Sheet Tint tray with a 1px Frame Rule border and 3px inset, holding Sheet White segments 3px apart.
 - **Default:** a Sheet White fill with Ink Graphite labels in the body face.
 - **Hover:** the border darkens to Drafting Ink and the label to full ink.
 - **Pressed or active** (`aria-pressed="true"`): a Drafting Ink fill with white text. Pressed buttons never use orange.
@@ -279,8 +359,8 @@ There are no pills, circles, dots or status lights.
 - **EST tag:** the same shape in Status Risk, used inline to flag an estimate.
 
 ### Title block
-- **Style:** a four-cell ruled grid with 1px Frame Rule borders, on Sheet White.
-- **Cells:** each has a mono caps field name above a condensed value, for example REVIEW DATE / 2026-10-13.
+- **Style:** a five-cell ruled grid on Sheet White. The 1px Frame Rule lines come from 1px gaps over a Frame Rule ground, so the rules stay clean at any column count.
+- **Cells:** each has a mono caps field name above a condensed value, for example PROJECT / Design-Build-Fly or REVIEW DATE / 2026-10-13. The project name lives here, not in a label above the title.
 - **Placement:** at the foot of the cover, under the subtitle, with a 2px ink rule below the whole cover.
 
 ### Key-figure strip
@@ -289,14 +369,14 @@ There are no pills, circles, dots or status lights.
 - **Dividers:** hairlines between figures. On phones the strip stacks, with hairlines between rows.
 
 ### Decision cards
-- **Style:** a full 1px frame tinted toward Status Open, or toward Status Fail when the decision is blocking. There is no side stripe.
-- **Header:** a mono caps label ("Open decision" or "Blocking decision"), then the question as a condensed title.
+- **Style:** a full 1px frame in Status Open Frame, or Status Fail Frame when the decision is blocking. There is no side stripe.
+- **Header:** the question as a Callout title, led on the same line by a status chip ("Open", or "Blocking" with the Fail wash). The status is never a separate label above the question.
 - **Recommendation:** sits in a Sheet Tint panel (a Fail wash when blocking).
 - **Citation:** below a hairline.
 
 ### Tables
-- **Frame:** 2px ink rule on top and a 1px Frame Rule at the bottom, with no side borders and no zebra stripes.
-- **Header:** mono caps and sticky.
+- **Frame:** the table itself carries a 2px ink rule on top and a 1px Frame Rule at the bottom; its scroll wrapper has no border. There are no side borders, no fill and no zebra stripes. Cells are inset 12px, and the first column 8px from the left edge.
+- **Header:** mono caps and sticky, on the Vellum ground.
 - **Columns and rows:** number columns are right-aligned and tabular. Rows show a Sheet Tint on hover. Sortable headers show ↕, and the sorted column shows an orange arrow.
 - **Chosen row:** International Orange Wash.
 - **Total row:** a 1px ink rule above it.
@@ -304,6 +384,9 @@ There are no pills, circles, dots or status lights.
 ### "What the team must measure" list
 - **Frame:** a ruled block.
 - **Rows:** a mono orange ID in the left column (M1, M2 …), then what to measure, how to measure it, and the failure threshold in Status Fail.
+
+### Section headings
+- **Style:** the h2 carries its own section number in mono International Orange, followed by the title. The numbers are real references: the text cites §3 or §12. There is no small label above any heading.
 
 ### Navigation
 - **Contents column:**
@@ -337,3 +420,5 @@ There are no pills, circles, dots or status lights.
 - **Don't** use International Orange as a verdict colour or a large fill.
 - **Don't** use zebra stripes or filled header rows in tables.
 - **Don't** set running text in the condensed display face.
+- **Don't** put a small label or kicker above any heading. Section numbers go inside the heading, and status goes in a chip on the same line.
+- **Don't** set functional text below 12 px, or citations below 13 px.

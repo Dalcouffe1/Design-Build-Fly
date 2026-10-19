@@ -1,10 +1,10 @@
 <div class="wrap">
 <header class="top">
   <div class="cover">
-    <div class="eyebrow"><span class="mark" aria-hidden="true"></span>Engineering design review</div>
-    <h1>Lift + Cruise VTOL Review</h1>
+    <h1>Lift + Cruise VTOL Design Review</h1>
     <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. Student capstone.</p>
     <dl class="facts">
+      <div><dt>Project</dt><dd>Design-Build-Fly</dd></div>
       <div><dt>Review date</dt><dd>2026-10-13</dd></div>
       <div><dt>Stage</dt><dd>Concept · budget redesign</dd></div>
       <div><dt>Revision</dt><dd>v0.3.1</dd></div>
@@ -20,7 +20,7 @@
 
 <!-- ============================ 1 OVERVIEW ============================ -->
 <section class="sec" id="overview" data-title="Overview" data-n="1">
-  <div class="sechead"><div class="eyebrow">1 · Overview</div><h2>Overview</h2></div>
+  <div class="sechead"><h2><span class="secno">1</span>Overview</h2></div>
   <p class="verdict lede"><b>Baseline: C0, a 4-lift twin-boom quadplane built to a fixed $2,000 cap.</b> It has a 2.4 m span and a <b data-k="C0.sized.S" data-d="2"></b> m² NACA 2415 wing (AR <span data-k="C0.sized.AR" data-d="1"></span>, chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm). Lift comes from four SunnySky X4110S motors on 17-in props, and a fifth X4110S drives a 14×8.5 pusher. The aircraft has 6061 aluminium booms and spar on a taped XPS foam wing, and runs ArduPilot QuadPlane on a CoreWing F405 Wing board. Sized MTOW is <b data-k="C0.sized.m" data-d="2"></b> kg, with hover thrust-to-weight <b data-k="C0.sized.TW" data-d="2"></b>. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W and cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W. On one 6S 6500 mAh pack it has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise after the hover allowance and 20 % reserve. <b class="ok-t">Verdict: it closes physically and financially.</b> Committed spend including tax and shipping is <b data-k="C0.bom.total" data-c="usd"></b>, which leaves a <b data-k="C0.bom.crash" data-c="usd"></b> crash reserve under the cap. That reserve is thin (decision below).</p>
   <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
 
@@ -136,7 +136,7 @@
 
 <!-- ============================ 2 CAD ============================ -->
 <section class="sec" id="model3d" data-title="CAD model" data-n="2">
-  <div class="sechead"><div class="eyebrow">2 · CAD model</div><h2>CAD model</h2></div>
+  <div class="sechead"><h2><span class="secno">2</span>CAD model</h2></div>
   <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has 27 parts in a 49-component assembly:</p>
   <ul class="tight">
     <li>NACA 2415 wing panels with 26 % chord ailerons and a spar socket bored at 30 % chord</li>
@@ -207,11 +207,11 @@
 
 <!-- ============================ 3 CONCEPTS ============================ -->
 <section class="sec" id="concepts" data-title="Concepts" data-n="3">
-  <div class="sechead"><div class="eyebrow">3 · Concepts</div><h2>Concepts</h2></div>
+  <div class="sechead"><h2><span class="secno">3</span>Concepts</h2></div>
   <p class="verdict"><b>C0 (4-lift) is the only layout that fits the cap with a useful reserve.</b> With budget parts, the 8-lift (C1) is over the cap by <span id="c1Over"></span>. The coaxial X8 (C2) is over by <span id="c2Over"></span>, partly because OctaQuad needs an H7 board. C3 is C0 with X3515S motors. Its spend is <span data-k="C3.bom.total" data-c="usd"></span>, about $15 less, but it hovers on <span data-k="C3.sized.P_hover" data-d="0"></span> W against <span data-k="C0.sized.P_hover" data-d="0"></span> W. Motor heat is the tighter constraint (§12), so C0 stays.</p>
   <div class="grid2" id="conceptCards"></div>
   <p class="src">analysis/results.json concepts.*; docs/reference/lift-cruise-reference.png (Alia = 4-lift reference, "Lift Plus Cruise" = 8-lift reference)</p>
-  <h4 style="margin-top:14px">Considered and dropped</h4>
+  <h3 id="c-dropped">Considered and dropped</h3>
   <ul class="tight">
     <li><b>6-lift (hex)</b>: on two booms the middle rotor lands on the wing; costs like C1.</li>
     <li><b>Tilt-rotor, tailsitter</b>: outside R1, which specifies stopped lift rotors.</li>
@@ -246,7 +246,7 @@
 
 <!-- ============================ 4 MASS & POWER ============================ -->
 <section class="sec" id="mass" data-title="Mass &amp; power" data-n="4">
-  <div class="sechead"><div class="eyebrow">4 · Mass &amp; power</div><h2>Mass &amp; power</h2></div>
+  <div class="sechead"><h2><span class="secno">4</span>Mass &amp; power</h2></div>
   <p class="verdict">MTOW is the output of an energy-closed loop. Mission energy sets battery mass, mass sets wing area and hover power, and those feed back into the energy. With a continuous battery the loop closes at <b data-k="C0.design.m" data-d="2"></b> kg, needing <b data-k="C0.design.Epack_req_Wh" data-d="0"></b> Wh. The real pack chosen is the cheapest one that keeps ≥ 11.5 min of cruise, a 15 % design margin <span class="est">est</span> over R10, on top of its 20 % energy reserve. It is the <b data-k="C0.pick.id" data-c="txt"></b> (<span data-k="C0.pick.Wh" data-d="1"></span> Wh), giving MTOW <b data-k="C0.sized.m" data-d="2"></b> kg.</p>
   <p class="src">analysis/model.js F1–F12; analysis/sizing.mjs CRUISE_MARGIN_MIN</p>
 
@@ -281,7 +281,7 @@
 
 <!-- ============================ 5 PROPULSION ============================ -->
 <section class="sec" id="propulsion" data-title="Propulsion" data-n="5">
-  <div class="sechead"><div class="eyebrow">5 · Propulsion</div><h2>Propulsion</h2></div>
+  <div class="sechead"><h2><span class="secno">5</span>Propulsion</h2></div>
   <p class="verdict"><b>Lift: SunnySky X4110S 400KV on 17-in props with SoloGood 45 A BLHeli_S ESCs, $66.29 per station.</b> Max thrust is 3.13 kgf, for T/W <b data-k="C0.sized.TW" data-d="2"></b>. At C0's hover thrust each motor draws <b data-k="C0.sized.P_hover_per_motor" data-d="0"></b> W. <b>The pusher is a fifth X4110S on an APC 14×8.5EP</b>, so one spare motor covers every position. Energy comes from two Ovonic 6S 6500 mAh LiPos ($138.99 for the 2-pack listing) and an HTRC C150 charger. The packs ship with EC5 leads; re-terminate them to the kit's XT90-S anti-spark plugs, which are also the R20 physical disconnect.</p>
   <p class="src">docs/research/budget-lift.md A3, ESCs; budget-energy-test.md §1–2; pusher prop PB 1c</p>
 
@@ -323,7 +323,7 @@
 
 <!-- ============================ 6 STRUCTURES ============================ -->
 <section class="sec" id="structures" data-title="Structures" data-n="6">
-  <div class="sechead"><div class="eyebrow">6 · Structures</div><h2>Structures</h2></div>
+  <div class="sechead"><h2><span class="secno">6</span>Structures</h2></div>
   <p class="verdict"><b>The 6061-T6 wing joiner is the critical member. At ultimate load (4.5 g) the hand calc on the true 0.875 in joiner gives <span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa, a reserve factor of <span id="handRF"></span> on yield. That figure governs.</b> The FEA models the joiner bonded inside the socket (OD = socket ID) and gives <span data-k="SIM.spar_vm_max_fine" data-d="0"></span> MPa on a 2 mm mesh, so it confirms the load path under that idealisation. Booms are strength-rich: <span data-k="SIM.boom_vm_max_fine" data-d="0"></span> MPa on a 1.5 mm mesh, with <span data-k="SIM.boom_disp_max" data-d="1"></span> mm tip deflection at full thrust. Landing gear needs a compliant element with about 100 mm of travel if it behaves like a spring.</p>
   <p class="src">analysis/sizing.mjs structures(); cad/Sim.cs → cad/sim/results.txt; allowables: SOLIDWORKS library 6061-T6 (SS), E 69 GPa, yield 275 MPa</p>
 
@@ -382,7 +382,7 @@
 
 <!-- ============================ 7 BUDGET ============================ -->
 <section class="sec" id="budget" data-title="Budget &amp; BOM" data-n="7">
-  <div class="sechead"><div class="eyebrow">7 · Budget &amp; BOM</div><h2>Budget &amp; BOM</h2></div>
+  <div class="sechead"><h2><span class="secno">7</span>Budget &amp; BOM</h2></div>
   <p class="verdict"><b class="ok-t">C0 fits the fixed $2,000 cap.</b> Goods are <b data-k="C0.bom.goods" data-c="usd"></b>. Adding <span data-k="C0.bom.tax" data-c="usd"></span> of tax (10.25 %) and a $100 shipping allowance gives <b data-k="C0.bom.total" data-c="usd"></b> committed, which leaves <b data-k="C0.bom.crash" data-c="usd"></b> for crash repair. The 8-lift and coaxial layouts do not fit. FAA registration and AMA membership ($94) are fees, not hardware, so they sit outside the cap.</p>
   <div class="kpis">
     <div class="kpi"><div class="l">C0 committed</div><div class="v ok" data-k="C0.bom.total" data-c="usd"></div><div class="s">goods <span data-k="C0.bom.goods" data-c="usd"></span></div></div>
@@ -419,7 +419,7 @@
 
 <!-- ============================ 8 TESTING ============================ -->
 <section class="sec" id="testing" data-title="Testing &amp; failure" data-n="8">
-  <div class="sechead"><div class="eyebrow">8 · Testing &amp; failure</div><h2>Testing &amp; failure</h2></div>
+  <div class="sechead"><h2><span class="secno">8</span>Testing &amp; failure</h2></div>
   <p class="verdict"><b>Weakest link: a lift-motor or ESC failure in hover. C0 has no recovery from it.</b> Next are a hard landing on stiff gear and an unproven BLHeli_S ESC under sustained hover current. The $69 test and safety kit (LiPo bag, ammo can, load cell, Nano, watt meter, IR thermometer) qualifies every motor and ESC before flight. The flight build-up is in §13.</p>
 
   <h3 id="t-stand">Thrust-stand test plan</h3>
@@ -468,7 +468,7 @@
 
 <!-- ============================ 9 CG ============================ -->
 <section class="sec" id="cg" data-title="CG &amp; stability" data-n="9">
-  <div class="sechead"><div class="eyebrow">9 · CG &amp; stability</div><h2>CG &amp; stability</h2></div>
+  <div class="sechead"><h2><span class="secno">9</span>CG &amp; stability</h2></div>
   <p class="verdict"><b>The CG target is 28 % MAC, and the lift thrust centroid is placed on it by construction.</b> Static margin is <span id="smWith"></span> % with the payload allowance and <span id="smNo"></span> % without it. The vortex-lattice model independently puts the neutral point at <span data-k="AERO.neutral_point_pct_mac" data-d="1"></span> % MAC, against <span data-k="C0.geo.hn" data-d="1" data-m="100"></span> % from the tail-volume formula. Without the payload the CG moves aft and the rear rotors carry <span id="hoverSplit"></span> % more thrust, so carry ballast in the payload bay.</p>
   <figure class="chart"><figcaption>C0 CG envelope against neutral point and thrust centroid (% MAC from leading edge)</figcaption><div class="svgwrap"><svg id="cgChart" viewBox="0 0 640 170" role="img" aria-label="CG envelope chart"></svg></div></figure>
   <p class="src">analysis/sizing.mjs cg(), geometry(); analysis/vlm.mjs → aero.json; fuselage destabilising term not included in either</p>
@@ -484,7 +484,7 @@
 
 <!-- ============================ 10 CONTROLS ============================ -->
 <section class="sec" id="controls" data-title="Controls" data-n="10">
-  <div class="sechead"><div class="eyebrow">10 · Controls</div><h2>Controls</h2></div>
+  <div class="sechead"><h2><span class="secno">10</span>Controls</h2></div>
   <p class="verdict"><b>ArduPilot Plane QuadPlane on a CoreWing F405 Wing APP V2.</b> The board has 12 outputs (10 used), a 90 A current sensor and an 8 A servo BEC set to 6 V for the five ES3005HV servos. Transition completes at AIRSPEED_MIN = 16 m/s, which meets R11's 1.3 × stall, measured by the MS5525 airspeed sensor. Lift motors taper out over 5 s, and Q_ASSIST_SPEED is 13 m/s. Telemetry runs over ELRS MAVLink, so no separate radio is needed.</p>
   <p class="src">docs/research/budget-avionics.md §1–§6; docs/research/avionics-autopilot.md §1.2–1.3 (parameter names and defaults, checked 2026-10-13)</p>
 
@@ -545,7 +545,7 @@
 
 <!-- ============================ 11 SCHEDULE ============================ -->
 <section class="sec" id="schedule" data-title="Schedule &amp; compliance" data-n="11">
-  <div class="sechead"><div class="eyebrow">11 · Schedule &amp; compliance</div><h2>Schedule &amp; compliance</h2></div>
+  <div class="sechead"><h2><span class="secno">11</span>Schedule &amp; compliance</h2></div>
   <p class="verdict"><b>Plan: design freeze 2026-12-04, SITL rehearsal January to February, first hover 2027-03-13, full mission 2027-04-17, a 13-day buffer.</b> The site decision (by 2026-11-06) is the critical path. File flight requests for primary and backup dates at once, because each needs 7 business days. The academic calendar and team availability over winter break are not reconciled here (—).</p>
   <figure class="chart"><figcaption>Milestones, 2026-10 to 2027-04</figcaption><div class="svgwrap"><svg id="gantt" viewBox="0 0 700 420" role="img" aria-label="Schedule chart"></svg></div></figure>
   <p class="src">Dates are this review's plan <span class="est">est</span>; lead times from docs/research/budget-*.md</p>
@@ -582,7 +582,7 @@
 
 <!-- ============================ 12 SIMULATION ============================ -->
 <section class="sec" id="simulation" data-title="Simulation &amp; verification" data-n="12">
-  <div class="sechead"><div class="eyebrow">12 · Simulation &amp; verification</div><h2>Simulation &amp; verification</h2></div>
+  <div class="sechead"><h2><span class="secno">12</span>Simulation &amp; verification</h2></div>
   <p class="verdict"><b>Every SOLIDWORKS Simulation result agrees with its hand calculation within 15 %, and every margin passes.</b> Each FEA model uses the same idealisation as its hand calc (rigid root, bonded joiner), so the FEA confirms the hand calcs rather than independently validating them. Clamp compliance would lower the boom frequency. The studies are FEA of the boom and the spar/joiner, a boom modal study and a lift-motor thermal study. A vortex-lattice model confirms the neutral point and the lift slope. An independent Python check re-derives every sizing formula and the BOM. Aerodynamic CFD was not run because SOLIDWORKS Flow Simulation would not load on this licence.</p>
   <p class="src">cad/Sim.cs → cad/sim/results.txt and *.SLDPRT (studies inside); analysis/vlm.mjs → aero.json; analysis/verify.py</p>
 
@@ -623,7 +623,7 @@
 
 <!-- ============================ 13 FLIGHT TEST & OPERATIONS ============================ -->
 <section class="sec" id="flighttest" data-title="Flight test &amp; operations" data-n="13">
-  <div class="sechead"><div class="eyebrow">13 · Flight test &amp; operations</div><h2>Flight test &amp; operations</h2></div>
+  <div class="sechead"><h2><span class="secno">13</span>Flight test &amp; operations</h2></div>
   <p class="verdict"><b>Fly a strict build-up: SITL, bench, tethered hover, free hover, Q-mode handling, partial transitions, full transition, then the mission.</b> Each step has entry, abort and success criteria. C0 has no hover motor-out tolerance and runs beta firmware, so the early steps stay low and short.</p>
   <h3 id="ft-matrix">Build-up test matrix</h3>
   <div class="tbl"><table>

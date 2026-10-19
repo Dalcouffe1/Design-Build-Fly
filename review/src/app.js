@@ -117,7 +117,7 @@ function derived(){
 function img(id, list){
   const box = $(id); if(!box) return;
   list.forEach(([key, cap])=>{ if(!IMG[key]) return;
-    box.insertAdjacentHTML('beforeend', `<figure class="chart" style="margin:0"><figcaption>${cap}</figcaption><img src="${IMG[key]}" alt="${cap}" loading="lazy" style="width:100%;height:auto;display:block;border-radius:6px"></figure>`); });
+    box.insertAdjacentHTML('beforeend', `<figure class="chart" style="margin:0"><figcaption>${cap}</figcaption><img class="cadimg" src="${IMG[key]}" alt="${cap}" loading="lazy"></figure>`); });
 }
 function tables(){
   img('#cadImages', [['cad_iso','Isometric'],['cad_top','Top'],['cad_side','Side'],['cad_front','Front']]);

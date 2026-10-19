@@ -12,7 +12,7 @@
   --accent:#b8481b; --accent-2:#963a14; --accent-soft:#f7ece6; --accent-line:#e4bfae; --accent-fg:#ffffff;
   --ink:#16191d; --ink-fg:#ffffff;
   --ok:#23744a; --ok-soft:#e7f2ec; --warn:#94600a; --warn-soft:#f6efe1;
-  --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6;
+  --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6; --open-line:#a49ec5; --bad-line:#c57e79;
   --c1:#2f5d8a; --c2:#2e7f78; --c3:#b7791f; --c4:#8e3b6e; --c5:#5b6b7c; --c6:#6b7f2a;
   --band:#ffffff; --band-line:#cbcfd4;
   --f-display:"Barlow Semi Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
@@ -28,7 +28,7 @@
   --accent:#ec8a58; --accent-2:#f4a77f; --accent-soft:#2b1e17; --accent-line:#6b3d27; --accent-fg:#111315;
   --ink:#e6e8ea; --ink-fg:#111315;
   --ok:#6cc595; --ok-soft:#15261d; --warn:#dcae5a; --warn-soft:#2a2213;
-  --bad:#ef8a7f; --bad-soft:#321917; --open:#a99be0; --open-soft:#221e33;
+  --bad:#ef8a7f; --bad-soft:#321917; --open:#a99be0; --open-soft:#221e33; --open-line:#636082; --bad-line:#96615e;
   --c1:#7fa8d1; --c2:#6cbdb4; --c3:#dcae5a; --c4:#cf86b4; --c5:#9aaabb; --c6:#a8bf62;
   --band:#16191c; --band-line:#3a4048;
   color-scheme:dark}}
@@ -39,7 +39,7 @@
   --accent:#ec8a58; --accent-2:#f4a77f; --accent-soft:#2b1e17; --accent-line:#6b3d27; --accent-fg:#111315;
   --ink:#e6e8ea; --ink-fg:#111315;
   --ok:#6cc595; --ok-soft:#15261d; --warn:#dcae5a; --warn-soft:#2a2213;
-  --bad:#ef8a7f; --bad-soft:#321917; --open:#a99be0; --open-soft:#221e33;
+  --bad:#ef8a7f; --bad-soft:#321917; --open:#a99be0; --open-soft:#221e33; --open-line:#636082; --bad-line:#96615e;
   --c1:#7fa8d1; --c2:#6cbdb4; --c3:#dcae5a; --c4:#cf86b4; --c5:#9aaabb; --c6:#a8bf62;
   --band:#16191c; --band-line:#3a4048;
   color-scheme:dark}
@@ -52,10 +52,11 @@ body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);font-varia
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 ::selection{background:var(--accent-soft);color:var(--fg)}
 h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0;color:var(--fg);font-weight:600}
-h1{font-size:2.6rem;letter-spacing:-.01em;line-height:1.05}
-h2{font-size:1.9rem;letter-spacing:-.005em}
+h1{font-size:2.625rem;letter-spacing:-.01em;line-height:1.05}
+h2{font-size:1.875rem;letter-spacing:-.005em}
+h2 .secno{font:500 .75em/1 var(--f-mono);color:var(--accent);margin-right:.6em;vertical-align:.12em;letter-spacing:0}
 h3{font-size:1.25rem;margin-top:2.75rem;margin-bottom:.4rem;padding-top:1rem;border-top:1px solid var(--line);scroll-margin-top:64px}
-h4{font-size:1.02rem;letter-spacing:.005em}
+h4{font-size:1rem;letter-spacing:.005em}
 p,li{max-width:70ch}
 p{margin:.65rem 0}
 b,strong{font-weight:600}
@@ -70,20 +71,17 @@ p code,li code,td code,dd code{background:var(--surface-2);border-radius:var(--r
 /* ---------- cover: title + drawing title block ---------- */
 header.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:20px 40px;align-items:end;padding-block:48px 28px;border-bottom:2px solid var(--ink)}
 header.top .cover{min-width:0;display:contents}
-header.top .cover>.eyebrow,header.top h1,header.top .subtitle{grid-column:1}
-header.top h1{margin-top:10px}
-header.top .subtitle{margin:12px 0 0;color:var(--fg-2);font-size:1.08rem;line-height:1.5;max-width:60ch}
-header.top .eyebrow .mark{display:none}
+header.top h1,header.top .subtitle{grid-column:1}
+header.top .subtitle{margin:12px 0 0;color:var(--fg-2);font-size:1.125rem;line-height:1.5;max-width:60ch}
 header.top>.themebtn{grid-column:2;grid-row:1;justify-self:end;align-self:start}
-dl.facts{grid-column:1 / -1;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:20px 0 0;padding:0;border:1px solid var(--line-2);background:var(--surface)}
-dl.facts>div{padding:10px 14px 12px;border-right:1px solid var(--line-2);min-width:0}
-dl.facts>div:last-child{border-right:0}
-dl.facts dt{font:500 .66rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:7px}
+dl.facts{grid-column:1 / -1;display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:1px;margin:20px 0 0;padding:0;border:1px solid var(--line-2);background:var(--line-2)}
+dl.facts>div{padding:10px 14px 12px;background:var(--surface);min-width:0}
+dl.facts dt{font:500 .75rem/1 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3);margin-bottom:7px}
 dl.facts dd{margin:0;font:600 1rem/1.3 var(--f-display);letter-spacing:.01em;color:var(--fg)}
-dl.facts dd code{background:none;padding:0;font-weight:400;font-size:.8rem;color:var(--fg-2)}
-.eyebrow{font:500 .7rem/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
-.meta{color:var(--fg-2);font-size:.88rem}
-.themebtn{min-height:44px;min-width:44px;padding:0 14px;border:1px solid var(--line-2);background:transparent;color:var(--fg-2);border-radius:var(--r-s);font:500 .74rem var(--f-mono);letter-spacing:.04em;cursor:pointer;white-space:nowrap;transition:border-color .15s,color .15s}
+dl.facts dd code{background:none;padding:0;font-weight:400;font-size:.8125rem;color:var(--fg-2)}
+.eyebrow{font:500 .75rem/1.2 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.meta{color:var(--fg-2);font-size:.875rem}
+.themebtn{min-height:44px;min-width:44px;padding:0 14px;border:1px solid var(--line-2);background:transparent;color:var(--fg-2);border-radius:var(--r-s);font:500 .75rem var(--f-mono);letter-spacing:.04em;cursor:pointer;white-space:nowrap;transition:border-color .15s,color .15s}
 .themebtn:hover{border-color:var(--fg);color:var(--fg)}
 
 .layout{display:grid;grid-template-columns:1fr;gap:48px;margin-top:8px}
@@ -92,17 +90,17 @@ dl.facts dd code{background:none;padding:0;font-weight:400;font-size:.8rem;color
 /* ---------- contents column ---------- */
 nav.side{display:none}
 @media (min-width:1100px){nav.side{display:block;position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;max-height:calc(100vh - 48px);overflow:auto;padding:0 8px 12px 0;scrollbar-width:thin}}
-nav.side::before{content:"Contents";display:block;font:500 .66rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);padding:0 0 12px;border-bottom:1px solid var(--line-2);margin-bottom:6px}
+nav.side::before{content:"Contents";display:block;font:500 .75rem/1 var(--f-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);padding:0 0 12px;border-bottom:1px solid var(--line-2);margin-bottom:6px}
 nav.side ol{list-style:none;margin:0;padding:0}
 nav.side li{max-width:none}
-nav.side a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:var(--fg-2);text-decoration:none;font-size:.92rem;line-height:1.3;transition:color .12s}
-nav.side a .n{font:500 .72rem var(--f-mono);color:var(--fg-3);width:1.5em;flex:none;text-align:right}
+nav.side a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:var(--fg-2);text-decoration:none;font-size:.875rem;line-height:1.3;transition:color .12s}
+nav.side a .n{font:500 .75rem var(--f-mono);color:var(--fg-3);width:1.5em;flex:none;text-align:right}
 nav.side a:hover{color:var(--fg)}
 nav.side a.cur{color:var(--fg);font-weight:600}
 nav.side a.cur .n{color:var(--accent);font-weight:600}
 nav.side ol.sub{margin:0 0 10px 2.1em;padding-left:12px;border-left:1px solid var(--line-2);display:none}
 nav.side li.cur ol.sub{display:block}
-nav.side ol.sub a{min-height:30px;font-size:.84rem;padding:4px 0;color:var(--fg-3);font-weight:400}
+nav.side ol.sub a{min-height:30px;font-size:.8125rem;padding:4px 0;color:var(--fg-3);font-weight:400}
 nav.side ol.sub a:hover{color:var(--fg)}
 
 /* ---------- tab strip (narrow screens) ---------- */
@@ -110,8 +108,8 @@ nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:v
 @media (max-width:560px){nav.tabs{margin-inline:-16px;padding-inline:8px}}
 nav.tabs::-webkit-scrollbar{display:none}
 @media (min-width:1100px){nav.tabs{display:none}}
-nav.tabs a{display:inline-flex;align-items:center;gap:7px;min-height:46px;padding:0 10px;color:var(--fg-2);text-decoration:none;font-size:.9rem;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s,border-color .12s}
-nav.tabs a .mono{font-size:.7rem;color:var(--fg-3)}
+nav.tabs a{display:inline-flex;align-items:center;gap:7px;min-height:46px;padding:0 10px;color:var(--fg-2);text-decoration:none;font-size:.875rem;border-bottom:2px solid transparent;margin-bottom:-1px;transition:color .12s,border-color .12s}
+nav.tabs a .mono{font-size:.75rem;color:var(--fg-3)}
 nav.tabs a:hover{color:var(--fg)}
 nav.tabs a.cur{color:var(--fg);border-bottom-color:var(--accent);font-weight:600}
 nav.tabs a.cur .mono{color:var(--accent)}
@@ -121,32 +119,31 @@ main{min-width:0}
 section.sec{display:none}
 section.sec.cur{display:block}
 .sechead{padding-bottom:18px;margin-bottom:16px;border-bottom:1px solid var(--line-2)}
-.sechead .eyebrow{color:var(--accent);margin-bottom:6px}
 .sechead + h3,.sechead + * h3:first-child{border-top:0}
-.verdict{font-size:1.06rem;line-height:1.62;color:var(--fg);max-width:74ch}
-.lede{font-size:1.1rem;line-height:1.62}
+.verdict{font-size:1.125rem;line-height:1.62;color:var(--fg);max-width:74ch}
+.lede{font-size:1.125rem;line-height:1.62}
 
 /* source citation */
-.src{font:.74rem/1.55 var(--f-mono);color:var(--fg-3);margin:.35rem 0 1.3rem;max-width:none;word-break:break-word}
+.src{font:.8125rem/1.55 var(--f-mono);color:var(--fg-3);margin:.35rem 0 1.3rem;max-width:none;word-break:break-word}
 .src::before{content:"Source  ";white-space:pre;font-weight:500;color:var(--fg-2);letter-spacing:.02em}
 .src a{color:var(--fg-2)}
-.est{display:inline-block;font:500 .62rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--warn);border:1px solid currentColor;border-radius:var(--r-s);padding:2px 4px;vertical-align:2px}
+.est{display:inline-block;font:500 .75rem/1 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);border-radius:var(--r-s);padding:2px 4px;vertical-align:2px}
 
 /* ---------- key figures ---------- */
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin:26px 0 30px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2)}
 .kpi{background:transparent;padding:14px 18px 16px 0;margin-right:18px;min-width:0;border-right:1px solid var(--line)}
 .kpi:last-child{border-right:0;margin-right:0}
-.kpi .l{font:500 .68rem/1.35 var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.07em}
-.kpi .v{font:600 2.1rem/1.05 var(--f-display);letter-spacing:-.005em;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:var(--fg)}
-.kpi .s{font-size:.84rem;line-height:1.45;color:var(--fg-2)}
+.kpi .l{font:500 .75rem/1.35 var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.07em}
+.kpi .v{font:600 2rem/1.05 var(--f-display);letter-spacing:-.005em;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:var(--fg)}
+.kpi .s{font-size:.875rem;line-height:1.45;color:var(--fg-2)}
 .v.ok,.ok-t{color:var(--ok)} .v.warn,.warn-t{color:var(--warn)} .v.bad,.bad-t{color:var(--bad)}
 
 /* ---------- status labels ---------- */
-.chip{display:inline-block;font:500 .66rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:var(--r-s);white-space:nowrap;border:1px solid currentColor;background:transparent}
-.chip.met{color:var(--ok)}
-.chip.risk{color:var(--warn)}
-.chip.fail{color:var(--bad);background:var(--bad-soft)}
-.chip.open{color:var(--open)}
+.chip{display:inline-block;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:var(--r-s);white-space:nowrap;border:1px solid currentColor;background:transparent}
+.chip.met{color:var(--ok);border-color:var(--ok)}
+.chip.risk{color:var(--warn);border-color:var(--warn)}
+.chip.fail{color:var(--bad);border-color:var(--bad);background:var(--bad-soft)}
+.chip.open{color:var(--open);border-color:var(--open)}
 
 /* ---------- panels ---------- */
 .grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin:16px 0}
@@ -158,35 +155,35 @@ section.sec.cur{display:block}
 .card .tag{float:right;margin-left:8px}
 
 /* decisions */
-.decision{border:1px solid color-mix(in srgb,var(--open) 45%,var(--line));border-radius:var(--r);padding:16px 20px 14px;background:var(--surface);margin:16px 0}
-.decision.red{border-color:color-mix(in srgb,var(--bad) 55%,var(--line))}
-.decision b.q{display:block;font:600 1.12rem/1.3 var(--f-display);letter-spacing:.003em;margin-bottom:8px;max-width:70ch}
-.decision b.q::before{content:"Open decision";display:block;font:500 .66rem/1 var(--f-mono);letter-spacing:.09em;text-transform:uppercase;color:var(--open);margin-bottom:10px}
-.decision.red b.q::before{content:"Blocking decision";color:var(--bad)}
+.decision{border:1px solid var(--open-line);border-radius:var(--r);padding:16px 20px 14px;background:var(--surface);margin:16px 0}
+.decision.red{border-color:var(--bad-line)}
+.decision b.q{display:block;font:600 1.125rem/1.35 var(--f-display);letter-spacing:.003em;margin-bottom:8px;max-width:70ch}
+.decision b.q::before{content:"Open";display:inline-block;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--open);border:1px solid currentColor;border-radius:var(--r-s);padding:4px 6px;margin-right:10px;vertical-align:.18em}
+.decision.red b.q::before{content:"Blocking";color:var(--bad);background:var(--bad-soft)}
 .decision>div{max-width:78ch;color:var(--fg-2)}
 .decision>div b{color:var(--fg)}
 .decision .rec{margin-top:12px;padding:10px 14px;background:var(--surface-2);border-radius:var(--r-s);color:var(--fg)}
 .decision.red .rec{background:var(--bad-soft)}
 .decision .src{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line)}
-.banner{border-radius:var(--r);padding:14px 18px;background:var(--bad-soft);border:1px solid color-mix(in srgb,var(--bad) 45%,transparent);margin:16px 0}
+.banner{border-radius:var(--r);padding:14px 18px;background:var(--bad-soft);border:1px solid var(--bad-line);margin:16px 0}
 
 /* "What the team must measure" */
 .measure{margin:40px 0 10px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2)}
-.measure h4{padding:12px 0 10px;border-bottom:1px solid var(--line-2);font-size:1.05rem}
+.measure h4{padding:12px 0 10px;border-bottom:1px solid var(--line-2);font-size:1.125rem}
 .measure ol{margin:0;padding:0;list-style:none;counter-reset:m}
 .measure li{padding:12px 0;border-bottom:1px solid var(--line);max-width:none;display:grid;grid-template-columns:3.4em minmax(0,1fr);gap:4px 12px;line-height:1.55}
 .measure li:last-child{border-bottom:0}
-.measure li .id{align-self:start;font:600 .8rem/1.55 var(--f-mono);color:var(--accent)}
+.measure li .id{align-self:start;font:600 .8125rem/1.55 var(--f-mono);color:var(--accent)}
 .measure .how{color:var(--fg-2)}
 .measure .fail{color:var(--bad);font-weight:500}
 
 /* ---------- tables ---------- */
-.tbl{overflow:auto;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2);background:var(--surface);margin:14px 0;max-height:640px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-table{border-collapse:separate;border-spacing:0;width:100%;font-size:.88rem;line-height:1.45}
+.tbl{overflow:auto;background:transparent;margin:14px 0;max-height:640px;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
+table{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2);font-size:.875rem;line-height:1.45}
 th,td{padding:9px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
-th:first-child,td:first-child{padding-left:4px}
+th:first-child,td:first-child{padding-left:8px}
 tbody tr:last-child td{border-bottom:0}
-thead th{position:sticky;top:0;background:var(--surface);font:500 .68rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);white-space:nowrap;z-index:1;border-bottom:1px solid var(--line-2);padding-block:10px}
+thead th{position:sticky;top:0;background:var(--bg);font:500 .75rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);white-space:nowrap;z-index:1;border-bottom:1px solid var(--line-2);padding-block:10px}
 tbody tr:hover td{background:var(--surface-2)}
 th.sort{cursor:pointer;user-select:none;transition:color .12s}
 th.sort:hover{color:var(--fg)}
@@ -202,30 +199,29 @@ tbody tr.total td,tr.total td{font-weight:700;border-top:1px solid var(--ink);ba
 td.ok{color:var(--ok);background:var(--ok-soft)}
 td.warn{color:var(--warn);background:var(--warn-soft)}
 td.bad{color:var(--bad);background:var(--bad-soft)}
-td small,.small{color:var(--fg-3);font-size:.8rem}
+td small,.small{color:var(--fg-3);font-size:.8125rem}
 
 /* ---------- back-calculation chain ---------- */
 .chain{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin:18px 0}
 .chain .box{flex:1 1 150px;min-width:0;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:11px 13px}
-.chain .box .l{font:500 .66rem/1.3 var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em}
-.chain .box .v{font:600 1.4rem/1.15 var(--f-display);margin:6px 0 5px}
-.chain .box .f{font:.7rem/1.45 var(--f-mono);color:var(--fg-2);word-break:break-word;padding-top:6px;border-top:1px solid var(--line)}
+.chain .box .l{font:500 .75rem/1.3 var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.06em}
+.chain .box .v{font:600 1.5rem/1.15 var(--f-display);margin:6px 0 5px}
+.chain .box .f{font:.8125rem/1.45 var(--f-mono);color:var(--fg-2);word-break:break-word;padding-top:6px;border-top:1px solid var(--line)}
 .chain .arr{align-self:center;color:var(--line-3);font-size:1rem}
 
 /* ---------- sliders / segmented ---------- */
 .sliders{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px 28px;background:var(--surface-2);border-radius:var(--r);padding:16px 18px;margin:16px 0}
-.sl label{display:flex;justify-content:space-between;align-items:baseline;font-size:.86rem;gap:8px;color:var(--fg-2)}
-.sl label output{font:600 .82rem var(--f-mono);color:var(--fg)}
+.sl label{display:flex;justify-content:space-between;align-items:baseline;font-size:.875rem;gap:8px;color:var(--fg-2)}
+.sl label output{font:600 .8125rem var(--f-mono);color:var(--fg)}
 .sl input[type=range]{width:100%;min-height:32px;accent-color:var(--accent)}
-.seg{display:inline-flex;border:1px solid var(--line-2);border-radius:var(--r-s);overflow:hidden;background:var(--surface);max-width:100%;flex-wrap:wrap}
-.seg button{min-height:44px;padding:0 16px;border:0;border-right:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);font:500 .86rem var(--f-body);cursor:pointer;transition:background .12s,color .12s}
-.seg button:last-child{border-right:0}
+.seg{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line-2);border-radius:var(--r-s);background:var(--surface-2);max-width:100%;flex-wrap:wrap}
+.seg button{min-height:44px;padding:0 16px;border:0;border-radius:var(--r-s);background:var(--surface);color:var(--fg-2);font:500 .875rem var(--f-body);cursor:pointer;transition:background .12s,color .12s}
 .seg button:hover{background:var(--surface-2);color:var(--fg)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
 
 /* ---------- figures ---------- */
 figure.chart{margin:22px 0;background:var(--surface);border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2);padding:0}
-figure.chart figcaption{font:600 1rem/1.35 var(--f-display);letter-spacing:.005em;padding:10px 0 8px;color:var(--fg)}
+figure.chart figcaption{font:600 1.125rem/1.35 var(--f-display);letter-spacing:.005em;padding:10px 0 8px;color:var(--fg)}
 figure.chart .svgwrap{padding:8px 0 12px}
 figure.chart svg{width:100%;max-width:880px;height:auto;display:block;margin-inline:auto}
 .svgwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
@@ -237,45 +233,45 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .viewer{position:relative;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r);overflow:hidden}
 .viewer canvas{display:block;width:100%;height:460px;touch-action:none;cursor:grab;background:var(--surface)}
 .viewer canvas:active{cursor:grabbing}
-.viewer .lbl{position:absolute;left:12px;top:10px;font:500 .64rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-2);background:var(--surface);padding:5px 7px;border:1px solid var(--line-2);border-radius:var(--r-s)}
+.viewer .lbl{position:absolute;left:12px;top:10px;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-2);background:var(--surface);padding:5px 7px;border:1px solid var(--line-2);border-radius:var(--r-s)}
 .viewer .ctl{display:flex;gap:6px;flex-wrap:wrap;padding:10px;border-top:1px solid var(--line-2);background:var(--surface-2)}
-.viewer .ctl button{min-height:44px;padding:0 14px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:var(--r-s);font:500 .84rem var(--f-body);cursor:pointer;transition:border-color .12s,color .12s}
+.viewer .ctl button{min-height:44px;padding:0 14px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:var(--r-s);font:500 .875rem var(--f-body);cursor:pointer;transition:border-color .12s,color .12s}
 .viewer .ctl button:hover{border-color:var(--fg);color:var(--fg)}
 .viewer .ctl button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg);border-color:var(--ink)}
 
 /* ---------- in-section index + prev/next ---------- */
 .secidx{margin-top:64px;border-top:2px solid var(--ink);padding-top:16px}
 .secidx ol{display:flex;flex-wrap:wrap;gap:0 22px;list-style:none;padding:0;margin:6px 0 20px}
-.secidx ol a{font-size:.88rem;display:inline-flex;min-height:44px;align-items:center;text-decoration:none;color:var(--fg-2)}
+.secidx ol a{font-size:.875rem;display:inline-flex;min-height:44px;align-items:center;text-decoration:none;color:var(--fg-2)}
 .secidx ol a:hover{color:var(--accent)}
 .pn{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.pn a{display:block;min-height:44px;border-top:1px solid var(--line-2);padding:14px 0;text-decoration:none;color:var(--fg);font:600 1.15rem/1.3 var(--f-display);transition:color .15s,border-color .15s}
+.pn a{display:block;min-height:44px;border-top:1px solid var(--line-2);padding:14px 0;text-decoration:none;color:var(--fg);font:600 1.125rem/1.3 var(--f-display);transition:color .15s,border-color .15s}
 .pn a:hover{color:var(--accent);border-top-color:var(--accent)}
 .pn a .eyebrow{display:block;margin-bottom:6px}
 .pn a.next{text-align:right}
 
 /* ---------- misc ---------- */
+.cadimg{width:100%;height:auto;display:block;border-radius:var(--r-s)}
 .state{overflow-x:auto}
 ul.tight{padding-left:1.2em;margin:.5rem 0} ul.tight li{margin:.28rem 0}
 ul.tight li::marker{color:var(--fg-3)}
-dl.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 18px;margin:10px 0;font-size:.9rem}
+dl.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 18px;margin:10px 0;font-size:.875rem}
 dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 /* ---------- small screens ---------- */
 @media (max-width:760px){
   dl.facts{grid-template-columns:1fr 1fr}
-  dl.facts>div:nth-child(2){border-right:0}
-  dl.facts>div:nth-child(-n+2){border-bottom:1px solid var(--line-2)}
+  dl.facts>div:first-child{grid-column:1 / -1}
 }
 @media (max-width:560px){
   h1{font-size:2rem}
-  h2{font-size:1.55rem}
+  h2{font-size:1.5rem}
   header.top{padding-block:28px 22px;grid-template-columns:minmax(0,1fr)}
   header.top>.themebtn{grid-column:1;grid-row:auto;justify-self:start}
   header.top .subtitle{font-size:1rem}
   .kpi{border-right:0;margin-right:0;border-bottom:1px solid var(--line)}
   .kpi:last-child{border-bottom:0}
-  .kpi .v{font-size:1.8rem}
+  .kpi .v{font-size:1.875rem}
   .viewer canvas{height:340px}
   .pn{grid-template-columns:1fr}
   .decision{padding:14px 14px 12px}
@@ -292,8 +288,8 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 /* ---------- SOLIDWORKS model viewer ---------- */
 .cadview{margin-top:14px}
 .cadview canvas{height:540px;background:var(--surface)}
-.cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.84rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
-.cadview .tip b{display:block;font:600 .95rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
+.cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.875rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
+.cadview .tip b{display:block;font:600 1rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
 .cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
 @media (max-width:560px){.cadview canvas{height:380px}.cadview .tip{top:auto;bottom:66px}}
 
@@ -301,10 +297,10 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 <div class="wrap">
 <header class="top">
   <div class="cover">
-    <div class="eyebrow"><span class="mark" aria-hidden="true"></span>Engineering design review</div>
-    <h1>Lift + Cruise VTOL Review</h1>
+    <h1>Lift + Cruise VTOL Design Review</h1>
     <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. Student capstone.</p>
     <dl class="facts">
+      <div><dt>Project</dt><dd>Design-Build-Fly</dd></div>
       <div><dt>Review date</dt><dd>2026-10-13</dd></div>
       <div><dt>Stage</dt><dd>Concept · budget redesign</dd></div>
       <div><dt>Revision</dt><dd>v0.3.1</dd></div>
@@ -320,7 +316,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 1 OVERVIEW ============================ -->
 <section class="sec" id="overview" data-title="Overview" data-n="1">
-  <div class="sechead"><div class="eyebrow">1 · Overview</div><h2>Overview</h2></div>
+  <div class="sechead"><h2><span class="secno">1</span>Overview</h2></div>
   <p class="verdict lede"><b>Baseline: C0, a 4-lift twin-boom quadplane built to a fixed $2,000 cap.</b> It has a 2.4 m span and a <b data-k="C0.sized.S" data-d="2"></b> m² NACA 2415 wing (AR <span data-k="C0.sized.AR" data-d="1"></span>, chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm). Lift comes from four SunnySky X4110S motors on 17-in props, and a fifth X4110S drives a 14×8.5 pusher. The aircraft has 6061 aluminium booms and spar on a taped XPS foam wing, and runs ArduPilot QuadPlane on a CoreWing F405 Wing board. Sized MTOW is <b data-k="C0.sized.m" data-d="2"></b> kg, with hover thrust-to-weight <b data-k="C0.sized.TW" data-d="2"></b>. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W and cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W. On one 6S 6500 mAh pack it has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise after the hover allowance and 20 % reserve. <b class="ok-t">Verdict: it closes physically and financially.</b> Committed spend including tax and shipping is <b data-k="C0.bom.total" data-c="usd"></b>, which leaves a <b data-k="C0.bom.crash" data-c="usd"></b> crash reserve under the cap. That reserve is thin (decision below).</p>
   <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
 
@@ -436,7 +432,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 2 CAD ============================ -->
 <section class="sec" id="model3d" data-title="CAD model" data-n="2">
-  <div class="sechead"><div class="eyebrow">2 · CAD model</div><h2>CAD model</h2></div>
+  <div class="sechead"><h2><span class="secno">2</span>CAD model</h2></div>
   <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has 27 parts in a 49-component assembly:</p>
   <ul class="tight">
     <li>NACA 2415 wing panels with 26 % chord ailerons and a spar socket bored at 30 % chord</li>
@@ -507,11 +503,11 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 3 CONCEPTS ============================ -->
 <section class="sec" id="concepts" data-title="Concepts" data-n="3">
-  <div class="sechead"><div class="eyebrow">3 · Concepts</div><h2>Concepts</h2></div>
+  <div class="sechead"><h2><span class="secno">3</span>Concepts</h2></div>
   <p class="verdict"><b>C0 (4-lift) is the only layout that fits the cap with a useful reserve.</b> With budget parts, the 8-lift (C1) is over the cap by <span id="c1Over"></span>. The coaxial X8 (C2) is over by <span id="c2Over"></span>, partly because OctaQuad needs an H7 board. C3 is C0 with X3515S motors. Its spend is <span data-k="C3.bom.total" data-c="usd"></span>, about $15 less, but it hovers on <span data-k="C3.sized.P_hover" data-d="0"></span> W against <span data-k="C0.sized.P_hover" data-d="0"></span> W. Motor heat is the tighter constraint (§12), so C0 stays.</p>
   <div class="grid2" id="conceptCards"></div>
   <p class="src">analysis/results.json concepts.*; docs/reference/lift-cruise-reference.png (Alia = 4-lift reference, "Lift Plus Cruise" = 8-lift reference)</p>
-  <h4 style="margin-top:14px">Considered and dropped</h4>
+  <h3 id="c-dropped">Considered and dropped</h3>
   <ul class="tight">
     <li><b>6-lift (hex)</b>: on two booms the middle rotor lands on the wing; costs like C1.</li>
     <li><b>Tilt-rotor, tailsitter</b>: outside R1, which specifies stopped lift rotors.</li>
@@ -546,7 +542,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 4 MASS & POWER ============================ -->
 <section class="sec" id="mass" data-title="Mass &amp; power" data-n="4">
-  <div class="sechead"><div class="eyebrow">4 · Mass &amp; power</div><h2>Mass &amp; power</h2></div>
+  <div class="sechead"><h2><span class="secno">4</span>Mass &amp; power</h2></div>
   <p class="verdict">MTOW is the output of an energy-closed loop. Mission energy sets battery mass, mass sets wing area and hover power, and those feed back into the energy. With a continuous battery the loop closes at <b data-k="C0.design.m" data-d="2"></b> kg, needing <b data-k="C0.design.Epack_req_Wh" data-d="0"></b> Wh. The real pack chosen is the cheapest one that keeps ≥ 11.5 min of cruise, a 15 % design margin <span class="est">est</span> over R10, on top of its 20 % energy reserve. It is the <b data-k="C0.pick.id" data-c="txt"></b> (<span data-k="C0.pick.Wh" data-d="1"></span> Wh), giving MTOW <b data-k="C0.sized.m" data-d="2"></b> kg.</p>
   <p class="src">analysis/model.js F1–F12; analysis/sizing.mjs CRUISE_MARGIN_MIN</p>
 
@@ -581,7 +577,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 5 PROPULSION ============================ -->
 <section class="sec" id="propulsion" data-title="Propulsion" data-n="5">
-  <div class="sechead"><div class="eyebrow">5 · Propulsion</div><h2>Propulsion</h2></div>
+  <div class="sechead"><h2><span class="secno">5</span>Propulsion</h2></div>
   <p class="verdict"><b>Lift: SunnySky X4110S 400KV on 17-in props with SoloGood 45 A BLHeli_S ESCs, $66.29 per station.</b> Max thrust is 3.13 kgf, for T/W <b data-k="C0.sized.TW" data-d="2"></b>. At C0's hover thrust each motor draws <b data-k="C0.sized.P_hover_per_motor" data-d="0"></b> W. <b>The pusher is a fifth X4110S on an APC 14×8.5EP</b>, so one spare motor covers every position. Energy comes from two Ovonic 6S 6500 mAh LiPos ($138.99 for the 2-pack listing) and an HTRC C150 charger. The packs ship with EC5 leads; re-terminate them to the kit's XT90-S anti-spark plugs, which are also the R20 physical disconnect.</p>
   <p class="src">docs/research/budget-lift.md A3, ESCs; budget-energy-test.md §1–2; pusher prop PB 1c</p>
 
@@ -623,7 +619,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 6 STRUCTURES ============================ -->
 <section class="sec" id="structures" data-title="Structures" data-n="6">
-  <div class="sechead"><div class="eyebrow">6 · Structures</div><h2>Structures</h2></div>
+  <div class="sechead"><h2><span class="secno">6</span>Structures</h2></div>
   <p class="verdict"><b>The 6061-T6 wing joiner is the critical member. At ultimate load (4.5 g) the hand calc on the true 0.875 in joiner gives <span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa, a reserve factor of <span id="handRF"></span> on yield. That figure governs.</b> The FEA models the joiner bonded inside the socket (OD = socket ID) and gives <span data-k="SIM.spar_vm_max_fine" data-d="0"></span> MPa on a 2 mm mesh, so it confirms the load path under that idealisation. Booms are strength-rich: <span data-k="SIM.boom_vm_max_fine" data-d="0"></span> MPa on a 1.5 mm mesh, with <span data-k="SIM.boom_disp_max" data-d="1"></span> mm tip deflection at full thrust. Landing gear needs a compliant element with about 100 mm of travel if it behaves like a spring.</p>
   <p class="src">analysis/sizing.mjs structures(); cad/Sim.cs → cad/sim/results.txt; allowables: SOLIDWORKS library 6061-T6 (SS), E 69 GPa, yield 275 MPa</p>
 
@@ -682,7 +678,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 7 BUDGET ============================ -->
 <section class="sec" id="budget" data-title="Budget &amp; BOM" data-n="7">
-  <div class="sechead"><div class="eyebrow">7 · Budget &amp; BOM</div><h2>Budget &amp; BOM</h2></div>
+  <div class="sechead"><h2><span class="secno">7</span>Budget &amp; BOM</h2></div>
   <p class="verdict"><b class="ok-t">C0 fits the fixed $2,000 cap.</b> Goods are <b data-k="C0.bom.goods" data-c="usd"></b>. Adding <span data-k="C0.bom.tax" data-c="usd"></span> of tax (10.25 %) and a $100 shipping allowance gives <b data-k="C0.bom.total" data-c="usd"></b> committed, which leaves <b data-k="C0.bom.crash" data-c="usd"></b> for crash repair. The 8-lift and coaxial layouts do not fit. FAA registration and AMA membership ($94) are fees, not hardware, so they sit outside the cap.</p>
   <div class="kpis">
     <div class="kpi"><div class="l">C0 committed</div><div class="v ok" data-k="C0.bom.total" data-c="usd"></div><div class="s">goods <span data-k="C0.bom.goods" data-c="usd"></span></div></div>
@@ -719,7 +715,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 8 TESTING ============================ -->
 <section class="sec" id="testing" data-title="Testing &amp; failure" data-n="8">
-  <div class="sechead"><div class="eyebrow">8 · Testing &amp; failure</div><h2>Testing &amp; failure</h2></div>
+  <div class="sechead"><h2><span class="secno">8</span>Testing &amp; failure</h2></div>
   <p class="verdict"><b>Weakest link: a lift-motor or ESC failure in hover. C0 has no recovery from it.</b> Next are a hard landing on stiff gear and an unproven BLHeli_S ESC under sustained hover current. The $69 test and safety kit (LiPo bag, ammo can, load cell, Nano, watt meter, IR thermometer) qualifies every motor and ESC before flight. The flight build-up is in §13.</p>
 
   <h3 id="t-stand">Thrust-stand test plan</h3>
@@ -768,7 +764,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 9 CG ============================ -->
 <section class="sec" id="cg" data-title="CG &amp; stability" data-n="9">
-  <div class="sechead"><div class="eyebrow">9 · CG &amp; stability</div><h2>CG &amp; stability</h2></div>
+  <div class="sechead"><h2><span class="secno">9</span>CG &amp; stability</h2></div>
   <p class="verdict"><b>The CG target is 28 % MAC, and the lift thrust centroid is placed on it by construction.</b> Static margin is <span id="smWith"></span> % with the payload allowance and <span id="smNo"></span> % without it. The vortex-lattice model independently puts the neutral point at <span data-k="AERO.neutral_point_pct_mac" data-d="1"></span> % MAC, against <span data-k="C0.geo.hn" data-d="1" data-m="100"></span> % from the tail-volume formula. Without the payload the CG moves aft and the rear rotors carry <span id="hoverSplit"></span> % more thrust, so carry ballast in the payload bay.</p>
   <figure class="chart"><figcaption>C0 CG envelope against neutral point and thrust centroid (% MAC from leading edge)</figcaption><div class="svgwrap"><svg id="cgChart" viewBox="0 0 640 170" role="img" aria-label="CG envelope chart"></svg></div></figure>
   <p class="src">analysis/sizing.mjs cg(), geometry(); analysis/vlm.mjs → aero.json; fuselage destabilising term not included in either</p>
@@ -784,7 +780,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 10 CONTROLS ============================ -->
 <section class="sec" id="controls" data-title="Controls" data-n="10">
-  <div class="sechead"><div class="eyebrow">10 · Controls</div><h2>Controls</h2></div>
+  <div class="sechead"><h2><span class="secno">10</span>Controls</h2></div>
   <p class="verdict"><b>ArduPilot Plane QuadPlane on a CoreWing F405 Wing APP V2.</b> The board has 12 outputs (10 used), a 90 A current sensor and an 8 A servo BEC set to 6 V for the five ES3005HV servos. Transition completes at AIRSPEED_MIN = 16 m/s, which meets R11's 1.3 × stall, measured by the MS5525 airspeed sensor. Lift motors taper out over 5 s, and Q_ASSIST_SPEED is 13 m/s. Telemetry runs over ELRS MAVLink, so no separate radio is needed.</p>
   <p class="src">docs/research/budget-avionics.md §1–§6; docs/research/avionics-autopilot.md §1.2–1.3 (parameter names and defaults, checked 2026-10-13)</p>
 
@@ -845,7 +841,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 11 SCHEDULE ============================ -->
 <section class="sec" id="schedule" data-title="Schedule &amp; compliance" data-n="11">
-  <div class="sechead"><div class="eyebrow">11 · Schedule &amp; compliance</div><h2>Schedule &amp; compliance</h2></div>
+  <div class="sechead"><h2><span class="secno">11</span>Schedule &amp; compliance</h2></div>
   <p class="verdict"><b>Plan: design freeze 2026-12-04, SITL rehearsal January to February, first hover 2027-03-13, full mission 2027-04-17, a 13-day buffer.</b> The site decision (by 2026-11-06) is the critical path. File flight requests for primary and backup dates at once, because each needs 7 business days. The academic calendar and team availability over winter break are not reconciled here (—).</p>
   <figure class="chart"><figcaption>Milestones, 2026-10 to 2027-04</figcaption><div class="svgwrap"><svg id="gantt" viewBox="0 0 700 420" role="img" aria-label="Schedule chart"></svg></div></figure>
   <p class="src">Dates are this review's plan <span class="est">est</span>; lead times from docs/research/budget-*.md</p>
@@ -882,7 +878,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 12 SIMULATION ============================ -->
 <section class="sec" id="simulation" data-title="Simulation &amp; verification" data-n="12">
-  <div class="sechead"><div class="eyebrow">12 · Simulation &amp; verification</div><h2>Simulation &amp; verification</h2></div>
+  <div class="sechead"><h2><span class="secno">12</span>Simulation &amp; verification</h2></div>
   <p class="verdict"><b>Every SOLIDWORKS Simulation result agrees with its hand calculation within 15 %, and every margin passes.</b> Each FEA model uses the same idealisation as its hand calc (rigid root, bonded joiner), so the FEA confirms the hand calcs rather than independently validating them. Clamp compliance would lower the boom frequency. The studies are FEA of the boom and the spar/joiner, a boom modal study and a lift-motor thermal study. A vortex-lattice model confirms the neutral point and the lift slope. An independent Python check re-derives every sizing formula and the BOM. Aerodynamic CFD was not run because SOLIDWORKS Flow Simulation would not load on this licence.</p>
   <p class="src">cad/Sim.cs → cad/sim/results.txt and *.SLDPRT (studies inside); analysis/vlm.mjs → aero.json; analysis/verify.py</p>
 
@@ -923,7 +919,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 <!-- ============================ 13 FLIGHT TEST & OPERATIONS ============================ -->
 <section class="sec" id="flighttest" data-title="Flight test &amp; operations" data-n="13">
-  <div class="sechead"><div class="eyebrow">13 · Flight test &amp; operations</div><h2>Flight test &amp; operations</h2></div>
+  <div class="sechead"><h2><span class="secno">13</span>Flight test &amp; operations</h2></div>
   <p class="verdict"><b>Fly a strict build-up: SITL, bench, tethered hover, free hover, Q-mode handling, partial transitions, full transition, then the mission.</b> Each step has entry, abort and success criteria. C0 has no hover motor-out tolerance and runs beta firmware, so the early steps stay low and short.</p>
   <h3 id="ft-matrix">Build-up test matrix</h3>
   <div class="tbl"><table>
@@ -1468,7 +1464,7 @@ function derived(){
 function img(id, list){
   const box = $(id); if(!box) return;
   list.forEach(([key, cap])=>{ if(!IMG[key]) return;
-    box.insertAdjacentHTML('beforeend', `<figure class="chart" style="margin:0"><figcaption>${cap}</figcaption><img src="${IMG[key]}" alt="${cap}" loading="lazy" style="width:100%;height:auto;display:block;border-radius:6px"></figure>`); });
+    box.insertAdjacentHTML('beforeend', `<figure class="chart" style="margin:0"><figcaption>${cap}</figcaption><img class="cadimg" src="${IMG[key]}" alt="${cap}" loading="lazy"></figure>`); });
 }
 function tables(){
   img('#cadImages', [['cad_iso','Isometric'],['cad_top','Top'],['cad_side','Side'],['cad_front','Front']]);
