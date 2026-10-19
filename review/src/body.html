@@ -99,7 +99,7 @@
       <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
       <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
       <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
-      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, 23 parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
+      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
       <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
       <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
       <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
@@ -138,7 +138,7 @@
 <!-- ============================ 2 CAD ============================ -->
 <section class="sec" id="model3d" data-title="CAD model" data-n="2">
   <div class="sechead"><h2><span class="secno">2</span>CAD model</h2></div>
-  <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has 27 parts in a 49-component assembly:</p>
+  <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has <span data-cad="parts">—</span> parts in a <span data-cad="comps">—</span>-component assembly:</p>
   <ul class="tight">
     <li>NACA 2415 wing panels with 26 % chord ailerons and a spar socket bored at 30 % chord</li>
     <li>a foam wing saddle with printed root plates that carries the root aerofoil across the pod over the joiner, held by one M5 screw per side</li>

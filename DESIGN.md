@@ -376,7 +376,7 @@ There are no pills, circles, dots or status lights.
 
 ### Tables
 - **Frame:** the table itself carries a 2px ink rule on top and a 1px Frame Rule at the bottom; its scroll wrapper has no border. There are no side borders, no fill and no zebra stripes. Cells are inset 12px, and the first column 8px from the left edge.
-- **Header:** mono caps and sticky, on the Vellum ground.
+- **Header:** mono caps and sticky, on the Vellum ground. A sortable header holds a full-cell button (no visual change) whose arrow shows the state: ↕ unsorted, an orange ↑ or ↓ when sorted.
 - **Columns and rows:** number columns are right-aligned and tabular. Rows show a Sheet Tint on hover. Sortable headers show ↕, and the sorted column shows an orange arrow.
 - **Chosen row:** International Orange Wash.
 - **Total row:** a 1px ink rule above it.
@@ -390,6 +390,9 @@ There are no pills, circles, dots or status lights.
 
 ### Skip link
 - **Style:** a Drafting Ink tag with white mono text, hidden above the page until focused, then shown at the top left. Activating it moves focus to the current section heading.
+
+### Print
+- **Style:** printing drops the interactive-only parts (viewers, sliders, segmented controls, parts list, skip link, touch gates), shows every section, keeps the static renders, and avoids breaking figures, decisions, tables and measurement lists across pages.
 
 ### Navigation
 - **Contents column:**

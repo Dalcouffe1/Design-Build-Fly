@@ -189,12 +189,16 @@ th:first-child,td:first-child{padding-left:8px}
 tbody tr:last-child td{border-bottom:0}
 thead th{position:sticky;top:0;background:var(--bg);font:500 .75rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-2);white-space:nowrap;z-index:1;border-bottom:1px solid var(--line-2);padding-block:10px}
 tbody tr:hover td{background:var(--surface-2)}
-th.sort{cursor:pointer;user-select:none;transition:color .12s}
+thead th.sort{padding:0;user-select:none;transition:color .12s}
 th.sort:hover{color:var(--fg)}
-th.sort::after{content:"↕";margin-left:5px;color:var(--line-3);font-size:.9em;letter-spacing:0}
-th.sort[aria-sort="ascending"]::after{content:"↑";color:var(--accent)}
-th.sort[aria-sort="descending"]::after{content:"↓";color:var(--accent)}
-th.sort[aria-sort]{color:var(--fg)}
+/* the sort control is a full-cell button; its arrow shows the sort state */
+.thbtn{all:unset;box-sizing:border-box;display:block;width:100%;padding:10px 12px;cursor:pointer;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;text-align:inherit;white-space:nowrap}
+thead th.sort:first-child .thbtn{padding-left:8px}
+.thbtn:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.thbtn::after{content:"↕";margin-left:5px;color:var(--line-3);font-size:.9em;letter-spacing:0}
+th.sort[aria-sort="ascending"] .thbtn::after{content:"↑";color:var(--accent)}
+th.sort[aria-sort="descending"] .thbtn::after{content:"↓";color:var(--accent)}
+th.sort[aria-sort="ascending"],th.sort[aria-sort="descending"]{color:var(--fg)}
 td.n,th.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 td.n{font-feature-settings:"tnum" 1}
 tbody tr.chosen td{background:var(--accent-soft)}
@@ -286,12 +290,15 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .tbl{max-height:none}
   .pn{grid-template-columns:1fr}
   .decision{padding:14px 14px 12px}
-  thead th.sort{padding-block:14px}
+  .thbtn{padding-block:14px}
 }
 
 /* ---------- print ---------- */
 @media print{
-  nav.side,nav.tabs,.themebtn,.secidx{display:none!important}
+  nav.side,nav.tabs,.themebtn,.secidx,.skip,.gate,.viewer,.sliders,.seg,.cadparts,.loadmsg{display:none!important}
+  body{background:#fff;color:#000}
+  .tbl{border:0}
+  figure.chart,.decision,.measure,table,.kpis{break-inside:avoid}
   .layout{display:block}
   section.sec{display:block!important;break-before:page}
   .tbl{max-height:none;overflow:visible}
@@ -352,7 +359,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 <section class="sec" id="overview" data-title="Overview" data-n="1">
   <div class="sechead"><h2><span class="secno">1</span>Overview</h2></div>
   <p class="verdict lede"><b>Baseline: C0, a 4-lift twin-boom quadplane built to a fixed $2,000 cap.</b> It has a 2.4 m span and a <b data-k="C0.sized.S" data-d="2"></b> m² NACA 2415 wing (AR <span data-k="C0.sized.AR" data-d="1"></span>, chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm). Lift comes from four SunnySky X4110S motors on 17-in props, and a fifth X4110S drives a 14×8.5 pusher. The aircraft has 6061 aluminium booms and spar on a taped XPS foam wing, and runs ArduPilot QuadPlane on a CoreWing F405 Wing board. Sized MTOW is <b data-k="C0.sized.m" data-d="2"></b> kg, with hover thrust-to-weight <b data-k="C0.sized.TW" data-d="2"></b>. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W and cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W. On one 6S 6500 mAh pack it has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise after the hover allowance and 20 % reserve. <b class="ok-t">Verdict: it closes physically and financially.</b> Committed spend including tax and shipping is <b data-k="C0.bom.total" data-c="usd"></b>, which leaves a <b data-k="C0.bom.crash" data-c="usd"></b> crash reserve under the cap. That reserve is thin (decision below).</p>
-  <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
+  <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3.1 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
 
   <div class="kpis">
     <div class="kpi"><div class="l">Committed spend (R6)</div><div class="v ok" data-k="C0.bom.total" data-c="usd"></div><div class="s">cap $2,000 incl. tax + shipping</div></div>
@@ -425,10 +432,10 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   <div class="tbl"><table>
     <thead><tr><th>Workstream</th><th>Status</th><th>What exists</th><th>What does not</th></tr></thead>
     <tbody>
-      <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
+      <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3.1, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
       <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
       <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
-      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, 23 parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
+      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
       <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
       <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
       <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
@@ -467,7 +474,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 <!-- ============================ 2 CAD ============================ -->
 <section class="sec" id="model3d" data-title="CAD model" data-n="2">
   <div class="sechead"><h2><span class="secno">2</span>CAD model</h2></div>
-  <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has 27 parts in a 49-component assembly:</p>
+  <p class="verdict">The SOLIDWORKS model is generated from the sizing outputs by <code>cad/build.ps1</code>. Re-running the sizing and the build regenerates every part, so the CAD can't drift from the numbers. It has <span data-cad="parts">—</span> parts in a <span data-cad="comps">—</span>-component assembly:</p>
   <ul class="tight">
     <li>NACA 2415 wing panels with 26 % chord ailerons and a spar socket bored at 30 % chord</li>
     <li>a foam wing saddle with printed root plates that carries the root aerofoil across the pod over the joiner, held by one M5 screw per side</li>
@@ -1615,16 +1622,18 @@ function tables(){
 
 // ---------- sortable ----------
 function sortable(){
-  $$('th.sort').forEach(th=>{ th.tabIndex=0; const go=()=>{
+  $$('th.sort').forEach(th=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='thbtn';
+    while(th.firstChild) btn.appendChild(th.firstChild); th.appendChild(btn); th.setAttribute('aria-sort','none');
+    const go=()=>{
     const table=th.closest('table'), i=[...th.parentNode.children].indexOf(th), body=table.tBodies[0];
     const rows=[...body.rows].filter(r=>!r.classList.contains('total')), totals=[...body.rows].filter(r=>r.classList.contains('total'));
     const dir = th.getAttribute('aria-sort')==='ascending'?-1:1;
-    table.querySelectorAll('th.sort').forEach(x=>x.removeAttribute('aria-sort'));
+    table.querySelectorAll('th.sort').forEach(x=>x.setAttribute('aria-sort','none'));
     th.setAttribute('aria-sort', dir===1?'ascending':'descending');
     const val = r=>{ const t=r.cells[i]?.textContent.trim()||''; const n=parseFloat(t.replace(/[$,≈+]/g,'')); return isNaN(n)?t.toLowerCase():n; };
     rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x>y?1:x<y?-1:0)*dir; });
     rows.concat(totals).forEach(r=>body.appendChild(r)); };
-    th.addEventListener('click',go); th.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } }); });
+    btn.addEventListener('click',go); });
 }
 
 // ---------- SVG helpers ----------
@@ -1886,6 +1895,7 @@ function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cu
 
 // ---------- boot ----------
 buildNav(); fill(); derived(); tables(); sortable();
+$$('[data-cad="parts"]').forEach(e=>e.textContent=Object.keys(MESH.parts).length); $$('[data-cad="comps"]').forEach(e=>e.textContent=MESH.comps.length);
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));

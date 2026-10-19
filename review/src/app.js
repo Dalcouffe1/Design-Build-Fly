@@ -221,16 +221,18 @@ function tables(){
 
 // ---------- sortable ----------
 function sortable(){
-  $$('th.sort').forEach(th=>{ th.tabIndex=0; const go=()=>{
+  $$('th.sort').forEach(th=>{ const btn=document.createElement('button'); btn.type='button'; btn.className='thbtn';
+    while(th.firstChild) btn.appendChild(th.firstChild); th.appendChild(btn); th.setAttribute('aria-sort','none');
+    const go=()=>{
     const table=th.closest('table'), i=[...th.parentNode.children].indexOf(th), body=table.tBodies[0];
     const rows=[...body.rows].filter(r=>!r.classList.contains('total')), totals=[...body.rows].filter(r=>r.classList.contains('total'));
     const dir = th.getAttribute('aria-sort')==='ascending'?-1:1;
-    table.querySelectorAll('th.sort').forEach(x=>x.removeAttribute('aria-sort'));
+    table.querySelectorAll('th.sort').forEach(x=>x.setAttribute('aria-sort','none'));
     th.setAttribute('aria-sort', dir===1?'ascending':'descending');
     const val = r=>{ const t=r.cells[i]?.textContent.trim()||''; const n=parseFloat(t.replace(/[$,≈+]/g,'')); return isNaN(n)?t.toLowerCase():n; };
     rows.sort((a,b)=>{ const x=val(a), y=val(b); return (x>y?1:x<y?-1:0)*dir; });
     rows.concat(totals).forEach(r=>body.appendChild(r)); };
-    th.addEventListener('click',go); th.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); go(); } }); });
+    btn.addEventListener('click',go); });
 }
 
 // ---------- SVG helpers ----------
@@ -492,6 +494,7 @@ function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cu
 
 // ---------- boot ----------
 buildNav(); fill(); derived(); tables(); sortable();
+$$('[data-cad="parts"]').forEach(e=>e.textContent=Object.keys(MESH.parts).length); $$('[data-cad="comps"]').forEach(e=>e.textContent=MESH.comps.length);
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));

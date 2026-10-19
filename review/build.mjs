@@ -26,6 +26,8 @@ function b64(f) {
 const imgs = { cad_iso:'../cad/images/VTOL_Concept_iso.png', cad_top:'../cad/images/VTOL_Concept_top.png', cad_side:'../cad/images/VTOL_Concept_side.png',
   cad_front:'../cad/images/VTOL_Concept_front.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
+const BASIS_VER = (r('../docs/DESIGN-BASIS.md').match(/\(v(\d+\.\d+(?:\.\d+)?)/) || [])[1];
+if (!BASIS_VER) throw new Error('design-basis version not found');
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
 const html = `<title>Lift + Cruise VTOL Review</title>
 <meta name="description" content="Concept-stage engineering design review of a student lift + cruise VTOL">
@@ -34,7 +36,7 @@ const html = `<title>Lift + Cruise VTOL Review</title>
 <style>
 ${r('./src/style.css')}
 </style>
-${r('./src/body.html')}
+${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER)}
 <script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; const MESH = ${JSON.stringify(MESH)};</script>
 <script>
 ${r('../analysis/model.js')}
