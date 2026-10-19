@@ -147,6 +147,11 @@ function CadViewer(wrap, M){
     toggleExplode(){ explodeTo = explodeTo ? 0 : 1; return !!explodeTo; },
     toggleXray(){ setXray(!xray); return xray; },
     toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); need = true; return items[0].ln.visible; },
+    highlight(name){
+      for (const [n, m] of Object.entries(mats)) { m.emissive.set(n === name ? (css('--accent') || '#b8481b') : '#000000'); m.emissiveIntensity = n === name ? 0.55 : 0; }
+      if (name){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[name].d; tip.hidden = false; } else tip.hidden = true;
+      need = true;
+    },
     refresh(){ resize(); need = true; }
   };
 }

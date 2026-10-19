@@ -401,6 +401,9 @@ There are no pills, circles, dots or status lights.
 - **Controls:** a Sheet Tint control bar, with buttons following the segmented-control rules.
 - **Part label:** hovering over a part shows a small framed label with a condensed part name and a body-text description.
 - **Rendering:** CAD colours, hairline feature edges in the theme's ink, and a faint ground grid in Frame Rule.
+- **Loading:** the 3D library loads only when the CAD section opens. Until then a mono "Loading the 3D model…" caption sits on the empty frame.
+- **Touch:** on touch screens the canvas ignores gestures until the reader taps a "Tap to rotate the model" tag (mono caps on Sheet White, Frame Rule border). Tapping outside the viewer, or scrolling it out of view, turns gestures off again, so swipes always scroll the page.
+- **Parts list:** a "Parts in the model" disclosure under the controls holds one 44px button per part. Hover or keyboard focus highlights that part in International Orange and shows its label.
 
 ## Do's and Don'ts
 

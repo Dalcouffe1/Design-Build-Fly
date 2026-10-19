@@ -11,7 +11,7 @@
       <div><dt>Sources</dt><dd><code>docs/</code> · <code>analysis/</code> · <code>cad/</code></dd></div>
     </dl>
   </div>
-  <button class="themebtn" id="themeBtn" type="button" aria-label="Switch colour theme">Theme: system</button>
+  <button class="themebtn" id="themeBtn" type="button">Theme: system</button>
 </header>
 <nav class="tabs" id="tabs" aria-label="Sections"></nav>
 <div class="layout">
@@ -154,17 +154,19 @@
   <p class="src">SOLIDWORKS 2025 renders (cad/images/). Open VTOL_Concept.EASM in the free eDrawings viewer, or the STEP file in any CAD tool.</p>
 
   <h3 id="m3-cad">Interactive SOLIDWORKS model</h3>
-  <p>The full C0 assembly, rendered from the SOLIDWORKS part geometry. Drag to orbit, right-drag or two-finger drag to pan, and scroll or pinch to zoom. Hover over a part, or tap it on a phone, to see what it is. <b>X-ray</b> fades the foam and skin to show the booms, spar sockets, joiner and battery inside; <b>Explode</b> pulls the parts apart.</p>
+  <p>The full C0 assembly, rendered from the SOLIDWORKS part geometry. Drag to orbit, right-drag or two-finger drag to pan, and scroll or pinch to zoom. On a touch screen, tap the model once to start; swipes before that scroll the page. Hover over a part, or tap it, to see what it is, or use the parts list below the viewer. <b>X-ray</b> fades the foam and skin to show the booms, spar sockets, joiner and battery inside; <b>Explode</b> pulls the parts apart.</p>
   <div class="viewer cadview" id="cadView">
     <canvas id="cadCanvas" aria-label="Rotatable SOLIDWORKS model of the C0 aircraft; drag to orbit, scroll to zoom"></canvas>
     <span class="lbl">SOLIDWORKS · C0 v0.3.1</span>
     <div class="tip" id="cadTip" hidden></div>
     <p class="fallback" hidden>The 3D viewer needs an internet connection to load its graphics library (three.js). The SOLIDWORKS renders above show the same model.</p>
+    <p class="loadmsg">Loading the 3D model…</p>
     <div class="ctl">
       <button type="button" data-cview="iso">Iso</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button>
       <button type="button" id="cadXray" aria-pressed="false">X-ray</button><button type="button" id="cadExplode" aria-pressed="false">Explode</button><button type="button" id="cadEdges" aria-pressed="true">Edges</button>
     </div>
   </div>
+  <details class="cadparts"><summary>Parts in the model</summary><p class="meta">Focus or hover a part to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
   <p class="src">cad/model/*.SLDPRT exported by cad/ExportMesh.exe (binary STL, 0.4 mm chord deviation, 12° angle tolerance) → review/mesh.mjs; placed per cad/params.txt (<span id="cadTris"></span> triangles, <span id="cadComps"></span> components). Colours are the CAD display colours, not finishes.</p>
 
   <h3 id="m3-viewer">Concept comparison geometry</h3>

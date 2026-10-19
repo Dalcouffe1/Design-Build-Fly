@@ -111,6 +111,8 @@ function Viewer(canvas, opts){
   canvas.addEventListener('pointerdown',e=>{dragging=true;lx=e.clientX;ly=e.clientY;canvas.setPointerCapture(e.pointerId);});
   canvas.addEventListener('pointermove',e=>{if(!dragging)return;yaw+= (e.clientX-lx)*0.01;pitch=Math.max(-1.4,Math.min(1.4,pitch+(e.clientY-ly)*0.01));lx=e.clientX;ly=e.clientY;draw();});
   canvas.addEventListener('pointerup',()=>dragging=false);
+  canvas.addEventListener('pointercancel',()=>dragging=false);
+  canvas.addEventListener('lostpointercapture',()=>dragging=false);
   canvas.addEventListener('wheel',e=>{e.preventDefault();zoom=Math.max(0.5,Math.min(3,zoom*(e.deltaY<0?1.1:0.9)));draw();},{passive:false});
   window.addEventListener('resize',()=>model&&draw());
   return {

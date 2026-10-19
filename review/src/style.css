@@ -43,7 +43,7 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
-body{background:var(--bg);color:var(--fg);font:16px/1.6 var(--f-body);font-variant-numeric:tabular-nums;margin:0;
+body{background:var(--bg);color:var(--fg);font:1rem/1.6 var(--f-body);font-variant-numeric:tabular-nums;margin:0;
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 ::selection{background:var(--accent-soft);color:var(--fg)}
 h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0;color:var(--fg);font-weight:600}
@@ -220,7 +220,7 @@ figure.chart figcaption{font:600 1.125rem/1.35 var(--f-display);letter-spacing:.
 figure.chart .svgwrap{padding:8px 0 12px}
 figure.chart svg{width:100%;max-width:880px;height:auto;display:block;margin-inline:auto}
 .svgwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
-@media (max-width:640px){.svgwrap svg{min-width:560px}}
+@media (max-width:640px){.svgwrap svg{min-width:700px}}
 svg text{fill:var(--fg-2);font:11px var(--f-mono);font-variant-numeric:tabular-nums}
 svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 3}
 
@@ -270,6 +270,7 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .viewer canvas{height:340px}
   .pn{grid-template-columns:1fr}
   .decision{padding:14px 14px 12px}
+  thead th.sort{padding-block:14px}
 }
 
 /* ---------- print ---------- */
@@ -286,4 +287,19 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 .cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.875rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
 .cadview .tip b{display:block;font:600 1rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
 .cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
+.cadview .loadmsg{display:none;position:absolute;left:0;right:0;top:45%;margin:0;text-align:center;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);max-width:none}
+.cadview.loading .loadmsg{display:block}
+.cadparts{margin:12px 0 0;border-bottom:1px solid var(--line-2)}
+.cadparts summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font:600 1rem/1.25 var(--f-display);color:var(--fg)}
+.cadparts ul{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cadparts li{max-width:none}
+.cadparts button{min-height:44px;padding:0 12px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:var(--r-s);font:400 .875rem var(--f-body);cursor:pointer;transition:border-color .12s,color .12s}
+.cadparts button:hover,.cadparts button:focus-visible{border-color:var(--fg);color:var(--fg)}
+/* touch gate: canvases take gestures only after a tap */
+.viewer .gate{display:none}
+@media (pointer:coarse){
+  .viewer:not(.armed) canvas{pointer-events:none}
+  .viewer .gate{display:flex;position:absolute;left:0;right:0;top:0;align-items:center;justify-content:center;padding:0;border:0;background:transparent;cursor:pointer}
+  .viewer .gate span{font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:10px 12px}
+}
 @media (max-width:560px){.cadview canvas{height:380px}.cadview .tip{top:auto;bottom:66px}}

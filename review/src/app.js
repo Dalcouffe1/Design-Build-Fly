@@ -44,24 +44,27 @@ function buildNav(){
   });
   $('#side').appendChild(side);
 }
-function show(id, sub){
+function show(id, sub, focus){
   const target = secs.find(s=>s.id===id) || secs[0];
   secs.forEach(s=>s.classList.toggle('cur', s===target));
-  $$('#side li[data-id]').forEach(li=>{ const on=li.dataset.id===target.id; li.classList.toggle('cur',on); li.querySelector('a').classList.toggle('cur',on); });
-  $$('#tabs a').forEach(a=>{ const on=a.dataset.id===target.id; a.classList.toggle('cur',on); if(on) a.scrollIntoView({block:'nearest',inline:'center'}); });
+  const mark=(a,on)=>{ a.classList.toggle('cur',on); if(on) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); };
+  $$('#side li[data-id]').forEach(li=>{ const on=li.dataset.id===target.id; li.classList.toggle('cur',on); mark(li.querySelector('a'),on); });
+  $$('#tabs a').forEach(a=>{ const on=a.dataset.id===target.id; mark(a,on); if(on) a.scrollIntoView({block:'nearest',inline:'center'}); });
   try{ localStorage.setItem('vtolSec', target.id); }catch(e){}
   redrawSection(target.id);
-  if(sub){ document.getElementById(sub)?.scrollIntoView(); } else window.scrollTo(0,0);
+  const dest = sub ? document.getElementById(sub) : null;
+  if(dest) dest.scrollIntoView(); else window.scrollTo(0,0);
+  if(focus){ const f = dest || target.querySelector('h2'); if(f){ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); } }
 }
-function route(hash){
+function route(hash, focus){
   const h = (hash!==undefined ? hash : location.hash).replace(/^#/,'');
   if(!h){ let s=null; try{ s=localStorage.getItem('vtolSec'); }catch(e){} show(s||'overview'); return; }
   const el = document.getElementById(h); if(!el) return show('overview');
-  const sec = el.closest('section.sec'); show(sec.id, el===sec ? null : h);
+  const sec = el.closest('section.sec'); show(sec.id, el===sec ? null : h, focus);
 }
-window.addEventListener('hashchange', ()=>route());
+window.addEventListener('hashchange', ()=>route(undefined, true));
 document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="#"]'); if(!a) return; const h=a.getAttribute('href');
-  if(!document.getElementById(h.slice(1))) return; e.preventDefault(); try{ history.pushState(null,'',h); }catch(err){} route(h); });
+  if(!document.getElementById(h.slice(1))) return; e.preventDefault(); try{ history.pushState(null,'',h); }catch(err){} route(h, true); });
 
 // ---------- data binding ----------
 function fill(){
@@ -232,6 +235,8 @@ function sortable(){
 const NS='http://www.w3.org/2000/svg';
 function el(tag, attrs, parent, text){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!==undefined) e.textContent=text; if(parent) parent.appendChild(e); return e; }
 function clear(svg){ while(svg.firstChild) svg.removeChild(svg.firstChild); }
+function describe(svg, text){ svg.setAttribute('aria-label', text); }
+const sgn = v => (v>0?'+':v<0?'−':'')+fmt(Math.abs(v),2);
 
 // ---------- live chain + sliders ----------
 const SL = [
@@ -293,6 +298,7 @@ function drawTornado(){
     el('rect',{x:Math.min(sx(r.hi),mid),y:y+3,width:Math.abs(sx(r.hi)-mid),height:13,fill:css('--c1'),rx:2},svg); });
   el('rect',{x:x0,y:top+res.length*rowH+20,width:10,height:10,fill:css('--c2')},svg); el('text',{x:x0+14,y:top+res.length*rowH+29},svg,'input −20 %');
   el('rect',{x:x0+100,y:top+res.length*rowH+20,width:10,height:10,fill:css('--c1')},svg); el('text',{x:x0+114,y:top+res.length*rowH+29},svg,'input +20 %');
+  describe(svg, `Tornado chart: change in MTOW from a base of ${fmt(base,2)} kg when each input moves ±20 %, largest first. `+res.map(r=>`${lab[r.k]}: ${sgn(r.lo)} kg at −20 %, ${sgn(r.hi)} kg at +20 %`).join('; ')+'.');
 }
 function drawPack(){
   const svg=$('#packChart'); if(!svg) return; clear(svg);
@@ -315,6 +321,7 @@ function drawPack(){
   data.forEach((d,i)=>{ el('circle',{cx:xs(i),cy:ym(d.m),r:3.5,fill:css('--c3')},svg); el('text',{x:xs(i),y:ym(d.m)-8,'text-anchor':'middle'},svg,fmt(d.m,2)); });
   if(mMax>=8){ el('line',{x1:l,x2:W-r,y1:ym(8),y2:ym(8),stroke:css('--warn'),'stroke-dasharray':'2 3'},svg); el('text',{x:W-r-4,y:ym(8)-4,'text-anchor':'end',fill:css('--warn')},svg,'R2: 8 kg target floor'); }
   el('line',{x1:l,x2:W-r,y1:yc(11.5),y2:yc(11.5),stroke:css('--ok'),'stroke-dasharray':'2 3'},svg); el('text',{x:l+4,y:yc(11.5)-4,fill:css('--ok')},svg,'design margin 11.5 min');
+  describe(svg, 'Battery packs on C0, MTOW and cruise minutes available (R10 needs 10 min; design margin 11.5 min). '+data.map(d=>`${d.pack}: ${fmt(d.m,2)} kg, ${fmt(d.cruise_min,1)} min`).join('; ')+'.');
 }
 function drawCap(){
   const svg=$('#capChart'); if(!svg) return; clear(svg);
@@ -324,7 +331,7 @@ function drawCap(){
   parts.push({n:'Tax', v:b.tax, col:'--fg-3', op:0.7}, {n:'Shipping (est.)', v:b.shipping, col:'--line-2', op:0.9});
   let acc=0;
   parts.forEach(p=>{ el('rect',{x:x(acc),y:y0,width:Math.max(0.5,x(acc+p.v)-x(acc)),height:h,fill:css(p.col),opacity:p.op},svg);
-    if(x(acc+p.v)-x(acc)>34) el('text',{x:(x(acc)+x(acc+p.v))/2,y:y0+h+14,'text-anchor':'middle',fill:css('--fg-2'),'font-size':'10'},svg,fmtUSD(p.v)); acc+=p.v; });
+    if(x(acc+p.v)-x(acc)>34) el('text',{x:(x(acc)+x(acc+p.v))/2,y:y0+h+14,'text-anchor':'middle',fill:css('--fg-2'),'font-size':'11'},svg,fmtUSD(p.v)); acc+=p.v; });
   el('rect',{x:x(acc),y:y0,width:Math.max(0,x(total)-x(acc)),height:h,fill:'none',stroke:css('--ok'),'stroke-dasharray':'5 4'},svg);
   if(total>acc) el('text',{x:(x(acc)+x(total))/2,y:y0+h/2+4,'text-anchor':'middle',fill:css('--ok'),'font-weight':'700'},svg,'reserve '+fmtUSD(total-acc));
   el('line',{x1:x(total),x2:x(total),y1:y0-14,y2:y0+h+10,stroke:css('--bad'),'stroke-width':2},svg);
@@ -334,6 +341,7 @@ function drawCap(){
   parts.forEach(p=>{ const w=16+p.n.length*6.2+16; if(lx+w>W-r){ lx=l; ly+=18; }
     el('rect',{x:lx,y:ly-9,width:10,height:10,fill:css(p.col),opacity:p.op},svg); el('text',{x:lx+14,y:ly},svg,p.n); lx+=w; });
   svg.setAttribute('viewBox', '0 0 640 '+(ly+14));
+  describe(svg, `C0 committed spend ${fmtUSD(acc)} against the $2,000 cap, leaving ${fmtUSD(total-acc)} reserve. `+parts.map(p=>`${p.n} ${fmtUSD(p.v)}`).join('; ')+'.');
 }
 
 function drawDuty(){
@@ -347,6 +355,7 @@ function drawDuty(){
   s=0; ph.forEach(([n,dt,p])=>{ el('text',{x:x(s+dt/2),y:y(p)-6,'text-anchor':'middle'},svg,n==='cruise'?`cruise ${fmt(p,0)} W × 10 min`:n==='hover'?`${fmt(p,0)} W`:''); s+=dt; });
   [0,120,240,360,480,600,760].forEach(v=>el('text',{x:x(v),y:H-b+16,'text-anchor':'middle'},svg,Math.round(v/60)+' min'));
   el('text',{x:W-r,y:H-6,'text-anchor':'end'},svg,`mission ${fmt(s0.E_Wh,0)} Wh of ${fmt(s0.Epack_Wh,0)} Wh pack`);
+  describe(svg, `Electrical power through one mission: hover ${fmt(Ph,0)} W for 60 s, transition at ${fmt(Ph,0)} W for 20 s, cruise ${fmt(Pc,0)} W for 10 min, transition 20 s, hover 60 s. Mission energy ${fmt(s0.E_Wh,0)} Wh of a ${fmt(s0.Epack_Wh,0)} Wh pack.`);
 }
 function drawCG(){
   const svg=$('#cgChart'); if(!svg) return; clear(svg);
@@ -358,6 +367,7 @@ function drawCG(){
   const mark=(p,lab,col,dy)=>{ el('line',{x1:x(p),x2:x(p),y1:yb-24,y2:yb+14,stroke:css(col),'stroke-width':2.5},svg); el('text',{x:x(p),y:yb-28+dy,'text-anchor':'middle',fill:css(col)},svg,lab); };
   mark(cg.pct.target,'CG target / thrust centroid 28 %','--accent',-6);
   mark(g.hn*100,`NP ${fmt(g.hn*100,1)} %`,'--bad',0);
+  describe(svg, `C0 CG envelope from ${fmt(cg.pctFwd,1)} % to ${fmt(cg.pct.noPayload,1)} % MAC, against a CG target and thrust centroid of 28 % and a neutral point of ${fmt(g.hn*100,1)} % MAC.`);
 }
 function drawState(){
   const svg=$('#stateSvg'); if(!svg) return; clear(svg);
@@ -418,7 +428,7 @@ let V=null, vKey='C0';
 function viewerGeom(k){ const c=D.concepts[k], g=c.geo, s=c.sized, x=c.cg.items.find(i=>i.name.startsWith('Battery')).x;
   return {span:D.base.span, chord:s.chord, fusL:0.85, fusW:0.16, fusH:0.16, fusX:0.45-0.425, battX:x, booms:g.booms, liftD:g.D, xRear:g.xRear,
     tailLE:g.xRear-g.D/2-0.05, hC:g.hC, vH:g.vH, vC:g.vC, pushX:0.45-0.85-0.038, pushD:14*0.0254}; }
-function initViewer(){ if(V) return; V = Viewer($('#viewer')); V.build(viewerGeom(vKey));
+function initViewer(){ if(V) return; V = Viewer($('#viewer')); V.build(viewerGeom(vKey)); touchGate($('#viewer').closest('.viewer'));
   $$('.viewer [data-view]').forEach(b=>b.addEventListener('click',()=>V.view(b.dataset.view)));
   $('#vDiscs').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',V.toggleDiscs()));
   $('#vExplode').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',V.toggleExplode()));
@@ -426,13 +436,38 @@ function initViewer(){ if(V) return; V = Viewer($('#viewer')); V.build(viewerGeo
 
 // ---------- SOLIDWORKS model viewer ----------
 let CV=null;
-function initCad(){ if(CV!==null) { CV && CV.refresh(); return; }
-  $('#cadTris').textContent=MESH.tris.toLocaleString('en-US'); $('#cadComps').textContent=MESH.comps.length;
+const THREE_SRC=['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'];
+const loadScript = src => new Promise((ok,fail)=>{ const s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=fail; document.head.appendChild(s); });
+function initCad(){ if(CV!==null) { CV && CV.refresh && CV.refresh(); return; }
+  CV='loading'; $('#cadTris').textContent=MESH.tris.toLocaleString('en-US'); $('#cadComps').textContent=MESH.comps.length;
+  const view=$('#cadView'); view.classList.add('loading');
+  (window.THREE && THREE.OrbitControls ? Promise.resolve() : loadScript(THREE_SRC[0]).then(()=>loadScript(THREE_SRC[1])))
+    .catch(()=>{}).then(()=>{ view.classList.remove('loading'); startCad(); }); }
+function startCad(){
   CV = CadViewer($('#cadView'), MESH) || false; if(!CV) return;
+  touchGate($('#cadView'));
+  const counts={}; MESH.comps.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
+  const list=$('#cadParts'); Object.keys(MESH.parts).sort().forEach(n=>{ const li=document.createElement('li'), b=document.createElement('button');
+    b.type='button'; b.textContent=n.replace(/_/g,' ')+(counts[n]>1?' ×'+counts[n]:''); b.title=MESH.parts[n].d;
+    const on=()=>CV.highlight(n), off=()=>CV.highlight(null);
+    b.addEventListener('focus',on); b.addEventListener('mouseenter',on); b.addEventListener('blur',off); b.addEventListener('mouseleave',off); b.addEventListener('click',on);
+    li.appendChild(b); list.appendChild(li); });
   $$('#cadView [data-cview]').forEach(b=>b.addEventListener('click',()=>CV.view(b.dataset.cview)));
   $('#cadXray').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleXray()));
   $('#cadExplode').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleExplode()));
   $('#cadEdges').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',CV.toggleEdges())); }
+
+// touch screens: a viewer canvas takes gestures only after a tap, so swipes over it scroll the page
+function touchGate(view){
+  if(!view || !window.matchMedia || !matchMedia('(pointer: coarse)').matches || view.querySelector('.gate')) return;
+  const c=view.querySelector('canvas'), g=document.createElement('button');
+  g.type='button'; g.className='gate'; g.innerHTML='<span>Tap to rotate the model</span>'; view.appendChild(g);
+  const size=()=>{ g.style.height=c.offsetHeight+'px'; }; size(); if(window.ResizeObserver) new ResizeObserver(size).observe(c);
+  const arm=on=>{ view.classList.toggle('armed',on); g.hidden=on; };
+  g.addEventListener('click',()=>arm(true));
+  document.addEventListener('pointerdown',e=>{ if(view.classList.contains('armed') && !view.contains(e.target)) arm(false); });
+  if(window.IntersectionObserver) new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) arm(false); })).observe(view);
+}
 
 function redrawSection(id){
   if(id==='model3d'){ initCad(); initViewer(); V.build(viewerGeom(vKey)); }

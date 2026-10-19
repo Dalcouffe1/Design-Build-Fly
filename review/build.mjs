@@ -1,5 +1,7 @@
 // Assembles review/vtol-review.html from review/src/* + analysis/model.js + analysis/results.json
-import { readFileSync, writeFileSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from 'fs';
+import { spawnSync } from 'child_process';
+import { fileURLToPath } from 'url';
 import { packMesh } from './mesh.mjs';
 const r = p => readFileSync(new URL(p, import.meta.url), 'utf8');
 const data = JSON.parse(r('../analysis/results.json'));
@@ -12,7 +14,15 @@ for (const line of r('../cad/sim/results.txt').split(String.fromCharCode(10)).ma
 const cadp = {};
 for (const line of r('../cad/params.txt').split(String.fromCharCode(10)).map(x => x.trim())) { if (!line || line.startsWith('comp=')) continue; const i = line.indexOf('='); const v = parseFloat(line.slice(i + 1)); if (!isNaN(v) && !line.startsWith('foil=')) cadp[line.slice(0, i)] = v; }
 // images embedded as data URIs (page stays self-contained)
-const b64 = f => 'data:image/png;base64,' + readFileSync(new URL(f, import.meta.url)).toString('base64');
+// renders are embedded as JPEG (review/tojpeg.ps1, regenerated when the PNG is newer); falls back to the PNG elsewhere
+const IMGDIR = new URL('./img/', import.meta.url); mkdirSync(IMGDIR, { recursive: true });
+function b64(f) {
+  const png = new URL(f, import.meta.url), jpg = new URL(f.split('/').pop().replace(/.png$/i, '.jpg'), IMGDIR);
+  if (process.platform === 'win32' && (!existsSync(jpg) || statSync(jpg).mtimeMs < statSync(png).mtimeMs))
+    spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', fileURLToPath(new URL('./tojpeg.ps1', import.meta.url)), fileURLToPath(png), fileURLToPath(jpg)]);
+  if (existsSync(jpg) && statSync(jpg).mtimeMs >= statSync(png).mtimeMs) return 'data:image/jpeg;base64,' + readFileSync(jpg).toString('base64');
+  return 'data:image/png;base64,' + readFileSync(png).toString('base64');
+}
 const imgs = { cad_iso:'../cad/images/VTOL_Concept_iso.png', cad_top:'../cad/images/VTOL_Concept_top.png', cad_side:'../cad/images/VTOL_Concept_side.png',
   cad_front:'../cad/images/VTOL_Concept_front.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
@@ -26,8 +36,6 @@ ${r('./src/style.css')}
 </style>
 ${r('./src/body.html')}
 <script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; const MESH = ${JSON.stringify(MESH)};</script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
 <script>
 ${r('../analysis/model.js')}
 </script>
