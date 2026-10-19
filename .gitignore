@@ -19,3 +19,7 @@ cad/sim/*.CWR
 cad/sim/*.gsz
 cad/sim/*.LOG
 cad/sim/*.HTQ
+
+# Impeccable detector snapshots (local before/after comparisons)
+before.json
+after.json
