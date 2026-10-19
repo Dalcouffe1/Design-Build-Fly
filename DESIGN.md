@@ -66,15 +66,15 @@ colors:
   series-6: "#6b7f2a"
 typography:
   display:
-    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Sofia Sans Semi Condensed, Barlow Semi Condensed, Arial Narrow, sans-serif"
     fontSize: "2.625rem"
-    fontWeight: 600
+    fontWeight: 700
     lineHeight: 1.05
     letterSpacing: "-0.01em"
   display-phone:
-    fontFamily: "Barlow Semi Condensed, Arial Narrow, Helvetica Neue, Arial, sans-serif"
+    fontFamily: "Sofia Sans Semi Condensed, Barlow Semi Condensed, Arial Narrow, sans-serif"
     fontSize: "2rem"
-    fontWeight: 600
+    fontWeight: 700
     lineHeight: 1.05
     letterSpacing: "-0.01em"
   figure:
@@ -280,6 +280,7 @@ Every colour has a dark-theme partner token with the suffix `-dark`, for example
 
 ## Typography
 
+**Title Font:** Sofia Sans Semi Condensed 700 (with Barlow Semi Condensed, Arial Narrow), for the report title only (chosen in live review, 2026-10-18)
 **Display Font:** Barlow Semi Condensed (with Arial Narrow, Helvetica Neue, Arial)
 **Body Font:** Source Sans 3 (with Segoe UI, system-ui)
 **Label/Mono Font:** Red Hat Mono (with ui-monospace, Consolas)
@@ -288,7 +289,7 @@ Every colour has a dark-theme partner token with the suffix `-dark`, for example
 
 ### Hierarchy
 The type scale has ten steps: 12, 13, 14, 16, 18, 20, 24, 30, 32 and 42 px. Don't add a step between them.
-- **Display** (600, 2.625rem / 42 px, 1.05; 2rem on phones): the report title only.
+- **Display** (Sofia Sans Semi Condensed 700, 2.625rem / 42 px, 1.05; 2rem on phones): the report title only.
 - **Headline** (600, 1.875rem / 30 px, 1.15; 1.5rem on phones): section titles (h2). Each starts with its section number in mono orange at 0.75em, so the sheet number sits on the same line as the title.
 - **Figure** (600, 2rem / 32 px, tabular; 1.875rem on phones): KPI values. **Figure small** (1.5rem) is used for the calculation-chain values.
 - **Title** (600, 1.25rem / 20 px, 1.15): subsection titles (h3). A hairline sits above each one, with about 2.75rem before it.

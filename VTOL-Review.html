@@ -4,7 +4,7 @@
 <title>Lift + Cruise VTOL Review</title>
 <meta name="description" content="Concept-stage engineering design review of a student lift + cruise VTOL">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&family=Red+Hat+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600&family=Sofia+Sans+Semi+Condensed:wght@700&family=Red+Hat+Mono:wght@400;500;600&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&display=swap">
 <style>
 [hidden]{display:none!important}
 /* Layout: technical report — drawing-style title block, plain contents column left (>=1100px), tab strip below; one section at a time.
@@ -19,6 +19,7 @@
   --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6; --open-line:#a49ec5; --bad-line:#c57e79;
   --c1:#2f5d8a; --c2:#2e7f78; --c3:#b7791f; --c4:#8e3b6e; --c5:#5b6b7c; --c6:#6b7f2a;
   --band:#ffffff; --band-line:#cbcfd4;
+  --f-title:"Sofia Sans Semi Condensed","Barlow Semi Condensed","Arial Narrow",sans-serif;
   --f-display:"Barlow Semi Condensed","Arial Narrow","Helvetica Neue",Arial,sans-serif;
   --f-body:"Source Sans 3","Segoe UI",system-ui,-apple-system,sans-serif;
   --f-mono:"Red Hat Mono",ui-monospace,Consolas,monospace;
@@ -56,7 +57,7 @@ body{background:var(--bg);color:var(--fg);font:1rem/1.6 var(--f-body);font-varia
   -webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility}
 ::selection{background:var(--accent-soft);color:var(--fg)}
 h1,h2,h3,h4{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0;color:var(--fg);font-weight:600}
-h1{font-size:2.625rem;letter-spacing:-.01em;line-height:1.05}
+h1{font-family:var(--f-title);font-weight:700;font-size:2.625rem;letter-spacing:-.01em;line-height:1.05}
 h2{font-size:1.875rem;letter-spacing:-.005em}
 h2 .secno{font:inherit;color:var(--fg-3);margin-right:.25em}
 h3 .subno{font:inherit;color:var(--fg-3);margin-right:.2em;font-variant-numeric:tabular-nums}
