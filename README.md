@@ -1,4 +1,4 @@
-# Design–Build–Fly: Lift + Cruise VTOL (student capstone)
+# CAPSTONE Design–Build–Fly: Lift + Cruise VTOL (student capstone)
 
 A hybrid VTOL with four vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. The lift rotors stop in cruise. The aircraft is built and flight-tested on a **fixed $2,000 budget** (hardware, spares, test gear, tax and shipping) by **2027-04-30**.
 
