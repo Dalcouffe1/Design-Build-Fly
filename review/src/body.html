@@ -342,20 +342,20 @@
 
   <h3 id="s-spar">Wing joiner and spar</h3>
   <div class="chain">
-    <div class="box"><div class="l">Weight</div><div class="v"><span data-k="C0.sized.W" data-d="1"></span> N</div><div class="f">m g</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Root moment, ultimate</div><div class="v"><span data-k="C0.struct.Mroot" data-d="1"></span> N·m</div><div class="f">n_ult W b / (3π)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Joiner I (0.875 × 0.058 in)</div><div class="v"><span data-k="C0.struct.Ij_mm4" data-c="int"></span> mm⁴</div><div class="f">π/64 (22.23⁴ − 19.28⁴)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Joiner stress, hand</div><div class="v"><span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa</div><div class="f">M (D/2) / I</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Weight</div><div class="v"><span data-k="C0.sized.W" data-d="1"></span> N</div><div class="f">m g</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Root moment, ultimate</div><div class="v"><span data-k="C0.struct.Mroot" data-d="1"></span> N·m</div><div class="f">n_ult W b / (3π)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Joiner I (0.875 × 0.058 in)</div><div class="v"><span data-k="C0.struct.Ij_mm4" data-c="int"></span> mm⁴</div><div class="f">π/64 (22.23⁴ − 19.28⁴)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Joiner stress, hand</div><div class="v"><span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa</div><div class="f">M (D/2) / I</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">FEA von Mises</div><div class="v ok-t"><span data-k="SIM.spar_vm_max" data-d="0"></span> MPa</div><div class="f">SOLIDWORKS, 3 mm tets</div></div>
   </div>
   <p>The joiner carries the full root moment, with the foam neglected (conservative). It slides into the 1.000 × 0.058 in sockets with 0.23 mm clearance. The 0.76 m joiner gives <span id="engage"></span> m of engagement per side, about <span id="engageD"></span> diameters. The sockets sit at 30 % chord, where the 15 % section leaves about 4.6 mm of foam over each side.</p>
 
   <h3 id="s-boom">Booms</h3>
   <div class="chain">
-    <div class="box"><div class="l">Arm, spar to front rotor</div><div class="v"><span data-k="C0.struct.Lb" data-d="3"></span> m</div><div class="f">x_front + 0.25 c</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Moment at full thrust</div><div class="v"><span data-k="C0.struct.Mb" data-d="1"></span> N·m</div><div class="f">T_max L</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Stress hand / FEA</div><div class="v"><span data-k="C0.struct.sigB" data-d="0" data-m="1e-6"></span> / <span data-k="SIM.boom_vm_max" data-d="0"></span> MPa</div><div class="f">M c / I; FEA</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Tip deflection hand / FEA</div><div class="v"><span data-k="C0.struct.defl_max" data-d="1" data-m="1000"></span> / <span data-k="SIM.boom_disp_max" data-d="1"></span> mm</div><div class="f">P L³ / 3EI</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Arm, spar to front rotor</div><div class="v"><span data-k="C0.struct.Lb" data-d="3"></span> m</div><div class="f">x_front + 0.25 c</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Moment at full thrust</div><div class="v"><span data-k="C0.struct.Mb" data-d="1"></span> N·m</div><div class="f">T_max L</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Stress hand / FEA</div><div class="v"><span data-k="C0.struct.sigB" data-d="0" data-m="1e-6"></span> / <span data-k="SIM.boom_vm_max" data-d="0"></span> MPa</div><div class="f">M c / I; FEA</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Tip deflection hand / FEA</div><div class="v"><span data-k="C0.struct.defl_max" data-d="1" data-m="1000"></span> / <span data-k="SIM.boom_disp_max" data-d="1"></span> mm</div><div class="f">P L³ / 3EI</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">First mode hand / FEA</div><div class="v warn-t"><span data-k="C0.struct.fn" data-d="0"></span> / <span data-k="SIM.boom_f1" data-d="0"></span> Hz</div><div class="f">tip mass = lift unit (motor + ESC + prop + mount) + 0.236 m_boom; rigid root</div></div>
   </div>
   <p>The X4110S no-load speed is 400 KV × 22.2 V = 8,880 rpm (148 Hz). Hover speed is not in the published table (—). If it lands near a multiple of <span data-k="SIM.boom_f1" data-d="0"></span> Hz the booms will resonate; the tap test (M2) settles it.</p>
@@ -596,9 +596,9 @@
   <h3 id="sim-thermal">Motor heat: steady FEA and 90 s hover</h3>
   <p>Heat into each lift motor is estimated at 20 % of the hover input (<span data-k="SIM.motor_Q" data-d="1"></span> W) <span class="est">est</span>, with prop-wash convection at 50 W/m²K <span class="est">est</span> and 35 °C ambient. Steady-state FEA gives <span data-k="SIM.motor_T_steady" data-d="0"></span> °C, a bulk-temperature estimate for unlimited hover. Hover lasts 60–90 s, so the time response decides. The lumped estimate for a 90 s hover is <b id="thermLumped"></b> °C (band <span id="thermBand"></span> °C for c = 385–500 J/kgK; time constant <span id="thermTau"></span> s). Three back-to-back 90 s runs with 30 s rests would reach about <span id="thermT3b"></span> °C, so T3 cools the motor to 45 °C between runs.</p>
   <div class="chain">
-    <div class="box"><div class="l">h·A from steady FEA</div><div class="v"><span id="thermHA"></span> W/K</div><div class="f">Q / (T_ss − T_amb)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Heat capacity</div><div class="v"><span id="thermMC"></span> J/K</div><div class="f">m c = 0.165 kg × 470 J/kgK (est, Cu/steel/Al mix)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">h·A from steady FEA</div><div class="v"><span id="thermHA"></span> W/K</div><div class="f">Q / (T_ss − T_amb)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Heat capacity</div><div class="v"><span id="thermMC"></span> J/K</div><div class="f">m c = 0.165 kg × 470 J/kgK (est, Cu/steel/Al mix)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">T after 90 s</div><div class="v ok-t"><span id="thermLumped2"></span> °C</div><div class="f">T_amb + ΔT_ss (1 − e^(−t/τ))</div></div>
   </div>
   <p class="src">Transient thermal through the Simulation API returned no saved time steps (tested 2026-10-13), so the 90 s value is lumped capacitance. Motor heat capacity uses a mass-weighted c of 470 J/kgK <span class="est">est</span>. Copper (385) and steel (460) have lower c than aluminium (896), so an all-aluminium assumption would understate the temperature rise.</p>

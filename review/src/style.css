@@ -146,7 +146,7 @@ section.sec.cur{display:block}
 .grid2>*,.grid3>*{min-width:0}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
 .card.pick{border-color:var(--ink);outline:1px solid var(--ink);outline-offset:-2px}
-.card h4{margin-bottom:8px}
+.card h3{font-size:1rem;line-height:1.25;margin:0 0 8px;padding-top:0;border-top:0}
 .card .tag{float:right;margin-left:8px}
 
 /* decisions */

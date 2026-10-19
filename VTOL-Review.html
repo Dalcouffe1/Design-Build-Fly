@@ -155,7 +155,7 @@ section.sec.cur{display:block}
 .grid2>*,.grid3>*{min-width:0}
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px 18px}
 .card.pick{border-color:var(--ink);outline:1px solid var(--ink);outline-offset:-2px}
-.card h4{margin-bottom:8px}
+.card h3{font-size:1rem;line-height:1.25;margin:0 0 8px;padding-top:0;border-top:0}
 .card .tag{float:right;margin-left:8px}
 
 /* decisions */
@@ -660,20 +660,20 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
   <h3 id="s-spar">Wing joiner and spar</h3>
   <div class="chain">
-    <div class="box"><div class="l">Weight</div><div class="v"><span data-k="C0.sized.W" data-d="1"></span> N</div><div class="f">m g</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Root moment, ultimate</div><div class="v"><span data-k="C0.struct.Mroot" data-d="1"></span> N·m</div><div class="f">n_ult W b / (3π)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Joiner I (0.875 × 0.058 in)</div><div class="v"><span data-k="C0.struct.Ij_mm4" data-c="int"></span> mm⁴</div><div class="f">π/64 (22.23⁴ − 19.28⁴)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Joiner stress, hand</div><div class="v"><span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa</div><div class="f">M (D/2) / I</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Weight</div><div class="v"><span data-k="C0.sized.W" data-d="1"></span> N</div><div class="f">m g</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Root moment, ultimate</div><div class="v"><span data-k="C0.struct.Mroot" data-d="1"></span> N·m</div><div class="f">n_ult W b / (3π)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Joiner I (0.875 × 0.058 in)</div><div class="v"><span data-k="C0.struct.Ij_mm4" data-c="int"></span> mm⁴</div><div class="f">π/64 (22.23⁴ − 19.28⁴)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Joiner stress, hand</div><div class="v"><span data-k="C0.struct.sigJ" data-d="0" data-m="1e-6"></span> MPa</div><div class="f">M (D/2) / I</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">FEA von Mises</div><div class="v ok-t"><span data-k="SIM.spar_vm_max" data-d="0"></span> MPa</div><div class="f">SOLIDWORKS, 3 mm tets</div></div>
   </div>
   <p>The joiner carries the full root moment, with the foam neglected (conservative). It slides into the 1.000 × 0.058 in sockets with 0.23 mm clearance. The 0.76 m joiner gives <span id="engage"></span> m of engagement per side, about <span id="engageD"></span> diameters. The sockets sit at 30 % chord, where the 15 % section leaves about 4.6 mm of foam over each side.</p>
 
   <h3 id="s-boom">Booms</h3>
   <div class="chain">
-    <div class="box"><div class="l">Arm, spar to front rotor</div><div class="v"><span data-k="C0.struct.Lb" data-d="3"></span> m</div><div class="f">x_front + 0.25 c</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Moment at full thrust</div><div class="v"><span data-k="C0.struct.Mb" data-d="1"></span> N·m</div><div class="f">T_max L</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Stress hand / FEA</div><div class="v"><span data-k="C0.struct.sigB" data-d="0" data-m="1e-6"></span> / <span data-k="SIM.boom_vm_max" data-d="0"></span> MPa</div><div class="f">M c / I; FEA</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Tip deflection hand / FEA</div><div class="v"><span data-k="C0.struct.defl_max" data-d="1" data-m="1000"></span> / <span data-k="SIM.boom_disp_max" data-d="1"></span> mm</div><div class="f">P L³ / 3EI</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">Arm, spar to front rotor</div><div class="v"><span data-k="C0.struct.Lb" data-d="3"></span> m</div><div class="f">x_front + 0.25 c</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Moment at full thrust</div><div class="v"><span data-k="C0.struct.Mb" data-d="1"></span> N·m</div><div class="f">T_max L</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Stress hand / FEA</div><div class="v"><span data-k="C0.struct.sigB" data-d="0" data-m="1e-6"></span> / <span data-k="SIM.boom_vm_max" data-d="0"></span> MPa</div><div class="f">M c / I; FEA</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Tip deflection hand / FEA</div><div class="v"><span data-k="C0.struct.defl_max" data-d="1" data-m="1000"></span> / <span data-k="SIM.boom_disp_max" data-d="1"></span> mm</div><div class="f">P L³ / 3EI</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">First mode hand / FEA</div><div class="v warn-t"><span data-k="C0.struct.fn" data-d="0"></span> / <span data-k="SIM.boom_f1" data-d="0"></span> Hz</div><div class="f">tip mass = lift unit (motor + ESC + prop + mount) + 0.236 m_boom; rigid root</div></div>
   </div>
   <p>The X4110S no-load speed is 400 KV × 22.2 V = 8,880 rpm (148 Hz). Hover speed is not in the published table (—). If it lands near a multiple of <span data-k="SIM.boom_f1" data-d="0"></span> Hz the booms will resonate; the tap test (M2) settles it.</p>
@@ -914,9 +914,9 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   <h3 id="sim-thermal">Motor heat: steady FEA and 90 s hover</h3>
   <p>Heat into each lift motor is estimated at 20 % of the hover input (<span data-k="SIM.motor_Q" data-d="1"></span> W) <span class="est">est</span>, with prop-wash convection at 50 W/m²K <span class="est">est</span> and 35 °C ambient. Steady-state FEA gives <span data-k="SIM.motor_T_steady" data-d="0"></span> °C, a bulk-temperature estimate for unlimited hover. Hover lasts 60–90 s, so the time response decides. The lumped estimate for a 90 s hover is <b id="thermLumped"></b> °C (band <span id="thermBand"></span> °C for c = 385–500 J/kgK; time constant <span id="thermTau"></span> s). Three back-to-back 90 s runs with 30 s rests would reach about <span id="thermT3b"></span> °C, so T3 cools the motor to 45 °C between runs.</p>
   <div class="chain">
-    <div class="box"><div class="l">h·A from steady FEA</div><div class="v"><span id="thermHA"></span> W/K</div><div class="f">Q / (T_ss − T_amb)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Heat capacity</div><div class="v"><span id="thermMC"></span> J/K</div><div class="f">m c = 0.165 kg × 470 J/kgK (est, Cu/steel/Al mix)</div></div><span class="arr">→</span>
-    <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr">→</span>
+    <div class="box"><div class="l">h·A from steady FEA</div><div class="v"><span id="thermHA"></span> W/K</div><div class="f">Q / (T_ss − T_amb)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Heat capacity</div><div class="v"><span id="thermMC"></span> J/K</div><div class="f">m c = 0.165 kg × 470 J/kgK (est, Cu/steel/Al mix)</div></div><span class="arr" aria-hidden="true">→</span>
+    <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">T after 90 s</div><div class="v ok-t"><span id="thermLumped2"></span> °C</div><div class="f">T_amb + ΔT_ss (1 − e^(−t/τ))</div></div>
   </div>
   <p class="src">Transient thermal through the Simulation API returned no saved time steps (tested 2026-10-13), so the 90 s value is lumped capacitance. Motor heat capacity uses a mass-weighted c of 470 J/kgK <span class="est">est</span>. Copper (385) and steel (460) have lower c than aluminium (896), so an all-aluminium assumption would understate the temperature rise.</p>
@@ -1514,7 +1514,7 @@ function tables(){
   // concept cards
   const cc = $('#conceptCards');
   for(const k of ['C0','C1','C2','C3']){ const c=D.concepts[k], s=c.sized, fits=c.bom.total<=2000;
-    cc.insertAdjacentHTML('beforeend',`<div class="card${k==='C0'?' pick':''}"><span class="tag chip ${k==='C0'?'met':fits?'open':'fail'}">${k==='C0'?'baseline':fits?'alternative':'over cap'}</span><h4>${k} · ${c.label}</h4>
+    cc.insertAdjacentHTML('beforeend',`<div class="card${k==='C0'?' pick':''}"><span class="tag chip ${k==='C0'?'met':fits?'open':'fail'}">${k==='C0'?'baseline':fits?'alternative':'over cap'}</span><h3>${k} · ${c.label}</h3>
       <dl class="kv"><dt>Lift unit</dt><dd>${c.params.nLift} × ${c.motor}</dd><dt>MTOW</dt><dd>${fmt(s.m,2)} kg</dd><dt>Hover / cruise</dt><dd>${fmt(s.P_hover,0)} W / ${fmt(s.P_cruise,0)} W</dd>
       <dt>L/D cruise</dt><dd>${fmt(s.LD,1)}</dd><dt>T/W · motor-out</dt><dd>${fmt(s.TW,2)} · ${s.TW_motorOut?fmt(s.TW_motorOut,2):'none'}</dd><dt>Pack</dt><dd>${c.pick.id}</dd><dt>Committed spend</dt><dd class="${fits?'ok-t':'bad-t'}">${fmtUSD(c.bom.total)}</dd></dl></div>`); }
   // pugh
@@ -1642,7 +1642,7 @@ function buildSliders(){
 function renderChain(){
   const r = VTOLModel.size(P), c=$('#chain');
   const box=(l,v,f,cls='')=>`<div class="box"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="f">${f}</div></div>`;
-  const ar='<span class="arr">→</span>';
+  const ar='<span class="arr" aria-hidden="true">→</span>';
   c.innerHTML = [
     box('MTOW (closed)', fmt(r.m,2)+' kg', `F12, ${r.iter} iterations`, r.m<25?'ok-t':'bad-t'),
     box('Thrust per unit', fmt(r.Tunit_g,0)+' g', `F1: m g / ${r.nUnits}`),
@@ -1738,7 +1738,7 @@ function drawCG(){
   const cg=C0.cg, g=C0.geo, W=640,l=30,r=30, x=p=>l+(W-l-r)*p/60, yb=70;
   for(let p=0;p<=60;p+=10){ el('line',{x1:x(p),x2:x(p),y1:30,y2:120,class:'grid'},svg); el('text',{x:x(p),y:140,'text-anchor':'middle'},svg,p+' %'); }
   el('rect',{x:x(0),y:yb-6,width:x(60)-x(0),height:12,fill:css('--surface-2'),stroke:css('--line-2')},svg);
-  el('rect',{x:x(Math.min(cg.pctFwd,cg.pct.noPayload)),y:yb-14,width:x(Math.max(cg.pctAft,cg.pct.noPayload))-x(Math.min(cg.pctFwd,cg.pct.noPayload)),height:28,fill:css('--ok'),opacity:0.35,rx:3},svg);
+  el('rect',{x:x(Math.min(cg.pctFwd,cg.pct.noPayload)),y:yb-14,width:x(Math.max(cg.pctAft,cg.pct.noPayload))-x(Math.min(cg.pctFwd,cg.pct.noPayload)),height:28,fill:css('--ok'),opacity:0.35,rx:2},svg);
   el('text',{x:x((cg.pctFwd+cg.pct.noPayload)/2),y:yb+30,'text-anchor':'middle'},svg,`CG envelope ${fmt(cg.pctFwd,1)}–${fmt(cg.pct.noPayload,1)} %`);
   const mark=(p,lab,col,dy)=>{ el('line',{x1:x(p),x2:x(p),y1:yb-24,y2:yb+14,stroke:css(col),'stroke-width':2.5},svg); el('text',{x:x(p),y:yb-28+dy,'text-anchor':'middle',fill:css(col)},svg,lab); };
   mark(cg.pct.target,'CG target / thrust centroid 28 %','--accent',-6);
@@ -1759,15 +1759,16 @@ function drawState(){
   E(595,77,595,183,'< 12 m/s',588,110,'end');
   E(625,183,625,77,'recovered',632,134,'start');
   E(555,77,470,183,'Q mode',500,140,'end');
-  E(L('BT'),200,R('QL'),200,'speed ≈ 0',(L('BT')+R('QL'))/2,192);
+  E(L('BT'),200,R('QL'),200,'speed ≈ 0',(L('BT')+R('QL'))/2,176);
   E(190,183,100,77,'landed → disarm',135,140,'end');
   Object.entries(N).forEach(([k,[x,y,w,lab]])=>{
-    el('rect',{x:x-w/2,y:y-17,width:w,height:34,rx:8,fill:css(k==='FW'?'--accent-soft':k==='QL'?'--warn-soft':'--surface-2'),stroke:css(k==='FW'?'--accent':'--line-2')},svg);
+    el('rect',{x:x-w/2,y:y-17,width:w,height:34,rx:2,fill:css(k==='FW'?'--accent-soft':k==='QL'?'--warn-soft':'--surface-2'),stroke:css(k==='FW'?'--accent':'--line-2')},svg);
     el('text',{x,y:y+4,'text-anchor':'middle','font-weight':'600',fill:css('--fg')},svg,lab); });
-  const fy=258; el('rect',{x:20,y:fy,width:660,height:58,rx:8,fill:'none',stroke:css('--line-2'),'stroke-dasharray':'4 3'},svg);
+  const fy=258; el('rect',{x:20,y:fy,width:660,height:58,rx:2,fill:'none',stroke:css('--line-2'),'stroke-dasharray':'4 3'},svg);
   el('text',{x:32,y:fy+18,'font-weight':'600',fill:css('--fg')},svg,'From any flying mode (failsafes)');
   el('text',{x:32,y:fy+36},svg,'Transition longer than 15 s (Q_TRANS_FAIL) → QRTL · RC link loss → RTL, then QLAND (R20)');
   el('text',{x:32,y:fy+52},svg,'Low battery → QLAND · Geofence breach at 120 m AGL → RTL · Pilot can select QHOVER at any time');
+  describe(svg, 'QuadPlane flight modes for C0. Disarmed to QHOVER or QLOITER on arm. QHOVER to Transition at 30 m AGL or higher. Transition to fixed-wing cruise at 15 m/s or more. Fixed-wing cruise to Q_ASSIST below 12 m/s, and back to cruise once recovered. Cruise to Back-transition on selecting a Q mode. Back-transition to QLAND at about zero airspeed. QLAND to Disarmed when landed. Failsafes from any flying mode: transition longer than 15 s (Q_TRANS_FAIL) goes to QRTL; RC link loss goes to RTL then QLAND; low battery goes to QLAND; geofence breach at 120 m AGL goes to RTL; the pilot can select QHOVER at any time.');
 }
 function drawGantt(){
   const svg=$('#gantt'); if(!svg) return; clear(svg);
@@ -1794,9 +1795,11 @@ function drawGantt(){
   for(let m=0;m<8;m++){ const dd=Date.UTC(2026,9+m,1); if(dd<d0) continue; el('line',{x1:x(dd),x2:x(dd),y1:t-6,y2:t+rows.length*rh,class:'grid'},svg);
     el('text',{x:x(dd)+3,y:t-10},svg,new Date(dd).toLocaleString('en-US',{month:'short',timeZone:'UTC'})+(m===3?' 27':'')); }
   rows.forEach(([n,a,b,c],i)=>{ const y=t+i*rh; el('text',{x:l-8,y:y+15,'text-anchor':'end'},svg,n);
-    el('rect',{x:x(a),y:y+4,width:Math.max(4,x(b)-x(a)),height:15,rx:3,fill:css('--'+c),opacity:0.85},svg); });
+    el('rect',{x:x(a),y:y+4,width:Math.max(4,x(b)-x(a)),height:15,rx:2,fill:css('--'+c),opacity:0.85},svg); });
   const dl=D_(2027,4,30); el('line',{x1:x(dl),x2:x(dl),y1:t-6,y2:t+rows.length*rh,stroke:css('--bad'),'stroke-width':2},svg);
   el('text',{x:x(dl)-4,y:t+rows.length*rh+16,'text-anchor':'end',fill:css('--bad')},svg,'deadline 2027-04-30');
+  const iso=d=>new Date(d).toISOString().slice(0,10);
+  describe(svg, 'Schedule to the 2027-04-30 deadline. '+rows.map(([n,a,b])=>`${n}: ${iso(a)}${b-a>86400000?' to '+iso(b):''}`).join('; ')+'.');
 }
 
 // ---------- viewer ----------

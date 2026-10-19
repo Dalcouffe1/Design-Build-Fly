@@ -138,7 +138,7 @@ function tables(){
   // concept cards
   const cc = $('#conceptCards');
   for(const k of ['C0','C1','C2','C3']){ const c=D.concepts[k], s=c.sized, fits=c.bom.total<=2000;
-    cc.insertAdjacentHTML('beforeend',`<div class="card${k==='C0'?' pick':''}"><span class="tag chip ${k==='C0'?'met':fits?'open':'fail'}">${k==='C0'?'baseline':fits?'alternative':'over cap'}</span><h4>${k} · ${c.label}</h4>
+    cc.insertAdjacentHTML('beforeend',`<div class="card${k==='C0'?' pick':''}"><span class="tag chip ${k==='C0'?'met':fits?'open':'fail'}">${k==='C0'?'baseline':fits?'alternative':'over cap'}</span><h3>${k} · ${c.label}</h3>
       <dl class="kv"><dt>Lift unit</dt><dd>${c.params.nLift} × ${c.motor}</dd><dt>MTOW</dt><dd>${fmt(s.m,2)} kg</dd><dt>Hover / cruise</dt><dd>${fmt(s.P_hover,0)} W / ${fmt(s.P_cruise,0)} W</dd>
       <dt>L/D cruise</dt><dd>${fmt(s.LD,1)}</dd><dt>T/W · motor-out</dt><dd>${fmt(s.TW,2)} · ${s.TW_motorOut?fmt(s.TW_motorOut,2):'none'}</dd><dt>Pack</dt><dd>${c.pick.id}</dd><dt>Committed spend</dt><dd class="${fits?'ok-t':'bad-t'}">${fmtUSD(c.bom.total)}</dd></dl></div>`); }
   // pugh
@@ -266,7 +266,7 @@ function buildSliders(){
 function renderChain(){
   const r = VTOLModel.size(P), c=$('#chain');
   const box=(l,v,f,cls='')=>`<div class="box"><div class="l">${l}</div><div class="v ${cls}">${v}</div><div class="f">${f}</div></div>`;
-  const ar='<span class="arr">→</span>';
+  const ar='<span class="arr" aria-hidden="true">→</span>';
   c.innerHTML = [
     box('MTOW (closed)', fmt(r.m,2)+' kg', `F12, ${r.iter} iterations`, r.m<25?'ok-t':'bad-t'),
     box('Thrust per unit', fmt(r.Tunit_g,0)+' g', `F1: m g / ${r.nUnits}`),
@@ -362,7 +362,7 @@ function drawCG(){
   const cg=C0.cg, g=C0.geo, W=640,l=30,r=30, x=p=>l+(W-l-r)*p/60, yb=70;
   for(let p=0;p<=60;p+=10){ el('line',{x1:x(p),x2:x(p),y1:30,y2:120,class:'grid'},svg); el('text',{x:x(p),y:140,'text-anchor':'middle'},svg,p+' %'); }
   el('rect',{x:x(0),y:yb-6,width:x(60)-x(0),height:12,fill:css('--surface-2'),stroke:css('--line-2')},svg);
-  el('rect',{x:x(Math.min(cg.pctFwd,cg.pct.noPayload)),y:yb-14,width:x(Math.max(cg.pctAft,cg.pct.noPayload))-x(Math.min(cg.pctFwd,cg.pct.noPayload)),height:28,fill:css('--ok'),opacity:0.35,rx:3},svg);
+  el('rect',{x:x(Math.min(cg.pctFwd,cg.pct.noPayload)),y:yb-14,width:x(Math.max(cg.pctAft,cg.pct.noPayload))-x(Math.min(cg.pctFwd,cg.pct.noPayload)),height:28,fill:css('--ok'),opacity:0.35,rx:2},svg);
   el('text',{x:x((cg.pctFwd+cg.pct.noPayload)/2),y:yb+30,'text-anchor':'middle'},svg,`CG envelope ${fmt(cg.pctFwd,1)}–${fmt(cg.pct.noPayload,1)} %`);
   const mark=(p,lab,col,dy)=>{ el('line',{x1:x(p),x2:x(p),y1:yb-24,y2:yb+14,stroke:css(col),'stroke-width':2.5},svg); el('text',{x:x(p),y:yb-28+dy,'text-anchor':'middle',fill:css(col)},svg,lab); };
   mark(cg.pct.target,'CG target / thrust centroid 28 %','--accent',-6);
@@ -383,15 +383,16 @@ function drawState(){
   E(595,77,595,183,'< 12 m/s',588,110,'end');
   E(625,183,625,77,'recovered',632,134,'start');
   E(555,77,470,183,'Q mode',500,140,'end');
-  E(L('BT'),200,R('QL'),200,'speed ≈ 0',(L('BT')+R('QL'))/2,192);
+  E(L('BT'),200,R('QL'),200,'speed ≈ 0',(L('BT')+R('QL'))/2,176);
   E(190,183,100,77,'landed → disarm',135,140,'end');
   Object.entries(N).forEach(([k,[x,y,w,lab]])=>{
-    el('rect',{x:x-w/2,y:y-17,width:w,height:34,rx:8,fill:css(k==='FW'?'--accent-soft':k==='QL'?'--warn-soft':'--surface-2'),stroke:css(k==='FW'?'--accent':'--line-2')},svg);
+    el('rect',{x:x-w/2,y:y-17,width:w,height:34,rx:2,fill:css(k==='FW'?'--accent-soft':k==='QL'?'--warn-soft':'--surface-2'),stroke:css(k==='FW'?'--accent':'--line-2')},svg);
     el('text',{x,y:y+4,'text-anchor':'middle','font-weight':'600',fill:css('--fg')},svg,lab); });
-  const fy=258; el('rect',{x:20,y:fy,width:660,height:58,rx:8,fill:'none',stroke:css('--line-2'),'stroke-dasharray':'4 3'},svg);
+  const fy=258; el('rect',{x:20,y:fy,width:660,height:58,rx:2,fill:'none',stroke:css('--line-2'),'stroke-dasharray':'4 3'},svg);
   el('text',{x:32,y:fy+18,'font-weight':'600',fill:css('--fg')},svg,'From any flying mode (failsafes)');
   el('text',{x:32,y:fy+36},svg,'Transition longer than 15 s (Q_TRANS_FAIL) → QRTL · RC link loss → RTL, then QLAND (R20)');
   el('text',{x:32,y:fy+52},svg,'Low battery → QLAND · Geofence breach at 120 m AGL → RTL · Pilot can select QHOVER at any time');
+  describe(svg, 'QuadPlane flight modes for C0. Disarmed to QHOVER or QLOITER on arm. QHOVER to Transition at 30 m AGL or higher. Transition to fixed-wing cruise at 15 m/s or more. Fixed-wing cruise to Q_ASSIST below 12 m/s, and back to cruise once recovered. Cruise to Back-transition on selecting a Q mode. Back-transition to QLAND at about zero airspeed. QLAND to Disarmed when landed. Failsafes from any flying mode: transition longer than 15 s (Q_TRANS_FAIL) goes to QRTL; RC link loss goes to RTL then QLAND; low battery goes to QLAND; geofence breach at 120 m AGL goes to RTL; the pilot can select QHOVER at any time.');
 }
 function drawGantt(){
   const svg=$('#gantt'); if(!svg) return; clear(svg);
@@ -418,9 +419,11 @@ function drawGantt(){
   for(let m=0;m<8;m++){ const dd=Date.UTC(2026,9+m,1); if(dd<d0) continue; el('line',{x1:x(dd),x2:x(dd),y1:t-6,y2:t+rows.length*rh,class:'grid'},svg);
     el('text',{x:x(dd)+3,y:t-10},svg,new Date(dd).toLocaleString('en-US',{month:'short',timeZone:'UTC'})+(m===3?' 27':'')); }
   rows.forEach(([n,a,b,c],i)=>{ const y=t+i*rh; el('text',{x:l-8,y:y+15,'text-anchor':'end'},svg,n);
-    el('rect',{x:x(a),y:y+4,width:Math.max(4,x(b)-x(a)),height:15,rx:3,fill:css('--'+c),opacity:0.85},svg); });
+    el('rect',{x:x(a),y:y+4,width:Math.max(4,x(b)-x(a)),height:15,rx:2,fill:css('--'+c),opacity:0.85},svg); });
   const dl=D_(2027,4,30); el('line',{x1:x(dl),x2:x(dl),y1:t-6,y2:t+rows.length*rh,stroke:css('--bad'),'stroke-width':2},svg);
   el('text',{x:x(dl)-4,y:t+rows.length*rh+16,'text-anchor':'end',fill:css('--bad')},svg,'deadline 2027-04-30');
+  const iso=d=>new Date(d).toISOString().slice(0,10);
+  describe(svg, 'Schedule to the 2027-04-30 deadline. '+rows.map(([n,a,b])=>`${n}: ${iso(a)}${b-a>86400000?' to '+iso(b):''}`).join('; ')+'.');
 }
 
 // ---------- viewer ----------
