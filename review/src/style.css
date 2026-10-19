@@ -293,7 +293,11 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 .cadview canvas{height:clamp(260px,calc(100vh - 140px),540px);height:clamp(260px,calc(100svh - 140px),540px);background:var(--surface)}
 .cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.875rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
 .cadview .tip b{display:block;font:600 1rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
-.cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
+.cadview .fallback{display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 20px;text-align:center;color:var(--fg-2)}
+.cadview .fallback p{margin:0;max-width:56ch}
+.cadview .fallback button{min-height:44px;padding:0 16px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:var(--r-s);font:500 .875rem var(--f-body);cursor:pointer;transition:border-color .12s}
+.cadview .fallback button:hover{border-color:var(--fg)}
+.cadview.offline .ctl{display:none}
 .cadview .loadmsg{display:none;position:absolute;left:0;right:0;top:45%;margin:0;text-align:center;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);max-width:none}
 .cadview.loading .loadmsg{display:block}
 .cadparts{margin:12px 0 0;border-bottom:1px solid var(--line-2)}

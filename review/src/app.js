@@ -451,7 +451,10 @@ function initCad(){ if(CV!==null) { CV && CV.refresh && CV.refresh(); return; }
   (window.THREE && THREE.OrbitControls ? Promise.resolve() : loadScript(THREE_SRC[0]).then(()=>loadScript(THREE_SRC[1])))
     .catch(()=>{}).then(()=>{ view.classList.remove('loading'); startCad(); }); }
 function startCad(){
-  CV = CadViewer($('#cadView'), MESH) || false; if(!CV) return;
+  const view=$('#cadView'), parts=$('.cadparts');
+  CV = CadViewer(view, MESH) || false;
+  view.classList.toggle('offline', !CV); parts.hidden = !CV;
+  if(!CV){ const r=$('#cadRetry'); if(!r.dataset.bound){ r.dataset.bound=1; r.addEventListener('click',()=>{ CV=null; view.querySelector('.fallback').hidden=true; $('#cadCanvas').hidden=false; initCad(); }); } return; }
   touchGate($('#cadView'));
   const counts={}; MESH.comps.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
   const list=$('#cadParts'); Object.keys(MESH.parts).sort().forEach(n=>{ const li=document.createElement('li'), b=document.createElement('button');
@@ -489,6 +492,7 @@ function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cu
 
 // ---------- boot ----------
 buildNav(); fill(); derived(); tables(); sortable();
+$$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
 try{ const s=localStorage.getItem('vtolTheme'); if(s) mi=Math.max(0,modes.indexOf(s)); }catch(e){}

@@ -302,7 +302,11 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 .cadview canvas{height:clamp(260px,calc(100vh - 140px),540px);height:clamp(260px,calc(100svh - 140px),540px);background:var(--surface)}
 .cadview .tip{position:absolute;right:12px;top:10px;max-width:min(340px,calc(100% - 24px));background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:8px 10px;font-size:.875rem;line-height:1.4;color:var(--fg-2);pointer-events:none}
 .cadview .tip b{display:block;font:600 1rem/1.25 var(--f-display);color:var(--fg);margin-bottom:2px}
-.cadview .fallback{margin:0;padding:48px 20px;text-align:center;color:var(--fg-2);max-width:none}
+.cadview .fallback{display:flex;flex-direction:column;align-items:center;gap:14px;padding:48px 20px;text-align:center;color:var(--fg-2)}
+.cadview .fallback p{margin:0;max-width:56ch}
+.cadview .fallback button{min-height:44px;padding:0 16px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg);border-radius:var(--r-s);font:500 .875rem var(--f-body);cursor:pointer;transition:border-color .12s}
+.cadview .fallback button:hover{border-color:var(--fg)}
+.cadview.offline .ctl{display:none}
 .cadview .loadmsg{display:none;position:absolute;left:0;right:0;top:45%;margin:0;text-align:center;font:500 .75rem/1 var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--fg-3);max-width:none}
 .cadview.loading .loadmsg{display:block}
 .cadparts{margin:12px 0 0;border-bottom:1px solid var(--line-2)}
@@ -485,14 +489,14 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
     <canvas id="cadCanvas" aria-label="Rotatable SOLIDWORKS model of the C0 aircraft; drag to orbit, scroll to zoom"></canvas>
     <span class="lbl">SOLIDWORKS · C0 v0.3.1</span>
     <div class="tip" id="cadTip" hidden></div>
-    <p class="fallback" hidden>The 3D viewer needs an internet connection to load its graphics library (three.js). The SOLIDWORKS renders above show the same model.</p>
+    <div class="fallback" hidden><p>The 3D viewer needs an internet connection to load its graphics library (three.js). The SOLIDWORKS renders above show the same model.</p><button type="button" id="cadRetry">Try again</button></div>
     <p class="loadmsg">Loading the 3D model…</p>
     <div class="ctl">
       <button type="button" data-cview="iso">Iso</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button>
       <button type="button" id="cadXray" aria-pressed="false">X-ray</button><button type="button" id="cadExplode" aria-pressed="false">Explode</button><button type="button" id="cadEdges" aria-pressed="true">Edges</button>
     </div>
   </div>
-  <details class="cadparts"><summary>Parts in the model</summary><p class="meta">Focus or hover a part to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
+  <details class="cadparts" hidden><summary>Parts in the model</summary><p class="meta">Focus or hover a part to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
   <p class="src">cad/model/*.SLDPRT exported by cad/ExportMesh.exe (binary STL, 0.4 mm chord deviation, 12° angle tolerance) → review/mesh.mjs; placed per cad/params.txt (<span id="cadTris"></span> triangles, <span id="cadComps"></span> components). Colours are the CAD display colours, not finishes.</p>
 
   <h3 id="m3-viewer">Concept comparison geometry</h3>
@@ -1841,7 +1845,10 @@ function initCad(){ if(CV!==null) { CV && CV.refresh && CV.refresh(); return; }
   (window.THREE && THREE.OrbitControls ? Promise.resolve() : loadScript(THREE_SRC[0]).then(()=>loadScript(THREE_SRC[1])))
     .catch(()=>{}).then(()=>{ view.classList.remove('loading'); startCad(); }); }
 function startCad(){
-  CV = CadViewer($('#cadView'), MESH) || false; if(!CV) return;
+  const view=$('#cadView'), parts=$('.cadparts');
+  CV = CadViewer(view, MESH) || false;
+  view.classList.toggle('offline', !CV); parts.hidden = !CV;
+  if(!CV){ const r=$('#cadRetry'); if(!r.dataset.bound){ r.dataset.bound=1; r.addEventListener('click',()=>{ CV=null; view.querySelector('.fallback').hidden=true; $('#cadCanvas').hidden=false; initCad(); }); } return; }
   touchGate($('#cadView'));
   const counts={}; MESH.comps.forEach(c=>counts[c[0]]=(counts[c[0]]||0)+1);
   const list=$('#cadParts'); Object.keys(MESH.parts).sort().forEach(n=>{ const li=document.createElement('li'), b=document.createElement('button');
@@ -1879,6 +1886,7 @@ function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cu
 
 // ---------- boot ----------
 buildNav(); fill(); derived(); tables(); sortable();
+$$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
 try{ const s=localStorage.getItem('vtolTheme'); if(s) mi=Math.max(0,modes.indexOf(s)); }catch(e){}

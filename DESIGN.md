@@ -406,6 +406,7 @@ There are no pills, circles, dots or status lights.
 - **Rendering:** CAD colours, hairline feature edges in the theme's ink, and a faint ground grid in Frame Rule.
 - **Size:** the canvas height is capped by both the width breakpoints and the screen height (`clamp(260px, 100svh − 140px, 540px)`), so a landscape phone shows the model and its controls together.
 - **Rendering on demand:** the viewer draws frames only while something moves (orbit, damping, camera move, explode) and stops when idle.
+- **Offline:** if the library cannot load, the frame shows only a short note pointing to the static renders and a "Try again" button. The control bar and the parts list are hidden, so no control is ever shown without something behind it.
 - **Loading:** the 3D library loads only when the CAD section opens. Until then a mono "Loading the 3D model…" caption sits on the empty frame.
 - **Touch:** on touch screens the canvas ignores gestures until the reader taps a "Tap to rotate the model" tag (mono caps on Sheet White, Frame Rule border). Tapping outside the viewer, or scrolling it out of view, turns gestures off again, so swipes always scroll the page.
 - **Parts list:** a "Parts in the model" disclosure under the controls holds one 44px button per part. Hover or keyboard focus highlights that part in International Orange and shows its label.
