@@ -147,7 +147,6 @@ function img(id, list){
     box.insertAdjacentHTML('beforeend', `<figure class="chart" style="margin:0"><figcaption>${cap}</figcaption><img class="cadimg" src="${IMG[key]}" alt="${cap}" loading="lazy"></figure>`); });
 }
 function tables(){
-  img('#cadImages', [['cad_iso','Isometric'],['cad_top','Top'],['cad_side','Side'],['cad_front','Front']]);
   img('#simImages', [['fea_boom','Boom arm, von Mises at full thrust'],['fea_spar','Spar + joiner, von Mises at 4.5 g'],['therm_motor','Lift motor, steady-state temperature']]);
   // v0.2 -> v0.3 change table
   const ctb = $('#changeTable tbody'), b2 = V02.concepts.C0.bom, b3 = C0.bom; let t2=0,t3=0;
@@ -455,16 +454,6 @@ function drawGantt(){
 }
 
 // ---------- viewer ----------
-let V=null, vKey='C0';
-function viewerGeom(k){ const c=D.concepts[k], g=c.geo, s=c.sized, x=c.cg.items.find(i=>i.name.startsWith('Battery')).x;
-  return {span:D.base.span, chord:s.chord, fusL:0.85, fusW:0.16, fusH:0.16, fusX:0.45-0.425, battX:x, booms:g.booms, liftD:g.D, xRear:g.xRear,
-    tailLE:g.xRear-g.D/2-0.05, hC:g.hC, vH:g.vH, vC:g.vC, pushX:0.45-0.85-0.038, pushD:14*0.0254}; }
-function initViewer(){ if(V) return; V = Viewer($('#viewer')); V.build(viewerGeom(vKey)); touchGate($('#viewer').closest('.viewer'));
-  $$('.viewer [data-view]').forEach(b=>b.addEventListener('click',()=>V.view(b.dataset.view)));
-  $('#vDiscs').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',V.toggleDiscs()));
-  $('#vExplode').addEventListener('click',e=>e.currentTarget.setAttribute('aria-pressed',V.toggleExplode()));
-  $$('#vConcept button').forEach(b=>b.addEventListener('click',()=>{ vKey=b.dataset.c; $$('#vConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); V.build(viewerGeom(vKey)); })); }
-
 // ---------- SOLIDWORKS model viewer ----------
 let CV=null;
 const THREE_SRC=['https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js','https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js'];
@@ -504,7 +493,7 @@ function touchGate(view){
 }
 
 function redrawSection(id){
-  if(id==='model3d'){ initCad(); initViewer(); V.build(viewerGeom(vKey)); }
+  if(id==='model3d') initCad();
   if(id==='mass'){ drawTornado(); drawPack(); }
   if(id==='budget') drawCap();
   if(id==='testing') drawDuty();

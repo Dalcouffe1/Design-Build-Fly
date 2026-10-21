@@ -269,7 +269,7 @@ Drafting ink on cool, neutral vellum, with one International Orange accent and a
 Every colour has a dark-theme partner token with the suffix `-dark`, for example `drafting-ink-dark`. The dark set mirrors the light one role for role, with lighter accents and verdicts so they hold contrast on the dark vellum.
 
 ### Chart series
-- Six muted categorical colours, **Series 1–6** (#2f5d8a ink blue, #2e7f78 teal, #b7791f ochre, #8e3b6e plum, #5b6b7c slate, #6b7f2a olive), for charts and the concept viewer only. Each has a lighter dark-theme value.
+- Six muted categorical colours, **Series 1–6** (#2f5d8a ink blue, #2e7f78 teal, #b7791f ochre, #8e3b6e plum, #5b6b7c slate, #6b7f2a olive), for charts only. Each has a lighter dark-theme value.
 
 ### Named Rules
 **The Position-Not-Paint Rule.** International Orange marks where the reader is, or what the reader is acting on. It never fills a large area, never sits behind body text, and never stands in for a verdict.
@@ -366,6 +366,9 @@ There are no pills, circles, dots or status lights.
 
 ### Document control (page cover)
 - **Style:** under the title block, two ruled tables side by side: issue history (issue, date, design revision, change) and approval (role, name, date). Roles not yet signed show "—". On phones they stack and the issue history drops its design-revision column.
+
+### Secondary detail
+- **Style:** history and supporting detail that the reader does not need to decide sits behind a disclosure (`details.more`): a 44px summary row between hairlines, closed by default. The one-line summary above it carries the conclusion.
 
 ### Drawing sheets
 - **Style:** SOLIDWORKS sheets shown as numbered figures on a white sheet with a 1px Frame Rule border; selecting one opens it at full size in a dialog with a title bar and a Close button.

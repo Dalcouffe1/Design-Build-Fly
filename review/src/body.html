@@ -41,7 +41,7 @@
 <!-- ============================ 1 OVERVIEW ============================ -->
 <section class="sec" id="overview" data-title="Overview" data-n="1">
   <div class="sechead"><h2><span class="secno">1</span> Overview</h2></div>
-  <p class="verdict lede"><b>Baseline: C0, a 4-lift twin-boom quadplane built to a fixed $2,000 cap.</b> It has a 2.4 m span and a <b data-k="C0.sized.S" data-d="2"></b> m² NACA 2415 wing (AR <span data-k="C0.sized.AR" data-d="1"></span>, chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm). Lift comes from four SunnySky X4110S motors on 17-in props, and a fifth X4110S drives a 14×8.5 pusher. The aircraft has 6061 aluminium booms and spar on a taped XPS foam wing, and runs ArduPilot QuadPlane on a CoreWing F405 Wing board. Sized MTOW is <b data-k="C0.sized.m" data-d="2"></b> kg, with hover thrust-to-weight <b data-k="C0.sized.TW" data-d="2"></b>. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W and cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W. On one 6S 6500 mAh pack it has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise after the hover allowance and 20 % reserve. <b class="ok-t">Verdict: it closes physically and financially.</b> Committed spend including tax and shipping is <b data-k="C0.bom.total" data-c="usd"></b>, which leaves a <b data-k="C0.bom.crash" data-c="usd"></b> crash reserve under the cap. That reserve is thin (decision below).</p>
+  <p class="verdict lede"><b class="ok-t">C0 closes physically and financially under the fixed $2,000 cap.</b> It is a 4-lift twin-boom quadplane: a 2.4 m NACA 2415 wing (<span data-k="C0.sized.S" data-d="2"></span> m², chord <span data-k="C0.sized.chord" data-d="0" data-m="1000"></span> mm), four SunnySky X4110S lift motors on 17-in props and a fifth on a 14×8.5 pusher, 6061 aluminium booms and spar on a taped XPS foam wing, and ArduPilot QuadPlane on a CoreWing F405 Wing board. It hovers on <b data-k="C0.sized.P_hover" data-d="0"></b> W (thrust-to-weight <span data-k="C0.sized.TW" data-d="2"></span>), cruises at 20 m/s on <b data-k="C0.sized.P_cruise" data-d="0"></b> W, and has <b data-k="C0.sized.t_cruise_avail_min" data-d="1"></b> min of cruise on one 6S 6500 mAh pack after the hover allowance and 20 % reserve.</p>
   <p class="src">analysis/sizing.mjs → analysis/results.json (C0); docs/DESIGN-BASIS.md v0.3 R2, R6, R7, R10; parts from docs/research/budget-*.md (prices checked 2026-10-13)</p>
 
   <div class="kpis">
@@ -52,7 +52,8 @@
   </div>
 
   <h3 id="ov-change">What changed from v0.2</h3>
-  <p>v0.2 used a Pixhawk avionics set, X6 SE lift units, carbon tubes and a glass-epoxy wing. Its all-in cost was <b data-k="V02.C0.bom.total" data-c="usd"></b>, so it failed the cap. The team confirmed that $2,000 is fixed and covers everything physical, tax and shipping included. v0.3 keeps the architecture and changes every high-cost part:</p>
+  <p>v0.2 cost <b data-k="V02.C0.bom.total" data-c="usd"></b> and failed the cap. v0.3 kept the architecture and replaced every high-cost part; the v0.3.1 audit then drove seven design changes.</p>
+  <details class="more"><summary>Cost changes by area and the audit changes</summary>
   <div class="tbl"><table id="changeTable"><thead><tr><th>Area</th><th class="n">v0.2 goods</th><th class="n">v0.3 goods</th><th class="n">Saving</th></tr></thead><tbody></tbody></table></div>
   <p class="src">analysis/results_v0.2_baseline.json vs analysis/results.json, category totals of the C0 BOM (goods, pre-tax)</p>
   <p><b>v0.3.1 (same day):</b> a six-reviewer project audit (§12) confirmed 79 findings. The design changes it drove:</p>
@@ -65,6 +66,7 @@
     <li>previously missing wiring, glue, battery straps and a hot-wire allowance added</li>
     <li>transition speed raised to 16 m/s (R11)</li>
   </ul>
+  </details>
 
   <h3 id="ov-decisions">Open decisions</h3>
   <div class="decision red">
@@ -118,7 +120,7 @@
       <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
       <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
       <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
-      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP (§2)</td><td>Detail drawings; internal structure</td></tr>
+      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP; drawing set DBF-DRW-001 (§2)</td><td>Internal structure; drawings released for manufacture</td></tr>
       <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
       <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
       <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
@@ -169,10 +171,7 @@
     <li>gear clamps with legs and feet</li>
   </ul>
   <p><code>params.mjs</code> checks the pusher-to-lift-disc clearance, currently <span data-k="CADP.discClear" data-d="0" data-m="1000"></span> mm (minimum 20 mm). Parts are placed by coordinates, not mates, and SOLIDWORKS interference detection has not been run, so interfaces are visual (—).</p>
-  <p class="src">cad/BuildVtol.cs, cad/params.mjs ← analysis/results.json; outputs cad/model/VTOL_Concept.SLDASM, .STEP, .EASM</p>
-  <div class="grid2" id="cadImages"></div>
-  <p class="src">SOLIDWORKS 2025 renders (cad/images/). Open VTOL_Concept.EASM in the free eDrawings viewer, or the STEP file in any CAD tool.</p>
-
+  <p class="src">cad/BuildVtol.cs, cad/params.mjs ← analysis/results.json; outputs cad/model/VTOL_Concept.SLDASM, .STEP, .EASM (open the EASM in the free eDrawings viewer, or the STEP in any CAD tool)</p>
   <h3 id="m3-drw">Engineering drawings</h3>
   <p>Drawing DBF-DRW-001, revision 0.3.1, is a five-sheet ANSI B set generated from the SOLIDWORKS model. Every dimension is a driven dimension placed at model coordinates from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. The sheets are concept drawings for this review and are marked not released for manufacture. Select a sheet to view it at full size.</p>
   <div class="tbl"><table>
@@ -194,7 +193,7 @@
     <canvas id="cadCanvas" aria-label="Rotatable SOLIDWORKS model of the C0 aircraft; drag to orbit, scroll to zoom"></canvas>
     <span class="lbl">SOLIDWORKS · C0 v0.3.1</span>
     <div class="tip" id="cadTip" hidden></div>
-    <div class="fallback" hidden><p>The 3D viewer needs an internet connection to load its graphics library (three.js). The SOLIDWORKS renders above show the same model.</p><button type="button" id="cadRetry">Try again</button></div>
+    <div class="fallback" hidden><p>The 3D viewer needs an internet connection to load its graphics library (three.js). The drawings in 2.1 show the same model.</p><button type="button" id="cadRetry">Try again</button></div>
     <p class="loadmsg">Loading the 3D model…</p>
     <div class="ctl" role="group" aria-label="SOLIDWORKS model view">
       <button type="button" data-cview="iso">Iso</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button>
@@ -203,21 +202,6 @@
   </div>
   <details class="cadparts" hidden><summary>Parts in the model</summary><p class="meta">Focus or hover a part to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
   <p class="src">cad/model/*.SLDPRT exported by cad/ExportMesh.exe (binary STL, 0.4 mm chord deviation, 12° angle tolerance) → review/mesh.mjs; placed per cad/params.txt (<span id="cadTris"></span> triangles, <span id="cadComps"></span> components). Colours are the CAD display colours, not finishes.</p>
-
-  <h3 id="m3-viewer">Concept comparison geometry</h3>
-  <p>A simplified model that switches between the three layouts compared in §3.</p>
-  <div class="seg" role="group" aria-label="Concept shown" id="vConcept">
-    <button type="button" aria-pressed="true" data-c="C0">C0 4-lift</button><button type="button" aria-pressed="false" data-c="C1">C1 8-lift</button><button type="button" aria-pressed="false" data-c="C2">C2 coax X8</button>
-  </div>
-  <div class="viewer" style="margin-top:10px">
-    <canvas id="viewer" aria-label="Rotatable concept geometry; drag to orbit, scroll to zoom"></canvas>
-    <span class="lbl">Concept geometry</span>
-    <div class="ctl" role="group" aria-label="Concept comparison view">
-      <button type="button" data-view="iso">Iso</button><button type="button" data-view="top">Top</button><button type="button" data-view="side">Side</button><button type="button" data-view="front">Front</button>
-      <button type="button" id="vDiscs" aria-pressed="true">Rotor discs</button><button type="button" id="vExplode" aria-pressed="false">Breakdown</button>
-    </div>
-  </div>
-  <p class="src">Same geometry as the CAD, simplified for the browser (analysis/sizing.mjs geometry()); drag to orbit, wheel to zoom; "Breakdown" shows the transport split</p>
 
   <h3 id="m3-parts">Parts and mass (C0, sized)</h3>
   <div class="tbl"><table id="partsTable"><thead><tr><th class="sort">Item</th><th class="sort n">Mass kg</th><th class="sort n">x from LE, m</th><th>Source</th></tr></thead><tbody></tbody></table></div>

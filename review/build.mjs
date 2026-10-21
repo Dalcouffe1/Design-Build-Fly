@@ -23,8 +23,7 @@ function b64(f) {
   if (existsSync(jpg) && statSync(jpg).mtimeMs >= statSync(png).mtimeMs) return 'data:image/jpeg;base64,' + readFileSync(jpg).toString('base64');
   return 'data:image/png;base64,' + readFileSync(png).toString('base64');
 }
-const imgs = { cad_iso:'../cad/images/VTOL_Concept_iso.png', cad_top:'../cad/images/VTOL_Concept_top.png', cad_side:'../cad/images/VTOL_Concept_side.png',
-  cad_front:'../cad/images/VTOL_Concept_front.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
+const imgs = { fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
 // SOLIDWORKS drawing sheets (cad/Drawings.cs) stay PNG: crisp line art at ~20 KB a sheet
 for (let i = 1; i <= 5; i++) { try { IMG['drw' + i] = 'data:image/png;base64,' + readFileSync(new URL(`../cad/drawings/DBF-DRW-001_sheet${i}.png`, import.meta.url)).toString('base64'); } catch (e) { console.log('missing drawing sheet', i); } }
@@ -42,9 +41,6 @@ ${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-
 <script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; const MESH = ${JSON.stringify(MESH)};</script>
 <script>
 ${r('../analysis/model.js')}
-</script>
-<script>
-${r('./src/viewer.js')}
 </script>
 <script>
 ${r('./src/cadviewer.js')}

@@ -255,6 +255,16 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .pn a .eyebrow{display:block;margin-bottom:6px}
 .pn a.next{text-align:right}
 
+/* ---------- secondary detail behind a disclosure ---------- */
+details.more{margin:10px 0 4px;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+details.more>summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font:600 .875rem/1.3 var(--f-body);color:var(--fg)}
+details.more[open]>summary{border-bottom:1px solid var(--line)}
+details.more>summary{list-style:none}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::before{content:"";flex:none;width:7px;height:7px;margin:0 12px 0 2px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s ease-out}
+details.more[open]>summary::before{transform:rotate(45deg)}
+details.more>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
 /* ---------- document control (cover) ---------- */
 .doccontrol{grid-column:1 / -1;display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:20px;margin-top:4px}
 .doccontrol>*{min-width:0}
