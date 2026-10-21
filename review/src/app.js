@@ -21,52 +21,29 @@ function applyTheme(){ const m=modes[mi]; if(m==='system') document.documentElem
 $('#themeBtn').addEventListener('click',()=>{ mi=(mi+1)%3; applyTheme(); });
 if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>redrawAll());
 
-// ---------- navigation ----------
+// ---------- navigation: one continuous report ----------
 const secs = $$('section.sec');
 function buildNav(){
-  const side = document.createElement('ol'), tabs = $('#tabs');
-  secs.forEach(s=>{
-    const li = document.createElement('li'); li.dataset.id = s.id;
-    li.innerHTML = `<a href="#${s.id}"><span class="n">${s.dataset.n}</span> ${s.dataset.title}</a>`;
-    const subs = s.querySelectorAll('h3[id]');
-    if(subs.length){ const ol=document.createElement('ol'); ol.className='sub';
-      subs.forEach(h=>{ ol.insertAdjacentHTML('beforeend',`<li><a href="#${h.id}" data-sec="${s.id}">${h.textContent}</a></li>`); }); li.appendChild(ol); }
-    side.appendChild(li);
-    tabs.insertAdjacentHTML('beforeend',`<a href="#${s.id}" data-id="${s.id}"><span class="mono">${s.dataset.n}</span> ${s.dataset.title}</a>`);
-    // in-section index + prev/next
-    const i = secs.indexOf(s), prev = secs[i-1], next = secs[i+1];
-    let h = `<div class="secidx"><div class="eyebrow">In this section</div><ol>`;
-    subs.forEach(x=>h+=`<li><a href="#${x.id}" data-sec="${s.id}">${x.textContent}</a></li>`);
-    h += `</ol><div class="pn">`;
-    h += prev ? `<a class="prev" href="#${prev.id}"><span class="eyebrow">← Previous · ${prev.dataset.n}</span> ${prev.dataset.title}</a>` : '<span></span>';
-    h += next ? `<a class="next" href="#${next.id}"><span class="eyebrow">Next · ${next.dataset.n} →</span> ${next.dataset.title}</a>` : '<span></span>';
-    s.insertAdjacentHTML('beforeend', h+'</div></div>');
-  });
-  $('#side').appendChild(side);
+  const ol = $('#tocList');
+  secs.forEach(s=>{ ol.insertAdjacentHTML('beforeend', `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span class="t">${s.dataset.title}</span></a></li>`); });
 }
-function show(id, sub, focus){
-  const target = secs.find(s=>s.id===id) || secs[0];
-  secs.forEach(s=>s.classList.toggle('cur', s===target));
-  const mark=(a,on)=>{ a.classList.toggle('cur',on); if(on) a.setAttribute('aria-current','true'); else a.removeAttribute('aria-current'); };
-  $$('#side li[data-id]').forEach(li=>{ const on=li.dataset.id===target.id; li.classList.toggle('cur',on); mark(li.querySelector('a'),on); });
-  $$('#tabs a').forEach(a=>{ const on=a.dataset.id===target.id; mark(a,on); if(on) a.scrollIntoView({block:'nearest',inline:'center'}); });
-  try{ localStorage.setItem('vtolSec', target.id); }catch(e){}
-  redrawSection(target.id);
-  const dest = sub ? document.getElementById(sub) : null;
-  if(dest) dest.scrollIntoView(); else window.scrollTo(0,0);
-  if(focus){ const f = dest || target.querySelector('h2'); if(f){ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); } }
+// running head: shows once the cover has scrolled away, names the section being read
+function runningHead(){
+  const rh=$('#runhead'), name=$('#rhSec'), cover=$('header.top'), toc=$('#contents');
+  let raf=0;
+  const update=()=>{ raf=0;
+    const past = toc.getBoundingClientRect().bottom < 0; rh.classList.toggle('on', past);
+    let cur=null; for(const s of secs){ if(s.getBoundingClientRect().top < 90) cur=s; }
+    name.textContent = cur ? cur.dataset.n+'  '+cur.dataset.title : ''; };
+  window.addEventListener('scroll', ()=>{ if(!raf) raf=requestAnimationFrame(update); }, {passive:true});
+  window.addEventListener('resize', ()=>{ if(!raf) raf=requestAnimationFrame(update); });
+  update();
 }
-function route(hash, focus){
-  const h = (hash!==undefined ? hash : location.hash).replace(/^#/,'');
-  if(!h){ let s=null; try{ s=localStorage.getItem('vtolSec'); }catch(e){} show(s||'overview'); return; }
-  const el = document.getElementById(h); if(!el) return show('overview');
-  const sec = el.closest('section.sec'); if(!sec) return show(secs.find(s=>s.classList.contains('cur'))?.id||'overview');
-  show(sec.id, el===sec ? null : h, focus);
-}
-window.addEventListener('hashchange', ()=>route(undefined, true));
-document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="#"]'); if(!a) return; const h=a.getAttribute('href');
-  if(a.classList.contains('skip')){ e.preventDefault(); const t=$('section.sec.cur h2')||$('#main'); t.setAttribute('tabindex','-1'); t.focus(); return; }
-  if(!document.getElementById(h.slice(1))) return; e.preventDefault(); try{ history.pushState(null,'',h); }catch(err){} route(h, true); });
+// in-page links move focus to their target so keyboard and screen-reader users land where the page scrolled
+document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l) return;
+  const t=document.getElementById(l.getAttribute('href').slice(1)); if(!t) return;
+  const f = t.matches('section.sec') ? t.querySelector('h2') : (l.classList.contains('skip') ? (t.querySelector('h2')||t) : t);
+  requestAnimationFrame(()=>{ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); }); });
 
 // ---------- data binding ----------
 function fill(){
@@ -310,7 +287,7 @@ function renderChain(){
   ].join(ar);
 }
 function drawTornado(){
-  const svg=$('#tornado'); if(!svg || !svg.closest('section').classList.contains('cur')) return; clear(svg);
+  const svg=$('#tornado'); if(!svg) return; clear(svg);
   const base = VTOLModel.size(P).m, keys=['Vc','Vs','CLmax','span','tCruise','tHover','reserve','CD0_clean','CdA_rotor','eSpec','mPayload','kCtrl'];
   const res = keys.map(k=>{ const lo=VTOLModel.size({...P,[k]:P[k]*0.8}).m-base, hi=VTOLModel.size({...P,[k]:P[k]*1.2}).m-base; return {k, lo, hi, span:Math.abs(hi-lo)}; }).sort((a,b)=>b.span-a.span);
   const W=640, x0=190, x1=620, mid=(x0+x1)/2, maxA=Math.max(...res.map(r=>Math.max(Math.abs(r.lo),Math.abs(r.hi))))||1;
@@ -492,23 +469,36 @@ function touchGate(view){
   if(window.IntersectionObserver) new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) arm(false); })).observe(view);
 }
 
-function redrawSection(id){
-  if(id==='model3d') initCad();
-  if(id==='mass'){ drawTornado(); drawPack(); }
-  if(id==='budget') drawCap();
-  if(id==='testing') drawDuty();
-  if(id==='cg') drawCG();
-  if(id==='controls') drawState();
-  if(id==='schedule') drawGantt();
+function redrawAll(){ drawTornado(); drawPack(); drawCap(); drawDuty(); drawCG(); drawState(); drawGantt(); if(CV && CV.refresh) CV.refresh(); }
+function lazyCad(){ const v=$('#cadView'); if(!v) return;
+  if(!('IntersectionObserver' in window)){ initCad(); return; }
+  const io=new IntersectionObserver(es=>{ if(es.some(x=>x.isIntersecting)){ io.disconnect(); initCad(); } }, {rootMargin:'600px 0px'}); io.observe(v); }
+// summary first: decision facts and long tables sit behind disclosures; requirement status as a grid
+function summarise(){
+  $$('.decision').forEach(d=>{ const q=d.querySelector('b.q'), rec=d.querySelector('.rec'); if(!q||!rec) return;
+    const rest=[...d.children].filter(c=>c!==q && c!==rec); if(!rest.length) return;
+    const det=document.createElement('details'); det.className='more facts'; det.innerHTML='<summary>Facts and sources</summary>';
+    rest.forEach(c=>det.appendChild(c)); d.appendChild(det); });
+  const rq=$('#reqTable');
+  if(rq){ const rows=[...rq.tBodies[0].rows], count={met:0,risk:0,fail:0,open:0};
+    const grid=document.createElement('div'); grid.className='reqgrid';
+    rows.forEach(r=>{ const chip=r.cells[2].querySelector('.chip'); const st=chip?[...chip.classList].find(c=>c in count):'open'; if(st) count[st]++;
+      grid.insertAdjacentHTML('beforeend', `<div class="rq ${st}"><span class="rid">${r.cells[0].textContent}</span><span class="rtx">${r.cells[1].textContent}</span>${chip?chip.outerHTML:''}</div>`); });
+    const sum=document.createElement('p'); sum.className='reqsum';
+    sum.innerHTML=`<b>${count.met}</b> met · <b>${count.risk}</b> at risk · <b>${count.open}</b> open${count.fail?` · <b>${count.fail}</b> failed`:''} of ${rows.length} requirements`;
+    const wrap=rq.closest('.tbl'); wrap.before(sum, grid); }
+  $$('.tbl').forEach(t=>{ if(t.closest('details')||t.closest('.doccontrol')) return; const tb=t.querySelector('tbody'); const n=tb?tb.rows.length:0; if(n<=10) return;
+    const det=document.createElement('details'); det.className='more tablefold';
+    det.innerHTML=`<summary>${t.querySelector('#reqTable')?'Full requirement table':'Show the full table'} · ${n} rows</summary>`;
+    t.before(det); det.appendChild(t); });
 }
-function redrawAll(){ const cur=secs.find(s=>s.classList.contains('cur')); if(cur) redrawSection(cur.id); }
 
 // ---------- boot ----------
-numberHeadings(); buildNav(); fill(); derived(); tables(); drawings(); numberFigures(); sortable();
+numberHeadings(); buildNav(); fill(); derived(); tables(); drawings(); numberFigures(); sortable(); summarise();
 $$('[data-cad="parts"]').forEach(e=>e.textContent=Object.keys(MESH.parts).length); $$('[data-cad="comps"]').forEach(e=>e.textContent=MESH.comps.length);
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
 try{ const s=localStorage.getItem('vtolTheme'); if(s) mi=Math.max(0,modes.indexOf(s)); }catch(e){}
-applyTheme(); route();
+applyTheme(); runningHead(); lazyCad();
 })();

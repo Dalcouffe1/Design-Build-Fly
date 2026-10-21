@@ -33,9 +33,8 @@
   </div>
   <button class="themebtn" id="themeBtn" type="button">Theme: system</button>
 </header>
-<nav class="tabs" id="tabs" aria-label="Sections"></nav>
-<div class="layout">
-<nav class="side" id="side" aria-label="Section index"></nav>
+<div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-RPT-001 · Issue 2</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
+<nav class="toc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol id="tocList"></ol></nav>
 <main id="main">
 
 <!-- ============================ 1 OVERVIEW ============================ -->
@@ -51,24 +50,7 @@
     <div class="kpi"><div class="l">Days to 2027-04-30 (R8)</div><div class="v warn" id="kpiDays">199</div><div class="s">first hover planned 2027-03-13</div></div>
   </div>
 
-  <h3 id="ov-change">What changed from v0.2</h3>
-  <p>v0.2 cost <b data-k="V02.C0.bom.total" data-c="usd"></b> and failed the cap. v0.3 kept the architecture and replaced every high-cost part; the v0.3.1 audit then drove seven design changes.</p>
-  <details class="more"><summary>Cost changes by area and the audit changes</summary>
-  <div class="tbl"><table id="changeTable"><thead><tr><th>Area</th><th class="n">v0.2 goods</th><th class="n">v0.3 goods</th><th class="n">Saving</th></tr></thead><tbody></tbody></table></div>
-  <p class="src">analysis/results_v0.2_baseline.json vs analysis/results.json, category totals of the C0 BOM (goods, pre-tax)</p>
-  <p><b>v0.3.1 (same day):</b> a six-reviewer project audit (§12) confirmed 79 findings. The design changes it drove:</p>
-  <ul class="tight">
-    <li>booms moved outboard so the pusher disc clears the rear lift discs (it overlapped by 30 mm)</li>
-    <li>joiner lengthened to 0.76 m, for 0.30 m of engagement per side</li>
-    <li>wing thickened to NACA 2415, with the spar at 30 % chord, for foam cover over the socket</li>
-    <li>fifth servo for twin rudders</li>
-    <li>motor mounts moved to PA6-CF</li>
-    <li>previously missing wiring, glue, battery straps and a hot-wire allowance added</li>
-    <li>transition speed raised to 16 m/s (R11)</li>
-  </ul>
-  </details>
-
-  <h3 id="ov-decisions">Open decisions</h3>
+  <h3 id="ov-decisions">Decisions needed from the client</h3>
   <div class="decision red">
     <b class="q">Which legal path and which flying field? Flight testing can't be scheduled until this is settled.</b>
     <div>The campus policy permits "University of California courses (including senior projects)", which covers the capstone. Site limits:</div>
@@ -113,22 +95,7 @@
     <p class="src">R2; docs/DESIGN-BASIS.md v0.3.1 · <a href="#mass">§4</a></p>
   </div>
 
-  <h3 id="ov-lanes">Workstream status</h3>
-  <div class="tbl"><table>
-    <thead><tr><th>Workstream</th><th>Status</th><th>What exists</th><th>What does not</th></tr></thead>
-    <tbody>
-      <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
-      <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
-      <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
-      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP; drawing set DBF-DRW-001 (§2)</td><td>Internal structure; drawings released for manufacture</td></tr>
-      <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
-      <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
-      <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
-      <tr><td>Flight test / ops</td><td><span class="chip open">planned</span></td><td>Build-up matrix, SITL, risk register (§13)</td><td>Test cards signed off; crew trained</td></tr>
-      <tr><td>Compliance / site</td><td><span class="chip open">open</span></td><td>Rules located; Remote ID module on FAA list</td><td>Site approval; TRUST</td></tr>
-    </tbody></table></div>
-
-  <h3 id="ov-reqs">Requirement status</h3>
+<h3 id="ov-reqs">Requirement status</h3>
   <div class="tbl"><table id="reqTable">
     <thead><tr><th class="sort">ID</th><th>Requirement (short)</th><th class="sort">Status</th><th>Evidence</th></tr></thead>
     <tbody>
@@ -154,6 +121,39 @@
       <tr><td>R20</td><td>Arming switch, failsafe, geofence</td><td><span class="chip open">open</span></td><td>XT90-S anti-spark plug as physical disconnect + RC arm switch; parameters §10</td></tr>
     </tbody></table></div>
   <p class="src">docs/DESIGN-BASIS.md R1–R20; analysis/results.json</p>
+
+<h3 id="ov-lanes">Workstream status</h3>
+  <div class="tbl"><table>
+    <thead><tr><th>Workstream</th><th>Status</th><th>What exists</th><th>What does not</th></tr></thead>
+    <tbody>
+      <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.3, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
+      <tr><td>Sizing</td><td><span class="chip met">v2</span></td><td>analysis/model.js, sizing.mjs, results.json, verify.py</td><td>Any measured input (M-items)</td></tr>
+      <tr><td>Parts research</td><td><span class="chip met">done</span></td><td>docs/research/ ×8, prices 2026-10-13</td><td>Checkout shipping quotes</td></tr>
+      <tr><td>CAD</td><td><span class="chip met">concept</span></td><td>SOLIDWORKS assembly, <span data-cad="parts">—</span> parts, STEP; drawing set DBF-DRW-001 (§2)</td><td>Internal structure; drawings released for manufacture</td></tr>
+      <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (§12)</td><td>CFD (Flow Simulation unlicensed); clamp FEA</td></tr>
+      <tr><td>Avionics / controls</td><td><span class="chip risk">selected</span></td><td>FC, sensors, parameter plan (§10)</td><td>Bench setup; stable firmware</td></tr>
+      <tr><td>Budget</td><td><span class="chip risk">fits, thin</span></td><td>Itemised BOM, purchasing CSV (§7)</td><td>Cart quotes; orders placed</td></tr>
+      <tr><td>Flight test / ops</td><td><span class="chip open">planned</span></td><td>Build-up matrix, SITL, risk register (§13)</td><td>Test cards signed off; crew trained</td></tr>
+      <tr><td>Compliance / site</td><td><span class="chip open">open</span></td><td>Rules located; Remote ID module on FAA list</td><td>Site approval; TRUST</td></tr>
+    </tbody></table></div>
+
+<h3 id="ov-change">What changed from v0.2</h3>
+  <p>v0.2 cost <b data-k="V02.C0.bom.total" data-c="usd"></b> and failed the cap. v0.3 kept the architecture and replaced every high-cost part; the v0.3.1 audit then drove seven design changes.</p>
+  <details class="more"><summary>Cost changes by area and the audit changes</summary>
+  <div class="tbl"><table id="changeTable"><thead><tr><th>Area</th><th class="n">v0.2 goods</th><th class="n">v0.3 goods</th><th class="n">Saving</th></tr></thead><tbody></tbody></table></div>
+  <p class="src">analysis/results_v0.2_baseline.json vs analysis/results.json, category totals of the C0 BOM (goods, pre-tax)</p>
+  <p><b>v0.3.1 (same day):</b> a six-reviewer project audit (§12) confirmed 79 findings. The design changes it drove:</p>
+  <ul class="tight">
+    <li>booms moved outboard so the pusher disc clears the rear lift discs (it overlapped by 30 mm)</li>
+    <li>joiner lengthened to 0.76 m, for 0.30 m of engagement per side</li>
+    <li>wing thickened to NACA 2415, with the spar at 30 % chord, for foam cover over the socket</li>
+    <li>fifth servo for twin rudders</li>
+    <li>motor mounts moved to PA6-CF</li>
+    <li>previously missing wiring, glue, battery straps and a hot-wire allowance added</li>
+    <li>transition speed raised to 16 m/s (R11)</li>
+  </ul>
+  </details>
+
 </section>
 
 <!-- ============================ 2 CAD ============================ -->
@@ -692,5 +692,4 @@
 </section>
 
 </main>
-</div>
 </div>

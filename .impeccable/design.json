@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T19:33:29.185Z",
+  "generatedAt": "2026-10-21T19:42:01.458Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
@@ -1140,7 +1140,12 @@
       },
       {
         "name": "The Ruled Block Rule",
-        "body": "A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-figure strip, data tables, figures, the measurement list and the section index. Don't wrap these blocks in boxes.",
+        "body": "A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-parameter table, data tables, figures, the measurement list and each chapter heading. Do not wrap these blocks in boxes.",
+        "section": "layout"
+      },
+      {
+        "name": "The Summary-First Rule",
+        "body": "A reader gets each section's answer from its first screen. Long tables and supporting facts fold behind a labelled disclosure; charts and verdicts never do.",
         "section": "layout"
       },
       {

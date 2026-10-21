@@ -312,20 +312,19 @@ The type scale has ten steps: 12, 13, 14, 16, 18, 20, 24, 30, 32 and 42 px. Don'
 
 ## Layout
 
-The page is a single column of report sheets.
-- **Width and gutters:** a 1280px maximum, with 24px side gutters (16px at 560px and below).
-- **Cover:** the title and subtitle, then the title-block grid across the full width. The title block has five cells (Project, Review date, Stage, Revision, Sources), with the Project cell slightly wider. At 760px and below it becomes two columns, with Project spanning the full width.
-- **Desktop (1100px and wider):** a 220px contents column sits on the left and stays in view while scrolling. It lists the numbered sections in plain text, and the current one expands to show its subsections.
-- **Below 1100px:** a horizontally scrolling tab strip replaces the contents column and stays fixed to the top while scrolling.
-- **One section at a time:** only one section is shown. Each ends with an in-section index and previous/next links.
-- **Spacing:**
-  - 12px table cells
-  - 16–18px panel padding
-  - about 26px around the key-figure strip
-  - 40–64px before closing blocks such as the measurement list and section index
+The page is one continuous engineering report, read top to bottom like a printed one. There is no sidebar and no tab switching; every section is on the page at once.
+- **Width and gutters:** a 1040px maximum page, centred, with 24px side gutters (16px at 560px and below). Prose stops at 70ch; tables, figures and the 3D model use the full column.
+- **Cover:** the title and subtitle, the title-block grid, then document control (issue history and approval).
+- **Contents page:** a numbered, two-column table of contents under the cover (one column on phones), each entry a 44px row with the section number in pencil and the title in the condensed face.
+- **Running head:** once the contents page scrolls away, a thin bar fixed to the top shows the document number and issue, the section being read, and a link back to Contents, like the header line on a report page. It slides in, never covers content (sections and anchors carry a 64px scroll margin), and drops the document number on phones.
+- **Chapters:** each section opens with a 2px ink rule and its number and title (2rem), with 96px of space before it, so the report reads in chapters.
+- **Summary first:** each section leads with its verdict paragraph, key figures and charts. Supporting detail sits behind disclosures that say what they hold: any table over ten rows ("Show the full table · 43 rows"), the facts and sources of each decision card, and history such as the v0.2 changes.
+- **Overview order:** verdict and key parameters, then the decisions needed from the client, then requirement status as a count line and a status grid, then workstream status, then the change history.
 - **Phones:** charts, tables and code scroll sideways inside their own containers, never the page.
 
-**The Ruled Block Rule.** A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-figure strip, data tables, figures, the measurement list and the section index. Don't wrap these blocks in boxes.
+**The Ruled Block Rule.** A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-parameter table, data tables, figures, the measurement list and each chapter heading. Do not wrap these blocks in boxes.
+
+**The Summary-First Rule.** A reader gets each section's answer from its first screen. Long tables and supporting facts fold behind a labelled disclosure; charts and verdicts never do.
 
 ## Elevation & Depth
 
@@ -413,12 +412,9 @@ There are no pills, circles, dots or status lights.
 - **Style:** printing drops the interactive-only parts (viewers, sliders, segmented controls, parts list, skip link, touch gates), shows every section, keeps the static renders, and avoids breaking figures, decisions, tables and measurement lists across pages.
 
 ### Navigation
-- **Contents column:**
-  - A mono "CONTENTS" label sits above a rule.
-  - Each section has a right-aligned mono number and a plain-text title.
-  - The current section is bold, with an International Orange number.
-  - Subsections hang off a 1px rule.
-- **Tab strip:** the same content in a sticky horizontal strip, with a 2px orange underline under the active tab.
+- **Contents page:** numbered two-column list under the cover; each row links to its chapter, and following a link moves keyboard focus to the chapter heading.
+- **Running head:** fixed thin bar (document and issue, current section, Contents link); hidden while the cover and contents are on screen.
+- **Requirement status grid:** a count line ("6 met · 5 at risk · 9 open of 20 requirements") over a grid of rows, each with the requirement ID in pencil, its short text and its status chip; the full table sits in a disclosure below.
 
 ### Interactive SOLIDWORKS viewer
 - **Frame:** a framed Sheet White canvas with a mono caption tag in the corner.
