@@ -13,14 +13,6 @@ function get(path){
 const set = (id, txt) => { const e=document.getElementById(id); if(e) e.textContent = txt; };
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-// ---------- theme ----------
-const modes = ['system','light','dark']; let mi = 0;
-try{ const s = localStorage.getItem('vtolTheme'); if(s){ mi = Math.max(0,modes.indexOf(s)); } }catch(e){}
-function applyTheme(){ const m=modes[mi]; if(m==='system') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',m);
-  $('#themeBtn').textContent = 'Theme: '+m; try{localStorage.setItem('vtolTheme',m);}catch(e){} redrawAll(); }
-$('#themeBtn').addEventListener('click',()=>{ mi=(mi+1)%3; applyTheme(); });
-if(window.matchMedia) matchMedia('(prefers-color-scheme: dark)').addEventListener?.('change',()=>redrawAll());
-
 // ---------- navigation: one continuous report ----------
 const secs = $$('section.sec');
 function buildNav(){
@@ -489,7 +481,7 @@ function summarise(){
     const wrap=rq.closest('.tbl'); wrap.before(sum, grid); }
   $$('.tbl').forEach(t=>{ if(t.closest('details')||t.closest('.doccontrol')) return; const tb=t.querySelector('tbody'); const n=tb?tb.rows.length:0; if(n<=10) return;
     const det=document.createElement('details'); det.className='more tablefold';
-    det.innerHTML=`<summary>${t.querySelector('#reqTable')?'Full requirement table':'Show the full table'} · ${n} rows</summary>`;
+    det.innerHTML=`<summary>${t.querySelector('#reqTable')?`Show all ${n} requirements as a table`:`Show all ${n} rows`}</summary>`;
     t.before(det); det.appendChild(t); });
 }
 
@@ -500,5 +492,5 @@ $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
 try{ const s=localStorage.getItem('vtolTheme'); if(s) mi=Math.max(0,modes.indexOf(s)); }catch(e){}
-applyTheme(); runningHead(); lazyCad();
+redrawAll(); runningHead(); lazyCad();
 })();

@@ -1,37 +1,26 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <div class="cover">
-    <h1>Lift + Cruise VTOL Design Review</h1>
-    <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise. Student capstone.</p>
-    <dl class="facts">
-      <div><dt>Project</dt><dd>Design-Build-Fly</dd></div>
-      <div><dt>Document</dt><dd>DBF-RPT-001</dd></div>
-      <div><dt>Issue</dt><dd>2 · 2026-10-18</dd></div>
-      <div><dt>Design revision</dt><dd>0.3.1</dd></div>
-      <div><dt>Stage</dt><dd>Concept · budget redesign</dd></div>
-    </dl>
-    <div class="doccontrol">
-      <table class="dc">
-        <caption>Issue history</caption>
-        <thead><tr><th>Issue</th><th>Date</th><th class="rev">Design rev.</th><th>Change</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td>2026-10-13</td><td class="rev">0.3.1</td><td>Design review after the budget redesign and the six-reviewer audit</td></tr>
-          <tr><td>2</td><td>2026-10-18</td><td class="rev">0.3.1</td><td>Drawing set DBF-DRW-001 (5 sheets), wing saddle, interactive CAD model, accessibility fixes</td></tr>
-        </tbody>
-      </table>
-      <table class="dc">
-        <caption>Approval</caption>
-        <thead><tr><th>Role</th><th>Name</th><th>Date</th></tr></thead>
-        <tbody>
-          <tr><td>Prepared</td><td>Design-Build-Fly team</td><td>2026-10-18</td></tr>
-          <tr><td>Checked</td><td>—</td><td>—</td></tr>
-          <tr><td>Approved (client)</td><td>—</td><td>—</td></tr>
-        </tbody>
-      </table>
+  <div class="mast"><span class="org">Design-Build-Fly <span aria-hidden="true">·</span> UC Berkeley capstone</span><span class="org">DBF-RPT-001 <span aria-hidden="true">·</span> Issue 2</span></div>
+  <h1>Lift + Cruise VTOL Design Review</h1>
+  <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise.</p>
+  <p class="docref">Engineering design review <b>DBF-RPT-001</b>, issue 2, 18 October 2026. Design revision 0.3.1, concept stage after the budget redesign.</p>
+  <div class="record">
+    <table class="revrec">
+      <caption>Revision record</caption>
+      <thead><tr><th>Issue</th><th>Date</th><th>Description</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>2026-10-13</td><td>Design review after the budget redesign and the six-reviewer audit</td></tr>
+        <tr><td>2</td><td>2026-10-18</td><td>Drawing set DBF-DRW-001 (5 sheets), wing saddle, interactive CAD model, accessibility fixes</td></tr>
+      </tbody>
+    </table>
+    <div class="signoff" role="group" aria-labelledby="soTitle">
+      <p class="so-title" id="soTitle">Approval</p>
+      <div class="sig signed"><span class="sig-line">Design-Build-Fly team</span><span class="sig-cap">Prepared · 18 October 2026</span></div>
+      <div class="sig"><span class="sig-line" aria-label="Not yet signed"></span><span class="sig-cap">Checked · date</span></div>
+      <div class="sig"><span class="sig-line" aria-label="Not yet signed"></span><span class="sig-cap">Approved for the client · date</span></div>
     </div>
   </div>
-  <button class="themebtn" id="themeBtn" type="button">Theme: system</button>
 </header>
 <div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-RPT-001 · Issue 2</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
 <nav class="toc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol id="tocList"></ol></nav>
@@ -188,19 +177,19 @@
   <dialog class="lightbox" id="lightbox" aria-label="Drawing sheet at full size"><div class="lb-bar"><span id="lbTitle"></span><button type="button" id="lbClose">Close</button></div><div class="lb-body" id="lbBody"></div></dialog>
 
   <h3 id="m3-cad">Interactive SOLIDWORKS model</h3>
-  <p>The full C0 assembly, rendered from the SOLIDWORKS part geometry. Drag to orbit, right-drag or two-finger drag to pan, and scroll or pinch to zoom. On a touch screen, tap the model once to start; swipes before that scroll the page. Hover over a part, or tap it, to see what it is, or use the parts list below the viewer. <b>X-ray</b> fades the foam and skin to show the booms, spar sockets, joiner and battery inside; <b>Explode</b> pulls the parts apart.</p>
+  <p>The full C0 assembly, built from the SOLIDWORKS part geometry. Drag to rotate, right-drag to pan and scroll to zoom; on a touch screen, tap the model once first, then use two fingers to pan or pinch. Point at or tap a part to name it. <b>X-ray</b> shows the booms, spar sockets, joiner and battery inside the skin; <b>Explode</b> pulls the parts apart.</p>
   <div class="viewer cadview" id="cadView">
     <canvas id="cadCanvas" aria-label="Rotatable SOLIDWORKS model of the C0 aircraft; drag to orbit, scroll to zoom"></canvas>
-    <span class="lbl">SOLIDWORKS · C0 v0.3.1</span>
     <div class="tip" id="cadTip" hidden></div>
-    <div class="fallback" hidden><p>The 3D viewer needs an internet connection to load its graphics library (three.js). The drawings in 2.1 show the same model.</p><button type="button" id="cadRetry">Try again</button></div>
+    <div class="fallback" hidden><p>The 3D model could not load. Its graphics library (three.js) comes from the internet, so check the connection and try again. The drawings in 2.1 show the same model.</p><button type="button" id="cadRetry">Try again</button></div>
     <p class="loadmsg">Loading the 3D model…</p>
-    <div class="ctl" role="group" aria-label="SOLIDWORKS model view">
-      <button type="button" data-cview="iso">Iso</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button>
-      <button type="button" id="cadXray" aria-pressed="false">X-ray</button><button type="button" id="cadExplode" aria-pressed="false">Explode</button><button type="button" id="cadEdges" aria-pressed="true">Edges</button>
+    <div class="ctl">
+      <div class="cgrp" role="group" aria-labelledby="cglView"><span class="cgl" id="cglView">View</span><div class="segbar"><button type="button" data-cview="iso">Isometric</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button></div></div>
+      <div class="cgrp" role="group" aria-labelledby="cglShow"><span class="cgl" id="cglShow">Display</span><div class="segbar"><button type="button" id="cadXray" aria-pressed="false">X-ray</button><button type="button" id="cadExplode" aria-pressed="false">Explode</button><button type="button" id="cadEdges" aria-pressed="true">Edges</button></div></div>
+      <span class="cmeta">SOLIDWORKS model · C0 v0.3.1</span>
     </div>
   </div>
-  <details class="cadparts" hidden><summary>Parts in the model</summary><p class="meta">Focus or hover a part to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
+  <details class="cadparts" hidden><summary>Parts in the model</summary><p class="meta">Point at a part, or move to it with the Tab key, to highlight it in the viewer.</p><ul id="cadParts"></ul></details>
   <p class="src">cad/model/*.SLDPRT exported by cad/ExportMesh.exe (binary STL, 0.4 mm chord deviation, 12° angle tolerance) → review/mesh.mjs; placed per cad/params.txt (<span id="cadTris"></span> triangles, <span id="cadComps"></span> components). Colours are the CAD display colours, not finishes.</p>
 
   <h3 id="m3-parts">Parts and mass (C0, sized)</h3>
@@ -320,7 +309,7 @@
   <p class="src">docs/research/budget-lift.md tables A/B and flagged-table notes; station $ = motor + ESC + one prop</p>
 
   <h3 id="p-batt">Battery</h3>
-  <div class="tbl"><table class="sortable" id="packTable"><thead><tr><th class="sort">Pack</th><th class="sort">Chem</th><th class="sort n">Wh</th><th class="sort n">kg</th><th class="sort n">Wh/kg</th><th class="sort n">Cont. A</th><th class="sort n">$</th><th class="sort n">C0 MTOW</th><th class="sort n">C0 cruise min</th></tr></thead><tbody></tbody></table></div>
+  <div class="tbl"><table class="sortable" id="packTable"><thead><tr><th class="sort">Pack</th><th class="sort">Chemistry</th><th class="sort n">Wh</th><th class="sort n">kg</th><th class="sort n">Wh/kg</th><th class="sort n">Continuous A</th><th class="sort n">$</th><th class="sort n">C0 MTOW</th><th class="sort n">C0 cruise min</th></tr></thead><tbody></tbody></table></div>
   <p class="src">docs/research/budget-energy-test.md §1 (Wh = mAh × V_nom). LiPo C ratings (480–1,200 A) are not credible, so 60 A continuous is assumed <span class="est">est</span> (M4).</p>
 
   <h3 id="p-current">Current and rating check (C0)</h3>

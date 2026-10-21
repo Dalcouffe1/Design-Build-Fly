@@ -76,7 +76,7 @@ function CadViewer(wrap, M){
   function theme(){
     lineMat.color.set(css('--fg') || '#16191d');
     const gm = Array.isArray(grid.material) ? grid.material : [grid.material];
-    gm.forEach(m => { m.color.set(css('--line-2') || '#cbcfd4'); m.transparent = true; m.opacity = 0.45; });
+    gm.forEach(m => { m.color.set(css('--stage-grid') || '#76818d'); m.transparent = true; m.opacity = 0.55; });
     kick();
   }
 
@@ -144,8 +144,6 @@ function CadViewer(wrap, M){
   canvas.addEventListener('pointerup', e => { if (downAt && Math.hypot(e.clientX - downAt[0], e.clientY - downAt[1]) < 5 && e.pointerType !== 'mouse') pick(e); downAt = null; });
 
   new ResizeObserver(resize).observe(canvas);
-  new MutationObserver(theme).observe(document.documentElement, {attributes:true, attributeFilter:['data-theme']});
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', theme);
   theme(); resize(); view('iso', true); kick();
   return {
     view: n => view(n),

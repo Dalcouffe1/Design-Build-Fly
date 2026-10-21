@@ -1,117 +1,12 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T19:42:01.458Z",
+  "generatedAt": "2026-10-21T19:52:53.667Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
-      "international-orange": {
-        "role": "primary",
-        "displayName": "International Orange",
-        "canonical": "#b8481b",
-        "tonalRamp": [
-          "#270000",
-          "#4d0000",
-          "#751b00",
-          "#9f3603",
-          "#c6562c",
-          "#e47e5a",
-          "#ffad8e",
-          "#ffd9be"
-        ]
-      },
-      "international-orange-deep": {
-        "role": "primary",
-        "displayName": "International Orange Deep",
-        "canonical": "#963a14",
-        "tonalRamp": [
-          "#270000",
-          "#4c0000",
-          "#751b00",
-          "#993d17",
-          "#be5e3b",
-          "#e37f5c",
-          "#ffad8d",
-          "#ffd9be"
-        ]
-      },
-      "international-orange-wash": {
-        "role": "primary",
-        "displayName": "International Orange Wash",
-        "canonical": "#f7ece6",
-        "tonalRamp": [
-          "#100906",
-          "#2a221e",
-          "#463e39",
-          "#655b56",
-          "#857b76",
-          "#a69c97",
-          "#cfc5bf",
-          "#f7ece6"
-        ]
-      },
-      "international-orange-rule": {
-        "role": "primary",
-        "displayName": "International Orange Rule",
-        "canonical": "#e4bfae",
-        "tonalRamp": [
-          "#1b0400",
-          "#371c0e",
-          "#553829",
-          "#755546",
-          "#967565",
-          "#b99685",
-          "#e3bead",
-          "#ffe5d4"
-        ]
-      },
-      "drafting-ink": {
+      "print-bg": {
         "role": "neutral",
-        "displayName": "Drafting Ink",
-        "canonical": "#16191d",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4045",
-          "#5a5e63",
-          "#7a7e83",
-          "#9b9fa4",
-          "#c3c8cd",
-          "#eaeff5"
-        ]
-      },
-      "ink-graphite": {
-        "role": "neutral",
-        "displayName": "Ink Graphite",
-        "canonical": "#474e57",
-        "tonalRamp": [
-          "#060c12",
-          "#1e252d",
-          "#3a4049",
-          "#575e68",
-          "#767e88",
-          "#979fa9",
-          "#c0c8d3",
-          "#e7effa"
-        ]
-      },
-      "ink-pencil": {
-        "role": "neutral",
-        "displayName": "Ink Pencil",
-        "canonical": "#6c737c",
-        "tonalRamp": [
-          "#070c12",
-          "#1f252c",
-          "#3a4048",
-          "#575e67",
-          "#777e87",
-          "#989fa9",
-          "#c0c8d2",
-          "#e7effa"
-        ]
-      },
-      "vellum": {
-        "role": "neutral",
-        "displayName": "Vellum",
+        "displayName": "Print Bg",
         "canonical": "#fbfbfa",
         "tonalRamp": [
           "#0b0b0b",
@@ -124,9 +19,9 @@
           "#eeeeed"
         ]
       },
-      "sheet-white": {
+      "print-surface": {
         "role": "neutral",
-        "displayName": "Sheet White",
+        "displayName": "Print Surface",
         "canonical": "#ffffff",
         "tonalRamp": [
           "#0b0b0b",
@@ -139,9 +34,9 @@
           "#eeeeee"
         ]
       },
-      "sheet-tint": {
+      "print-surface-2": {
         "role": "neutral",
-        "displayName": "Sheet Tint",
+        "displayName": "Print Surface 2",
         "canonical": "#f4f5f6",
         "tonalRamp": [
           "#0b0b0c",
@@ -154,9 +49,9 @@
           "#edeeef"
         ]
       },
-      "sheet-tint-2": {
+      "print-surface-3": {
         "role": "neutral",
-        "displayName": "Sheet Tint 2",
+        "displayName": "Print Surface 3",
         "canonical": "#eceef0",
         "tonalRamp": [
           "#0a0b0d",
@@ -169,669 +64,9 @@
           "#edeff1"
         ]
       },
-      "hairline": {
+      "print-zebra": {
         "role": "neutral",
-        "displayName": "Hairline",
-        "canonical": "#e3e5e8",
-        "tonalRamp": [
-          "#0a0b0d",
-          "#232426",
-          "#3e4042",
-          "#5c5e60",
-          "#7b7d80",
-          "#9d9ea1",
-          "#c5c7ca",
-          "#edeff2"
-        ]
-      },
-      "frame-rule": {
-        "role": "neutral",
-        "displayName": "Frame Rule",
-        "canonical": "#cbcfd4",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4044",
-          "#5a5e62",
-          "#7a7e82",
-          "#9b9fa3",
-          "#c4c8cd",
-          "#ebeff4"
-        ]
-      },
-      "construction-line": {
-        "role": "neutral",
-        "displayName": "Construction Line",
-        "canonical": "#9ea4ac",
-        "tonalRamp": [
-          "#080b11",
-          "#20242b",
-          "#3b4047",
-          "#595e65",
-          "#787e85",
-          "#999fa7",
-          "#c2c8d0",
-          "#e9eff8"
-        ]
-      },
-      "status-met": {
-        "role": "tertiary",
-        "displayName": "Status Met",
-        "canonical": "#23744a",
-        "tonalRamp": [
-          "#001500",
-          "#00310c",
-          "#004f28",
-          "#1c6e45",
-          "#428f64",
-          "#64b284",
-          "#8edcac",
-          "#b9ffd4"
-        ]
-      },
-      "status-met-wash": {
-        "role": "tertiary",
-        "displayName": "Status Met Wash",
-        "canonical": "#e7f2ec",
-        "tonalRamp": [
-          "#060d09",
-          "#1e2622",
-          "#39423d",
-          "#57605b",
-          "#76807b",
-          "#97a19c",
-          "#c0cac4",
-          "#e7f2ec"
-        ]
-      },
-      "status-risk": {
-        "role": "tertiary",
-        "displayName": "Status Risk",
-        "canonical": "#94600a",
-        "tonalRamp": [
-          "#210000",
-          "#431400",
-          "#623200",
-          "#845100",
-          "#a67125",
-          "#c9924a",
-          "#f5bb73",
-          "#ffe4a7"
-        ]
-      },
-      "status-risk-wash": {
-        "role": "tertiary",
-        "displayName": "Status Risk Wash",
-        "canonical": "#f6efe1",
-        "tonalRamp": [
-          "#0f0a03",
-          "#292319",
-          "#453f34",
-          "#635d51",
-          "#837d70",
-          "#a49e91",
-          "#cdc7b9",
-          "#f5eee0"
-        ]
-      },
-      "status-fail": {
-        "role": "tertiary",
-        "displayName": "Status Fail",
-        "canonical": "#ad2a1f",
-        "tonalRamp": [
-          "#280000",
-          "#4d0000",
-          "#76160f",
-          "#a13126",
-          "#c85244",
-          "#e67b6c",
-          "#ffaa9b",
-          "#ffd7c9"
-        ]
-      },
-      "status-fail-wash": {
-        "role": "tertiary",
-        "displayName": "Status Fail Wash",
-        "canonical": "#f8e9e7",
-        "tonalRamp": [
-          "#120908",
-          "#2c2120",
-          "#483d3b",
-          "#675a59",
-          "#877a78",
-          "#a99b99",
-          "#d2c3c2",
-          "#faebe9"
-        ]
-      },
-      "status-open": {
-        "role": "tertiary",
-        "displayName": "Status Open",
-        "canonical": "#57489a",
-        "tonalRamp": [
-          "#0e0030",
-          "#251256",
-          "#402e7e",
-          "#5d4ea1",
-          "#7b6ec4",
-          "#9c90e9",
-          "#c4bbff",
-          "#ebe5ff"
-        ]
-      },
-      "status-open-wash": {
-        "role": "tertiary",
-        "displayName": "Status Open Wash",
-        "canonical": "#efedf6",
-        "tonalRamp": [
-          "#0c0a10",
-          "#242329",
-          "#403e46",
-          "#5e5c64",
-          "#7e7c84",
-          "#9f9da5",
-          "#c8c6ce",
-          "#efedf6"
-        ]
-      },
-      "status-open-frame": {
-        "role": "tertiary",
-        "displayName": "Status Open Frame",
-        "canonical": "#a49ec5",
-        "tonalRamp": [
-          "#0d0520",
-          "#251e3d",
-          "#403a5b",
-          "#5e587b",
-          "#7d779d",
-          "#9f99bf",
-          "#c7c1ea",
-          "#efe8ff"
-        ]
-      },
-      "status-fail-frame": {
-        "role": "tertiary",
-        "displayName": "Status Fail Frame",
-        "canonical": "#c57e79",
-        "tonalRamp": [
-          "#260000",
-          "#460a0d",
-          "#672928",
-          "#894844",
-          "#ac6763",
-          "#d08883",
-          "#fcb1ab",
-          "#ffd8d1"
-        ]
-      },
-      "international-orange-dark": {
-        "role": "primary",
-        "displayName": "International Orange (dark)",
-        "canonical": "#ec8a58",
-        "tonalRamp": [
-          "#260000",
-          "#4b0200",
-          "#731e00",
-          "#983e00",
-          "#bd5f2c",
-          "#e2814f",
-          "#ffb086",
-          "#ffdbb8"
-        ]
-      },
-      "international-orange-deep-dark": {
-        "role": "primary",
-        "displayName": "International Orange Deep (dark)",
-        "canonical": "#f4a77f",
-        "tonalRamp": [
-          "#260000",
-          "#490800",
-          "#6a2900",
-          "#8c4821",
-          "#b06842",
-          "#d48a62",
-          "#ffb28a",
-          "#ffdcb6"
-        ]
-      },
-      "international-orange-wash-dark": {
-        "role": "primary",
-        "displayName": "International Orange Wash (dark)",
-        "canonical": "#2b1e17",
-        "tonalRamp": [
-          "#130804",
-          "#2e211a",
-          "#4b3c35",
-          "#695a52",
-          "#8a7971",
-          "#ac9a91",
-          "#d5c3ba",
-          "#fdeae1"
-        ]
-      },
-      "international-orange-rule-dark": {
-        "role": "primary",
-        "displayName": "International Orange Rule (dark)",
-        "canonical": "#6b3d27",
-        "tonalRamp": [
-          "#210000",
-          "#3f1500",
-          "#5f321c",
-          "#80503a",
-          "#a27058",
-          "#c59078",
-          "#f0b9a0",
-          "#ffe0c6"
-        ]
-      },
-      "drafting-ink-dark": {
-        "role": "neutral",
-        "displayName": "Drafting Ink (dark)",
-        "canonical": "#e6e8ea",
-        "tonalRamp": [
-          "#0a0b0d",
-          "#232426",
-          "#3e4041",
-          "#5c5e5f",
-          "#7c7d7f",
-          "#9d9fa0",
-          "#c5c7c9",
-          "#edeff1"
-        ]
-      },
-      "ink-graphite-dark": {
-        "role": "neutral",
-        "displayName": "Ink Graphite (dark)",
-        "canonical": "#b2b8bf",
-        "tonalRamp": [
-          "#080c10",
-          "#20242a",
-          "#3b4046",
-          "#595e64",
-          "#787e84",
-          "#999fa6",
-          "#c2c8cf",
-          "#e9eff7"
-        ]
-      },
-      "ink-pencil-dark": {
-        "role": "neutral",
-        "displayName": "Ink Pencil (dark)",
-        "canonical": "#89909a",
-        "tonalRamp": [
-          "#070b12",
-          "#1f242c",
-          "#3a4049",
-          "#585e67",
-          "#777e88",
-          "#989fa9",
-          "#c0c8d3",
-          "#e7effa"
-        ]
-      },
-      "vellum-dark": {
-        "role": "neutral",
-        "displayName": "Vellum (dark)",
-        "canonical": "#111315",
-        "tonalRamp": [
-          "#090b0d",
-          "#222426",
-          "#3e4042",
-          "#5b5e60",
-          "#7b7e80",
-          "#9c9fa1",
-          "#c5c8ca",
-          "#eceff2"
-        ]
-      },
-      "sheet-white-dark": {
-        "role": "neutral",
-        "displayName": "Sheet White (dark)",
-        "canonical": "#16191c",
-        "tonalRamp": [
-          "#090b0e",
-          "#212428",
-          "#3d4044",
-          "#5a5e62",
-          "#7a7e82",
-          "#9b9fa3",
-          "#c4c8cc",
-          "#ebeff3"
-        ]
-      },
-      "sheet-tint-dark": {
-        "role": "neutral",
-        "displayName": "Sheet Tint (dark)",
-        "canonical": "#1c2024",
-        "tonalRamp": [
-          "#080c0f",
-          "#202529",
-          "#3c4045",
-          "#595e63",
-          "#797e83",
-          "#9a9fa4",
-          "#c3c8cd",
-          "#eaeff5"
-        ]
-      },
-      "sheet-tint-2-dark": {
-        "role": "neutral",
-        "displayName": "Sheet Tint 2 (dark)",
-        "canonical": "#23282d",
-        "tonalRamp": [
-          "#070c10",
-          "#20252a",
-          "#3b4046",
-          "#595e64",
-          "#787e84",
-          "#999fa6",
-          "#c2c8cf",
-          "#e9eff6"
-        ]
-      },
-      "zebra-dark": {
-        "role": "neutral",
-        "displayName": "Zebra Dark",
-        "canonical": "#181b1e",
-        "tonalRamp": [
-          "#090b0e",
-          "#212428",
-          "#3d4044",
-          "#5a5e62",
-          "#7a7e82",
-          "#9b9fa3",
-          "#c4c8cc",
-          "#ebeff3"
-        ]
-      },
-      "hairline-dark": {
-        "role": "neutral",
-        "displayName": "Hairline (dark)",
-        "canonical": "#2a2f35",
-        "tonalRamp": [
-          "#070c11",
-          "#20242a",
-          "#3b4047",
-          "#595e65",
-          "#787e85",
-          "#999fa6",
-          "#c2c8d0",
-          "#e9eff7"
-        ]
-      },
-      "frame-rule-dark": {
-        "role": "neutral",
-        "displayName": "Frame Rule (dark)",
-        "canonical": "#3a4048",
-        "tonalRamp": [
-          "#070b12",
-          "#1f242c",
-          "#3a4048",
-          "#585e67",
-          "#777e87",
-          "#989fa8",
-          "#c1c8d2",
-          "#e8eff9"
-        ]
-      },
-      "construction-line-dark": {
-        "role": "neutral",
-        "displayName": "Construction Line (dark)",
-        "canonical": "#5f6670",
-        "tonalRamp": [
-          "#070b13",
-          "#1f242d",
-          "#3a4049",
-          "#575e68",
-          "#777e88",
-          "#979faa",
-          "#c0c8d3",
-          "#e7effb"
-        ]
-      },
-      "status-met-dark": {
-        "role": "tertiary",
-        "displayName": "Status Met (dark)",
-        "canonical": "#6cc595",
-        "tonalRamp": [
-          "#001500",
-          "#00320c",
-          "#005028",
-          "#007045",
-          "#359164",
-          "#5ab384",
-          "#84deac",
-          "#b7ffd7"
-        ]
-      },
-      "status-met-wash-dark": {
-        "role": "tertiary",
-        "displayName": "Status Met Wash (dark)",
-        "canonical": "#15261d",
-        "tonalRamp": [
-          "#020f07",
-          "#17281f",
-          "#33453b",
-          "#506358",
-          "#6f8377",
-          "#90a498",
-          "#b8cdc1",
-          "#dff5e8"
-        ]
-      },
-      "status-risk-dark": {
-        "role": "tertiary",
-        "displayName": "Status Risk (dark)",
-        "canonical": "#dcae5a",
-        "tonalRamp": [
-          "#1e0200",
-          "#3f1800",
-          "#5e3600",
-          "#7e5400",
-          "#a07516",
-          "#c39641",
-          "#eebf6c",
-          "#ffe8a4"
-        ]
-      },
-      "status-risk-wash-dark": {
-        "role": "tertiary",
-        "displayName": "Status Risk Wash (dark)",
-        "canonical": "#2a2213",
-        "tonalRamp": [
-          "#110a01",
-          "#2b2314",
-          "#473f2f",
-          "#665c4c",
-          "#867c6a",
-          "#a79d8b",
-          "#d0c6b3",
-          "#f8edda"
-        ]
-      },
-      "status-fail-dark": {
-        "role": "tertiary",
-        "displayName": "Status Fail (dark)",
-        "canonical": "#ef8a7f",
-        "tonalRamp": [
-          "#280000",
-          "#4d0000",
-          "#741917",
-          "#983c35",
-          "#bc5c53",
-          "#e27e73",
-          "#ffaa9f",
-          "#ffd6cc"
-        ]
-      },
-      "status-fail-wash-dark": {
-        "role": "tertiary",
-        "displayName": "Status Fail Wash (dark)",
-        "canonical": "#321917",
-        "tonalRamp": [
-          "#190404",
-          "#351c1a",
-          "#533735",
-          "#735552",
-          "#947471",
-          "#b79592",
-          "#e1beba",
-          "#ffe5e1"
-        ]
-      },
-      "status-open-dark": {
-        "role": "tertiary",
-        "displayName": "Status Open (dark)",
-        "canonical": "#a99be0",
-        "tonalRamp": [
-          "#10002e",
-          "#28154f",
-          "#43336f",
-          "#605290",
-          "#8071b3",
-          "#a193d7",
-          "#c9bbff",
-          "#f0e3ff"
-        ]
-      },
-      "status-open-wash-dark": {
-        "role": "tertiary",
-        "displayName": "Status Open Wash (dark)",
-        "canonical": "#221e33",
-        "tonalRamp": [
-          "#0c071a",
-          "#242036",
-          "#403c53",
-          "#5e5a72",
-          "#7d7993",
-          "#9e9ab6",
-          "#c7c3e0",
-          "#eeeaff"
-        ]
-      },
-      "status-open-frame-dark": {
-        "role": "tertiary",
-        "displayName": "Status Open Frame Dark",
-        "canonical": "#636082",
-        "tonalRamp": [
-          "#0b0620",
-          "#231f3c",
-          "#3e3b5b",
-          "#5c597a",
-          "#7b799c",
-          "#9c9abf",
-          "#c5c2e9",
-          "#eceaff"
-        ]
-      },
-      "status-fail-frame-dark": {
-        "role": "tertiary",
-        "displayName": "Status Fail Frame Dark",
-        "canonical": "#96615e",
-        "tonalRamp": [
-          "#210001",
-          "#401313",
-          "#5f302e",
-          "#814d4b",
-          "#a36d6a",
-          "#c68e8a",
-          "#f2b6b2",
-          "#ffddd9"
-        ]
-      },
-      "series-1-dark": {
-        "role": "tertiary",
-        "displayName": "Series 1 Ink Blue (dark)",
-        "canonical": "#7fa8d1",
-        "tonalRamp": [
-          "#000928",
-          "#002546",
-          "#1c4265",
-          "#3a6186",
-          "#5981a8",
-          "#7aa3cb",
-          "#a2ccf7",
-          "#c8f4ff"
-        ]
-      },
-      "series-2-dark": {
-        "role": "tertiary",
-        "displayName": "Series 2 Teal (dark)",
-        "canonical": "#6cbdb4",
-        "tonalRamp": [
-          "#001410",
-          "#002f2a",
-          "#004d46",
-          "#0c6c65",
-          "#3a8d85",
-          "#5eafa6",
-          "#88d9cf",
-          "#affff7"
-        ]
-      },
-      "series-3-dark": {
-        "role": "tertiary",
-        "displayName": "Series 3 Ochre (dark)",
-        "canonical": "#dcae5a",
-        "tonalRamp": [
-          "#1e0200",
-          "#3f1800",
-          "#5e3600",
-          "#7e5400",
-          "#a07516",
-          "#c39641",
-          "#eebf6c",
-          "#ffe8a4"
-        ]
-      },
-      "series-4-dark": {
-        "role": "tertiary",
-        "displayName": "Series 4 Plum (dark)",
-        "canonical": "#cf86b4",
-        "tonalRamp": [
-          "#210016",
-          "#430332",
-          "#63244f",
-          "#85436e",
-          "#a8628f",
-          "#cc83b1",
-          "#f8acdb",
-          "#ffd6ff"
-        ]
-      },
-      "series-5-dark": {
-        "role": "tertiary",
-        "displayName": "Series 5 Slate (dark)",
-        "canonical": "#9aaabb",
-        "tonalRamp": [
-          "#030c17",
-          "#182532",
-          "#344150",
-          "#515f6f",
-          "#707f8f",
-          "#91a0b1",
-          "#b9c9db",
-          "#e0f1ff"
-        ]
-      },
-      "series-6-dark": {
-        "role": "tertiary",
-        "displayName": "Series 6 Olive (dark)",
-        "canonical": "#a8bf62",
-        "tonalRamp": [
-          "#070f00",
-          "#1d2a00",
-          "#374800",
-          "#546700",
-          "#738828",
-          "#94aa4d",
-          "#bcd37c",
-          "#e5f9b0"
-        ]
-      },
-      "zebra": {
-        "role": "neutral",
-        "displayName": "Zebra",
+        "displayName": "Print Zebra",
         "canonical": "#fafafa",
         "tonalRamp": [
           "#0b0b0b",
@@ -844,9 +79,354 @@
           "#eeeeee"
         ]
       },
-      "series-1": {
-        "role": "tertiary",
-        "displayName": "Series 1 Ink Blue",
+      "print-line": {
+        "role": "neutral",
+        "displayName": "Print Line",
+        "canonical": "#e3e5e8",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7b7d80",
+          "#9d9ea1",
+          "#c5c7ca",
+          "#edeff2"
+        ]
+      },
+      "print-line-2": {
+        "role": "neutral",
+        "displayName": "Print Line 2",
+        "canonical": "#cbcfd4",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cd",
+          "#ebeff4"
+        ]
+      },
+      "print-line-3": {
+        "role": "neutral",
+        "displayName": "Print Line 3",
+        "canonical": "#9ea4ac",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3b4047",
+          "#595e65",
+          "#787e85",
+          "#999fa7",
+          "#c2c8d0",
+          "#e9eff8"
+        ]
+      },
+      "print-fg": {
+        "role": "neutral",
+        "displayName": "Print Fg",
+        "canonical": "#16191d",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "print-fg-2": {
+        "role": "neutral",
+        "displayName": "Print Fg 2",
+        "canonical": "#474e57",
+        "tonalRamp": [
+          "#060c12",
+          "#1e252d",
+          "#3a4049",
+          "#575e68",
+          "#767e88",
+          "#979fa9",
+          "#c0c8d3",
+          "#e7effa"
+        ]
+      },
+      "print-fg-3": {
+        "role": "neutral",
+        "displayName": "Print Fg 3",
+        "canonical": "#6c737c",
+        "tonalRamp": [
+          "#070c12",
+          "#1f252c",
+          "#3a4048",
+          "#575e67",
+          "#777e87",
+          "#989fa9",
+          "#c0c8d2",
+          "#e7effa"
+        ]
+      },
+      "print-accent": {
+        "role": "neutral",
+        "displayName": "Print Accent",
+        "canonical": "#b8481b",
+        "tonalRamp": [
+          "#270000",
+          "#4d0000",
+          "#751b00",
+          "#9f3603",
+          "#c6562c",
+          "#e47e5a",
+          "#ffad8e",
+          "#ffd9be"
+        ]
+      },
+      "print-accent-2": {
+        "role": "neutral",
+        "displayName": "Print Accent 2",
+        "canonical": "#963a14",
+        "tonalRamp": [
+          "#270000",
+          "#4c0000",
+          "#751b00",
+          "#993d17",
+          "#be5e3b",
+          "#e37f5c",
+          "#ffad8d",
+          "#ffd9be"
+        ]
+      },
+      "print-accent-soft": {
+        "role": "neutral",
+        "displayName": "Print Accent Soft",
+        "canonical": "#f7ece6",
+        "tonalRamp": [
+          "#100906",
+          "#2a221e",
+          "#463e39",
+          "#655b56",
+          "#857b76",
+          "#a69c97",
+          "#cfc5bf",
+          "#f7ece6"
+        ]
+      },
+      "print-accent-line": {
+        "role": "neutral",
+        "displayName": "Print Accent Line",
+        "canonical": "#e4bfae",
+        "tonalRamp": [
+          "#1b0400",
+          "#371c0e",
+          "#553829",
+          "#755546",
+          "#967565",
+          "#b99685",
+          "#e3bead",
+          "#ffe5d4"
+        ]
+      },
+      "print-accent-fg": {
+        "role": "neutral",
+        "displayName": "Print Accent Fg",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "print-ink": {
+        "role": "neutral",
+        "displayName": "Print Ink",
+        "canonical": "#16191d",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "print-ink-fg": {
+        "role": "neutral",
+        "displayName": "Print Ink Fg",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "print-ok": {
+        "role": "neutral",
+        "displayName": "Print Ok",
+        "canonical": "#23744a",
+        "tonalRamp": [
+          "#001500",
+          "#00310c",
+          "#004f28",
+          "#1c6e45",
+          "#428f64",
+          "#64b284",
+          "#8edcac",
+          "#b9ffd4"
+        ]
+      },
+      "print-ok-soft": {
+        "role": "neutral",
+        "displayName": "Print Ok Soft",
+        "canonical": "#e7f2ec",
+        "tonalRamp": [
+          "#060d09",
+          "#1e2622",
+          "#39423d",
+          "#57605b",
+          "#76807b",
+          "#97a19c",
+          "#c0cac4",
+          "#e7f2ec"
+        ]
+      },
+      "print-warn": {
+        "role": "neutral",
+        "displayName": "Print Warn",
+        "canonical": "#94600a",
+        "tonalRamp": [
+          "#210000",
+          "#431400",
+          "#623200",
+          "#845100",
+          "#a67125",
+          "#c9924a",
+          "#f5bb73",
+          "#ffe4a7"
+        ]
+      },
+      "print-warn-soft": {
+        "role": "neutral",
+        "displayName": "Print Warn Soft",
+        "canonical": "#f6efe1",
+        "tonalRamp": [
+          "#0f0a03",
+          "#292319",
+          "#453f34",
+          "#635d51",
+          "#837d70",
+          "#a49e91",
+          "#cdc7b9",
+          "#f5eee0"
+        ]
+      },
+      "print-bad": {
+        "role": "neutral",
+        "displayName": "Print Bad",
+        "canonical": "#ad2a1f",
+        "tonalRamp": [
+          "#280000",
+          "#4d0000",
+          "#76160f",
+          "#a13126",
+          "#c85244",
+          "#e67b6c",
+          "#ffaa9b",
+          "#ffd7c9"
+        ]
+      },
+      "print-bad-soft": {
+        "role": "neutral",
+        "displayName": "Print Bad Soft",
+        "canonical": "#f8e9e7",
+        "tonalRamp": [
+          "#120908",
+          "#2c2120",
+          "#483d3b",
+          "#675a59",
+          "#877a78",
+          "#a99b99",
+          "#d2c3c2",
+          "#faebe9"
+        ]
+      },
+      "print-open": {
+        "role": "neutral",
+        "displayName": "Print Open",
+        "canonical": "#57489a",
+        "tonalRamp": [
+          "#0e0030",
+          "#251256",
+          "#402e7e",
+          "#5d4ea1",
+          "#7b6ec4",
+          "#9c90e9",
+          "#c4bbff",
+          "#ebe5ff"
+        ]
+      },
+      "print-open-soft": {
+        "role": "neutral",
+        "displayName": "Print Open Soft",
+        "canonical": "#efedf6",
+        "tonalRamp": [
+          "#0c0a10",
+          "#242329",
+          "#403e46",
+          "#5e5c64",
+          "#7e7c84",
+          "#9f9da5",
+          "#c8c6ce",
+          "#efedf6"
+        ]
+      },
+      "print-open-line": {
+        "role": "neutral",
+        "displayName": "Print Open Line",
+        "canonical": "#a49ec5",
+        "tonalRamp": [
+          "#0d0520",
+          "#251e3d",
+          "#403a5b",
+          "#5e587b",
+          "#7d779d",
+          "#9f99bf",
+          "#c7c1ea",
+          "#efe8ff"
+        ]
+      },
+      "print-bad-line": {
+        "role": "neutral",
+        "displayName": "Print Bad Line",
+        "canonical": "#c57e79",
+        "tonalRamp": [
+          "#260000",
+          "#460a0d",
+          "#672928",
+          "#894844",
+          "#ac6763",
+          "#d08883",
+          "#fcb1ab",
+          "#ffd8d1"
+        ]
+      },
+      "print-c1": {
+        "role": "neutral",
+        "displayName": "Print C1",
         "canonical": "#2f5d8a",
         "tonalRamp": [
           "#00072e",
@@ -859,9 +439,9 @@
           "#c1f4ff"
         ]
       },
-      "series-2": {
-        "role": "tertiary",
-        "displayName": "Series 2 Teal",
+      "print-c2": {
+        "role": "neutral",
+        "displayName": "Print C2",
         "canonical": "#2e7f78",
         "tonalRamp": [
           "#001411",
@@ -874,9 +454,9 @@
           "#b1fff7"
         ]
       },
-      "series-3": {
-        "role": "tertiary",
-        "displayName": "Series 3 Ochre",
+      "print-c3": {
+        "role": "neutral",
+        "displayName": "Print C3",
         "canonical": "#b7791f",
         "tonalRamp": [
           "#210000",
@@ -889,9 +469,9 @@
           "#ffe4a7"
         ]
       },
-      "series-4": {
-        "role": "tertiary",
-        "displayName": "Series 4 Plum",
+      "print-c4": {
+        "role": "neutral",
+        "displayName": "Print C4",
         "canonical": "#8e3b6e",
         "tonalRamp": [
           "#220014",
@@ -904,9 +484,9 @@
           "#ffd5fd"
         ]
       },
-      "series-5": {
-        "role": "tertiary",
-        "displayName": "Series 5 Slate",
+      "print-c5": {
+        "role": "neutral",
+        "displayName": "Print C5",
         "canonical": "#5b6b7c",
         "tonalRamp": [
           "#020c18",
@@ -919,9 +499,9 @@
           "#def1ff"
         ]
       },
-      "series-6": {
-        "role": "tertiary",
-        "displayName": "Series 6 Olive",
+      "print-c6": {
+        "role": "neutral",
+        "displayName": "Print C6",
         "canonical": "#6b7f2a",
         "tonalRamp": [
           "#070f00",
@@ -932,6 +512,546 @@
           "#93a956",
           "#bcd37e",
           "#e4f9b1"
+        ]
+      },
+      "print-band": {
+        "role": "neutral",
+        "displayName": "Print Band",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "print-band-line": {
+        "role": "neutral",
+        "displayName": "Print Band Line",
+        "canonical": "#cbcfd4",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cd",
+          "#ebeff4"
+        ]
+      },
+      "international-orange": {
+        "role": "primary",
+        "displayName": "International Orange",
+        "canonical": "#ec8a58",
+        "tonalRamp": [
+          "#260000",
+          "#4b0200",
+          "#731e00",
+          "#983e00",
+          "#bd5f2c",
+          "#e2814f",
+          "#ffb086",
+          "#ffdbb8"
+        ]
+      },
+      "international-orange-deep": {
+        "role": "primary",
+        "displayName": "International Orange Deep",
+        "canonical": "#f4a77f",
+        "tonalRamp": [
+          "#260000",
+          "#490800",
+          "#6a2900",
+          "#8c4821",
+          "#b06842",
+          "#d48a62",
+          "#ffb28a",
+          "#ffdcb6"
+        ]
+      },
+      "international-orange-wash": {
+        "role": "primary",
+        "displayName": "International Orange Wash",
+        "canonical": "#3d2a20",
+        "tonalRamp": [
+          "#160701",
+          "#311f15",
+          "#4f3b30",
+          "#6e584d",
+          "#8f786c",
+          "#b1998d",
+          "#dac1b5",
+          "#ffe9db"
+        ]
+      },
+      "international-orange-rule": {
+        "role": "primary",
+        "displayName": "International Orange Rule",
+        "canonical": "#7a4a33",
+        "tonalRamp": [
+          "#210000",
+          "#401500",
+          "#5f321b",
+          "#805039",
+          "#a36f57",
+          "#c69077",
+          "#f1b99f",
+          "#ffe0c5"
+        ]
+      },
+      "drafting-ink": {
+        "role": "neutral",
+        "displayName": "Drafting Ink",
+        "canonical": "#f1f3f5",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4041",
+          "#5c5e5f",
+          "#7c7d7f",
+          "#9d9fa0",
+          "#c5c7c9",
+          "#edeff1"
+        ]
+      },
+      "ink-graphite": {
+        "role": "neutral",
+        "displayName": "Ink Graphite",
+        "canonical": "#cdd2d7",
+        "tonalRamp": [
+          "#080c0f",
+          "#212428",
+          "#3c4044",
+          "#5a5e62",
+          "#797e82",
+          "#9a9fa4",
+          "#c3c8cd",
+          "#eaeff4"
+        ]
+      },
+      "ink-pencil": {
+        "role": "neutral",
+        "displayName": "Ink Pencil",
+        "canonical": "#aeb5bd",
+        "tonalRamp": [
+          "#070c11",
+          "#1f252b",
+          "#3b4047",
+          "#585e65",
+          "#777e85",
+          "#989fa7",
+          "#c1c8d0",
+          "#e8eff8"
+        ]
+      },
+      "vellum": {
+        "role": "neutral",
+        "displayName": "Vellum",
+        "canonical": "#25282c",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa4",
+          "#c4c8cd",
+          "#ebeff4"
+        ]
+      },
+      "sheet-white": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "#2e3237",
+        "tonalRamp": [
+          "#080b10",
+          "#212429",
+          "#3c4045",
+          "#5a5e64",
+          "#797e84",
+          "#9a9fa5",
+          "#c3c8ce",
+          "#eaeff6"
+        ]
+      },
+      "sheet-tint": {
+        "role": "neutral",
+        "displayName": "Sheet Tint",
+        "canonical": "#363b41",
+        "tonalRamp": [
+          "#080c10",
+          "#20242a",
+          "#3b4046",
+          "#595e65",
+          "#787e85",
+          "#999fa6",
+          "#c2c8cf",
+          "#e9eff7"
+        ]
+      },
+      "sheet-tint-2": {
+        "role": "neutral",
+        "displayName": "Sheet Tint 2",
+        "canonical": "#3f454c",
+        "tonalRamp": [
+          "#070c11",
+          "#1f252b",
+          "#3a4047",
+          "#585e66",
+          "#777e86",
+          "#989fa7",
+          "#c1c8d1",
+          "#e8eff8"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "#3f444b",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3b4047",
+          "#595e65",
+          "#787e86",
+          "#999fa7",
+          "#c2c8d0",
+          "#e9eff8"
+        ]
+      },
+      "frame-rule": {
+        "role": "neutral",
+        "displayName": "Frame Rule",
+        "canonical": "#545b63",
+        "tonalRamp": [
+          "#070c12",
+          "#1f252c",
+          "#3a4048",
+          "#575e66",
+          "#777e87",
+          "#989fa8",
+          "#c0c8d1",
+          "#e7eff9"
+        ]
+      },
+      "construction-line": {
+        "role": "neutral",
+        "displayName": "Construction Line",
+        "canonical": "#78808a",
+        "tonalRamp": [
+          "#060c13",
+          "#1e252d",
+          "#394049",
+          "#575e68",
+          "#767e88",
+          "#979faa",
+          "#c0c8d3",
+          "#e6effb"
+        ]
+      },
+      "viewport-stage-top": {
+        "role": "neutral",
+        "displayName": "Viewport Stage Top",
+        "canonical": "#4a525b",
+        "tonalRamp": [
+          "#060c13",
+          "#1e252d",
+          "#394149",
+          "#565f68",
+          "#767e88",
+          "#969faa",
+          "#bfc8d3",
+          "#e6f0fb"
+        ]
+      },
+      "viewport-stage-bottom": {
+        "role": "neutral",
+        "displayName": "Viewport Stage Bottom",
+        "canonical": "#22262a",
+        "tonalRamp": [
+          "#080c0f",
+          "#212428",
+          "#3c4045",
+          "#5a5e63",
+          "#797e83",
+          "#9a9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "viewport-grid": {
+        "role": "neutral",
+        "displayName": "Viewport Grid",
+        "canonical": "#77818c",
+        "tonalRamp": [
+          "#050c14",
+          "#1d252e",
+          "#38414a",
+          "#555f69",
+          "#747e89",
+          "#95a0ab",
+          "#bec9d5",
+          "#e5f0fc"
+        ]
+      },
+      "status-met": {
+        "role": "tertiary",
+        "displayName": "Status Met",
+        "canonical": "#6cc595",
+        "tonalRamp": [
+          "#001500",
+          "#00320c",
+          "#005028",
+          "#007045",
+          "#359164",
+          "#5ab384",
+          "#84deac",
+          "#b7ffd7"
+        ]
+      },
+      "status-met-wash": {
+        "role": "tertiary",
+        "displayName": "Status Met Wash",
+        "canonical": "#1f3428",
+        "tonalRamp": [
+          "#000f06",
+          "#14291e",
+          "#304639",
+          "#4d6456",
+          "#6c8476",
+          "#8da596",
+          "#b5cfbf",
+          "#dcf6e6"
+        ]
+      },
+      "status-risk": {
+        "role": "tertiary",
+        "displayName": "Status Risk",
+        "canonical": "#dcae5a",
+        "tonalRamp": [
+          "#1e0200",
+          "#3f1800",
+          "#5e3600",
+          "#7e5400",
+          "#a07516",
+          "#c39641",
+          "#eebf6c",
+          "#ffe8a4"
+        ]
+      },
+      "status-risk-wash": {
+        "role": "tertiary",
+        "displayName": "Status Risk Wash",
+        "canonical": "#3a3020",
+        "tonalRamp": [
+          "#120900",
+          "#2c2213",
+          "#483e2e",
+          "#675c4b",
+          "#877c69",
+          "#a99d8a",
+          "#d2c5b2",
+          "#faedd8"
+        ]
+      },
+      "status-fail": {
+        "role": "tertiary",
+        "displayName": "Status Fail",
+        "canonical": "#ef8a7f",
+        "tonalRamp": [
+          "#280000",
+          "#4d0000",
+          "#741917",
+          "#983c35",
+          "#bc5c53",
+          "#e27e73",
+          "#ffaa9f",
+          "#ffd6cc"
+        ]
+      },
+      "status-fail-wash": {
+        "role": "tertiary",
+        "displayName": "Status Fail Wash",
+        "canonical": "#43231f",
+        "tonalRamp": [
+          "#1c0202",
+          "#391a16",
+          "#573531",
+          "#77534e",
+          "#99726d",
+          "#bc938d",
+          "#e6bcb5",
+          "#ffe3dc"
+        ]
+      },
+      "status-open": {
+        "role": "tertiary",
+        "displayName": "Status Open",
+        "canonical": "#a99be0",
+        "tonalRamp": [
+          "#10002e",
+          "#28154f",
+          "#43336f",
+          "#605290",
+          "#8071b3",
+          "#a193d7",
+          "#c9bbff",
+          "#f0e3ff"
+        ]
+      },
+      "status-open-wash": {
+        "role": "tertiary",
+        "displayName": "Status Open Wash",
+        "canonical": "#2f2a45",
+        "tonalRamp": [
+          "#0c061d",
+          "#241f39",
+          "#403b57",
+          "#5e5977",
+          "#7d7898",
+          "#9e9abb",
+          "#c7c2e5",
+          "#eee9ff"
+        ]
+      },
+      "status-open-frame": {
+        "role": "tertiary",
+        "displayName": "Status Open Frame",
+        "canonical": "#6f6a92",
+        "tonalRamp": [
+          "#0c0423",
+          "#241e40",
+          "#3f3a5e",
+          "#5d587e",
+          "#7c77a0",
+          "#9d98c3",
+          "#c6c1ee",
+          "#ede8ff"
+        ]
+      },
+      "status-fail-frame": {
+        "role": "tertiary",
+        "displayName": "Status Fail Frame",
+        "canonical": "#a06a66",
+        "tonalRamp": [
+          "#210000",
+          "#401312",
+          "#60302d",
+          "#814d4a",
+          "#a36d69",
+          "#c78e89",
+          "#f2b6b1",
+          "#ffddd8"
+        ]
+      },
+      "zebra": {
+        "role": "neutral",
+        "displayName": "Zebra",
+        "canonical": "#2a2d32",
+        "tonalRamp": [
+          "#090b0f",
+          "#212429",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7d83",
+          "#9b9fa5",
+          "#c4c7ce",
+          "#ebeff5"
+        ]
+      },
+      "series-1": {
+        "role": "tertiary",
+        "displayName": "Series 1 Ink Blue",
+        "canonical": "#7fa8d1",
+        "tonalRamp": [
+          "#000928",
+          "#002546",
+          "#1c4265",
+          "#3a6186",
+          "#5981a8",
+          "#7aa3cb",
+          "#a2ccf7",
+          "#c8f4ff"
+        ]
+      },
+      "series-2": {
+        "role": "tertiary",
+        "displayName": "Series 2 Teal",
+        "canonical": "#6cbdb4",
+        "tonalRamp": [
+          "#001410",
+          "#002f2a",
+          "#004d46",
+          "#0c6c65",
+          "#3a8d85",
+          "#5eafa6",
+          "#88d9cf",
+          "#affff7"
+        ]
+      },
+      "series-3": {
+        "role": "tertiary",
+        "displayName": "Series 3 Ochre",
+        "canonical": "#dcae5a",
+        "tonalRamp": [
+          "#1e0200",
+          "#3f1800",
+          "#5e3600",
+          "#7e5400",
+          "#a07516",
+          "#c39641",
+          "#eebf6c",
+          "#ffe8a4"
+        ]
+      },
+      "series-4": {
+        "role": "tertiary",
+        "displayName": "Series 4 Plum",
+        "canonical": "#cf86b4",
+        "tonalRamp": [
+          "#210016",
+          "#430332",
+          "#63244f",
+          "#85436e",
+          "#a8628f",
+          "#cc83b1",
+          "#f8acdb",
+          "#ffd6ff"
+        ]
+      },
+      "series-5": {
+        "role": "tertiary",
+        "displayName": "Series 5 Slate",
+        "canonical": "#9aaabb",
+        "tonalRamp": [
+          "#030c17",
+          "#182532",
+          "#344150",
+          "#515f6f",
+          "#707f8f",
+          "#91a0b1",
+          "#b9c9db",
+          "#e0f1ff"
+        ]
+      },
+      "series-6": {
+        "role": "tertiary",
+        "displayName": "Series 6 Olive",
+        "canonical": "#a8bf62",
+        "tonalRamp": [
+          "#070f00",
+          "#1d2a00",
+          "#374800",
+          "#546700",
+          "#738828",
+          "#94aa4d",
+          "#bcd37c",
+          "#e5f9b0"
         ]
       }
     },
@@ -1032,15 +1152,7 @@
       "refersTo": "button-segment",
       "description": "Toggle group; pressed segment fills with drafting ink.",
       "html": "<div class=\"ds-seg\"><button class=\"ds-seg-b\" aria-pressed=\"true\">C0 4-lift</button><button class=\"ds-seg-b\">C1 8-lift</button><button class=\"ds-seg-b\">C2 coax X8</button></div>",
-      "css": ".ds-seg{display:inline-flex;border:1px solid #cbcfd4;border-radius:2px;overflow:hidden;background:#fff}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #cbcfd4;background:#fff;color:#474e57;font:500 .875rem 'Source Sans 3',system-ui,sans-serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#f4f5f6;color:#16191d}.ds-seg-b:focus-visible{outline:2px solid #b8481b;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#16191d;color:#fff}"
-    },
-    {
-      "name": "Theme button",
-      "kind": "button",
-      "refersTo": "button-theme",
-      "description": "Transparent mono-label button for the theme toggle.",
-      "html": "<button class=\"ds-theme\">Theme: system</button>",
-      "css": ".ds-theme{min-height:44px;padding:0 14px;border:1px solid #cbcfd4;background:transparent;color:#474e57;border-radius:2px;font:500 .74rem 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.04em;cursor:pointer;transition:border-color .15s,color .15s}.ds-theme:hover{border-color:#16191d;color:#16191d}.ds-theme:focus-visible{outline:2px solid #b8481b;outline-offset:2px}"
+      "css": ".ds-seg{display:inline-flex;border:1px solid #545b63;border-radius:2px;overflow:hidden;background:#2e3237}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #545b63;background:#2e3237;color:#cdd2d7;font:500 .875rem 'STIX Two Text','Times New Roman',serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#363b41;color:#f1f3f5}.ds-seg-b:focus-visible{outline:2px solid #ec8a58;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#f1f3f5;color:#25282c}"
     },
     {
       "name": "Status chips",
@@ -1048,7 +1160,7 @@
       "refersTo": "chip-met",
       "description": "Requirement verdicts: outlined mono caps; fail adds its wash.",
       "html": "<span class=\"ds-chip ds-met\">Met</span> <span class=\"ds-chip ds-risk\">Risk</span> <span class=\"ds-chip ds-fail\">Fail</span> <span class=\"ds-chip ds-open\">Open</span> <span class=\"ds-est\">EST</span>",
-      "css": ".ds-chip{display:inline-block;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#23744a}.ds-risk{color:#94600a}.ds-fail{color:#ad2a1f;background:#f8e9e7}.ds-open{color:#57489a}.ds-est{display:inline-block;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;color:#94600a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
+      "css": ".ds-chip{display:inline-block;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#6cc595}.ds-risk{color:#dcae5a}.ds-fail{color:#ef8a7f;background:#43231f}.ds-open{color:#a99be0}.ds-est{display:inline-block;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.06em;color:#dcae5a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
     },
     {
       "name": "Title block",
@@ -1056,7 +1168,7 @@
       "refersTo": "title-block-cell",
       "description": "Cover title block: ruled cells with mono field names over condensed values.",
       "html": "<dl class=\"ds-tb\"><div><dt>Project</dt><dd>Design-Build-Fly</dd></div><div><dt>Review date</dt><dd>2026-10-13</dd></div><div><dt>Stage</dt><dd>Concept · budget redesign</dd></div><div><dt>Revision</dt><dd>v0.3.1</dd></div><div><dt>Sources</dt><dd>docs/ · analysis/ · cad/</dd></div></dl>",
-      "css": ".ds-tb{display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:1px;margin:0;border:1px solid #cbcfd4;background:#cbcfd4}.ds-tb>div{padding:10px 14px 12px;background:#fff}.ds-tb dt{font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.08em;text-transform:uppercase;color:#6c737c;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d}"
+      "css": ".ds-tb{display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:1px;margin:0;border:1px solid #545b63;background:#545b63}.ds-tb>div{padding:10px 14px 12px;background:#2e3237}.ds-tb dt{font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.08em;text-transform:uppercase;color:#aeb5bd;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'STIX Two Text','Times New Roman',serif;color:#f1f3f5}"
     },
     {
       "name": "Key-figure strip",
@@ -1064,7 +1176,7 @@
       "refersTo": null,
       "description": "Open KPI strip under a 2px ink rule; values coloured by verdict.",
       "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><div class=\"ds-l\">Committed spend (R6)</div><div class=\"ds-v ds-ok\">$1,898</div><div class=\"ds-s\">cap $2,000 incl. tax + shipping</div></div><div class=\"ds-kpi\"><div class=\"ds-l\">Crash reserve (R7)</div><div class=\"ds-v ds-warn\">$102</div><div class=\"ds-s\">target ≥ $100: met, thin</div></div></div>",
-      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #e3e5e8}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .75rem/1.35 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2rem/1.05 'Barlow Semi Condensed','Arial Narrow',sans-serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#16191d}.ds-ok{color:#23744a}.ds-warn{color:#94600a}.ds-s{font:400 .875rem/1.45 'Source Sans 3',system-ui,sans-serif;color:#474e57}"
+      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #f1f3f5;border-bottom:1px solid #545b63}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #3f444b}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .75rem/1.35 'STIX Two Text','Times New Roman',serif;color:#aeb5bd;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2rem/1.05 'STIX Two Text','Times New Roman',serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#f1f3f5}.ds-ok{color:#6cc595}.ds-warn{color:#dcae5a}.ds-s{font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;color:#cdd2d7}"
     },
     {
       "name": "Decision card",
@@ -1072,7 +1184,7 @@
       "refersTo": "decision-card",
       "description": "Open (violet frame) or blocking (red frame) decision with recommendation panel.",
       "html": "<div class=\"ds-dec ds-red\"><b class=\"ds-q\">Which legal path and which flying field?</b><div class=\"ds-body\">Only Richmond Field Station allows the 30 m a transition needs.</div><div class=\"ds-rec\"><b>Recommended:</b> request RFS by 2026-11-06.</div></div>",
-      "css": ".ds-dec{border:1px solid #a49ec5;border-radius:2px;padding:16px 20px 14px;background:#fff;color:#474e57;font:400 1rem/1.6 'Source Sans 3',system-ui,sans-serif}.ds-dec.ds-red{border-color:#c57e79}.ds-q{display:block;font:600 1.125rem/1.3 'Barlow Semi Condensed','Arial Narrow',sans-serif;color:#16191d;margin-bottom:8px}.ds-q::before{content:'Open';display:inline-block;border:1px solid currentColor;border-radius:2px;padding:4px 6px;margin-right:10px;vertical-align:.18em;font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.09em;text-transform:uppercase;color:#57489a;}.ds-red .ds-q::before{content:'Blocking';color:#ad2a1f;background:#f8e9e7}.ds-rec{margin-top:12px;padding:10px 14px;background:#f4f5f6;border-radius:2px;color:#16191d}.ds-red .ds-rec{background:#f8e9e7}"
+      "css": ".ds-dec{border:1px solid #6f6a92;border-radius:2px;padding:16px 20px 14px;background:#2e3237;color:#cdd2d7;font:400 1rem/1.6 'STIX Two Text','Times New Roman',serif}.ds-dec.ds-red{border-color:#a06a66}.ds-q{display:block;font:600 1.125rem/1.3 'STIX Two Text','Times New Roman',serif;color:#f1f3f5;margin-bottom:8px}.ds-q::before{content:'Open';display:inline-block;border:1px solid currentColor;border-radius:2px;padding:4px 6px;margin-right:10px;vertical-align:.18em;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.09em;text-transform:uppercase;color:#a99be0;}.ds-red .ds-q::before{content:'Blocking';color:#ef8a7f;background:#43231f}.ds-rec{margin-top:12px;padding:10px 14px;background:#363b41;border-radius:2px;color:#f1f3f5}.ds-red .ds-rec{background:#43231f}"
     },
     {
       "name": "Ruled table",
@@ -1080,7 +1192,7 @@
       "refersTo": "table-head",
       "description": "Data table: ink rule top, mono caps sticky header, chosen row in orange wash.",
       "html": "<table class=\"ds-t\"><thead><tr><th>Pack</th><th class=\"ds-n\">Cruise min</th><th class=\"ds-n\">Price</th></tr></thead><tbody><tr class=\"ds-ch\"><td>Ovonic 6S 6500 ×2</td><td class=\"ds-n\">11.9</td><td class=\"ds-n\">$69.50</td></tr><tr><td>HOOVO 6S 8000</td><td class=\"ds-n\">—</td><td class=\"ds-n\">—</td></tr></tbody></table>",
-      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #16191d;border-bottom:1px solid #cbcfd4;font:400 .875rem/1.45 'Source Sans 3',system-ui,sans-serif;font-variant-numeric:tabular-nums;color:#16191d}.ds-t th:first-child,.ds-t td:first-child{padding-left:8px}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #e3e5e8;text-align:left}.ds-t th{font:500 .75rem/1.3 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.06em;text-transform:uppercase;color:#474e57;border-bottom-color:#cbcfd4}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#f4f5f6}.ds-t tr.ds-ch td{background:#f7ece6}.ds-t tr.ds-ch td:first-child{font-weight:600}"
+      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #f1f3f5;border-bottom:1px solid #545b63;font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;font-variant-numeric:tabular-nums;color:#f1f3f5}.ds-t th:first-child,.ds-t td:first-child{padding-left:8px}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #3f444b;text-align:left}.ds-t th{font:500 .75rem/1.3 'STIX Two Text','Times New Roman',serif;letter-spacing:.06em;text-transform:uppercase;color:#cdd2d7;border-bottom-color:#545b63}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#363b41}.ds-t tr.ds-ch td{background:#3d2a20}.ds-t tr.ds-ch td:first-child{font-weight:600}"
     },
     {
       "name": "Contents navigation",
@@ -1088,7 +1200,7 @@
       "refersTo": null,
       "description": "Plain-text numbered contents; current section bold with orange number.",
       "html": "<nav class=\"ds-nav\"><div class=\"ds-nh\">Contents</div><a><span>1</span>Overview</a><a class=\"ds-cur\"><span>2</span>CAD model</a><a><span>3</span>Concepts</a></nav>",
-      "css": ".ds-nav{width:220px;font:400 .875rem/1.3 'Source Sans 3',system-ui,sans-serif}.ds-nh{font:500 .75rem/1 'Red Hat Mono',ui-monospace,monospace;letter-spacing:.1em;text-transform:uppercase;color:#6c737c;padding-bottom:12px;border-bottom:1px solid #cbcfd4;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#474e57;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .75rem 'Red Hat Mono',ui-monospace,monospace;color:#6c737c;width:1.5em;text-align:right}.ds-nav a:hover{color:#16191d}.ds-nav a.ds-cur{color:#16191d;font-weight:600}.ds-nav a.ds-cur span{color:#b8481b;font-weight:600}"
+      "css": ".ds-nav{width:220px;font:400 .875rem/1.3 'STIX Two Text','Times New Roman',serif}.ds-nh{font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.1em;text-transform:uppercase;color:#aeb5bd;padding-bottom:12px;border-bottom:1px solid #545b63;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#cdd2d7;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .75rem 'STIX Two Text','Times New Roman',serif;color:#aeb5bd;width:1.5em;text-align:right}.ds-nav a:hover{color:#f1f3f5}.ds-nav a.ds-cur{color:#f1f3f5;font-weight:600}.ds-nav a.ds-cur span{color:#ec8a58;font-weight:600}"
     }
   ],
   "narrative": {
@@ -1096,11 +1208,11 @@
     "overview": "The review reads like a released engineering drawing, not a web page. Its cover is a title block: a ruled grid of cells for review date, stage, revision and sources, sitting under a heavy ink rule. Everything below follows the drawing sheet: black drafting ink on near-white vellum, square corners, hairline frames, and condensed technical lettering for headings. Authority comes from precision, so the system has no gradients, shadows or rounded cards, and nothing that reads as a marketing site or a generated template.\n\nThe page is dense on purpose. It carries numbers inline with units, cites a source under every claim, and puts structure in rules rather than boxes. A 2px ink rule opens each major block (key figures, tables, figures, the measurement list) and 1px hairlines divide what's inside. Colour is held back for meaning: International Orange marks where you are, and the four status colours mark verdicts. The client has to be able to trust what they're reading before they approve the spend, and the restraint is what earns that.\n\nThe page is precise and restrained. Detail shows in alignment, tabular numerals and consistent rules, never in ornament.",
     "keyCharacteristics": [
       "A ruled title-block cover under a 2px ink rule",
-      "Ink on vellum, with one International Orange accent used sparingly",
+      "Off-white ink on a graphite ground, with one International Orange accent used sparingly",
       "Square geometry (2px or less), no shadows, structure carried by rules",
       "Condensed technical headings, a humanist sans body, mono labels and citations",
       "Tabular numerals everywhere",
-      "Full light and dark themes from the same tokens"
+      "One dark theme: a mid-grey ground with lighter grey panels, not black and white (client direction, 2026-10-21)"
     ],
     "rules": [
       {
@@ -1162,16 +1274,17 @@
     "dos": [
       "**Do** open each major block with a 2px Drafting Ink rule and close it with a 1px Frame Rule.",
       "**Do** keep International Orange to position, focus and selection.",
-      "**Do** set labels, IDs, units, field names and citations in Red Hat Mono caps with 0.06–0.1em tracking.",
+      "**Do** set every element in STIX Two Text; separate levels with size, weight and rules.",
       "**Do** use tabular numerals and right-align number columns.",
       "**Do** put a Source citation under every claim block, and mark estimates with the EST tag.",
       "**Do** keep radii at 2px or less, and keep controls at least 44px tall.",
-      "**Do** define every colour as a token on `:root`, with dark values under `prefers-color-scheme` and `[data-theme]`."
+      "**Do** define every colour as a token on `:root`; there is one theme, so there are no light overrides."
     ],
     "donts": [
       "**Don't** use box shadows, glows, gradients or blur. The system is flat (user direction: it must not look AI-generated).",
       "**Don't** use rounded cards, pill badges, dot status icons or coloured side or top stripes on cards.",
       "**Don't** return to the earlier indigo-on-blue-grey theme or the Archivo/IBM Plex pairing. That's the look this system replaced.",
+      "**Don't** add a light theme or drop the ground to near-black; the graphite steps are what give the page its contrast.",
       "**Don't** use International Orange as a verdict colour or a large fill.",
       "**Don't** use zebra stripes or filled header rows in tables.",
       "**Don't** set running text in the condensed display face.",
