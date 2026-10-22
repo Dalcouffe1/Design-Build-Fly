@@ -1,549 +1,9 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-21T19:52:53.667Z",
+  "generatedAt": "2026-10-22T03:08:31.806Z",
   "title": "Design System: Design-Build-Fly Design Review",
   "extensions": {
     "colorMeta": {
-      "print-bg": {
-        "role": "neutral",
-        "displayName": "Print Bg",
-        "canonical": "#fbfbfa",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242423",
-          "#40403f",
-          "#5e5e5d",
-          "#7d7d7c",
-          "#9e9e9d",
-          "#c7c7c6",
-          "#eeeeed"
-        ]
-      },
-      "print-surface": {
-        "role": "neutral",
-        "displayName": "Print Surface",
-        "canonical": "#ffffff",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242424",
-          "#404040",
-          "#5d5d5d",
-          "#7d7d7d",
-          "#9e9e9e",
-          "#c7c7c7",
-          "#eeeeee"
-        ]
-      },
-      "print-surface-2": {
-        "role": "neutral",
-        "displayName": "Print Surface 2",
-        "canonical": "#f4f5f6",
-        "tonalRamp": [
-          "#0b0b0c",
-          "#232425",
-          "#3f4041",
-          "#5d5e5e",
-          "#7c7d7e",
-          "#9d9e9f",
-          "#c6c7c8",
-          "#edeeef"
-        ]
-      },
-      "print-surface-3": {
-        "role": "neutral",
-        "displayName": "Print Surface 3",
-        "canonical": "#eceef0",
-        "tonalRamp": [
-          "#0a0b0d",
-          "#232426",
-          "#3e4041",
-          "#5c5e5f",
-          "#7c7d7f",
-          "#9d9fa0",
-          "#c5c7c9",
-          "#edeff1"
-        ]
-      },
-      "print-zebra": {
-        "role": "neutral",
-        "displayName": "Print Zebra",
-        "canonical": "#fafafa",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242424",
-          "#404040",
-          "#5d5d5d",
-          "#7d7d7d",
-          "#9e9e9e",
-          "#c7c7c7",
-          "#eeeeee"
-        ]
-      },
-      "print-line": {
-        "role": "neutral",
-        "displayName": "Print Line",
-        "canonical": "#e3e5e8",
-        "tonalRamp": [
-          "#0a0b0d",
-          "#232426",
-          "#3e4042",
-          "#5c5e60",
-          "#7b7d80",
-          "#9d9ea1",
-          "#c5c7ca",
-          "#edeff2"
-        ]
-      },
-      "print-line-2": {
-        "role": "neutral",
-        "displayName": "Print Line 2",
-        "canonical": "#cbcfd4",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4044",
-          "#5a5e62",
-          "#7a7e82",
-          "#9b9fa3",
-          "#c4c8cd",
-          "#ebeff4"
-        ]
-      },
-      "print-line-3": {
-        "role": "neutral",
-        "displayName": "Print Line 3",
-        "canonical": "#9ea4ac",
-        "tonalRamp": [
-          "#080b11",
-          "#20242b",
-          "#3b4047",
-          "#595e65",
-          "#787e85",
-          "#999fa7",
-          "#c2c8d0",
-          "#e9eff8"
-        ]
-      },
-      "print-fg": {
-        "role": "neutral",
-        "displayName": "Print Fg",
-        "canonical": "#16191d",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4045",
-          "#5a5e63",
-          "#7a7e83",
-          "#9b9fa4",
-          "#c3c8cd",
-          "#eaeff5"
-        ]
-      },
-      "print-fg-2": {
-        "role": "neutral",
-        "displayName": "Print Fg 2",
-        "canonical": "#474e57",
-        "tonalRamp": [
-          "#060c12",
-          "#1e252d",
-          "#3a4049",
-          "#575e68",
-          "#767e88",
-          "#979fa9",
-          "#c0c8d3",
-          "#e7effa"
-        ]
-      },
-      "print-fg-3": {
-        "role": "neutral",
-        "displayName": "Print Fg 3",
-        "canonical": "#6c737c",
-        "tonalRamp": [
-          "#070c12",
-          "#1f252c",
-          "#3a4048",
-          "#575e67",
-          "#777e87",
-          "#989fa9",
-          "#c0c8d2",
-          "#e7effa"
-        ]
-      },
-      "print-accent": {
-        "role": "neutral",
-        "displayName": "Print Accent",
-        "canonical": "#b8481b",
-        "tonalRamp": [
-          "#270000",
-          "#4d0000",
-          "#751b00",
-          "#9f3603",
-          "#c6562c",
-          "#e47e5a",
-          "#ffad8e",
-          "#ffd9be"
-        ]
-      },
-      "print-accent-2": {
-        "role": "neutral",
-        "displayName": "Print Accent 2",
-        "canonical": "#963a14",
-        "tonalRamp": [
-          "#270000",
-          "#4c0000",
-          "#751b00",
-          "#993d17",
-          "#be5e3b",
-          "#e37f5c",
-          "#ffad8d",
-          "#ffd9be"
-        ]
-      },
-      "print-accent-soft": {
-        "role": "neutral",
-        "displayName": "Print Accent Soft",
-        "canonical": "#f7ece6",
-        "tonalRamp": [
-          "#100906",
-          "#2a221e",
-          "#463e39",
-          "#655b56",
-          "#857b76",
-          "#a69c97",
-          "#cfc5bf",
-          "#f7ece6"
-        ]
-      },
-      "print-accent-line": {
-        "role": "neutral",
-        "displayName": "Print Accent Line",
-        "canonical": "#e4bfae",
-        "tonalRamp": [
-          "#1b0400",
-          "#371c0e",
-          "#553829",
-          "#755546",
-          "#967565",
-          "#b99685",
-          "#e3bead",
-          "#ffe5d4"
-        ]
-      },
-      "print-accent-fg": {
-        "role": "neutral",
-        "displayName": "Print Accent Fg",
-        "canonical": "#ffffff",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242424",
-          "#404040",
-          "#5d5d5d",
-          "#7d7d7d",
-          "#9e9e9e",
-          "#c7c7c7",
-          "#eeeeee"
-        ]
-      },
-      "print-ink": {
-        "role": "neutral",
-        "displayName": "Print Ink",
-        "canonical": "#16191d",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4045",
-          "#5a5e63",
-          "#7a7e83",
-          "#9b9fa4",
-          "#c3c8cd",
-          "#eaeff5"
-        ]
-      },
-      "print-ink-fg": {
-        "role": "neutral",
-        "displayName": "Print Ink Fg",
-        "canonical": "#ffffff",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242424",
-          "#404040",
-          "#5d5d5d",
-          "#7d7d7d",
-          "#9e9e9e",
-          "#c7c7c7",
-          "#eeeeee"
-        ]
-      },
-      "print-ok": {
-        "role": "neutral",
-        "displayName": "Print Ok",
-        "canonical": "#23744a",
-        "tonalRamp": [
-          "#001500",
-          "#00310c",
-          "#004f28",
-          "#1c6e45",
-          "#428f64",
-          "#64b284",
-          "#8edcac",
-          "#b9ffd4"
-        ]
-      },
-      "print-ok-soft": {
-        "role": "neutral",
-        "displayName": "Print Ok Soft",
-        "canonical": "#e7f2ec",
-        "tonalRamp": [
-          "#060d09",
-          "#1e2622",
-          "#39423d",
-          "#57605b",
-          "#76807b",
-          "#97a19c",
-          "#c0cac4",
-          "#e7f2ec"
-        ]
-      },
-      "print-warn": {
-        "role": "neutral",
-        "displayName": "Print Warn",
-        "canonical": "#94600a",
-        "tonalRamp": [
-          "#210000",
-          "#431400",
-          "#623200",
-          "#845100",
-          "#a67125",
-          "#c9924a",
-          "#f5bb73",
-          "#ffe4a7"
-        ]
-      },
-      "print-warn-soft": {
-        "role": "neutral",
-        "displayName": "Print Warn Soft",
-        "canonical": "#f6efe1",
-        "tonalRamp": [
-          "#0f0a03",
-          "#292319",
-          "#453f34",
-          "#635d51",
-          "#837d70",
-          "#a49e91",
-          "#cdc7b9",
-          "#f5eee0"
-        ]
-      },
-      "print-bad": {
-        "role": "neutral",
-        "displayName": "Print Bad",
-        "canonical": "#ad2a1f",
-        "tonalRamp": [
-          "#280000",
-          "#4d0000",
-          "#76160f",
-          "#a13126",
-          "#c85244",
-          "#e67b6c",
-          "#ffaa9b",
-          "#ffd7c9"
-        ]
-      },
-      "print-bad-soft": {
-        "role": "neutral",
-        "displayName": "Print Bad Soft",
-        "canonical": "#f8e9e7",
-        "tonalRamp": [
-          "#120908",
-          "#2c2120",
-          "#483d3b",
-          "#675a59",
-          "#877a78",
-          "#a99b99",
-          "#d2c3c2",
-          "#faebe9"
-        ]
-      },
-      "print-open": {
-        "role": "neutral",
-        "displayName": "Print Open",
-        "canonical": "#57489a",
-        "tonalRamp": [
-          "#0e0030",
-          "#251256",
-          "#402e7e",
-          "#5d4ea1",
-          "#7b6ec4",
-          "#9c90e9",
-          "#c4bbff",
-          "#ebe5ff"
-        ]
-      },
-      "print-open-soft": {
-        "role": "neutral",
-        "displayName": "Print Open Soft",
-        "canonical": "#efedf6",
-        "tonalRamp": [
-          "#0c0a10",
-          "#242329",
-          "#403e46",
-          "#5e5c64",
-          "#7e7c84",
-          "#9f9da5",
-          "#c8c6ce",
-          "#efedf6"
-        ]
-      },
-      "print-open-line": {
-        "role": "neutral",
-        "displayName": "Print Open Line",
-        "canonical": "#a49ec5",
-        "tonalRamp": [
-          "#0d0520",
-          "#251e3d",
-          "#403a5b",
-          "#5e587b",
-          "#7d779d",
-          "#9f99bf",
-          "#c7c1ea",
-          "#efe8ff"
-        ]
-      },
-      "print-bad-line": {
-        "role": "neutral",
-        "displayName": "Print Bad Line",
-        "canonical": "#c57e79",
-        "tonalRamp": [
-          "#260000",
-          "#460a0d",
-          "#672928",
-          "#894844",
-          "#ac6763",
-          "#d08883",
-          "#fcb1ab",
-          "#ffd8d1"
-        ]
-      },
-      "print-c1": {
-        "role": "neutral",
-        "displayName": "Print C1",
-        "canonical": "#2f5d8a",
-        "tonalRamp": [
-          "#00072e",
-          "#00244d",
-          "#12426d",
-          "#33618e",
-          "#5281b0",
-          "#73a3d4",
-          "#9bccff",
-          "#c1f4ff"
-        ]
-      },
-      "print-c2": {
-        "role": "neutral",
-        "displayName": "Print C2",
-        "canonical": "#2e7f78",
-        "tonalRamp": [
-          "#001411",
-          "#002f2a",
-          "#004c47",
-          "#136c65",
-          "#3d8c85",
-          "#60aea7",
-          "#8ad8d0",
-          "#b1fff7"
-        ]
-      },
-      "print-c3": {
-        "role": "neutral",
-        "displayName": "Print C3",
-        "canonical": "#b7791f",
-        "tonalRamp": [
-          "#210000",
-          "#441200",
-          "#672e00",
-          "#894e00",
-          "#ab6e0a",
-          "#cf903c",
-          "#f7ba70",
-          "#ffe4a7"
-        ]
-      },
-      "print-c4": {
-        "role": "neutral",
-        "displayName": "Print C4",
-        "canonical": "#8e3b6e",
-        "tonalRamp": [
-          "#220014",
-          "#460030",
-          "#6b1a4f",
-          "#8e3b6e",
-          "#b15b8e",
-          "#d67cb0",
-          "#fda9d8",
-          "#ffd5fd"
-        ]
-      },
-      "print-c5": {
-        "role": "neutral",
-        "displayName": "Print C5",
-        "canonical": "#5b6b7c",
-        "tonalRamp": [
-          "#020c18",
-          "#172534",
-          "#324151",
-          "#505f70",
-          "#6f7f91",
-          "#8fa0b3",
-          "#b8cadd",
-          "#def1ff"
-        ]
-      },
-      "print-c6": {
-        "role": "neutral",
-        "displayName": "Print C6",
-        "canonical": "#6b7f2a",
-        "tonalRamp": [
-          "#070f00",
-          "#1d2a00",
-          "#374800",
-          "#546707",
-          "#738733",
-          "#93a956",
-          "#bcd37e",
-          "#e4f9b1"
-        ]
-      },
-      "print-band": {
-        "role": "neutral",
-        "displayName": "Print Band",
-        "canonical": "#ffffff",
-        "tonalRamp": [
-          "#0b0b0b",
-          "#242424",
-          "#404040",
-          "#5d5d5d",
-          "#7d7d7d",
-          "#9e9e9e",
-          "#c7c7c7",
-          "#eeeeee"
-        ]
-      },
-      "print-band-line": {
-        "role": "neutral",
-        "displayName": "Print Band Line",
-        "canonical": "#cbcfd4",
-        "tonalRamp": [
-          "#090b0f",
-          "#212428",
-          "#3d4044",
-          "#5a5e62",
-          "#7a7e82",
-          "#9b9fa3",
-          "#c4c8cd",
-          "#ebeff4"
-        ]
-      },
       "international-orange": {
         "role": "primary",
         "displayName": "International Orange",
@@ -557,21 +17,6 @@
           "#e2814f",
           "#ffb086",
           "#ffdbb8"
-        ]
-      },
-      "international-orange-deep": {
-        "role": "primary",
-        "displayName": "International Orange Deep",
-        "canonical": "#f4a77f",
-        "tonalRamp": [
-          "#260000",
-          "#490800",
-          "#6a2900",
-          "#8c4821",
-          "#b06842",
-          "#d48a62",
-          "#ffb28a",
-          "#ffdcb6"
         ]
       },
       "international-orange-wash": {
@@ -664,9 +109,9 @@
           "#ebeff4"
         ]
       },
-      "sheet-white": {
+      "sheet": {
         "role": "neutral",
-        "displayName": "Sheet White",
+        "displayName": "Sheet",
         "canonical": "#2e3237",
         "tonalRamp": [
           "#080b10",
@@ -692,21 +137,6 @@
           "#999fa6",
           "#c2c8cf",
           "#e9eff7"
-        ]
-      },
-      "sheet-tint-2": {
-        "role": "neutral",
-        "displayName": "Sheet Tint 2",
-        "canonical": "#3f454c",
-        "tonalRamp": [
-          "#070c11",
-          "#1f252b",
-          "#3a4047",
-          "#585e66",
-          "#777e86",
-          "#989fa7",
-          "#c1c8d1",
-          "#e8eff8"
         ]
       },
       "hairline": {
@@ -752,6 +182,21 @@
           "#979faa",
           "#c0c8d3",
           "#e6effb"
+        ]
+      },
+      "drawing-paper": {
+        "role": "neutral",
+        "displayName": "Drawing Paper",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
         ]
       },
       "viewport-stage-top": {
@@ -904,21 +349,6 @@
           "#f0e3ff"
         ]
       },
-      "status-open-wash": {
-        "role": "tertiary",
-        "displayName": "Status Open Wash",
-        "canonical": "#2f2a45",
-        "tonalRamp": [
-          "#0c061d",
-          "#241f39",
-          "#403b57",
-          "#5e5977",
-          "#7d7898",
-          "#9e9abb",
-          "#c7c2e5",
-          "#eee9ff"
-        ]
-      },
       "status-open-frame": {
         "role": "tertiary",
         "displayName": "Status Open Frame",
@@ -947,21 +377,6 @@
           "#c78e89",
           "#f2b6b1",
           "#ffddd8"
-        ]
-      },
-      "zebra": {
-        "role": "neutral",
-        "displayName": "Zebra",
-        "canonical": "#2a2d32",
-        "tonalRamp": [
-          "#090b0f",
-          "#212429",
-          "#3d4045",
-          "#5a5e63",
-          "#7a7d83",
-          "#9b9fa5",
-          "#c4c7ce",
-          "#ebeff5"
         ]
       },
       "series-1": {
@@ -1053,68 +468,496 @@
           "#bcd37c",
           "#e5f9b0"
         ]
+      },
+      "print-bg": {
+        "role": "neutral",
+        "displayName": "Print Bg",
+        "canonical": "#fbfbfa",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242423",
+          "#40403f",
+          "#5e5e5d",
+          "#7d7d7c",
+          "#9e9e9d",
+          "#c7c7c6",
+          "#eeeeed"
+        ]
+      },
+      "print-surface": {
+        "role": "neutral",
+        "displayName": "Print Surface",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "print-surface-2": {
+        "role": "neutral",
+        "displayName": "Print Surface 2",
+        "canonical": "#f4f5f6",
+        "tonalRamp": [
+          "#0b0b0c",
+          "#232425",
+          "#3f4041",
+          "#5d5e5e",
+          "#7c7d7e",
+          "#9d9e9f",
+          "#c6c7c8",
+          "#edeeef"
+        ]
+      },
+      "print-line": {
+        "role": "neutral",
+        "displayName": "Print Line",
+        "canonical": "#e3e5e8",
+        "tonalRamp": [
+          "#0a0b0d",
+          "#232426",
+          "#3e4042",
+          "#5c5e60",
+          "#7b7d80",
+          "#9d9ea1",
+          "#c5c7ca",
+          "#edeff2"
+        ]
+      },
+      "print-line-2": {
+        "role": "neutral",
+        "displayName": "Print Line 2",
+        "canonical": "#cbcfd4",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4044",
+          "#5a5e62",
+          "#7a7e82",
+          "#9b9fa3",
+          "#c4c8cd",
+          "#ebeff4"
+        ]
+      },
+      "print-line-3": {
+        "role": "neutral",
+        "displayName": "Print Line 3",
+        "canonical": "#9ea4ac",
+        "tonalRamp": [
+          "#080b11",
+          "#20242b",
+          "#3b4047",
+          "#595e65",
+          "#787e85",
+          "#999fa7",
+          "#c2c8d0",
+          "#e9eff8"
+        ]
+      },
+      "print-fg": {
+        "role": "neutral",
+        "displayName": "Print Fg",
+        "canonical": "#16191d",
+        "tonalRamp": [
+          "#090b0f",
+          "#212428",
+          "#3d4045",
+          "#5a5e63",
+          "#7a7e83",
+          "#9b9fa4",
+          "#c3c8cd",
+          "#eaeff5"
+        ]
+      },
+      "print-fg-2": {
+        "role": "neutral",
+        "displayName": "Print Fg 2",
+        "canonical": "#474e57",
+        "tonalRamp": [
+          "#060c12",
+          "#1e252d",
+          "#3a4049",
+          "#575e68",
+          "#767e88",
+          "#979fa9",
+          "#c0c8d3",
+          "#e7effa"
+        ]
+      },
+      "print-fg-3": {
+        "role": "neutral",
+        "displayName": "Print Fg 3",
+        "canonical": "#6c737c",
+        "tonalRamp": [
+          "#070c12",
+          "#1f252c",
+          "#3a4048",
+          "#575e67",
+          "#777e87",
+          "#989fa9",
+          "#c0c8d2",
+          "#e7effa"
+        ]
+      },
+      "print-accent": {
+        "role": "neutral",
+        "displayName": "Print Accent",
+        "canonical": "#b8481b",
+        "tonalRamp": [
+          "#270000",
+          "#4d0000",
+          "#751b00",
+          "#9f3603",
+          "#c6562c",
+          "#e47e5a",
+          "#ffad8e",
+          "#ffd9be"
+        ]
+      },
+      "print-accent-soft": {
+        "role": "neutral",
+        "displayName": "Print Accent Soft",
+        "canonical": "#f7ece6",
+        "tonalRamp": [
+          "#100906",
+          "#2a221e",
+          "#463e39",
+          "#655b56",
+          "#857b76",
+          "#a69c97",
+          "#cfc5bf",
+          "#f7ece6"
+        ]
+      },
+      "print-accent-line": {
+        "role": "neutral",
+        "displayName": "Print Accent Line",
+        "canonical": "#e4bfae",
+        "tonalRamp": [
+          "#1b0400",
+          "#371c0e",
+          "#553829",
+          "#755546",
+          "#967565",
+          "#b99685",
+          "#e3bead",
+          "#ffe5d4"
+        ]
+      },
+      "print-ink-fg": {
+        "role": "neutral",
+        "displayName": "Print Ink Fg",
+        "canonical": "#ffffff",
+        "tonalRamp": [
+          "#0b0b0b",
+          "#242424",
+          "#404040",
+          "#5d5d5d",
+          "#7d7d7d",
+          "#9e9e9e",
+          "#c7c7c7",
+          "#eeeeee"
+        ]
+      },
+      "print-ok": {
+        "role": "neutral",
+        "displayName": "Print Ok",
+        "canonical": "#23744a",
+        "tonalRamp": [
+          "#001500",
+          "#00310c",
+          "#004f28",
+          "#1c6e45",
+          "#428f64",
+          "#64b284",
+          "#8edcac",
+          "#b9ffd4"
+        ]
+      },
+      "print-ok-soft": {
+        "role": "neutral",
+        "displayName": "Print Ok Soft",
+        "canonical": "#e7f2ec",
+        "tonalRamp": [
+          "#060d09",
+          "#1e2622",
+          "#39423d",
+          "#57605b",
+          "#76807b",
+          "#97a19c",
+          "#c0cac4",
+          "#e7f2ec"
+        ]
+      },
+      "print-warn": {
+        "role": "neutral",
+        "displayName": "Print Warn",
+        "canonical": "#94600a",
+        "tonalRamp": [
+          "#210000",
+          "#431400",
+          "#623200",
+          "#845100",
+          "#a67125",
+          "#c9924a",
+          "#f5bb73",
+          "#ffe4a7"
+        ]
+      },
+      "print-warn-soft": {
+        "role": "neutral",
+        "displayName": "Print Warn Soft",
+        "canonical": "#f6efe1",
+        "tonalRamp": [
+          "#0f0a03",
+          "#292319",
+          "#453f34",
+          "#635d51",
+          "#837d70",
+          "#a49e91",
+          "#cdc7b9",
+          "#f5eee0"
+        ]
+      },
+      "print-bad": {
+        "role": "neutral",
+        "displayName": "Print Bad",
+        "canonical": "#ad2a1f",
+        "tonalRamp": [
+          "#280000",
+          "#4d0000",
+          "#76160f",
+          "#a13126",
+          "#c85244",
+          "#e67b6c",
+          "#ffaa9b",
+          "#ffd7c9"
+        ]
+      },
+      "print-bad-soft": {
+        "role": "neutral",
+        "displayName": "Print Bad Soft",
+        "canonical": "#f8e9e7",
+        "tonalRamp": [
+          "#120908",
+          "#2c2120",
+          "#483d3b",
+          "#675a59",
+          "#877a78",
+          "#a99b99",
+          "#d2c3c2",
+          "#faebe9"
+        ]
+      },
+      "print-open": {
+        "role": "neutral",
+        "displayName": "Print Open",
+        "canonical": "#57489a",
+        "tonalRamp": [
+          "#0e0030",
+          "#251256",
+          "#402e7e",
+          "#5d4ea1",
+          "#7b6ec4",
+          "#9c90e9",
+          "#c4bbff",
+          "#ebe5ff"
+        ]
+      },
+      "print-open-line": {
+        "role": "neutral",
+        "displayName": "Print Open Line",
+        "canonical": "#a49ec5",
+        "tonalRamp": [
+          "#0d0520",
+          "#251e3d",
+          "#403a5b",
+          "#5e587b",
+          "#7d779d",
+          "#9f99bf",
+          "#c7c1ea",
+          "#efe8ff"
+        ]
+      },
+      "print-bad-line": {
+        "role": "neutral",
+        "displayName": "Print Bad Line",
+        "canonical": "#c57e79",
+        "tonalRamp": [
+          "#260000",
+          "#460a0d",
+          "#672928",
+          "#894844",
+          "#ac6763",
+          "#d08883",
+          "#fcb1ab",
+          "#ffd8d1"
+        ]
+      },
+      "print-c1": {
+        "role": "neutral",
+        "displayName": "Print C1",
+        "canonical": "#2f5d8a",
+        "tonalRamp": [
+          "#00072e",
+          "#00244d",
+          "#12426d",
+          "#33618e",
+          "#5281b0",
+          "#73a3d4",
+          "#9bccff",
+          "#c1f4ff"
+        ]
+      },
+      "print-c2": {
+        "role": "neutral",
+        "displayName": "Print C2",
+        "canonical": "#2e7f78",
+        "tonalRamp": [
+          "#001411",
+          "#002f2a",
+          "#004c47",
+          "#136c65",
+          "#3d8c85",
+          "#60aea7",
+          "#8ad8d0",
+          "#b1fff7"
+        ]
+      },
+      "print-c3": {
+        "role": "neutral",
+        "displayName": "Print C3",
+        "canonical": "#b7791f",
+        "tonalRamp": [
+          "#210000",
+          "#441200",
+          "#672e00",
+          "#894e00",
+          "#ab6e0a",
+          "#cf903c",
+          "#f7ba70",
+          "#ffe4a7"
+        ]
+      },
+      "print-c4": {
+        "role": "neutral",
+        "displayName": "Print C4",
+        "canonical": "#8e3b6e",
+        "tonalRamp": [
+          "#220014",
+          "#460030",
+          "#6b1a4f",
+          "#8e3b6e",
+          "#b15b8e",
+          "#d67cb0",
+          "#fda9d8",
+          "#ffd5fd"
+        ]
+      },
+      "print-c5": {
+        "role": "neutral",
+        "displayName": "Print C5",
+        "canonical": "#5b6b7c",
+        "tonalRamp": [
+          "#020c18",
+          "#172534",
+          "#324151",
+          "#505f70",
+          "#6f7f91",
+          "#8fa0b3",
+          "#b8cadd",
+          "#def1ff"
+        ]
+      },
+      "print-c6": {
+        "role": "neutral",
+        "displayName": "Print C6",
+        "canonical": "#6b7f2a",
+        "tonalRamp": [
+          "#070f00",
+          "#1d2a00",
+          "#374800",
+          "#546707",
+          "#738733",
+          "#93a956",
+          "#bcd37e",
+          "#e4f9b1"
+        ]
       }
     },
     "typographyMeta": {
-      "display-phone": {
-        "displayName": "Display (phone)",
-        "purpose": "Report title at 560px and below."
-      },
-      "headline-phone": {
-        "displayName": "Headline (phone)",
-        "purpose": "Section titles at 560px and below."
-      },
-      "figure-phone": {
-        "displayName": "Figure (phone)",
-        "purpose": "KPI values at 560px and below."
-      },
-      "figure-small": {
-        "displayName": "Figure small",
-        "purpose": "Calculation-chain values."
-      },
-      "callout": {
-        "displayName": "Callout",
-        "purpose": "Decision questions, figure captions, measurement-box titles, previous/next links."
-      },
-      "subhead": {
-        "displayName": "Subhead",
-        "purpose": "h4 and title-block values."
-      },
-      "small": {
-        "displayName": "Small",
-        "purpose": "Tables, navigation, KPI qualifiers, buttons."
-      },
       "display": {
         "displayName": "Display",
         "purpose": "The report title only."
       },
+      "display-phone": {
+        "displayName": "Display (phone)",
+        "purpose": "Report title at 560px and below."
+      },
+      "chapter": {
+        "displayName": "Chapter",
+        "purpose": "Numbered chapter headings in the report."
+      },
       "headline": {
         "displayName": "Headline",
-        "purpose": "Section titles (h2)."
+        "purpose": "Closing heading; chapter headings on the companion pages."
+      },
+      "chain-value": {
+        "displayName": "Chain value",
+        "purpose": "Back-calculation chain values."
       },
       "title": {
         "displayName": "Title",
-        "purpose": "Subsection titles (h3), each under a hairline."
+        "purpose": "Numbered subsection headings (h3), each under a hairline; the contents heading."
       },
       "figure": {
         "displayName": "Figure",
-        "purpose": "KPI values in the key-figure strip."
+        "purpose": "Key-parameter values, right-aligned and tabular."
+      },
+      "callout": {
+        "displayName": "Callout",
+        "purpose": "Decision questions, figure captions, measurement-box titles, step headings."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Chapter-opening verdict paragraph (74ch) and cover subtitle."
+      },
+      "subhead": {
+        "displayName": "Subhead",
+        "purpose": "h4, contents entries, CAD part-label names, link buttons."
       },
       "body": {
         "displayName": "Body",
         "purpose": "Running text, max 70ch."
       },
-      "lede": {
-        "displayName": "Lede",
-        "purpose": "Section-opening verdict paragraph, max 74ch."
+      "summary": {
+        "displayName": "Summary",
+        "purpose": "Disclosure summaries, key-parameter names, mast line, step-field names."
+      },
+      "small": {
+        "displayName": "Small",
+        "purpose": "Tables, KPI qualifiers, requirement grid, control buttons."
       },
       "label": {
         "displayName": "Label",
-        "purpose": "Mono caps for eyebrows, field names, KPI labels, table headers, chips."
+        "purpose": "Table headers, status chips, viewer captions, chain labels (sentence case)."
       },
       "source": {
         "displayName": "Source",
-        "purpose": "Citation line under every claim block."
+        "purpose": "Citation lines, formulas, running head, signature captions."
+      },
+      "chart": {
+        "displayName": "Chart",
+        "purpose": "All SVG chart text."
+      },
+      "tag": {
+        "displayName": "Tag",
+        "purpose": "The EST estimate tag only."
       }
     },
     "shadows": [],
@@ -1122,12 +965,17 @@
       {
         "name": "state",
         "value": "0.12s–0.15s ease (colour and border only)",
-        "purpose": "Hover and pressed transitions on controls and links."
+        "purpose": "Hover and pressed transitions on controls; disclosure chevron turn."
+      },
+      {
+        "name": "running-head",
+        "value": "0.18s ease-out translateY",
+        "purpose": "Running head slides in once the contents scrolls away."
       },
       {
         "name": "camera",
-        "value": "450 ms ease-in-out quad",
-        "purpose": "SOLIDWORKS viewer camera moves and explode; both jump instantly under prefers-reduced-motion."
+        "value": "450 ms ease-in-out",
+        "purpose": "SOLIDWORKS viewer camera moves and explode; instant under prefers-reduced-motion."
       }
     ],
     "breakpoints": [
@@ -1136,12 +984,12 @@
         "value": "560px"
       },
       {
-        "name": "title-block-2x2",
-        "value": "760px"
+        "name": "chart-scroll",
+        "value": "640px"
       },
       {
-        "name": "contents-column",
-        "value": "1100px"
+        "name": "cover-stack",
+        "value": "760px"
       }
     ]
   },
@@ -1150,74 +998,91 @@
       "name": "Segmented control",
       "kind": "button",
       "refersTo": "button-segment",
-      "description": "Toggle group; pressed segment fills with drafting ink.",
-      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-b\" aria-pressed=\"true\">C0 4-lift</button><button class=\"ds-seg-b\">C1 8-lift</button><button class=\"ds-seg-b\">C2 coax X8</button></div>",
-      "css": ".ds-seg{display:inline-flex;border:1px solid #545b63;border-radius:2px;overflow:hidden;background:#2e3237}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-right:1px solid #545b63;background:#2e3237;color:#cdd2d7;font:500 .875rem 'STIX Two Text','Times New Roman',serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:last-child{border-right:0}.ds-seg-b:hover{background:#363b41;color:#f1f3f5}.ds-seg-b:focus-visible{outline:2px solid #ec8a58;outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:#f1f3f5;color:#25282c}"
+      "description": "Viewer and chart toggles; the pressed segment fills with drafting ink.",
+      "html": "<div class=\"ds-seg\"><button class=\"ds-seg-b\" aria-pressed=\"true\">Isometric</button><button class=\"ds-seg-b\">Top</button><button class=\"ds-seg-b\">Side</button></div>",
+      "css": ".ds-seg{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line-3,#78808a);border-radius:2px;background:var(--surface-2,#363b41)}.ds-seg-b{min-height:44px;padding:0 16px;border:0;border-radius:2px;background:var(--surface,#2e3237);color:var(--fg-2,#cdd2d7);font:500 .875rem 'STIX Two Text','Times New Roman',serif;cursor:pointer;transition:background .12s,color .12s}.ds-seg-b:hover{background:var(--surface-2,#363b41);color:var(--fg,#f1f3f5)}.ds-seg-b:focus-visible{outline:2px solid var(--accent,#ec8a58);outline-offset:2px}.ds-seg-b[aria-pressed=true]{background:var(--ink,#f1f3f5);color:var(--ink-fg,#25282c)}"
+    },
+    {
+      "name": "Link button",
+      "kind": "button",
+      "refersTo": "button-link",
+      "description": "Links out to the companion documents; ink fill, quiet variant outlined.",
+      "html": "<a class=\"ds-btn\">Open the build manual</a> <a class=\"ds-btn ds-quiet\">Open the test plan</a>",
+      "css": ".ds-btn{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink,#f1f3f5);border-radius:2px;background:var(--ink,#f1f3f5);color:var(--ink-fg,#25282c);font:600 1rem 'STIX Two Text','Times New Roman',serif;text-decoration:none;cursor:pointer}.ds-btn:hover{background:var(--fg-2,#cdd2d7);border-color:var(--fg-2,#cdd2d7)}.ds-btn:focus-visible{outline:2px solid var(--accent,#ec8a58);outline-offset:2px}.ds-btn.ds-quiet{background:transparent;color:var(--fg,#f1f3f5)}.ds-btn.ds-quiet:hover{background:var(--surface-2,#363b41)}"
     },
     {
       "name": "Status chips",
       "kind": "chip",
       "refersTo": "chip-met",
-      "description": "Requirement verdicts: outlined mono caps; fail adds its wash.",
-      "html": "<span class=\"ds-chip ds-met\">Met</span> <span class=\"ds-chip ds-risk\">Risk</span> <span class=\"ds-chip ds-fail\">Fail</span> <span class=\"ds-chip ds-open\">Open</span> <span class=\"ds-est\">EST</span>",
-      "css": ".ds-chip{display:inline-block;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.07em;text-transform:uppercase;padding:4px 6px;border-radius:2px;border:1px solid currentColor}.ds-met{color:#6cc595}.ds-risk{color:#dcae5a}.ds-fail{color:#ef8a7f;background:#43231f}.ds-open{color:#a99be0}.ds-est{display:inline-block;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.06em;color:#dcae5a;border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
+      "description": "Requirement verdicts: outlined sentence-case labels; fail adds its wash. EST tag flags estimates.",
+      "html": "<span class=\"ds-chip ds-met\">met</span> <span class=\"ds-chip ds-risk\">risk</span> <span class=\"ds-chip ds-fail\">fail</span> <span class=\"ds-chip ds-open\">open</span> <span class=\"ds-est\">Est</span>",
+      "css": ".ds-chip{display:inline-block;font:600 .8125rem/1 'STIX Two Text','Times New Roman',serif;padding:4px 7px;border-radius:2px;border:1px solid currentColor;white-space:nowrap}.ds-met{color:var(--ok,#6cc595)}.ds-risk{color:var(--warn,#dcae5a)}.ds-fail{color:var(--bad,#ef8a7f);background:var(--bad-soft,#43231f)}.ds-open{color:var(--open,#a99be0)}.ds-est{display:inline-block;font:600 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.04em;text-transform:uppercase;color:var(--warn,#dcae5a);border:1px solid currentColor;border-radius:2px;padding:2px 4px}"
     },
     {
-      "name": "Title block",
+      "name": "Key parameters",
       "kind": "custom",
-      "refersTo": "title-block-cell",
-      "description": "Cover title block: ruled cells with mono field names over condensed values.",
-      "html": "<dl class=\"ds-tb\"><div><dt>Project</dt><dd>Design-Build-Fly</dd></div><div><dt>Review date</dt><dd>2026-10-13</dd></div><div><dt>Stage</dt><dd>Concept · budget redesign</dd></div><div><dt>Revision</dt><dd>v0.3.1</dd></div><div><dt>Sources</dt><dd>docs/ · analysis/ · cad/</dd></div></dl>",
-      "css": ".ds-tb{display:grid;grid-template-columns:1.3fr repeat(4,minmax(0,1fr));gap:1px;margin:0;border:1px solid #545b63;background:#545b63}.ds-tb>div{padding:10px 14px 12px;background:#2e3237}.ds-tb dt{font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.08em;text-transform:uppercase;color:#aeb5bd;margin-bottom:7px}.ds-tb dd{margin:0;font:600 1rem/1.3 'STIX Two Text','Times New Roman',serif;color:#f1f3f5}"
-    },
-    {
-      "name": "Key-figure strip",
-      "kind": "custom",
-      "refersTo": null,
-      "description": "Open KPI strip under a 2px ink rule; values coloured by verdict.",
-      "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><div class=\"ds-l\">Committed spend (R6)</div><div class=\"ds-v ds-ok\">$1,898</div><div class=\"ds-s\">cap $2,000 incl. tax + shipping</div></div><div class=\"ds-kpi\"><div class=\"ds-l\">Crash reserve (R7)</div><div class=\"ds-v ds-warn\">$102</div><div class=\"ds-s\">target ≥ $100: met, thin</div></div></div>",
-      "css": ".ds-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));border-top:2px solid #f1f3f5;border-bottom:1px solid #545b63}.ds-kpi{padding:14px 18px 16px 0;margin-right:18px;border-right:1px solid #3f444b}.ds-kpi:last-child{border-right:0;margin-right:0}.ds-l{font:500 .75rem/1.35 'STIX Two Text','Times New Roman',serif;color:#aeb5bd;text-transform:uppercase;letter-spacing:.07em}.ds-v{font:600 2rem/1.05 'STIX Two Text','Times New Roman',serif;margin:10px 0 6px;font-variant-numeric:tabular-nums;color:#f1f3f5}.ds-ok{color:#6cc595}.ds-warn{color:#dcae5a}.ds-s{font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;color:#cdd2d7}"
+      "refersTo": "key-parameter-row",
+      "description": "Ruled data-sheet rows: name, verdict-coloured value, qualifier.",
+      "html": "<div class=\"ds-kpis\"><div class=\"ds-kpi\"><div class=\"ds-l\">Committed spend (R6)</div><div class=\"ds-v ds-ok\">$1,898</div><div class=\"ds-s\">cap $2,000 incl. tax + shipping</div></div><div class=\"ds-kpi\"><div class=\"ds-l\">Sized MTOW (R2)</div><div class=\"ds-v ds-warn\">7.42 kg</div><div class=\"ds-s\">below the 8–15 kg working target</div></div></div>",
+      "css": ".ds-kpis{border-top:2px solid var(--ink,#f1f3f5);border-bottom:1px solid var(--line-2,#545b63)}.ds-kpi{display:grid;grid-template-columns:minmax(0,13rem) minmax(0,7rem) minmax(0,1fr);gap:4px 18px;align-items:baseline;padding:9px 8px;border-bottom:1px solid var(--line,#3f444b)}.ds-kpi:last-child{border-bottom:0}.ds-l{font:600 .875rem/1.4 'STIX Two Text','Times New Roman',serif;color:var(--fg,#f1f3f5)}.ds-v{font:600 1.25rem/1.2 'STIX Two Text','Times New Roman',serif;text-align:right;font-variant-numeric:tabular-nums;color:var(--fg,#f1f3f5)}.ds-ok{color:var(--ok,#6cc595)}.ds-warn{color:var(--warn,#dcae5a)}.ds-s{font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;color:var(--fg-2,#cdd2d7)}"
     },
     {
       "name": "Decision card",
       "kind": "card",
       "refersTo": "decision-card",
-      "description": "Open (violet frame) or blocking (red frame) decision with recommendation panel.",
-      "html": "<div class=\"ds-dec ds-red\"><b class=\"ds-q\">Which legal path and which flying field?</b><div class=\"ds-body\">Only Richmond Field Station allows the 30 m a transition needs.</div><div class=\"ds-rec\"><b>Recommended:</b> request RFS by 2026-11-06.</div></div>",
-      "css": ".ds-dec{border:1px solid #6f6a92;border-radius:2px;padding:16px 20px 14px;background:#2e3237;color:#cdd2d7;font:400 1rem/1.6 'STIX Two Text','Times New Roman',serif}.ds-dec.ds-red{border-color:#a06a66}.ds-q{display:block;font:600 1.125rem/1.3 'STIX Two Text','Times New Roman',serif;color:#f1f3f5;margin-bottom:8px}.ds-q::before{content:'Open';display:inline-block;border:1px solid currentColor;border-radius:2px;padding:4px 6px;margin-right:10px;vertical-align:.18em;font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.09em;text-transform:uppercase;color:#a99be0;}.ds-red .ds-q::before{content:'Blocking';color:#ef8a7f;background:#43231f}.ds-rec{margin-top:12px;padding:10px 14px;background:#363b41;border-radius:2px;color:#f1f3f5}.ds-red .ds-rec{background:#43231f}"
+      "description": "Open (violet frame) or blocking (red frame) decision; status chip on the question line; recommendation panel.",
+      "html": "<div class=\"ds-dec\"><b class=\"ds-q\">Approve design C0 and its $1,898 spend, so Order A goes out by 2026-11-02.</b><div>Order A is the early test hardware.</div><div class=\"ds-rec\"><b>Recommended:</b> approve C0 as specified.</div></div>",
+      "css": ".ds-dec{border:1px solid var(--open-line,#6f6a92);border-radius:2px;padding:16px 20px 14px;background:var(--surface,#2e3237);color:var(--fg-2,#cdd2d7);font:400 1rem/1.6 'STIX Two Text','Times New Roman',serif}.ds-dec.ds-red{border-color:var(--bad-line,#a06a66)}.ds-q{display:block;font:600 1.125rem/1.35 'STIX Two Text','Times New Roman',serif;color:var(--fg,#f1f3f5);margin-bottom:8px}.ds-q::before{content:'Open';display:inline-block;font:600 .8125rem/1 'STIX Two Text','Times New Roman',serif;color:var(--open,#a99be0);border:1px solid currentColor;border-radius:2px;padding:4px 6px;margin-right:10px;vertical-align:.18em}.ds-red .ds-q::before{content:'Blocking';color:var(--bad,#ef8a7f);background:var(--bad-soft,#43231f)}.ds-rec{margin-top:12px;padding:10px 14px;background:var(--surface-2,#363b41);border-radius:2px;color:var(--fg,#f1f3f5)}.ds-red .ds-rec{background:var(--bad-soft,#43231f)}"
     },
     {
       "name": "Ruled table",
       "kind": "custom",
       "refersTo": "table-head",
-      "description": "Data table: ink rule top, mono caps sticky header, chosen row in orange wash.",
-      "html": "<table class=\"ds-t\"><thead><tr><th>Pack</th><th class=\"ds-n\">Cruise min</th><th class=\"ds-n\">Price</th></tr></thead><tbody><tr class=\"ds-ch\"><td>Ovonic 6S 6500 ×2</td><td class=\"ds-n\">11.9</td><td class=\"ds-n\">$69.50</td></tr><tr><td>HOOVO 6S 8000</td><td class=\"ds-n\">—</td><td class=\"ds-n\">—</td></tr></tbody></table>",
-      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid #f1f3f5;border-bottom:1px solid #545b63;font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;font-variant-numeric:tabular-nums;color:#f1f3f5}.ds-t th:first-child,.ds-t td:first-child{padding-left:8px}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid #3f444b;text-align:left}.ds-t th{font:500 .75rem/1.3 'STIX Two Text','Times New Roman',serif;letter-spacing:.06em;text-transform:uppercase;color:#cdd2d7;border-bottom-color:#545b63}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:#363b41}.ds-t tr.ds-ch td{background:#3d2a20}.ds-t tr.ds-ch td:first-child{font-weight:600}"
+      "description": "Data table: ink rule on top, sticky sentence-case header, sort arrows, chosen row in orange wash.",
+      "html": "<table class=\"ds-t\"><thead><tr><th>Pack</th><th class=\"ds-n ds-sorted\">Cruise min</th><th class=\"ds-n\">Price</th></tr></thead><tbody><tr class=\"ds-ch\"><td>Ovonic 6S 6500 ×2</td><td class=\"ds-n\">11.9</td><td class=\"ds-n\">$69.50</td></tr><tr><td>HOOVO 6S 8000</td><td class=\"ds-n\">—</td><td class=\"ds-n\">—</td></tr></tbody></table>",
+      "css": ".ds-t{border-collapse:separate;border-spacing:0;width:100%;border-top:2px solid var(--ink,#f1f3f5);border-bottom:1px solid var(--line-2,#545b63);font:400 .875rem/1.45 'STIX Two Text','Times New Roman',serif;font-variant-numeric:tabular-nums;color:var(--fg,#f1f3f5)}.ds-t th,.ds-t td{padding:9px 12px;border-bottom:1px solid var(--line,#3f444b);text-align:left}.ds-t th:first-child,.ds-t td:first-child{padding-left:8px}.ds-t tbody tr:last-child td{border-bottom:0}.ds-t th{font:600 .8125rem/1.3 'STIX Two Text','Times New Roman',serif;background:var(--bg,#25282c);border-bottom-color:var(--line-2,#545b63);padding-block:10px}.ds-t th.ds-sorted::after{content:'↓';margin-left:5px;color:var(--accent,#ec8a58)}.ds-t .ds-n{text-align:right}.ds-t tbody tr:hover td{background:var(--surface-2,#363b41)}.ds-t tr.ds-ch td{background:var(--accent-soft,#3d2a20)}.ds-t tr.ds-ch td:first-child{font-weight:600}"
     },
     {
-      "name": "Contents navigation",
+      "name": "Disclosure",
+      "kind": "custom",
+      "refersTo": "disclosure-summary",
+      "description": "Named disclosure for long tables, decision facts and history; drawn chevron.",
+      "html": "<details class=\"ds-more\"><summary>Show the full table · 43 rows</summary><p>Rows…</p></details>",
+      "css": ".ds-more{border-top:1px solid var(--line,#3f444b);border-bottom:1px solid var(--line,#3f444b);font:400 1rem/1.6 'STIX Two Text','Times New Roman',serif;color:var(--fg,#f1f3f5)}.ds-more>summary{list-style:none;min-height:44px;display:flex;align-items:center;cursor:pointer;font:600 .875rem/1.3 'STIX Two Text','Times New Roman',serif}.ds-more>summary::-webkit-details-marker{display:none}.ds-more>summary::before{content:'';width:7px;height:7px;margin:0 12px 0 2px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(-45deg);transition:transform .15s ease-out}.ds-more[open]>summary::before{transform:rotate(45deg)}.ds-more>summary:focus-visible{outline:2px solid var(--accent,#ec8a58);outline-offset:2px}"
+    },
+    {
+      "name": "Contents by part",
       "kind": "nav",
       "refersTo": null,
-      "description": "Plain-text numbered contents; current section bold with orange number.",
-      "html": "<nav class=\"ds-nav\"><div class=\"ds-nh\">Contents</div><a><span>1</span>Overview</a><a class=\"ds-cur\"><span>2</span>CAD model</a><a><span>3</span>Concepts</a></nav>",
-      "css": ".ds-nav{width:220px;font:400 .875rem/1.3 'STIX Two Text','Times New Roman',serif}.ds-nh{font:500 .75rem/1 'STIX Two Text','Times New Roman',serif;letter-spacing:.1em;text-transform:uppercase;color:#aeb5bd;padding-bottom:12px;border-bottom:1px solid #545b63;margin-bottom:6px}.ds-nav a{display:flex;gap:12px;align-items:baseline;min-height:36px;padding:7px 0;color:#cdd2d7;text-decoration:none;cursor:pointer;transition:color .12s}.ds-nav a span{font:500 .75rem 'STIX Two Text','Times New Roman',serif;color:#aeb5bd;width:1.5em;text-align:right}.ds-nav a:hover{color:#f1f3f5}.ds-nav a.ds-cur{color:#f1f3f5;font-weight:600}.ds-nav a.ds-cur span{color:#ec8a58;font-weight:600}"
+      "description": "Contents grouped in three Parts; numbered 44px rows; orange title on hover.",
+      "html": "<nav class=\"ds-toc\"><div class=\"ds-part\"><span class=\"ds-pn\">Part I</span>The decision<ol><li><a><span class=\"ds-n\">0</span><span class=\"ds-tt\">Overview</span></a></li><li><a><span class=\"ds-n\">1</span><span class=\"ds-tt\">Budget and BOM</span></a></li></ol></div></nav>",
+      "css": ".ds-toc{max-width:20rem}.ds-part{font:600 .875rem/1.3 'STIX Two Text','Times New Roman',serif;color:var(--fg-2,#cdd2d7)}.ds-pn{display:block;font-size:.8125rem;font-weight:400;color:var(--fg-3,#aeb5bd);margin-bottom:2px}.ds-part ol{list-style:none;margin:6px 0 0;padding:0;border-top:2px solid var(--ink,#f1f3f5)}.ds-part a{display:flex;gap:14px;align-items:baseline;min-height:44px;padding:9px 0;border-bottom:1px solid var(--line,#3f444b);color:var(--fg,#f1f3f5);text-decoration:none;cursor:pointer}.ds-n{width:1.6em;text-align:right;color:var(--fg-3,#aeb5bd);font-weight:400}.ds-tt{font:600 1rem/1.3 'STIX Two Text','Times New Roman',serif}.ds-part a:hover .ds-tt{color:var(--accent,#ec8a58)}.ds-part a:focus-visible{outline:2px solid var(--accent,#ec8a58);outline-offset:2px}"
+    },
+    {
+      "name": "Step block",
+      "kind": "card",
+      "refersTo": "step-block",
+      "description": "Companion-page work instruction: WP-numbered heading, field list, Mark done.",
+      "html": "<div class=\"ds-step\"><h4><span class=\"ds-sno\">WP7.1</span> Fit the lift motors</h4><button class=\"ds-chk\" aria-pressed=\"false\">Mark done</button><dl><div><dt>Parts</dt><dd>4 × X4110S, 16 × M3×8</dd></div><div class=\"ds-c\"><dt>Check</dt><dd>Prop clears boom by 10 mm</dd></div><div class=\"ds-w\"><dt>Safety</dt><dd>Props off while powered</dd></div></dl></div>",
+      "css": ".ds-step{padding:14px 16px 6px;background:var(--surface,#2e3237);border:1px solid var(--line-2,#545b63);border-radius:2px;font:400 1rem/1.6 'STIX Two Text','Times New Roman',serif;color:var(--fg,#f1f3f5)}.ds-step h4{margin:0 0 8px;font:600 1.125rem/1.35 'STIX Two Text','Times New Roman',serif}.ds-sno{margin-right:.35em;color:var(--accent,#ec8a58);font-variant-numeric:tabular-nums}.ds-chk{min-height:44px;padding:0 14px;margin:0 0 8px;border:1px solid var(--line-3,#78808a);border-radius:2px;background:transparent;color:var(--fg-2,#cdd2d7);font:600 .875rem 'STIX Two Text','Times New Roman',serif;cursor:pointer}.ds-chk:hover{color:var(--fg,#f1f3f5);border-color:var(--fg-2,#cdd2d7)}.ds-chk[aria-pressed=true]{background:var(--ok-soft,#1f3428);border-color:var(--ok,#6cc595);color:var(--ok,#6cc595)}.ds-step dl{margin:0}.ds-step dl>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line,#3f444b)}.ds-step dt{font-weight:600;font-size:.875rem;color:var(--fg-2,#cdd2d7)}.ds-step dd{margin:0}.ds-c dt{color:var(--ok,#6cc595)!important}.ds-w dt{color:var(--warn,#dcae5a)!important}"
     }
   ],
   "narrative": {
-    "northStar": "The Drawing Title Block",
-    "overview": "The review reads like a released engineering drawing, not a web page. Its cover is a title block: a ruled grid of cells for review date, stage, revision and sources, sitting under a heavy ink rule. Everything below follows the drawing sheet: black drafting ink on near-white vellum, square corners, hairline frames, and condensed technical lettering for headings. Authority comes from precision, so the system has no gradients, shadows or rounded cards, and nothing that reads as a marketing site or a generated template.\n\nThe page is dense on purpose. It carries numbers inline with units, cites a source under every claim, and puts structure in rules rather than boxes. A 2px ink rule opens each major block (key figures, tables, figures, the measurement list) and 1px hairlines divide what's inside. Colour is held back for meaning: International Orange marks where you are, and the four status colours mark verdicts. The client has to be able to trust what they're reading before they approve the spend, and the restraint is what earns that.\n\nThe page is precise and restrained. Detail shows in alignment, tabular numerals and consistent rules, never in ornament.",
+    "northStar": "The Released Engineering Report",
+    "overview": "The review reads like a released, numbered engineering report, not a web page. It opens on a report title page (mast line, title, a one-sentence document reference, a revision record and signature lines), then a contents page grouped into three Parts, then numbered chapters read top to bottom. A running head, chapter and figure numbers generated from page order, and live § cross-references make it behave like a bound document that renumbers itself. Its two companion documents, the build manual and the test plan, are the same report set in the same style.\n\nThe page is dense on purpose. Numbers sit inline with their units, a Source line closes every claim block, and structure is carried by rules rather than boxes: a 2px ink rule opens each major block and 1px hairlines divide what is inside. Everything is one serif face, STIX Two Text, on a single graphite theme: a mid-grey ground, panels stepping lighter, off-white text. Colour is held back for meaning. International Orange marks where the reader is and what is selected, and four status colours mark verdicts. The client has to trust what they are reading before they approve the spend, and the restraint is what earns that.\n\nDetail shows in alignment, tabular numerals and consistent rules, never in ornament: no shadows, no gradients outside the CAD stage, no rounded cards.",
     "keyCharacteristics": [
-      "A ruled title-block cover under a 2px ink rule",
-      "Off-white ink on a graphite ground, with one International Orange accent used sparingly",
-      "Square geometry (2px or less), no shadows, structure carried by rules",
-      "Condensed technical headings, a humanist sans body, mono labels and citations",
+      "A report title page with a revision record and signature lines, closed by a 2px ink rule",
+      "One graphite theme: off-white ink on a mid-grey ground with lighter grey panels; print switches to white paper",
+      "One serif face, STIX Two Text, for everything; hierarchy from size, weight and rules",
+      "International Orange for position and selection only",
+      "Square geometry (2px or less), no shadows, structure carried by ruled blocks",
       "Tabular numerals everywhere",
-      "One dark theme: a mid-grey ground with lighter grey panels, not black and white (client direction, 2026-10-21)"
+      "Chapter, subsection, figure and measurement numbers generated from page order, never typed"
     ],
     "rules": [
       {
         "name": "The Position-Not-Paint Rule",
-        "body": "International Orange marks where the reader is, or what the reader is acting on. It never fills a large area, never sits behind body text, and never stands in for a verdict.",
+        "body": "International Orange marks where the reader is, what is selected, or the reference mark they act on. It never fills a large area, never sits behind body text, and never stands in for a verdict.",
         "section": "colors"
       },
       {
@@ -1227,7 +1092,7 @@
       },
       {
         "name": "The Never-Colour-Alone Rule",
-        "body": "Every status shown by colour is also stated in words or form. A status cell carries a short note (\"below margin\", \"within ±15 %\") in its own status colour. A chosen option is bold and named in its column header. Paired chart series differ in lightness or outline, not only hue.",
+        "body": "Every status shown by colour is also stated in words or form. A status cell carries a short note in its own colour, a chosen option is bold and named, and a decision card's status is a worded chip.",
         "section": "colors"
       },
       {
@@ -1242,27 +1107,27 @@
       },
       {
         "name": "The Report Numbering Rule",
-        "body": "Sections, subsections and figures are numbered the way an engineering report numbers them: section 4, subsection 4.2, Figure 4.3. The numbers come from the page structure at load, never typed by hand, so inserting a subsection renumbers everything after it.",
+        "body": "Chapters, subsections, figures and measurements are numbered the way an engineering report numbers them: chapter 5, subsection 5.2, Figure 5.3, measurement M5.1. The numbers come from page order at load, never typed by hand, and every § cross-reference fills from the same order, so inserting a chapter renumbers everything after it.",
         "section": "typography"
       },
       {
-        "name": "The Lettering Rule",
-        "body": "Condensed display type is for headings and figures only. Running text never uses it, and labels are always mono caps, never small caps in the body face.",
+        "name": "The One Face Rule",
+        "body": "Every element, including data, code and chart text, is set in STIX Two Text. Separate levels with size, weight and rules, never with a second family or small caps.",
         "section": "typography"
       },
       {
         "name": "The Ruled Block Rule",
-        "body": "A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule. This applies to the key-parameter table, data tables, figures, the measurement list and each chapter heading. Do not wrap these blocks in boxes.",
+        "body": "A major block opens with a 2px Drafting Ink rule and closes with a 1px Frame Rule: chapter headings, key parameters, data tables, figures, measurement boxes, contents Parts and the closing. Lists inside a block (requirements, files, measurements, glossary, next steps) open with a 1px Frame Rule and divide with hairlines. Do not wrap these blocks in boxes.",
         "section": "layout"
       },
       {
         "name": "The Summary-First Rule",
-        "body": "A reader gets each section's answer from its first screen. Long tables and supporting facts fold behind a labelled disclosure; charts and verdicts never do.",
+        "body": "A reader gets each chapter's answer from its first screen. Long tables and supporting facts fold behind a disclosure that names what it holds; charts and verdicts never do.",
         "section": "layout"
       },
       {
         "name": "The Flat Sheet Rule",
-        "body": "Nothing floats. If an element needs to stand apart, give it a rule, a frame or an ink fill, never a shadow, glow or blur.",
+        "body": "Nothing floats. If an element needs to stand apart, give it a rule, a frame, a tonal step or an ink fill, never a shadow, glow or blur.",
         "section": "elevation"
       },
       {
@@ -1273,23 +1138,24 @@
     ],
     "dos": [
       "**Do** open each major block with a 2px Drafting Ink rule and close it with a 1px Frame Rule.",
-      "**Do** keep International Orange to position, focus and selection.",
+      "**Do** keep International Orange to position, focus, selection and reference marks.",
       "**Do** set every element in STIX Two Text; separate levels with size, weight and rules.",
       "**Do** use tabular numerals and right-align number columns.",
-      "**Do** put a Source citation under every claim block, and mark estimates with the EST tag.",
-      "**Do** keep radii at 2px or less, and keep controls at least 44px tall.",
-      "**Do** define every colour as a token on `:root`; there is one theme, so there are no light overrides."
+      "**Do** put a Source line under every claim block, and mark estimates with the EST tag.",
+      "**Do** generate chapter, figure, measurement and § numbers from page order.",
+      "**Do** keep radii at 2px or less, and controls at least 44px tall.",
+      "**Do** define every colour as a token on `:root`; print overrides them with the `print-*` palette."
     ],
     "donts": [
-      "**Don't** use box shadows, glows, gradients or blur. The system is flat (user direction: it must not look AI-generated).",
+      "**Don't** use box shadows, glows or blur, or gradients outside the CAD stage. The system is flat (user direction: it must not look AI-generated).",
       "**Don't** use rounded cards, pill badges, dot status icons or coloured side or top stripes on cards.",
-      "**Don't** return to the earlier indigo-on-blue-grey theme or the Archivo/IBM Plex pairing. That's the look this system replaced.",
-      "**Don't** add a light theme or drop the ground to near-black; the graphite steps are what give the page its contrast.",
+      "**Don't** add a light screen theme or drop the ground to near-black; the graphite steps carry the contrast.",
+      "**Don't** bring back a sans or mono face (Barlow, Source Sans, Red Hat Mono, Archivo, IBM Plex); the report is one serif.",
       "**Don't** use International Orange as a verdict colour or a large fill.",
       "**Don't** use zebra stripes or filled header rows in tables.",
-      "**Don't** set running text in the condensed display face.",
-      "**Don't** put a small label or kicker above any heading. Section numbers go inside the heading, and status goes in a chip on the same line.",
-      "**Don't** set functional text below 12 px, or citations below 13 px."
+      "**Don't** put a small label or kicker above any heading. Numbers go inside the heading, and status goes in a chip on the same line.",
+      "**Don't** set functional text below 12 px, or citations below 13 px.",
+      "**Don't** add a type step between the ten on the scale."
     ]
   }
 }

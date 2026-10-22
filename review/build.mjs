@@ -1,5 +1,14 @@
 // Assembles review/vtol-review.html from review/src/* + analysis/model.js + analysis/results.json
-import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync, readdirSync } from 'fs';
+
+// Windows can hold an output file open for a moment (preview browser, virus scan): retry a few times
+function writeSafe(u, data) {
+  for (let k = 0; ; k++) {
+    try { writeFileSync(u, data); return; }
+    catch (e) { if (k >= 6) throw e; Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); }
+  }
+}
+
 import { spawnSync } from 'child_process';
 import { fileURLToPath } from 'url';
 import { packMesh } from './mesh.mjs';
@@ -7,6 +16,28 @@ const r = p => readFileSync(new URL(p, import.meta.url), 'utf8');
 const data = JSON.parse(r('../analysis/results.json'));
 const v02 = JSON.parse(r('../analysis/results_v0.2_baseline.json'));
 const aero = JSON.parse(r('../analysis/aero.json'));
+// full engineering draft: trade study, aerodynamic package, build manual and test plan summaries
+const tradeAll = JSON.parse(r('../analysis/tradestudy.json'));
+// only what the page draws: ranking, criteria, sensitivity cases, and each variant's label, family, flags and headline metrics
+const TRADE = { ranking: tradeAll.ranking, criteria: tradeAll.criteria, sensitivity: { baseWinnerFeasibleR1: tradeAll.sensitivity.baseWinnerFeasibleR1, cases: tradeAll.sensitivity.cases.map(({ criterion, factor, winnerFeasibleR1 }) => ({ criterion, factor, winnerFeasibleR1 })) },
+  variants: tradeAll.variants.map(({ id, label, family, meetsR1, feasible, flags, metrics }) => ({ id, label, family, meetsR1, feasible, flags, metrics: { MTOW_kg: metrics.MTOW_kg, cruise_avail_min: metrics.cruise_avail_min, reserve_usd: metrics.reserve_usd } })) };
+const hwAll = JSON.parse(r('../cad/hardware.json'));
+const HW = { fasteners: hwAll.fasteners.map(({ id, standard, thread, length_mm, qty, torque_Nm, joints }) => ({ id, standard, thread, length_mm, qty, torque_Nm, joints })), inserts: hwAll.inserts.map(({ id, qty }) => ({ id, qty })), nuts: hwAll.nuts.map(({ id, qty }) => ({ id, qty })), washers: hwAll.washers.map(({ id, qty }) => ({ id, qty })), fits: hwAll.fits.map(({ id, joint, min_clearance_mm, max_clearance_mm }) => ({ id, joint, min_clearance_mm, max_clearance_mm })) };
+const aeroFull = JSON.parse(r('../analysis/aero/aero_results.json'));
+let nf = {}; try { nf = JSON.parse(r('../analysis/aero/out/neuralfoil_polars.json')); } catch (e) { console.log('no neuralfoil polars'); }
+// trim the aero package to what the page draws (section tables are large)
+const AEROD = { ...aeroFull, section_polars: Object.fromEntries(Object.entries(aeroFull.section_polars).map(([k, v]) => [k, (k === 'n2415_stall_ncrit9' || k === 'n2415_cruise_ncrit9') ? v : { ...v, table: undefined }])),
+  neuralfoil: Object.entries(nf.cases || {}).filter(([k]) => k === 'n2415_stall_ncrit9' || k === 'n2415_cruise_ncrit9').map(([k, c]) => ({ name: k, Re: c.Re, alpha: c.alpha_deg, CL: c.CL, CD: c.CD })) };
+const csvRows = s => { const out = []; let row = [], f = '', q = false;
+  for (let i = 0; i < s.length; i++) { const ch = s[i];
+    if (q) { if (ch === '"') { if (s[i + 1] === '"') { f += '"'; i++; } else q = false; } else f += ch; }
+    else if (ch === '"') q = true; else if (ch === ',') { row.push(f); f = ''; } else if (ch === '\n' || ch === '\r') { if (ch === '\r' && s[i + 1] === '\n') i++; row.push(f); if (row.some(x => x !== '')) out.push(row); row = []; f = ''; } else f += ch; }
+  if (f || row.length) { row.push(f); out.push(row); } return out; };
+const tm = csvRows(r('../docs/test/test-matrix.csv')); const TESTS = tm.slice(1).map(c => Object.fromEntries(tm[0].map((h, i) => [h, c[i]])));
+const manual = r('../docs/build/BUILD-MANUAL.md');
+const WPS = [...manual.matchAll(/^\|\s*(\d+)\s*\|\s*([^|]+?)\s*\|\s*([\d.]+)[^|]*\|\s*([^|]*?)\s*\|/gm)].map(m => ({ wp: +m[1], title: m[2], labour: +m[3], machine: m[4] }));
+const BUILD = { wps: WPS, steps: (manual.match(/^\*\*\d+\.\d+[a-z]?\s/gm) || []).length,
+  total: (manual.match(/\*\*Total\*\*\s*\|\s*\*\*([\d.]+)\s*person-h/) || [])[1], machine: (manual.match(/\*\*Total\*\*[^\n]*?[~≈]\s*([\d.]+)\s*h machine/) || [])[1] };
 // SOLIDWORKS Simulation results: key=value|unit|note
 const sim = {};
 for (const line of r('../cad/sim/results.txt').split(String.fromCharCode(10)).map(x => x.trim())) { if (!line || line.startsWith('#')) continue; const i = line.indexOf('='); sim[line.slice(0, i)] = parseFloat(line.slice(i + 1)); }
@@ -23,10 +54,10 @@ function b64(f) {
   if (existsSync(jpg) && statSync(jpg).mtimeMs >= statSync(png).mtimeMs) return 'data:image/jpeg;base64,' + readFileSync(jpg).toString('base64');
   return 'data:image/png;base64,' + readFileSync(png).toString('base64');
 }
-const imgs = { fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
+const imgs = { iso:'../cad/images/VTOL_Concept_iso.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
 const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(f); } catch (e) { console.log('missing image', f); } }
 // SOLIDWORKS drawing sheets (cad/Drawings.cs) stay PNG: crisp line art at ~20 KB a sheet
-for (let i = 1; i <= 5; i++) { try { IMG['drw' + i] = 'data:image/png;base64,' + readFileSync(new URL(`../cad/drawings/DBF-DRW-001_sheet${i}.png`, import.meta.url)).toString('base64'); } catch (e) { console.log('missing drawing sheet', i); } }
+for (let i = 1; i <= 12; i++) { try { IMG['drw' + i] = 'data:image/png;base64,' + readFileSync(new URL(`../cad/drawings/DBF-DRW-001_sheet${i}.png`, import.meta.url)).toString('base64'); } catch (e) { if (i <= 5) console.log('missing drawing sheet', i); } }
 const BASIS_VER = (r('../docs/DESIGN-BASIS.md').match(/\(v(\d+\.\d+(?:\.\d+)?)/) || [])[1];
 if (!BASIS_VER) throw new Error('design-basis version not found');
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
@@ -37,8 +68,9 @@ const html = `<title>Lift + Cruise VTOL Review</title>
 <style>
 ${r('./src/style.css')}
 </style>
-${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER)}
-<script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; const MESH = ${JSON.stringify(MESH)};</script>
+<script type="application/json" id="meshData">${JSON.stringify(MESH).replace(/</g, '\\u003c')}</script>
+${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER).split('{{BASIS_VER}}').join(BASIS_VER)}
+<script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; let MESH = null; const MESH_META = ${JSON.stringify({ tris: MESH.tris, comps: MESH.comps.length, files: new Set(Object.keys(MESH.parts).map(k => k.split('~')[0])).size })}; const TRADE = ${JSON.stringify(TRADE)}; const AEROD = ${JSON.stringify(AEROD)}; const TESTS = ${JSON.stringify(TESTS)}; const BUILD = ${JSON.stringify(BUILD)}; const HW = ${JSON.stringify(HW)};</script>
 <script>
 ${r('../analysis/model.js')}
 </script>
@@ -49,7 +81,7 @@ ${r('./src/cadviewer.js')}
 ${r('./src/app.js')}
 </script>
 `;
-writeFileSync(new URL('./vtol-review.html', import.meta.url), html);
+writeSafe(new URL('./vtol-review.html', import.meta.url), html);
 console.log('wrote review/vtol-review.html', html.length, 'bytes');
 // Standalone copy for double-click opening from File Explorer (full document skeleton, viewport meta)
 const cut = html.indexOf('</style>') + '</style>'.length;
@@ -57,5 +89,54 @@ const local = '<!doctype html>\n<html lang="en"><head><meta charset="utf-8">\n'
   + '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">\n'
   + html.slice(0, cut).replace('<style>', '<style>\n[hidden]{display:none!important}')
   + '\n</head><body>\n' + html.slice(cut) + '</body></html>\n';
-writeFileSync(new URL('../VTOL-Review.html', import.meta.url), local);
+writeSafe(new URL('../VTOL-Review.html', import.meta.url), local);
 console.log('wrote VTOL-Review.html (project root)');
+
+// ---------- companion pages: build manual and test plan, in the review's house style ----------
+// Written twice: next to the artifact page (review/, back link "./") and at the project root beside VTOL-Review.html.
+const { docPage } = await import('./docpage.mjs');
+const CHAPTERS = [...r('./src/body.html').matchAll(/<section class="sec" id="([a-z0-9]+)"/g)].map(m => m[1]);
+const fontLink = (html.match(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>/) || [''])[0];
+const pages = [['../docs/build/BUILD-MANUAL.md', 'build-manual.html', 'DBF-MAN-001', 'Work instructions'],
+               ['../docs/test/TEST-PLAN.md', 'test-plan.html', 'DBF-TP-001', 'Test and evaluation plan'],
+               ['../firmware/README.md', 'flight-software.html', 'DBF-SW-001', 'Flight software setup']];
+for (const [src, out, docNo, kicker] of pages) {
+  const md = r(src), rev = (md.match(/\|\s*Revision\s*\|\s*([A-Z])\b/) || [])[1];
+  const no = docNo + (rev ? ' · Rev ' + rev : '');
+  writeSafe(new URL('./' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: './', chapters: CHAPTERS }));
+  writeSafe(new URL('../' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: 'VTOL-Review.html', chapters: CHAPTERS }));
+  console.log('wrote', out);
+}
+
+// ---------- hot-wire template index: the SVGs are 1:1 shop drawings, listed with a preview each ----------
+{
+  const tdir = new URL('../docs/build/templates/', import.meta.url);
+  const svgs = readdirSync(tdir).filter(f => f.endsWith('.svg')).sort();
+  const css = r('./src/style.css');
+  const nice = f => { const w = f.replace('.svg', '').split('_'); const out = [], name = [];
+    for (const t of w) { const n = t.match(/^naca(\d{4})$/i); if (n) out.push('NACA ' + n[1]); else if (/^[AB]$/.test(t)) out.push('half ' + t); else name.push(t); }
+    const head = name.join(' '); return [head.charAt(0).toUpperCase() + head.slice(1), ...out].join(', '); };
+  const item = (f, pre) => `<li><a href="${pre}${f}"><img src="${pre}${f}" alt="Hot-wire template: ${nice(f)}" loading="lazy"><span>${nice(f)}</span></a></li>`;
+  const page = (pre, back) => `<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hot-wire templates</title>
+${fontLink}
+<style>
+${css}
+ul.tpl{list-style:none;margin:16px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:16px;max-width:none}
+ul.tpl li{max-width:none}
+ul.tpl a{display:flex;flex-direction:column;gap:8px;padding:10px;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r);color:var(--fg);text-decoration:none}
+ul.tpl a:hover{border-color:var(--fg-2)}
+ul.tpl img{display:block;width:100%;height:auto;background:#fff;border-radius:var(--r-s)}
+</style></head>
+<body><div class="wrap">
+<header class="top"><div class="mast"><span class="org"><a class="backlink" href="${back}">← Build manual DBF-MAN-001</a></span><span class="org">WP4, WP6</span></div>
+<h1>Hot-wire templates</h1>
+<p class="subtitle">Print at 100 % (no fit-to-page), check the 10 mm scale bar and the 100 mm check line, then bond to backing. Sheets wider than the paper come as A and B halves with a 40 mm overlap and registration crosses.</p></header>
+<main><ul class="tpl">${svgs.map(f => item(f, pre)).join('')}</ul>
+<p class="src">docs/build/templates/make_templates.py, from the chords in cad/params.txt; coordinates in docs/build/templates/section_coordinates.csv</p></main>
+</div></body></html>`;
+  writeSafe(new URL('./templates.html', import.meta.url), page('docs/build/templates/', 'build-manual.html'));
+  writeSafe(new URL('../templates.html', import.meta.url), page('docs/build/templates/', 'build-manual.html'));
+  console.log('wrote templates.html', svgs.length, 'templates');
+}

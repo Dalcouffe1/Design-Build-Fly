@@ -63,7 +63,7 @@ table.revrec td{padding-block:7px;color:var(--fg-2)}
 table.revrec td:nth-child(2){white-space:nowrap}
 .signoff{display:grid;gap:22px}
 .sig{display:grid;gap:5px}
-.sig-line{display:block;min-height:30px;padding-bottom:3px;border-bottom:1px solid var(--fg-2);font:italic 400 1.0625rem/30px var(--f-body);color:var(--fg)}
+.sig-line{display:block;min-height:30px;padding-bottom:3px;border-bottom:1px solid var(--fg-2);font:italic 400 1rem/30px var(--f-body);color:var(--fg)}
 .sig-cap{font-size:.8125rem;color:var(--fg-3)}
 @media (max-width:760px){.record{grid-template-columns:minmax(0,1fr)}.mast{margin-bottom:30px}}
 .eyebrow{font:400 .8125rem/1.3 var(--f-body);color:var(--fg-3)}
@@ -191,7 +191,7 @@ figure.chart .svgwrap{padding:8px 0 12px}
 figure.chart svg{width:100%;max-width:880px;height:auto;display:block;margin-inline:auto}
 .svgwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin}
 @media (max-width:640px){.svgwrap svg{min-width:700px}}
-svg text{fill:var(--fg-2);font:11px var(--f-body);font-variant-numeric:tabular-nums}
+svg text{fill:var(--fg-2);font:12px var(--f-body);font-variant-numeric:tabular-nums}
 svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 3}
 
 /* ---------- 3D viewer ---------- */
@@ -203,7 +203,7 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .cgrp{display:flex;align-items:center;gap:10px}
 .cgl{font:600 .8125rem/1 var(--f-body);color:var(--fg-2)}
 .segbar{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line-3);border-radius:var(--r-s);background:var(--surface-2)}
-.viewer .ctl button{min-height:44px;padding:0 15px;border:0;border-radius:var(--r-s);background:var(--surface);color:var(--fg-2);font:400 .9375rem var(--f-body);cursor:pointer;transition:background .12s,color .12s}
+.viewer .ctl button{min-height:44px;padding:0 15px;border:0;border-radius:var(--r-s);background:var(--surface);color:var(--fg-2);font:400 1rem var(--f-body);cursor:pointer;transition:background .12s,color .12s}
 .viewer .ctl button:hover{background:var(--surface-2);color:var(--fg)}
 .viewer .ctl button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
 .cmeta{margin-left:auto;font:400 .8125rem/1.3 var(--f-body);color:var(--fg-3)}
@@ -220,6 +220,32 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .toc a .n{flex:none;width:1.6em;text-align:right;color:var(--fg-3);font-variant-numeric:tabular-nums}
 .toc a .t{font:600 1rem/1.3 var(--f-display)}
 .toc a:hover .t{color:var(--accent)}
+/* contents grouped in three parts, one column each */
+#tocList{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:4px 36px;columns:auto}
+#tocList>li.part{font:600 .875rem/1.3 var(--f-body);color:var(--fg-2);padding-top:6px}
+#tocList>li.part .pn{display:block;font-size:.8125rem;color:var(--fg-3);font-weight:400;margin-bottom:2px}
+#tocList>li.part>ol{columns:auto;margin-top:6px;border-top:2px solid var(--ink)}
+#tocList>li.part .t{font-weight:600}
+
+/* ---------- design iterations chart ---------- */
+#tradeChart .tb.r1{fill:var(--c1)}
+#tradeChart .tb.nor1{fill:var(--c5)}
+#tradeChart .tb.out{fill:transparent;stroke:var(--line-3);stroke-width:1;stroke-dasharray:3 3}
+#tradeChart rect.tb.out{fill:var(--surface-2)}
+#tradeChart .lab.sel{fill:var(--fg);font-weight:700}
+#tradeChart .trow:hover text{fill:var(--fg)}
+
+/* ---------- links out to companion documents and files ---------- */
+.cta{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0 6px;max-width:none}
+.btnlink{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);border-radius:var(--r-s);background:var(--ink);color:var(--ink-fg);font:600 1rem var(--f-body);text-decoration:none}
+.btnlink:hover{background:var(--fg-2);border-color:var(--fg-2);color:var(--ink-fg)}
+.btnlink.quiet{background:transparent;color:var(--fg)}
+.btnlink.quiet:hover{background:var(--surface-2);color:var(--fg)}
+ul.files{list-style:none;margin:8px 0 18px;padding:0;border-top:1px solid var(--line-2);max-width:none}
+ul.files li{display:grid;grid-template-columns:minmax(0,14rem) minmax(0,1fr);gap:4px 18px;align-items:baseline;padding:10px 0;border-bottom:1px solid var(--line);max-width:none}
+ul.files a{display:inline-flex;align-items:center;min-height:44px;font-weight:600;color:var(--fg);text-decoration-color:var(--accent-line);text-underline-offset:2px}
+ul.files span{color:var(--fg-2);font-size:.875rem}
+@media (max-width:560px){ul.files li{grid-template-columns:minmax(0,1fr)}}
 .runhead{position:fixed;left:0;right:0;top:0;z-index:10;display:flex;gap:16px;align-items:center;padding:8px max(16px,calc((100vw - 1040px)/2 + 24px));padding-top:calc(8px + env(safe-area-inset-top,0px));background:var(--bg);border-bottom:1px solid var(--line-2);font:400 .8125rem/1.3 var(--f-body);color:var(--fg-3);transform:translateY(-110%);transition:transform .18s ease-out}
 .runhead.on{transform:none}
 .runhead .rh-sec{flex:1;min-width:0;color:var(--fg);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -276,8 +302,6 @@ dl.kv{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:6px 18px;
 dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 
 /* ---------- small screens ---------- */
-@media (max-width:760px){
-}
 @media (max-width:560px){
   h1{font-size:2rem}
   h2{font-size:1.5rem}
@@ -299,6 +323,8 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 }
 
 /* ---------- print ---------- */
+/* the same paper palette while printing, so charts redrawn on beforeprint use it */
+:root.printing{--bg:#fbfbfa; --surface:#ffffff; --surface-2:#f4f5f6; --surface-3:#eceef0; --zebra:#fafafa; --line:#e3e5e8; --line-2:#cbcfd4; --line-3:#9ea4ac; --fg:#16191d; --fg-2:#474e57; --fg-3:#6c737c; --accent:#b8481b; --accent-2:#963a14; --accent-soft:#f7ece6; --accent-line:#e4bfae; --accent-fg:#ffffff; --ink:#16191d; --ink-fg:#ffffff; --ok:#23744a; --ok-soft:#e7f2ec; --warn:#94600a; --warn-soft:#f6efe1; --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6; --open-line:#a49ec5; --bad-line:#c57e79; --c1:#2f5d8a; --c2:#2e7f78; --c3:#b7791f; --c4:#8e3b6e; --c5:#5b6b7c; --c6:#6b7f2a; --band:#ffffff; --band-line:#cbcfd4; color-scheme:light}
 @media print{
   /* print always uses the light palette, whatever the screen theme */
   :root{--bg:#fbfbfa; --surface:#ffffff; --surface-2:#f4f5f6; --surface-3:#eceef0; --zebra:#fafafa; --line:#e3e5e8; --line-2:#cbcfd4; --line-3:#9ea4ac; --fg:#16191d; --fg-2:#474e57; --fg-3:#6c737c; --accent:#b8481b; --accent-2:#963a14; --accent-soft:#f7ece6; --accent-line:#e4bfae; --accent-fg:#ffffff; --ink:#16191d; --ink-fg:#ffffff; --ok:#23744a; --ok-soft:#e7f2ec; --warn:#94600a; --warn-soft:#f6efe1; --bad:#ad2a1f; --bad-soft:#f8e9e7; --open:#57489a; --open-soft:#efedf6; --open-line:#a49ec5; --bad-line:#c57e79; --c1:#2f5d8a; --c2:#2e7f78; --c3:#b7791f; --c4:#8e3b6e; --c5:#5b6b7c; --c6:#6b7f2a; --band:#ffffff; --band-line:#cbcfd4; color-scheme:light}
@@ -307,6 +333,8 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   figure.chart,.decision,.measure,table,.kpis{break-inside:avoid}
   section.sec{display:block!important;break-before:page}
   .tbl{max-height:none;overflow:visible}
+  details>summary{list-style:none}
+  details>summary::-webkit-details-marker{display:none}
 }
 
 /* ---------- SOLIDWORKS model viewer ---------- */
@@ -325,6 +353,8 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
 .cadparts summary{min-height:44px;display:flex;align-items:center;cursor:pointer;font:600 1rem/1.25 var(--f-display);color:var(--fg)}
 .cadparts ul{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .cadparts li{max-width:none}
+.cadparts ul+.grp{margin:4px 0 8px;font-weight:600;color:var(--fg)}
+#cadFasteners{list-style:none;margin:0 0 12px;padding:0;display:flex;flex-wrap:wrap;gap:6px}
 .cadparts button{min-height:44px;padding:0 12px;border:1px solid var(--line-2);background:var(--surface);color:var(--fg-2);border-radius:var(--r-s);font:400 .875rem var(--f-body);cursor:pointer;transition:border-color .12s,color .12s}
 .cadparts button:hover,.cadparts button:focus-visible{border-color:var(--fg);color:var(--fg)}
 /* touch gate: canvases take gestures only after a tap */
@@ -335,3 +365,58 @@ dl.kv dt{color:var(--fg-3)} dl.kv dd{margin:0}
   .viewer .gate span{font:600 .875rem/1 var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:10px 12px}
 }
 @media (max-width:560px){.cadview canvas{height:clamp(260px,calc(100svh - 140px),380px)}.cadview .tip{top:auto;bottom:66px}}
+#tradeChart .ghead{fill:var(--fg);font-weight:600}
+svg text.phead{fill:var(--fg);font-weight:600;font-size:12px}
+
+/* ---------- overview additions: GA figure, measurement list, glossary ---------- */
+.gafig{margin:22px 0 6px}
+.mlist{margin:6px 0 14px;padding:0;list-style:none;border-top:1px solid var(--line-2)}
+.mlist li{display:grid;grid-template-columns:4.2em minmax(0,1fr) auto;gap:4px 14px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line);max-width:none}
+.mlist .mid{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600}
+.mlist a{color:var(--fg);text-decoration-color:var(--line-3);text-underline-offset:2px}
+.mlist .mch{color:var(--fg-3);font-size:.875rem}
+dl.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(19rem,1fr));gap:0 32px;margin:8px 0 18px;border-top:1px solid var(--line-2)}
+dl.terms>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:8px 0;border-bottom:1px solid var(--line)}
+dl.terms dt{font-weight:600;color:var(--fg)}
+dl.terms dd{margin:0;color:var(--fg-2)}
+.tbl:focus-visible,.svgwrap:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+@media (max-width:560px){.mlist li{grid-template-columns:4.2em minmax(0,1fr)}.mlist .mch{grid-column:2}dl.terms>div{grid-template-columns:minmax(0,1fr);gap:2px}}
+
+/* touch targets: the running-head link and the sliders reach 44 px without changing their look */
+.runhead .rh-toc{display:inline-flex;align-items:center;min-height:44px;margin:-12px 0}
+.sl input[type=range]{min-height:44px}
+/* bar charts drawn at the container width on phones render 1:1 instead of scrolling */
+.svgwrap svg.fitw{width:100%;min-width:0}
+
+/* ---------- closing: the ask and the next dates ---------- */
+.closing{margin:96px 0 24px;padding-top:18px;border-top:2px solid var(--ink)}
+.closing h2{font-size:1.875rem;margin-bottom:12px}
+ol.next{list-style:none;margin:10px 0 14px;padding:0;border-top:1px solid var(--line-2)}
+ol.next li{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:4px 16px;padding:10px 0;border-bottom:1px solid var(--line);max-width:none}
+ol.next .d{font-weight:600;color:var(--fg);font-variant-numeric:tabular-nums}
+@media (max-width:560px){ol.next li{grid-template-columns:minmax(0,1fr);gap:2px}}
+
+/* phones: chapter, closing and companion headings step down with the h2 ramp */
+@media (max-width:560px){.sechead h2,.closing h2,.doc h2{font-size:1.5rem}}
+
+/* overview: render figure, the approval card leads, acceptances sit one step quieter */
+.gafig .render{background:#fff}
+h4.subhd{margin:28px 0 8px;font-size:1rem;color:var(--fg-2)}
+.minors .decision b.q{font-size:1rem}
+.minors .decision{padding-block:12px 10px}
+
+/* 44 px targets: the drawing button, narrow view buttons, back links */
+.btnlink.sheetbtn{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border:1px solid var(--ink);background:transparent;color:var(--fg);font:600 1rem var(--f-body);cursor:pointer;border-radius:var(--r-s)}
+.btnlink.sheetbtn:hover{background:var(--surface-2)}
+.viewer .ctl .segbar button{min-width:44px}
+.backlink{display:inline-flex;align-items:center;min-height:44px}
+
+/* audit: focus never hides under the running head; pressed toggles survive High Contrast */
+html{scroll-padding-top:64px}
+@media (forced-colors: active){[aria-pressed="true"]{forced-color-adjust:none;background:Highlight!important;color:HighlightText!important;outline:2px solid Highlight}}
+/* audit: grid minimums never exceed the column at large text */
+#tocList{grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
+.reqgrid{grid-template-columns:repeat(auto-fill,minmax(min(100%,15rem),1fr))}
+dl.terms{grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr))}
+table.revrec td:nth-child(2){white-space:normal}
+@media (max-width:360px){.viewer .ctl .segbar button{padding:0 6px}}

@@ -35,13 +35,14 @@ The review is generated from the project's own analysis, CAD and simulation outp
   - Built and flight-tested by 2027-04-30.
   - MTOW under 25 kg; 2–3 m span; breaks down to fit a standard car.
 - One self-contained HTML page. CSS, JS, data and images are inline. The only external loads are web fonts and the three.js library for the 3D viewer, so the 3D viewer needs a connection; the rest of the page works offline.
-- Works in light and dark themes, at desktop and phone widths.
-- Interactive content: sortable tables, sensitivity sliders, charts drawn from the live sizing model, a simplified concept viewer, and a rotatable SOLIDWORKS model viewer.
+- One dark theme (graphite: mid-grey ground, lighter grey panels; client direction 2026-10-21), at desktop and phone widths. Printing switches to a white-paper palette.
+- Interactive content: sortable tables, sensitivity sliders, charts drawn from the live sizing model, the trade-study chart, and a rotatable SOLIDWORKS model viewer with every part and fastener.
+- Companion pages in the same style, generated from the repo Markdown: the build manual (DBF-MAN-001, `build-manual.html`) and the test plan (DBF-TP-001, `test-plan.html`). The review links to them and to the shop files (cut, print and wiring lists, templates, parameter file).
 - Terminology: MTOW, T/W, QuadPlane, C0–C3 concepts, R-numbered requirements, M-numbered measurements, EST for estimates.
 
 ## Brand Commitments
 
-- Project name: **Design-Build-Fly** (confirmed 2026-10-18). Not yet shown on the page; the page currently titles itself "Lift + Cruise VTOL Review".
+- Project name: **Design-Build-Fly** (confirmed 2026-10-18), shown on the cover mast line.
 - Client-facing: the page must read as a professional engineering document. It must not look like a generic AI-generated web page (user direction, 2026-10-13).
 - Voice (REVIEW-STYLE.md): terse and specific, numbers inline with units, present tense, baseline and verdict first, no marketing language.
 - No client logo or university branding is required.
@@ -50,11 +51,14 @@ The review is generated from the project's own analysis, CAD and simulation outp
 
 - Sizing and budget: `analysis/results.json` and `docs/purchasing/C0_BOM.csv`, with prices checked 2026-10-13 and cited in `docs/research/`.
 - CAD: `cad/model/` (SLDASM, STEP, EASM) and renders in `cad/images/`.
-- Simulation: FEA and thermal results in `cad/sim/results.txt`, plus a vortex-lattice aero check in `analysis/aero.json`.
+- Simulation: FEA and thermal results in `cad/sim/results.txt`; vortex lattice in `analysis/aero.json`; the aerodynamic package (XFOIL, NeuralFoil, AVL, drag build-up, SU2 2-D RANS CFD) in `analysis/aero/aero_results.json`.
+- Hardware and fits: `docs/research/hardware-spec.md`, `cad/hardware.json`; CAD rev B with every fastener and the nine-sheet drawing set DBF-DRW-001.
+- Build, test and flight software: `docs/build/`, `docs/test/`, `firmware/` (parameter file checked; SITL scenarios run).
+- Configuration trade study: `analysis/tradestudy.json`, `docs/research/configurations.md`.
 - Independent check: `analysis/verify.py`.
 - Audit: a six-reviewer project audit (79 findings) recorded in review §12.
 - Absent, and must not be fabricated:
-  - flight-test data and measured thrust or temperature (the M-items are still open)
+  - flight-test data and measured thrust, drag or temperature (the M-items are still open); SITL runs use ArduPilot's generic QuadPlane, not this airframe
   - photos of hardware (nothing has been built yet)
   - client name, testimonials and logos
 

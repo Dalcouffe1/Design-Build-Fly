@@ -1,0 +1,146 @@
+"""Shared geometry, flight conditions and tool paths for the C0 aerodynamic data package.
+
+Every geometric number is read from analysis/results.json (sizing output, v0.3.1) or cad/params.txt
+(SolidWorks build parameters derived from results.json by cad/params.mjs).  Nothing is typed in here
+except the atmosphere (ISA sea level) and the tool locations.
+"""
+from __future__ import annotations
+import json, os, re, sys
+from pathlib import Path
+
+HERE = Path(__file__).resolve().parent
+REPO = HERE.parents[1]
+OUT = HERE / "out"; OUT.mkdir(exist_ok=True)
+PLOTS = HERE / "plots"; PLOTS.mkdir(exist_ok=True)
+
+# ---------- tools (outside the repo, C:\Users\dillo\tools) ----------
+TOOLS = Path(os.environ.get("AERO_TOOLS", r"C:\Users\dillo\tools"))
+XFOIL = TOOLS / "xfoil" / "xfoil.exe"          # XFOIL 6.99, https://web.mit.edu/drela/Public/web/xfoil/XFOIL6.99.zip (checked 2026-10-21)
+AVL = TOOLS / "avl" / "avl352.exe"             # AVL 3.52,   https://web.mit.edu/drela/Public/web/avl/avl352.exe      (checked 2026-10-21)
+SU2_CFD = TOOLS / "su2" / "bin" / "bin" / "SU2_CFD.exe"  # SU2 8.5.0 win64-omp, https://github.com/su2code/SU2/releases/download/v8.5.0/SU2-v8.5.0-win64-omp.zip (checked 2026-10-21)
+
+# ---------- repo inputs ----------
+RESULTS = json.loads((REPO / "analysis" / "results.json").read_text())
+C0 = RESULTS["concepts"]["C0"]
+BASE = RESULTS["base"]
+SIZED = C0["sized"]
+GEO = C0["geo"]
+CG = C0["cg"]
+
+def _params_txt() -> dict:
+    d = {}
+    for line in (REPO / "cad" / "params.txt").read_text().splitlines():
+        if "=" not in line or line.startswith("comp=") or line.startswith("foil="):
+            continue
+        k, v = line.split("=", 1)
+        try:
+            d[k] = float(v)
+        except ValueError:
+            d[k] = v
+    return d
+PARAMS = _params_txt()
+
+# ---------- atmosphere (ISA sea level) ----------
+RHO = BASE["rho"]                 # 1.225 kg/m^3  (results.json base.rho)
+MU = 1.789e-5                     # Pa s, ISA sea level 15 C (Anderson, Fundamentals of Aerodynamics, App. A / ISA)
+A_SOUND = 340.3                   # m/s, ISA sea level
+NU = MU / RHO
+
+# ---------- aircraft ----------
+SPAN = BASE["span"]               # 2.4 m
+CHORD = SIZED["chord"]            # 0.2387 m
+S_REF = SIZED["S"]                # 0.5728 m^2
+AR = SIZED["AR"]
+MTOW = SIZED["m"]                 # 6.18 kg
+W = SIZED["W"]                    # N
+G = 9.80665
+V_STALL_REQ = BASE["Vs"]          # 12 m/s (R11)
+V_CRUISE = BASE["Vc"]             # 20 m/s (R11 midpoint)
+V_TRANS = 16.0                    # m/s, AIRSPEED_MIN per DESIGN-BASIS.md R11
+CL_MAX_SIZING = BASE["CLmax"]     # 1.2 (EST in sizing)
+CD0_CLEAN_SIZING = BASE["CD0_clean"]
+CDA_BOOM_SIZING = BASE["CdA_boom"]
+CDA_ROTOR_SIZING = C0["params"]["CdA_rotor"]
+E_SIZING = BASE["e"]
+CD0_TOTAL_SIZING = SIZED["CD0"]
+CL_CRUISE_SIZING = SIZED["CL"]
+LD_SIZING = SIZED["LD"]
+
+# tail (results.json geo; CAD adds one boom OD to the stabiliser span)
+H_SPAN = GEO["hSpan"]; H_CHORD = GEO["hC"]; S_H = GEO["Sh"]
+V_H = GEO["vH"]; V_C = GEO["vC"]; S_V = GEO["Sv"]
+L_H = GEO["lh"]
+X_TAIL_LE = GEO["xRear"] - GEO["D"] / 2 - 0.05       # sizing.mjs: lh_tailLE (x fwd from wing LE, so negative = aft)
+X_FRONT_ROTOR = GEO["xFront"]; X_REAR_ROTOR = GEO["xRear"]; Y_BOOM = GEO["yIn"]
+D_LIFT_PROP = GEO["D"]
+X_CG = GEO["xLEtoCG"]                                  # -0.28 c (target CG)
+X_CG_NO_PAYLOAD = CG["cgNoPayload"]
+NP_SIZING_FRAC = GEO["hn"]
+Z_BOOM = PARAMS["yB"]                                  # -0.03 m (boom axis below wing LE datum, CAD Y up)
+
+# pod (cad/BuildVtol.cs Fuselage(): elliptic nose a=0.22 m, parallel to 0.50 m, smooth-step boat-tail to tailR)
+POD_L = PARAMS["fusL"]; POD_R = PARAMS["fusR"]; POD_TAIL_R = PARAMS["tailR"]; POD_NOSE_X = 0.45
+CANOPY_L, CANOPY_R = 0.26, 0.055                       # cad/BuildVtol.cs Canopy()
+BOOM_OD = PARAMS["boomOD"]; BOOM_SEGS = [PARAMS["segF"], PARAMS["segR"]]
+MOTOR_D = PARAMS["motorD"]; MOTOR_H = PARAMS["motorH"]
+PROP_W = PARAMS["propW"]; PROP_T = PARAMS["propT"]
+LEG_OD = PARAMS["legOD"]; LEG_LEN = PARAMS["legLen"]
+PITOT_D = PARAMS["pitotD"]; PITOT_L = PARAMS["pitotL"]
+T_C_WING = PARAMS["tc"]
+H_TAIL_T = PARAMS["tailT"]
+
+def reynolds(V: float, L: float) -> float:
+    return RHO * V * L / MU
+
+def mach(V: float) -> float:
+    return V / A_SOUND
+
+CONDITIONS = {
+    "stall": {"V": V_STALL_REQ, "Re": reynolds(V_STALL_REQ, CHORD), "M": mach(V_STALL_REQ)},
+    "transition": {"V": V_TRANS, "Re": reynolds(V_TRANS, CHORD), "M": mach(V_TRANS)},
+    "cruise": {"V": V_CRUISE, "Re": reynolds(V_CRUISE, CHORD), "M": mach(V_CRUISE)},
+}
+TAIL_CONDITIONS = {
+    "stall": {"V": V_STALL_REQ, "Re": reynolds(V_STALL_REQ, H_CHORD)},
+    "cruise": {"V": V_CRUISE, "Re": reynolds(V_CRUISE, H_CHORD)},
+}
+
+def naca4(code: str, n: int = 160, closed_te: bool = True):
+    """NACA 4-digit coordinates, cosine spaced, TE->upper->LE->lower->TE (XFOIL order).
+    Formula: Abbott & von Doenhoff, Theory of Wing Sections, §6.4; same as cad/params.mjs."""
+    import numpy as np
+    m = int(code[0]) / 100; p = int(code[1]) / 10; t = int(code[2:]) / 100
+    beta = np.linspace(0, np.pi, n)
+    x = 0.5 * (1 - np.cos(beta))
+    a4 = -0.1036 if closed_te else -0.1015
+    yt = 5 * t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 + a4 * x**4)
+    if m > 0:
+        yc = np.where(x < p, m / p**2 * (2 * p * x - x**2), m / (1 - p)**2 * ((1 - 2 * p) + 2 * p * x - x**2))
+        dyc = np.where(x < p, 2 * m / p**2 * (p - x), 2 * m / (1 - p)**2 * (p - x))
+    else:
+        yc = np.zeros_like(x); dyc = np.zeros_like(x)
+    th = np.arctan(dyc)
+    xu = x - yt * np.sin(th); yu = yc + yt * np.cos(th)
+    xl = x + yt * np.sin(th); yl = yc - yt * np.cos(th)
+    X = np.concatenate([xu[::-1], xl[1:]]); Y = np.concatenate([yu[::-1], yl[1:]])
+    return np.column_stack([X, Y])
+
+def dump_json(path: Path, obj):
+    def rnd(o):
+        if isinstance(o, float):
+            return float(f"{o:.6g}")
+        if isinstance(o, dict):
+            return {k: rnd(v) for k, v in o.items()}
+        if isinstance(o, (list, tuple)):
+            return [rnd(v) for v in o]
+        return o
+    path.write_text(json.dumps(rnd(obj), indent=1))
+
+if __name__ == "__main__":
+    print(f"chord {CHORD:.4f} m  span {SPAN} m  S {S_REF:.4f} m2  AR {AR:.3f}  MTOW {MTOW:.3f} kg  W/S {W/S_REF:.1f} N/m2")
+    for k, v in CONDITIONS.items():
+        print(f"{k:11s} V={v['V']:5.1f} m/s  Re={v['Re']:.3e}  M={v['M']:.3f}")
+    for k, v in TAIL_CONDITIONS.items():
+        print(f"tail {k:6s} V={v['V']:5.1f} m/s  Re={v['Re']:.3e}")
+    print("tail LE x", X_TAIL_LE, "CG x", X_CG, "NP sizing", NP_SIZING_FRAC)
+    print("tools:", XFOIL.exists(), AVL.exists(), SU2_CFD.exists())

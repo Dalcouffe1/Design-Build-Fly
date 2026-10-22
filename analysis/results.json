@@ -4,11 +4,11 @@
   "rho": 1.225,
   "Vs": 12,
   "Vc": 20,
-  "CLmax": 1.2,
+  "CLmax": 1.132,
   "span": 2.4,
   "e": 0.8,
-  "CD0_clean": 0.03,
-  "CdA_boom": 0.0015,
+  "CD0_clean": 0.0266,
+  "CdA_boom": 0.00166,
   "etaProp": 0.6,
   "etaMEc": 0.85,
   "kCtrl": 1.1,
@@ -30,7 +30,7 @@
   "boomClamp": 0.02,
   "m_spar": 0.67524,
   "mFus": 0.6,
-  "mGear": 0.32518,
+  "mGear": 0.44318,
   "mAvionics": 0.25,
   "mPusherSet": 0.227,
   "mServos": 0.216,
@@ -105,11 +105,11 @@
     "rho": 1.225,
     "Vs": 12,
     "Vc": 20,
-    "CLmax": 1.2,
+    "CLmax": 1.132,
     "span": 2.4,
     "e": 0.8,
-    "CD0_clean": 0.03,
-    "CdA_boom": 0.0015,
+    "CD0_clean": 0.0266,
+    "CdA_boom": 0.00166,
     "etaProp": 0.6,
     "etaMEc": 0.85,
     "kCtrl": 1.1,
@@ -124,14 +124,14 @@
     "wGlass": 0.06,
     "rResin": 0,
     "sigmaTail": 0.93,
-    "tailAreaRatio": 0.21314911,
+    "tailAreaRatio": 0.21838899,
     "VhTarget": 0.35,
     "VvTarget": 0.03,
     "boomLin": 0.185,
     "boomClamp": 0.02,
     "m_spar": 0.67524,
     "mFus": 0.6,
-    "mGear": 0.32518,
+    "mGear": 0.44318,
     "mAvionics": 0.25,
     "mPusherSet": 0.227,
     "mServos": 0.216,
@@ -167,56 +167,56 @@
      ]
     ],
     "ratedCont_W": null,
-    "CdA_rotor": 0.0034,
+    "CdA_rotor": 0.00222,
     "station": 66.29,
     "nLift": 4,
     "nBooms": 2,
     "coax": false,
-    "boomTotalLen": 2.8227844,
+    "boomTotalLen": 2.8934718,
     "mBattFixed": 0.82,
     "EBattFixed": 144.3
    },
    "design": {
-    "m": 6.0566686,
-    "W": 59.395629,
+    "m": 6.2505078,
+    "W": 61.296542,
     "nUnits": 4,
-    "Tunit_N": 14.84905,
-    "Tunit_g": 1514.1817,
-    "Tmotor_g": 1514.1817,
+    "Tunit_N": 15.324304,
+    "Tunit_g": 1562.6442,
+    "Tmotor_g": 1562.6442,
     "A": 0.14643846,
-    "FMeta": 0.52257326,
-    "Pi_unit": 95.529474,
-    "P_hover": 804.34596,
-    "S": 0.56118859,
-    "AR": 10.263929,
-    "chord": 0.23382858,
-    "CL": 0.432,
-    "CD0": 0.059580074,
-    "CDi": 0.007234591,
-    "LD": 6.4656464,
-    "D_cruise": 9.1864288,
-    "P_cruise": 360.25211,
-    "E_Wh": 95.790727,
-    "Epack_req_Wh": 126.04043,
-    "Epack_Wh": 126.04043,
-    "m_batt": 0.71613881,
-    "sigmaWing": 0.88321648,
-    "m_wing": 1.170891,
-    "S_tail": 0.11961685,
-    "m_tail": 0.11124367,
-    "m_booms": 0.60221512,
+    "FMeta": 0.5201555,
+    "Pi_unit": 100.15221,
+    "P_hover": 847.18842,
+    "S": 0.61393974,
+    "AR": 9.3820283,
+    "chord": 0.25580822,
+    "CL": 0.40752,
+    "CD0": 0.046471657,
+    "CDi": 0.0070430579,
+    "LD": 7.6151018,
+    "D_cruise": 8.0494285,
+    "P_cruise": 315.66386,
+    "E_Wh": 90.263462,
+    "Epack_req_Wh": 118.76771,
+    "Epack_Wh": 118.76771,
+    "m_batt": 0.67481655,
+    "sigmaWing": 0.95495805,
+    "m_wing": 1.2615267,
+    "S_tail": 0.13407768,
+    "m_tail": 0.12469224,
+    "m_booms": 0.61529229,
     "m_lift": 0.968,
-    "m_fixed": 2.48818,
-    "CdA_extra": 0.0166,
-    "TW": 2.067143,
+    "m_fixed": 2.60618,
+    "CdA_extra": 0.0122,
+    "TW": 2.0030373,
     "TW_motorOut": 0,
-    "I_hover": 36.2318,
-    "I_cruise": 16.227572,
-    "P_hover_per_motor": 201.08649,
+    "I_hover": 38.16164,
+    "I_cruise": 14.219093,
+    "P_hover_per_motor": 211.7971,
     "endurance_ok": true,
     "t_cruise_avail_min": 10,
-    "diskLoading": 101.4013,
-    "wingLoading": 105.84,
+    "diskLoading": 104.64672,
+    "wingLoading": 99.8424,
     "iter": 18,
     "converged": true
    },
@@ -230,112 +230,113 @@
     "pair": true
    },
    "sized": {
-    "m": 6.1821705,
-    "W": 60.626382,
+    "m": 6.4315709,
+    "W": 63.072165,
     "nUnits": 4,
-    "Tunit_N": 15.156827,
-    "Tunit_g": 1545.5662,
-    "Tmotor_g": 1545.5662,
+    "Tunit_N": 15.768274,
+    "Tunit_g": 1607.9164,
+    "Tmotor_g": 1607.9164,
     "A": 0.14643846,
-    "FMeta": 0.52100751,
-    "Pi_unit": 98.514876,
-    "P_hover": 831.97545,
-    "S": 0.57282037,
-    "AR": 10.055508,
-    "chord": 0.23867515,
-    "CL": 0.432,
-    "CD0": 0.058979417,
-    "CDi": 0.0073845426,
-    "LD": 6.5095574,
-    "D_cruise": 9.3135837,
-    "P_cruise": 365.23858,
-    "E_Wh": 97.849783,
-    "Epack_req_Wh": 128.74971,
+    "FMeta": 0.5178969,
+    "Pi_unit": 104.53593,
+    "P_hover": 888.12677,
+    "S": 0.63172654,
+    "AR": 9.1178692,
+    "chord": 0.26321939,
+    "CL": 0.40752,
+    "CD0": 0.045912154,
+    "CDi": 0.0072471064,
+    "LD": 7.6660209,
+    "D_cruise": 8.2276183,
+    "P_cruise": 322.6517,
+    "E_Wh": 93.247584,
+    "Epack_req_Wh": 122.69419,
     "Epack_Wh": 144.3,
     "m_batt": 0.82,
-    "sigmaWing": 0.8990357,
-    "m_wing": 1.190226,
-    "S_tail": 0.12209615,
-    "m_tail": 0.11354942,
-    "m_booms": 0.60221512,
+    "sigmaWing": 0.9791481,
+    "m_wing": 1.2937938,
+    "S_tail": 0.13796212,
+    "m_tail": 0.12830477,
+    "m_booms": 0.61529229,
     "m_lift": 0.968,
-    "m_fixed": 2.48818,
-    "CdA_extra": 0.0166,
-    "TW": 2.0251787,
+    "m_fixed": 2.60618,
+    "CdA_extra": 0.0122,
+    "TW": 1.9466473,
     "TW_motorOut": 0,
-    "I_hover": 37.476372,
-    "I_cruise": 16.452188,
-    "P_hover_per_motor": 207.99386,
+    "I_hover": 40.00571,
+    "I_cruise": 14.53386,
+    "P_hover_per_motor": 222.03169,
     "endurance_ok": true,
-    "t_cruise_avail_min": 11.941452,
-    "diskLoading": 103.50305,
-    "wingLoading": 105.84,
+    "t_cruise_avail_min": 13.053525,
+    "diskLoading": 107.6785,
+    "wingLoading": 99.8424,
     "iter": 14,
     "converged": true,
-    "P_trans": 1562.4526,
-    "I_trans": 74.402505,
-    "I_hover_loaded": 39.617879
+    "P_trans": 1533.4302,
+    "I_trans": 73.020484,
+    "I_hover_loaded": 42.291751
    },
    "geo": {
     "D": 0.4318,
-    "xFront": 0.37091707,
-    "xRear": -0.50457515,
-    "xLEtoCG": -0.066829043,
+    "xFront": 0.38171653,
+    "xRear": -0.52911939,
+    "xLEtoCG": -0.07370143,
     "booms": [
      {
       "y": -0.4337,
-      "x0": -0.99047515,
-      "x1": 0.42091707,
+      "x0": -1.0150194,
+      "x1": 0.43171653,
       "tail": true,
       "rotors": [
        {
-        "x": 0.37091707,
+        "x": 0.38171653,
         "coax": false
        },
        {
-        "x": -0.50457515,
+        "x": -0.52911939,
         "coax": false
        }
       ]
      },
      {
       "y": 0.4337,
-      "x0": -0.99047515,
-      "x1": 0.42091707,
+      "x0": -1.0150194,
+      "x1": 0.43171653,
       "tail": true,
       "rotors": [
        {
-        "x": 0.37091707,
+        "x": 0.38171653,
         "coax": false
        },
        {
-        "x": -0.50457515,
+        "x": -0.52911939,
         "coax": false
        }
       ]
      }
     ],
     "segs": [
-     0.955,
-     0.516,
-     0.955,
-     0.516
+     0.9608,
+     0.4859,
+     0.9608,
+     0.4859
     ],
-    "boomTotal": 2.8227844,
+    "boomTotal": 2.8934719,
     "hSpan": 0.8674,
-    "hC": 0.075600739,
-    "vH": 0.18794958,
-    "vC": 0.15035966,
-    "Sh": 0.065576081,
-    "Sv": 0.056520072,
-    "lh": 0.72970655,
+    "hC": 0.089278504,
+    "vH": 0.19448963,
+    "vC": 0.15559171,
+    "Sh": 0.077440174,
+    "Sv": 0.060521947,
+    "lh": 0.75153417,
     "Vh": 0.35,
     "Vv": 0.03,
-    "aw": 5.1565599,
-    "at": 5.2826732,
-    "deda": 0.32646465,
-    "hn": 0.46735249,
-    "SM": 0.18735249,
+    "aw": 5.0543513,
+    "at": 5.1215173,
+    "deda": 0.35290043,
+    "hn": 0.3946661,
+    "hn_nopod": 0.4565451,
+    "SM": 0.1146661,
     "yIn": 0.4337,
     "longestPiece": 1.2
    },
@@ -474,7 +475,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.955 + 0.516 + 0.955 + 0.516 m"
+      "note": "cut list 0.9608 + 0.4859 + 0.9608 + 0.4859 m"
      },
      {
       "cat": "Airframe",
@@ -523,12 +524,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Hardware kit: XT90S, wire, extensions, screws, inserts, horns, pushrods, hinge tape, heat shrink, UBEC, epoxy",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 124.01,
-      "ext": 124.01,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -682,31 +800,13 @@
       "ext": 18.6,
       "src": "BL",
       "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "EMAX ES3005HV spare servo",
-      "qty": 1,
-      "unit": 19.99,
-      "ext": 19.99,
-      "src": "BA §6",
-      "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "Du-Bro 230 pushrod 5-pack (spares)",
-      "qty": 1,
-      "unit": 12.48,
-      "ext": 12.48,
-      "src": "BF §3b amazon.com",
-      "note": ""
      }
     ],
-    "goods": 1630.77,
-    "shipping": 100,
-    "tax": 167.15,
-    "crash": 102.08,
-    "total": 1897.92,
+    "goods": 1620.67,
+    "shipping": 110,
+    "tax": 166.12,
+    "crash": 103.21,
+    "total": 1896.79,
     "tubes25": 2,
     "fees": [
      {
@@ -848,7 +948,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.955 + 0.516 + 0.955 + 0.516 m"
+      "note": "cut list 0.9608 + 0.4859 + 0.9608 + 0.4859 m"
      },
      {
       "cat": "Airframe",
@@ -897,12 +997,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Minimum hardware kit (tape hinges)",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 117.32,
-      "ext": 117.32,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -1058,11 +1275,11 @@
       "note": ""
      }
     ],
-    "goods": 1531.62,
-    "shipping": 100,
-    "tax": 156.99,
-    "crash": 211.39,
-    "total": 1788.61,
+    "goods": 1560.68,
+    "shipping": 110,
+    "tax": 159.97,
+    "crash": 169.35,
+    "total": 1830.65,
     "tubes25": 2,
     "fees": [
      {
@@ -1082,21 +1299,21 @@
     "nLimit": 3,
     "FS": 1.5,
     "nUlt": 4.5,
-    "Mroot": 69.472717,
-    "sigJ": 148577790,
-    "MS_J": 1.8508823,
-    "sigS": 110917290,
-    "Mhover": 26.293662,
-    "Lb": 0.43058586,
+    "Mroot": 72.275377,
+    "sigJ": 154571700,
+    "MS_J": 1.7791097,
+    "sigS": 115391900,
+    "Mhover": 27.354398,
+    "Lb": 0.44752138,
     "Tmax": 30.694814,
-    "Mb": 13.216753,
-    "sigB": 32607149,
-    "MS_B": 8.4337333,
-    "defl_max": 0.0022996317,
-    "defl_hover": 0.0011355377,
-    "fn": 36.005614,
+    "Mb": 13.736586,
+    "sigB": 33889633,
+    "MS_B": 8.114576,
+    "defl_max": 0.0025817868,
+    "defl_hover": 0.0013262931,
+    "fn": 33.933168,
     "mTip": 0.242,
-    "mEff": 0.26079938,
+    "mEff": 0.26153878,
     "Ij_mm4": 5196.0362,
     "Is_mm4": 7954.6075,
     "Ib_mm4": 5147.7289,
@@ -1123,8 +1340,8 @@
       "nSpring": 6
      }
     ],
-    "Mclamp": 13.216753,
-    "tauSock": 10550663,
+    "Mclamp": 13.736586,
+    "tauSock": 10965635,
     "engage": 0.3,
     "engageD": 13.498313,
     "E_DESIGN": 69000000000,
@@ -1135,31 +1352,31 @@
      {
       "name": "Lift units, front",
       "m": 0.484,
-      "x": 0.371,
+      "x": 0.382,
       "src": "LP"
      },
      {
       "name": "Lift units, rear",
       "m": 0.484,
-      "x": -0.505,
+      "x": -0.529,
       "src": "LP"
      },
      {
       "name": "Booms + clamps",
-      "m": 0.602,
-      "x": -0.285,
+      "m": 0.615,
+      "x": -0.292,
       "src": "AM"
      },
      {
       "name": "Wing (foam/glass + spar)",
-      "m": 1.19,
-      "x": -0.095,
+      "m": 1.294,
+      "x": -0.105,
       "src": "F11; centroid 40 % c EST"
      },
      {
       "name": "Tail",
-      "m": 0.114,
-      "x": -0.801,
+      "m": 0.128,
+      "x": -0.831,
       "src": "geometry"
      },
      {
@@ -1170,8 +1387,8 @@
      },
      {
       "name": "Landing gear",
-      "m": 0.325,
-      "x": -0.06,
+      "m": 0.443,
+      "x": -0.066,
       "src": "EST"
      },
      {
@@ -1187,10 +1404,10 @@
       "src": "BL; at pod tail (same station as CAD)"
      },
      {
-      "name": "Servos (4)",
+      "name": "Servos (5)",
       "m": 0.216,
-      "x": -0.107,
-      "src": "PB; 2 wing + 2 tail, mean EST"
+      "x": -0.551,
+      "src": "BA; 2 wing (-0.55 c) + 3 tail (cad/params.mjs), mass-weighted mean"
      },
      {
       "name": "Wiring",
@@ -1201,7 +1418,7 @@
      {
       "name": "Battery (placed for CG)",
       "m": 0.82,
-      "x": 0.061,
+      "x": 0.179,
       "src": "PB"
      },
      {
@@ -1211,21 +1428,21 @@
       "src": "R12; bay x EST"
      }
     ],
-    "target": -0.066829043,
-    "xb": 0.060549826,
-    "cgBattFwd": -0.062849748,
-    "cgBattAft": -0.070808338,
-    "pctFwd": 26.332757,
-    "pctAft": 29.667243,
-    "cgNoPayload": -0.085909388,
-    "thrustCentroid": -0.066829043,
+    "target": -0.07370143,
+    "xb": 0.17881964,
+    "cgBattFwd": -0.069876208,
+    "cgBattAft": -0.077526652,
+    "pctFwd": 26.546755,
+    "pctAft": 29.453245,
+    "cgNoPayload": -0.09256009,
+    "thrustCentroid": -0.07370143,
     "pct": {
      "target": 28,
-     "noPayload": 35.994274,
-     "np": 46.735249,
+     "noPayload": 35.164617,
+     "np": 39.46661,
      "thrust": 28
     },
-    "SM_noPayload": 0.10740976
+    "SM_noPayload": 0.043019929
    }
   },
   "C1": {
@@ -1236,11 +1453,11 @@
     "rho": 1.225,
     "Vs": 12,
     "Vc": 20,
-    "CLmax": 1.2,
+    "CLmax": 1.132,
     "span": 2.4,
     "e": 0.8,
-    "CD0_clean": 0.03,
-    "CdA_boom": 0.0015,
+    "CD0_clean": 0.0266,
+    "CdA_boom": 0.00166,
     "etaProp": 0.6,
     "etaMEc": 0.85,
     "kCtrl": 1.1,
@@ -1255,14 +1472,14 @@
     "wGlass": 0.06,
     "rResin": 0,
     "sigmaTail": 0.93,
-    "tailAreaRatio": 0.23854737,
+    "tailAreaRatio": 0.24386609,
     "VhTarget": 0.35,
     "VvTarget": 0.03,
     "boomLin": 0.185,
     "boomClamp": 0.02,
     "m_spar": 0.67524,
     "mFus": 0.6,
-    "mGear": 0.32518,
+    "mGear": 0.44318,
     "mAvionics": 0.25,
     "mPusherSet": 0.227,
     "mServos": 0.216,
@@ -1303,52 +1520,52 @@
     "nLift": 8,
     "nBooms": 4,
     "coax": false,
-    "boomTotalLen": 4.8246341,
+    "boomTotalLen": 5.0032013,
     "mBattFixed": 1.136,
     "EBattFixed": 199.8
    },
    "design": {
-    "m": 7.303969,
-    "W": 71.627468,
+    "m": 7.6673296,
+    "W": 75.190818,
     "nUnits": 8,
-    "Tunit_N": 8.9533423,
-    "Tunit_g": 912.98683,
-    "Tmotor_g": 912.98683,
+    "Tunit_N": 9.3987371,
+    "Tunit_g": 958.40446,
+    "Tmotor_g": 958.40446,
     "A": 0.11400918,
-    "FMeta": 0.521769,
-    "Pi_unit": 50.690296,
-    "P_hover": 854.92739,
-    "S": 0.67674545,
-    "AR": 8.5113243,
-    "chord": 0.28197727,
-    "CL": 0.432,
-    "CD0": 0.071965557,
-    "CDi": 0.0087242981,
-    "LD": 5.3538329,
-    "D_cruise": 13.378591,
-    "P_cruise": 524.65062,
-    "E_Wh": 125.43854,
-    "Epack_req_Wh": 165.05071,
-    "Epack_Wh": 165.05071,
-    "m_batt": 0.93778814,
-    "sigmaWing": 1.0403738,
-    "m_wing": 1.3793082,
-    "S_tail": 0.16143585,
-    "m_tail": 0.15013534,
-    "m_booms": 1.0525573,
+    "FMeta": 0.52012987,
+    "Pi_unit": 54.519428,
+    "P_hover": 922.4061,
+    "S": 0.75308583,
+    "AR": 7.6485306,
+    "chord": 0.31378576,
+    "CL": 0.40752,
+    "CD0": 0.065161342,
+    "CDi": 0.0086393285,
+    "LD": 5.5219011,
+    "D_cruise": 13.616669,
+    "P_cruise": 533.987,
+    "E_Wh": 129.99366,
+    "Epack_req_Wh": 171.04429,
+    "Epack_Wh": 171.04429,
+    "m_batt": 0.97184256,
+    "sigmaWing": 1.1441967,
+    "m_wing": 1.5369183,
+    "S_tail": 0.1836521,
+    "m_tail": 0.17079645,
+    "m_booms": 1.0855922,
     "m_lift": 1.176,
-    "m_fixed": 2.60818,
-    "CdA_extra": 0.0284,
-    "TW": 2.0153426,
-    "TW_motorOut": 1.511507,
-    "I_hover": 38.510243,
-    "I_cruise": 23.632911,
-    "P_hover_per_motor": 106.86592,
+    "m_fixed": 2.72618,
+    "CdA_extra": 0.02904,
+    "TW": 1.919834,
+    "TW_motorOut": 1.4398755,
+    "I_hover": 41.549824,
+    "I_cruise": 24.053469,
+    "P_hover_per_motor": 115.30076,
     "endurance_ok": true,
     "t_cruise_avail_min": 10,
-    "diskLoading": 78.531765,
-    "wingLoading": 105.84,
-    "iter": 16,
+    "diskLoading": 82.438422,
+    "wingLoading": 99.8424,
+    "iter": 18,
     "converged": true
    },
    "pick": {
@@ -1361,138 +1578,139 @@
     "pair": true
    },
    "sized": {
-    "m": 7.5533299,
-    "W": 74.072863,
+    "m": 7.8827906,
+    "W": 77.303768,
     "nUnits": 8,
-    "Tunit_N": 9.2589866,
-    "Tunit_g": 944.15387,
-    "Tmotor_g": 944.15387,
+    "Tunit_N": 9.6628833,
+    "Tunit_g": 985.33988,
+    "Tmotor_g": 985.33988,
     "A": 0.11400918,
-    "FMeta": 0.52064418,
-    "Pi_unit": 53.30798,
-    "P_hover": 901.01886,
-    "S": 0.69984781,
-    "AR": 8.2303608,
-    "chord": 0.29160326,
-    "CL": 0.432,
-    "CD0": 0.070580251,
-    "CDi": 0.0090221234,
-    "LD": 5.4269738,
-    "D_cruise": 13.648839,
-    "P_cruise": 535.2486,
-    "E_Wh": 129.25338,
-    "Epack_req_Wh": 170.07024,
+    "FMeta": 0.51915777,
+    "Pi_unit": 56.833859,
+    "P_hover": 963.36409,
+    "S": 0.77425088,
+    "AR": 7.4394491,
+    "chord": 0.32260453,
+    "CL": 0.40752,
+    "CD0": 0.064107222,
+    "CDi": 0.008882132,
+    "LD": 5.58328,
+    "D_cruise": 13.845458,
+    "P_cruise": 542.95912,
+    "E_Wh": 133.30937,
+    "Epack_req_Wh": 175.40706,
     "Epack_Wh": 199.8,
     "m_batt": 1.136,
-    "sigmaWing": 1.071793,
-    "m_wing": 1.425332,
-    "S_tail": 0.16694686,
-    "m_tail": 0.15526058,
-    "m_booms": 1.0525573,
+    "sigmaWing": 1.1729812,
+    "m_wing": 1.5834217,
+    "S_tail": 0.18881354,
+    "m_tail": 0.17559659,
+    "m_booms": 1.0855922,
     "m_lift": 1.176,
-    "m_fixed": 2.60818,
-    "CdA_extra": 0.0284,
-    "TW": 1.9488094,
-    "TW_motorOut": 1.461607,
-    "I_hover": 40.586435,
-    "I_cruise": 24.110297,
-    "P_hover_per_motor": 112.62736,
+    "m_fixed": 2.72618,
+    "CdA_extra": 0.02904,
+    "TW": 1.867359,
+    "TW_motorOut": 1.4005193,
+    "I_hover": 43.394779,
+    "I_cruise": 24.457618,
+    "P_hover_per_motor": 120.42051,
     "endurance_ok": true,
-    "t_cruise_avail_min": 12.532799,
-    "diskLoading": 81.212639,
-    "wingLoading": 105.84,
-    "iter": 14,
+    "t_cruise_avail_min": 12.048622,
+    "diskLoading": 84.755307,
+    "wingLoading": 99.8424,
+    "iter": 16,
     "converged": true,
-    "P_trans": 1971.516,
-    "I_trans": 93.881717,
-    "I_hover_loaded": 42.90566
+    "P_trans": 2049.2823,
+    "I_trans": 97.584873,
+    "I_hover_loaded": 45.87448
    },
    "geo": {
     "D": 0.381,
-    "xFront": 0.36880543,
-    "xRear": -0.53210326,
-    "xLEtoCG": -0.081648912,
+    "xFront": 0.382446,
+    "xRear": -0.56310453,
+    "xLEtoCG": -0.09032927,
     "booms": [
      {
       "y": -0.4083,
-      "x0": -0.99260326,
-      "x1": 0.41880543,
+      "x0": -1.0236045,
+      "x1": 0.432446,
       "tail": true,
       "rotors": [
        {
-        "x": 0.36880543
+        "x": 0.382446
        },
        {
-        "x": -0.53210326
+        "x": -0.56310453
        }
       ]
      },
      {
       "y": 0.4083,
-      "x0": -0.99260326,
-      "x1": 0.41880543,
+      "x0": -1.0236045,
+      "x1": 0.432446,
       "tail": true,
       "rotors": [
        {
-        "x": 0.36880543
+        "x": 0.382446
        },
        {
-        "x": -0.53210326
+        "x": -0.56310453
        }
       ]
      },
      {
       "y": -0.8393,
-      "x0": -0.58210326,
-      "x1": 0.41880543,
+      "x0": -0.61310453,
+      "x1": 0.432446,
       "tail": false,
       "rotors": [
        {
-        "x": 0.36880543
+        "x": 0.382446
        },
        {
-        "x": -0.53210326
+        "x": -0.56310453
        }
       ]
      },
      {
       "y": 0.8393,
-      "x0": -0.58210326,
-      "x1": 0.41880543,
+      "x0": -0.61310453,
+      "x1": 0.432446,
       "tail": false,
       "rotors": [
        {
-        "x": 0.36880543
+        "x": 0.382446
        },
        {
-        "x": -0.53210326
+        "x": -0.56310453
        }
       ]
      }
     ],
     "segs": [
-     0.981,
-     0.491,
-     0.981,
-     0.491,
-     1.001,
-     1.001
+     0.9956,
+     0.4605,
+     0.9956,
+     0.4605,
+     1.0456,
+     1.0456
     ],
-    "boomTotal": 4.8246348,
+    "boomTotal": 5.0032021,
     "hSpan": 0.8166,
-    "hC": 0.11987469,
-    "vH": 0.20775165,
-    "vC": 0.16620132,
-    "Sh": 0.097889672,
-    "Sv": 0.069057198,
-    "lh": 0.72967111,
+    "hC": 0.14118813,
+    "vH": 0.21435853,
+    "vC": 0.17148683,
+    "Sh": 0.11529423,
+    "Sv": 0.07351933,
+    "lh": 0.75825043,
     "Vh": 0.35,
     "Vv": 0.03,
-    "aw": 4.9392056,
-    "at": 4.7036774,
-    "deda": 0.38204838,
-    "hn": 0.43537256,
-    "SM": 0.15537256,
+    "aw": 4.8171249,
+    "at": 4.4755398,
+    "deda": 0.41221829,
+    "hn": 0.36014306,
+    "hn_nopod": 0.42202206,
+    "SM": 0.08014306,
     "yIn": 0.4083,
     "longestPiece": 1.2
    },
@@ -1640,7 +1858,7 @@
       "unit": 26.2,
       "ext": 78.6,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.981 + 0.491 + 0.981 + 0.491 + 1.001 + 1.001 m"
+      "note": "cut list 0.9956 + 0.4605 + 0.9956 + 0.4605 + 1.0456 + 1.0456 m"
      },
      {
       "cat": "Airframe",
@@ -1689,12 +1907,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Hardware kit: XT90S, wire, extensions, screws, inserts, horns, pushrods, hinge tape, heat shrink, UBEC, epoxy",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 124.01,
-      "ext": 124.01,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -1848,31 +2183,13 @@
       "ext": 17.99,
       "src": "BL",
       "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "EMAX ES3005HV spare servo",
-      "qty": 1,
-      "unit": 19.99,
-      "ext": 19.99,
-      "src": "BA §6",
-      "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "Du-Bro 230 pushrod 5-pack (spares)",
-      "qty": 1,
-      "unit": 12.48,
-      "ext": 12.48,
-      "src": "BF §3b amazon.com",
-      "note": ""
      }
     ],
-    "goods": 1991.69,
-    "shipping": 100,
-    "tax": 204.15,
-    "crash": -295.84,
-    "total": 2295.84,
+    "goods": 1981.59,
+    "shipping": 110,
+    "tax": 203.11,
+    "crash": -294.7,
+    "total": 2294.7,
     "tubes25": 3,
     "fees": [
      {
@@ -2023,7 +2340,7 @@
       "unit": 26.2,
       "ext": 78.6,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.981 + 0.491 + 0.981 + 0.491 + 1.001 + 1.001 m"
+      "note": "cut list 0.9956 + 0.4605 + 0.9956 + 0.4605 + 1.0456 + 1.0456 m"
      },
      {
       "cat": "Airframe",
@@ -2072,12 +2389,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Minimum hardware kit (tape hinges)",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 117.32,
-      "ext": 117.32,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -2233,11 +2667,11 @@
       "note": ""
      }
     ],
-    "goods": 1892.54,
-    "shipping": 100,
-    "tax": 193.99,
-    "crash": -186.53,
-    "total": 2186.53,
+    "goods": 1921.6,
+    "shipping": 110,
+    "tax": 196.96,
+    "crash": -228.56,
+    "total": 2228.56,
     "tubes25": 3,
     "fees": [
      {
@@ -2257,21 +2691,21 @@
     "nLimit": 3,
     "FS": 1.5,
     "nUlt": 4.5,
-    "Mroot": 84.881248,
-    "sigJ": 181531240,
-    "MS_J": 1.5148908,
-    "sigS": 135517920,
-    "Mhover": 30.24395,
-    "Lb": 0.44170625,
+    "Mroot": 88.583593,
+    "sigJ": 189449250,
+    "MS_J": 1.4515761,
+    "sigS": 141428930,
+    "Mhover": 31.563128,
+    "Lb": 0.46309713,
     "Tmax": 18.044236,
-    "Mb": 7.9702518,
-    "sigB": 19663467,
-    "MS_B": 13.985326,
-    "defl_max": 0.0014593287,
-    "defl_hover": 0.00074882109,
-    "fn": 43.39967,
+    "Mb": 8.3562339,
+    "sigB": 20615727,
+    "MS_B": 13.339331,
+    "defl_max": 0.0016817783,
+    "defl_hover": 0.00090061047,
+    "fn": 40.314607,
     "mTip": 0.147,
-    "mEff": 0.16628489,
+    "mEff": 0.16721882,
     "Ij_mm4": 5196.0362,
     "Is_mm4": 7954.6075,
     "Ib_mm4": 5147.7289,
@@ -2298,8 +2732,8 @@
       "nSpring": 6
      }
     ],
-    "Mclamp": 7.9702518,
-    "tauSock": 6362488.5,
+    "Mclamp": 8.3562339,
+    "tauSock": 6670610.1,
     "engage": 0.3,
     "engageD": 13.498313,
     "E_DESIGN": 69000000000,
@@ -2310,31 +2744,31 @@
      {
       "name": "Lift units, front",
       "m": 0.588,
-      "x": 0.369,
+      "x": 0.382,
       "src": "LP"
      },
      {
       "name": "Lift units, rear",
       "m": 0.588,
-      "x": -0.532,
+      "x": -0.563,
       "src": "LP"
      },
      {
       "name": "Booms + clamps",
-      "m": 1.053,
-      "x": -0.202,
+      "m": 1.086,
+      "x": -0.21,
       "src": "AM"
      },
      {
       "name": "Wing (foam/glass + spar)",
-      "m": 1.425,
-      "x": -0.117,
+      "m": 1.583,
+      "x": -0.129,
       "src": "F11; centroid 40 % c EST"
      },
      {
       "name": "Tail",
-      "m": 0.155,
-      "x": -0.821,
+      "m": 0.176,
+      "x": -0.86,
       "src": "geometry"
      },
      {
@@ -2345,8 +2779,8 @@
      },
      {
       "name": "Landing gear",
-      "m": 0.325,
-      "x": -0.073,
+      "m": 0.443,
+      "x": -0.081,
       "src": "EST"
      },
      {
@@ -2362,10 +2796,10 @@
       "src": "BL; at pod tail (same station as CAD)"
      },
      {
-      "name": "Servos (4)",
+      "name": "Servos (5)",
       "m": 0.216,
-      "x": -0.131,
-      "src": "PB; 2 wing + 2 tail, mean EST"
+      "x": -0.569,
+      "src": "BA; 2 wing (-0.55 c) + 3 tail (cad/params.mjs), mass-weighted mean"
      },
      {
       "name": "Wiring",
@@ -2376,7 +2810,7 @@
      {
       "name": "Battery (placed for CG)",
       "m": 1.136,
-      "x": 0.026,
+      "x": 0.113,
       "src": "PB"
      },
      {
@@ -2386,21 +2820,21 @@
       "src": "R12; bay x EST"
      }
     ],
-    "target": -0.081648912,
-    "xb": 0.025741875,
-    "cgBattFwd": -0.077136797,
-    "cgBattAft": -0.086161026,
-    "pctFwd": 26.452653,
-    "pctAft": 29.547347,
-    "cgNoPayload": -0.098070924,
-    "thrustCentroid": -0.081648912,
+    "target": -0.09032927,
+    "xb": 0.11281899,
+    "cgBattFwd": -0.086006042,
+    "cgBattAft": -0.094652497,
+    "pctFwd": 26.659899,
+    "pctAft": 29.340101,
+    "cgNoPayload": -0.10660512,
+    "thrustCentroid": -0.09032927,
     "pct": {
      "target": 28,
-     "noPayload": 33.631629,
-     "np": 43.537256,
+     "noPayload": 33.045141,
+     "np": 36.014306,
      "thrust": 28
     },
-    "SM_noPayload": 0.099056275
+    "SM_noPayload": 0.029691646
    }
   },
   "C2": {
@@ -2411,11 +2845,11 @@
     "rho": 1.225,
     "Vs": 12,
     "Vc": 20,
-    "CLmax": 1.2,
+    "CLmax": 1.132,
     "span": 2.4,
     "e": 0.8,
-    "CD0_clean": 0.03,
-    "CdA_boom": 0.0015,
+    "CD0_clean": 0.0266,
+    "CdA_boom": 0.00166,
     "etaProp": 0.6,
     "etaMEc": 0.85,
     "kCtrl": 1.1,
@@ -2430,14 +2864,14 @@
     "wGlass": 0.06,
     "rResin": 0,
     "sigmaTail": 0.93,
-    "tailAreaRatio": 0.23131388,
+    "tailAreaRatio": 0.23801856,
     "VhTarget": 0.35,
     "VvTarget": 0.03,
     "boomLin": 0.185,
     "boomClamp": 0.02,
     "m_spar": 0.67524,
     "mFus": 0.6,
-    "mGear": 0.32518,
+    "mGear": 0.44318,
     "mAvionics": 0.25,
     "mPusherSet": 0.227,
     "mServos": 0.216,
@@ -2478,170 +2912,171 @@
     "nLift": 8,
     "nBooms": 2,
     "coax": true,
-    "boomTotalLen": 2.7134192,
-    "mBattFixed": 0.82,
-    "EBattFixed": 144.3
+    "boomTotalLen": 2.8143748,
+    "mBattFixed": 0.9863,
+    "EBattFixed": 177.6
    },
    "design": {
-    "m": 6.4693625,
-    "W": 63.442773,
+    "m": 6.7758529,
+    "W": 66.448418,
     "nUnits": 4,
-    "Tunit_N": 15.860869,
-    "Tunit_g": 1617.3585,
-    "Tmotor_g": 1036.7268,
+    "Tunit_N": 16.612295,
+    "Tunit_g": 1693.9827,
+    "Tmotor_g": 1085.8429,
     "A": 0.11400918,
-    "FMeta": 0.53211212,
-    "Pi_unit": 84.512801,
-    "P_hover": 895.90106,
-    "S": 0.59942814,
-    "AR": 9.6091584,
-    "chord": 0.24976173,
-    "CL": 0.432,
-    "CD0": 0.053689245,
-    "CDi": 0.0077275581,
-    "LD": 7.0339057,
-    "D_cruise": 9.0196652,
-    "P_cruise": 353.71236,
-    "E_Wh": 98.769885,
-    "Epack_req_Wh": 129.96038,
-    "Epack_Wh": 129.96038,
-    "m_batt": 0.73841122,
-    "sigmaWing": 0.93522227,
-    "m_wing": 1.2358386,
-    "S_tail": 0.13865605,
-    "m_tail": 0.12895013,
-    "m_booms": 0.58198255,
+    "FMeta": 0.52796947,
+    "Pi_unit": 90.589215,
+    "P_hover": 967.85074,
+    "S": 0.66554069,
+    "AR": 8.6546173,
+    "chord": 0.27730862,
+    "CL": 0.40752,
+    "CD0": 0.048416848,
+    "CDi": 0.0076350191,
+    "LD": 7.270409,
+    "D_cruise": 9.1396756,
+    "P_cruise": 358.41865,
+    "E_Wh": 102.75203,
+    "Epack_req_Wh": 135.20004,
+    "Epack_Wh": 135.20004,
+    "m_batt": 0.76818204,
+    "sigmaWing": 1.0251353,
+    "m_wing": 1.3575093,
+    "S_tail": 0.15841104,
+    "m_tail": 0.14732227,
+    "m_booms": 0.60065934,
     "m_lift": 1.176,
-    "m_fixed": 2.60818,
-    "CdA_extra": 0.0142,
-    "TW": 1.7748363,
-    "TW_motorOut": 1.3311272,
-    "I_hover": 40.355904,
-    "I_cruise": 15.932989,
-    "P_hover_per_motor": 111.98763,
+    "m_fixed": 2.72618,
+    "CdA_extra": 0.01452,
+    "TW": 1.6945556,
+    "TW_motorOut": 1.2709167,
+    "I_hover": 43.59688,
+    "I_cruise": 16.144984,
+    "P_hover_per_motor": 120.98134,
     "endurance_ok": true,
     "t_cruise_avail_min": 10,
-    "diskLoading": 139.11922,
-    "wingLoading": 105.84,
-    "iter": 17,
+    "diskLoading": 145.71015,
+    "wingLoading": 99.8424,
+    "iter": 16,
     "converged": true
    },
    "pick": {
-    "id": "Ovonic 6S 6500 100C (2-pack)",
+    "id": "HOOVO 6S 8000 100C (2-pack)",
     "chem": "LiPo",
-    "Wh": 144.3,
-    "kg": 0.82,
-    "usd": 69.495,
+    "Wh": 177.6,
+    "kg": 0.9863,
+    "usd": 99.995,
     "contA": 60,
     "pair": true
    },
    "sized": {
-    "m": 6.5692581,
-    "W": 64.422415,
+    "m": 7.0536609,
+    "W": 69.172783,
     "nUnits": 4,
-    "Tunit_N": 16.105744,
-    "Tunit_g": 1642.3288,
-    "Tmotor_g": 1052.7328,
+    "Tunit_N": 17.293012,
+    "Tunit_g": 1763.3965,
+    "Tmotor_g": 1130.3372,
     "A": 0.11400918,
-    "FMeta": 0.53076211,
-    "Pi_unit": 86.47752,
-    "P_hover": 919.06032,
-    "S": 0.60868268,
-    "AR": 9.4630587,
-    "chord": 0.25361779,
-    "CL": 0.432,
-    "CD0": 0.053329068,
-    "CDi": 0.0078468635,
-    "LD": 7.0616006,
-    "D_cruise": 9.122999,
-    "P_cruise": 357.76467,
-    "E_Wh": 100.47457,
-    "Epack_req_Wh": 132.20338,
-    "Epack_Wh": 144.3,
-    "m_batt": 0.82,
-    "sigmaWing": 0.94780845,
-    "m_wing": 1.2521546,
-    "S_tail": 0.14079676,
-    "m_tail": 0.13094098,
-    "m_booms": 0.58198255,
+    "FMeta": 0.52421664,
+    "Pi_unit": 96.213944,
+    "P_hover": 1035.3041,
+    "S": 0.69281236,
+    "AR": 8.3139394,
+    "chord": 0.28867182,
+    "CL": 0.40752,
+    "CD0": 0.047558056,
+    "CDi": 0.0079478771,
+    "LD": 7.3419179,
+    "D_cruise": 9.4215231,
+    "P_cruise": 369.47149,
+    "E_Wh": 107.5921,
+    "Epack_req_Wh": 141.56855,
+    "Epack_Wh": 177.6,
+    "m_batt": 0.9863,
+    "sigmaWing": 1.0622248,
+    "m_wing": 1.4111625,
+    "S_tail": 0.1649022,
+    "m_tail": 0.15335905,
+    "m_booms": 0.60065934,
     "m_lift": 1.176,
-    "m_fixed": 2.60818,
-    "CdA_extra": 0.0142,
-    "TW": 1.7478472,
-    "TW_motorOut": 1.3108854,
-    "I_hover": 41.399113,
-    "I_cruise": 16.115525,
-    "P_hover_per_motor": 114.88254,
+    "m_fixed": 2.72618,
+    "CdA_extra": 0.01452,
+    "TW": 1.6278156,
+    "TW_motorOut": 1.2208617,
+    "I_hover": 46.635318,
+    "I_cruise": 16.64286,
+    "P_hover_per_motor": 129.41301,
     "endurance_ok": true,
-    "t_cruise_avail_min": 11.541812,
-    "diskLoading": 141.26708,
-    "wingLoading": 105.84,
-    "iter": 14,
+    "t_cruise_avail_min": 14.446985,
+    "diskLoading": 151.68087,
+    "wingLoading": 99.8424,
+    "iter": 11,
     "converged": true,
-    "P_trans": 1634.5897,
-    "I_trans": 77.837602,
-    "I_hover_loaded": 43.764777
+    "P_trans": 1774.247,
+    "I_trans": 84.487955,
+    "I_hover_loaded": 49.300193
    },
    "geo": {
     "D": 0.381,
-    "xFront": 0.35209183,
-    "xRear": -0.49411779,
-    "xLEtoCG": -0.07101298,
+    "xFront": 0.3675156,
+    "xRear": -0.52917182,
+    "xLEtoCG": -0.080828109,
     "booms": [
      {
       "y": -0.4083,
-      "x0": -0.95461779,
-      "x1": 0.40209183,
+      "x0": -0.98967182,
+      "x1": 0.4175156,
       "tail": true,
       "rotors": [
        {
-        "x": 0.35209183,
+        "x": 0.3675156,
         "coax": true
        },
        {
-        "x": -0.49411779,
+        "x": -0.52917182,
         "coax": true
        }
       ]
      },
      {
       "y": 0.4083,
-      "x0": -0.95461779,
-      "x1": 0.40209183,
+      "x0": -0.98967182,
+      "x1": 0.4175156,
       "tail": true,
       "rotors": [
        {
-        "x": 0.35209183,
+        "x": 0.3675156,
         "coax": true
        },
        {
-        "x": -0.49411779,
+        "x": -0.52917182,
         "coax": true
        }
       ]
      }
     ],
     "segs": [
-     0.926,
-     0.491,
-     0.926,
-     0.491
+     0.9467,
+     0.4605,
+     0.9467,
+     0.4605
     ],
-    "boomTotal": 2.7134192,
+    "boomTotal": 2.8143748,
     "hSpan": 0.8166,
-    "hC": 0.095199838,
-    "vH": 0.19852041,
-    "vC": 0.15881633,
-    "Sh": 0.077740188,
-    "Sv": 0.063056568,
-    "lh": 0.6950133,
+    "hC": 0.11791124,
+    "vH": 0.20708676,
+    "vC": 0.16566941,
+    "Sh": 0.096286322,
+    "Sv": 0.068615884,
+    "lh": 0.72698167,
     "Vh": 0.35,
     "Vv": 0.03,
-    "aw": 5.0940415,
-    "at": 4.9867187,
-    "deda": 0.3426976,
-    "hn": 0.45268806,
-    "SM": 0.17268806,
+    "aw": 4.9509475,
+    "at": 4.7254448,
+    "deda": 0.37910681,
+    "hn": 0.37479414,
+    "hn_nopod": 0.43667314,
+    "SM": 0.094794138,
     "yIn": 0.4083,
     "longestPiece": 1.2
    },
@@ -2766,10 +3201,10 @@
      },
      {
       "cat": "Energy",
-      "item": "Ovonic 6S 6500 100C — 2-pack listing (2 packs)",
+      "item": "HOOVO 6S 8000 100C — 2-pack listing (2 packs)",
       "qty": 1,
-      "unit": 138.99,
-      "ext": 138.99,
+      "unit": 199.99,
+      "ext": 199.99,
       "src": "BE §1 amazon.com",
       "note": "second pack per R7; EC5 leads: re-terminate to XT90S"
      },
@@ -2789,7 +3224,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.926 + 0.491 + 0.926 + 0.491 m"
+      "note": "cut list 0.9467 + 0.4605 + 0.9467 + 0.4605 m"
      },
      {
       "cat": "Airframe",
@@ -2838,12 +3273,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Hardware kit: XT90S, wire, extensions, screws, inserts, horns, pushrods, hinge tape, heat shrink, UBEC, epoxy",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 124.01,
-      "ext": 124.01,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -2997,31 +3549,13 @@
       "ext": 17.99,
       "src": "BL",
       "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "EMAX ES3005HV spare servo",
-      "qty": 1,
-      "unit": 19.99,
-      "ext": 19.99,
-      "src": "BA §6",
-      "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "Du-Bro 230 pushrod 5-pack (spares)",
-      "qty": 1,
-      "unit": 12.48,
-      "ext": 12.48,
-      "src": "BF §3b amazon.com",
-      "note": ""
      }
     ],
-    "goods": 1900.13,
-    "shipping": 100,
-    "tax": 194.76,
-    "crash": -194.89,
-    "total": 2194.89,
+    "goods": 1951.03,
+    "shipping": 110,
+    "tax": 199.98,
+    "crash": -261.01,
+    "total": 2261.01,
     "tubes25": 2,
     "fees": [
      {
@@ -3149,10 +3683,10 @@
      },
      {
       "cat": "Energy",
-      "item": "Ovonic 6S 6500 100C — 2-pack listing (2 packs)",
+      "item": "HOOVO 6S 8000 100C — 2-pack listing (2 packs)",
       "qty": 1,
-      "unit": 138.99,
-      "ext": 138.99,
+      "unit": 199.99,
+      "ext": 199.99,
       "src": "BE §1 amazon.com",
       "note": "second pack per R7; EC5 leads: re-terminate to XT90S"
      },
@@ -3172,7 +3706,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.926 + 0.491 + 0.926 + 0.491 m"
+      "note": "cut list 0.9467 + 0.4605 + 0.9467 + 0.4605 m"
      },
      {
       "cat": "Airframe",
@@ -3221,12 +3755,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Minimum hardware kit (tape hinges)",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 117.32,
-      "ext": 117.32,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -3382,11 +4033,11 @@
       "note": ""
      }
     ],
-    "goods": 1800.98,
-    "shipping": 100,
-    "tax": 184.6,
-    "crash": -85.58,
-    "total": 2085.58,
+    "goods": 1891.04,
+    "shipping": 110,
+    "tax": 193.83,
+    "crash": -194.87,
+    "total": 2194.87,
     "tubes25": 2,
     "fees": [
      {
@@ -3406,21 +4057,21 @@
     "nLimit": 3,
     "FS": 1.5,
     "nUlt": 4.5,
-    "Mroot": 73.82265,
-    "sigJ": 157880770,
-    "MS_J": 1.7418207,
-    "sigS": 117862220,
-    "Mhover": 26.303672,
-    "Lb": 0.41549627,
+    "Mroot": 79.266171,
+    "sigJ": 169522550,
+    "MS_J": 1.622203,
+    "sigS": 126553120,
+    "Mhover": 28.243247,
+    "Lb": 0.43968355,
     "Tmax": 28.150134,
-    "Mb": 11.696276,
-    "sigB": 28855969,
-    "MS_B": 9.5300907,
-    "defl_max": 0.0018949417,
-    "defl_hover": 0.001084167,
-    "fn": 47.734849,
+    "Mb": 12.377151,
+    "sigB": 30535761,
+    "MS_B": 9.0058342,
+    "defl_max": 0.0022455107,
+    "defl_hover": 0.0013794479,
+    "fn": 43.711102,
     "mTip": 0.147,
-    "mEff": 0.16514057,
+    "mEff": 0.16619658,
     "Ij_mm4": 5196.0362,
     "Is_mm4": 7954.6075,
     "Ib_mm4": 5147.7289,
@@ -3447,8 +4098,8 @@
       "nSpring": 6
      }
     ],
-    "Mclamp": 11.696276,
-    "tauSock": 9336897.1,
+    "Mclamp": 12.377151,
+    "tauSock": 9880425.9,
     "engage": 0.3,
     "engageD": 13.498313,
     "E_DESIGN": 69000000000,
@@ -3459,31 +4110,31 @@
      {
       "name": "Lift units, front",
       "m": 0.588,
-      "x": 0.352,
+      "x": 0.368,
       "src": "LP"
      },
      {
       "name": "Lift units, rear",
       "m": 0.588,
-      "x": -0.494,
+      "x": -0.529,
       "src": "LP"
      },
      {
       "name": "Booms + clamps",
-      "m": 0.582,
-      "x": -0.276,
+      "m": 0.601,
+      "x": -0.286,
       "src": "AM"
      },
      {
       "name": "Wing (foam/glass + spar)",
-      "m": 1.252,
-      "x": -0.101,
+      "m": 1.411,
+      "x": -0.115,
       "src": "F11; centroid 40 % c EST"
      },
      {
       "name": "Tail",
-      "m": 0.131,
-      "x": -0.773,
+      "m": 0.153,
+      "x": -0.817,
       "src": "geometry"
      },
      {
@@ -3494,8 +4145,8 @@
      },
      {
       "name": "Landing gear",
-      "m": 0.325,
-      "x": -0.063,
+      "m": 0.443,
+      "x": -0.072,
       "src": "EST"
      },
      {
@@ -3511,10 +4162,10 @@
       "src": "BL; at pod tail (same station as CAD)"
      },
      {
-      "name": "Servos (4)",
+      "name": "Servos (5)",
       "m": 0.216,
-      "x": -0.114,
-      "src": "PB; 2 wing + 2 tail, mean EST"
+      "x": -0.541,
+      "src": "BA; 2 wing (-0.55 c) + 3 tail (cad/params.mjs), mass-weighted mean"
      },
      {
       "name": "Wiring",
@@ -3524,8 +4175,8 @@
      },
      {
       "name": "Battery (placed for CG)",
-      "m": 0.82,
-      "x": 0.051,
+      "m": 0.986,
+      "x": 0.126,
       "src": "PB"
      },
      {
@@ -3535,21 +4186,21 @@
       "src": "R12; bay x EST"
      }
     ],
-    "target": -0.07101298,
-    "xb": 0.051028945,
-    "cgBattFwd": -0.067268118,
-    "cgBattAft": -0.074757842,
-    "pctFwd": 26.523423,
-    "pctAft": 29.476577,
-    "cgNoPayload": -0.089221332,
-    "thrustCentroid": -0.07101298,
+    "target": -0.080828109,
+    "xb": 0.12557345,
+    "cgBattFwd": -0.076633051,
+    "cgBattAft": -0.085023167,
+    "pctFwd": 26.546773,
+    "pctAft": 29.453227,
+    "cgNoPayload": -0.098439702,
+    "thrustCentroid": -0.080828109,
     "pct": {
      "target": 28,
-     "noPayload": 35.179446,
-     "np": 45.268806,
+     "noPayload": 34.100905,
+     "np": 37.479414,
      "thrust": 28
     },
-    "SM_noPayload": 0.1008936
+    "SM_noPayload": 0.033785088
    }
   },
   "C3": {
@@ -3560,11 +4211,11 @@
     "rho": 1.225,
     "Vs": 12,
     "Vc": 20,
-    "CLmax": 1.2,
+    "CLmax": 1.132,
     "span": 2.4,
     "e": 0.8,
-    "CD0_clean": 0.03,
-    "CdA_boom": 0.0015,
+    "CD0_clean": 0.0266,
+    "CdA_boom": 0.00166,
     "etaProp": 0.6,
     "etaMEc": 0.85,
     "kCtrl": 1.1,
@@ -3579,14 +4230,14 @@
     "wGlass": 0.06,
     "rResin": 0,
     "sigmaTail": 0.93,
-    "tailAreaRatio": 0.22046767,
+    "tailAreaRatio": 0.22736717,
     "VhTarget": 0.35,
     "VvTarget": 0.03,
     "boomLin": 0.185,
     "boomClamp": 0.02,
     "m_spar": 0.67524,
     "mFus": 0.6,
-    "mGear": 0.32518,
+    "mGear": 0.44318,
     "mAvionics": 0.25,
     "mPusherSet": 0.227,
     "mServos": 0.216,
@@ -3627,170 +4278,171 @@
     "nLift": 4,
     "nBooms": 2,
     "coax": false,
-    "boomTotalLen": 2.7468334,
-    "mBattFixed": 0.82,
-    "EBattFixed": 144.3
+    "boomTotalLen": 2.8430755,
+    "mBattFixed": 0.9863,
+    "EBattFixed": 177.6
    },
    "design": {
-    "m": 6.085823,
-    "W": 59.681536,
+    "m": 6.3696971,
+    "W": 62.46539,
     "nUnits": 4,
-    "Tunit_N": 14.920604,
-    "Tunit_g": 1521.4782,
-    "Tmotor_g": 1521.4782,
+    "Tunit_N": 15.616574,
+    "Tunit_g": 1592.4474,
+    "Tmotor_g": 1592.4474,
     "A": 0.12971711,
-    "FMeta": 0.50195808,
-    "Pi_unit": 102.23461,
-    "P_hover": 896.15504,
-    "S": 0.56389282,
-    "AR": 10.214707,
-    "chord": 0.23495534,
-    "CL": 0.432,
-    "CD0": 0.058019509,
-    "CDi": 0.0072694528,
-    "LD": 6.6167387,
-    "D_cruise": 9.0199144,
-    "P_cruise": 353.72213,
-    "E_Wh": 98.782801,
-    "Epack_req_Wh": 129.97737,
-    "Epack_Wh": 129.97737,
-    "m_batt": 0.73850779,
-    "sigmaWing": 0.88689424,
-    "m_wing": 1.1753533,
-    "S_tail": 0.12432014,
-    "m_tail": 0.11561773,
-    "m_booms": 0.58816418,
+    "FMeta": 0.50549349,
+    "Pi_unit": 109.47046,
+    "P_hover": 952.87091,
+    "S": 0.62564898,
+    "AR": 9.2064403,
+    "chord": 0.26068707,
+    "CL": 0.40752,
+    "CD0": 0.052365246,
+    "CDi": 0.0071773852,
+    "LD": 6.8441718,
+    "D_cruise": 9.1269327,
+    "P_cruise": 357.91893,
+    "E_Wh": 102.00297,
+    "Epack_req_Wh": 134.21444,
+    "Epack_Wh": 134.21444,
+    "m_batt": 0.76258203,
+    "sigmaWing": 0.97088261,
+    "m_wing": 1.2826717,
+    "S_tail": 0.14225204,
+    "m_tail": 0.1322944,
+    "m_booms": 0.60596896,
     "m_lift": 0.98,
-    "m_fixed": 2.48818,
-    "CdA_extra": 0.0158,
-    "TW": 2.2084113,
+    "m_fixed": 2.60618,
+    "CdA_extra": 0.01612,
+    "TW": 2.1099904,
     "TW_motorOut": 0,
-    "I_hover": 40.367344,
-    "I_cruise": 15.933429,
-    "P_hover_per_motor": 224.03876,
+    "I_hover": 42.922113,
+    "I_cruise": 16.122474,
+    "P_hover_per_motor": 238.21773,
     "endurance_ok": true,
     "t_cruise_avail_min": 10,
-    "diskLoading": 115.02418,
-    "wingLoading": 105.84,
+    "diskLoading": 120.38946,
+    "wingLoading": 99.8424,
     "iter": 17,
     "converged": true
    },
    "pick": {
-    "id": "Ovonic 6S 6500 100C (2-pack)",
+    "id": "HOOVO 6S 8000 100C (2-pack)",
     "chem": "LiPo",
-    "Wh": 144.3,
-    "kg": 0.82,
-    "usd": 69.495,
+    "Wh": 177.6,
+    "kg": 0.9863,
+    "usd": 99.995,
     "contA": 60,
     "pair": true
    },
    "sized": {
-    "m": 6.1844091,
-    "W": 60.648335,
+    "m": 6.650527,
+    "W": 65.219391,
     "nUnits": 4,
-    "Tunit_N": 15.162317,
-    "Tunit_g": 1546.126,
-    "Tmotor_g": 1546.126,
+    "Tunit_N": 16.305003,
+    "Tunit_g": 1662.6476,
+    "Tmotor_g": 1662.6476,
     "A": 0.12971711,
-    "FMeta": 0.50318594,
-    "Pi_unit": 104.72893,
-    "P_hover": 915.77934,
-    "S": 0.57302785,
-    "AR": 10.051868,
-    "chord": 0.2387616,
-    "CL": 0.432,
-    "CD0": 0.057572831,
-    "CDi": 0.0073872173,
-    "LD": 6.6502413,
-    "D_cruise": 9.1198596,
-    "P_cruise": 357.64155,
-    "E_Wh": 100.30823,
-    "Epack_req_Wh": 131.98451,
-    "Epack_Wh": 144.3,
-    "m_batt": 0.82,
-    "sigmaWing": 0.89931787,
-    "m_wing": 1.1905742,
-    "S_tail": 0.12633412,
-    "m_tail": 0.11749073,
-    "m_booms": 0.58816418,
+    "FMeta": 0.50899059,
+    "Pi_unit": 116.78838,
+    "P_hover": 1009.5842,
+    "S": 0.6532296,
+    "AR": 8.8177265,
+    "chord": 0.272179,
+    "CL": 0.40752,
+    "CD0": 0.051277387,
+    "CDi": 0.0074937874,
+    "LD": 6.9340115,
+    "D_cruise": 9.4058125,
+    "P_cruise": 368.85539,
+    "E_Wh": 106.34631,
+    "Epack_req_Wh": 139.92935,
+    "Epack_Wh": 177.6,
+    "m_batt": 0.9863,
+    "sigmaWing": 1.0083923,
+    "m_wing": 1.3339517,
+    "S_tail": 0.14852297,
+    "m_tail": 0.13812636,
+    "m_booms": 0.60596896,
     "m_lift": 0.98,
-    "m_fixed": 2.48818,
-    "CdA_extra": 0.0158,
-    "TW": 2.1732068,
+    "m_fixed": 2.60618,
+    "CdA_extra": 0.01612,
+    "TW": 2.0208925,
     "TW_motorOut": 0,
-    "I_hover": 41.251322,
-    "I_cruise": 16.10998,
-    "P_hover_per_motor": 228.94484,
+    "I_hover": 45.476767,
+    "I_cruise": 16.615108,
+    "P_hover_per_motor": 252.39606,
     "endurance_ok": true,
-    "t_cruise_avail_min": 11.570249,
-    "diskLoading": 116.88756,
-    "wingLoading": 105.84,
+    "t_cruise_avail_min": 14.657059,
+    "diskLoading": 125.69662,
+    "wingLoading": 99.8424,
     "iter": 14,
     "converged": true,
-    "P_trans": 1631.0624,
-    "I_trans": 77.66964,
-    "I_hover_loaded": 43.60854
+    "P_trans": 1747.295,
+    "I_trans": 83.204524,
+    "I_hover_loaded": 48.075439
    },
    "geo": {
     "D": 0.4064,
-    "xFront": 0.3582551,
-    "xRear": -0.4919616,
-    "xLEtoCG": -0.066853249,
+    "xFront": 0.37295876,
+    "xRear": -0.525379,
+    "xLEtoCG": -0.07621012,
     "booms": [
      {
       "y": -0.421,
-      "x0": -0.9651616,
-      "x1": 0.4082551,
+      "x0": -0.998579,
+      "x1": 0.42295876,
       "tail": true,
       "rotors": [
        {
-        "x": 0.3582551,
+        "x": 0.37295876,
         "coax": false
        },
        {
-        "x": -0.4919616,
+        "x": -0.525379,
         "coax": false
        }
       ]
      },
      {
       "y": 0.421,
-      "x0": -0.9651616,
-      "x1": 0.4082551,
+      "x0": -0.998579,
+      "x1": 0.42295876,
       "tail": true,
       "rotors": [
        {
-        "x": 0.3582551,
+        "x": 0.37295876,
         "coax": false
        },
        {
-        "x": -0.4919616,
+        "x": -0.525379,
         "coax": false
        }
       ]
      }
     ],
     "segs": [
-     0.93,
-     0.503,
-     0.93,
-     0.503
+     0.9483,
+     0.4732,
+     0.9483,
+     0.4732
     ],
-    "boomTotal": 2.7468334,
+    "boomTotal": 2.8430755,
     "hSpan": 0.842,
-    "hC": 0.080598106,
-    "vH": 0.19116503,
-    "vC": 0.15293203,
-    "Sh": 0.067863605,
-    "Sv": 0.058470511,
-    "lh": 0.70562073,
+    "hC": 0.10046279,
+    "vH": 0.19989576,
+    "vC": 0.15991661,
+    "Sh": 0.084589666,
+    "Sv": 0.063933304,
+    "lh": 0.73564995,
     "Vh": 0.35,
     "Vv": 0.03,
-    "aw": 5.1561956,
-    "at": 5.1944108,
-    "deda": 0.32655982,
-    "hn": 0.46370589,
-    "SM": 0.18370589,
+    "aw": 5.0176531,
+    "at": 4.9602529,
+    "deda": 0.36226313,
+    "hn": 0.38671004,
+    "hn_nopod": 0.44858904,
+    "SM": 0.10671004,
     "yIn": 0.421,
     "longestPiece": 1.2
    },
@@ -3906,10 +4558,10 @@
      },
      {
       "cat": "Energy",
-      "item": "Ovonic 6S 6500 100C — 2-pack listing (2 packs)",
+      "item": "HOOVO 6S 8000 100C — 2-pack listing (2 packs)",
       "qty": 1,
-      "unit": 138.99,
-      "ext": 138.99,
+      "unit": 199.99,
+      "ext": 199.99,
       "src": "BE §1 amazon.com",
       "note": "second pack per R7; EC5 leads: re-terminate to XT90S"
      },
@@ -3929,7 +4581,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.93 + 0.503 + 0.93 + 0.503 m"
+      "note": "cut list 0.9483 + 0.4732 + 0.9483 + 0.4732 m"
      },
      {
       "cat": "Airframe",
@@ -3978,12 +4630,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Hardware kit: XT90S, wire, extensions, screws, inserts, horns, pushrods, hinge tape, heat shrink, UBEC, epoxy",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 124.01,
-      "ext": 124.01,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -4137,31 +4906,13 @@
       "ext": 17.46,
       "src": "BL",
       "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "EMAX ES3005HV spare servo",
-      "qty": 1,
-      "unit": 19.99,
-      "ext": 19.99,
-      "src": "BA §6",
-      "note": ""
-     },
-     {
-      "cat": "Spares",
-      "item": "Du-Bro 230 pushrod 5-pack (spares)",
-      "qty": 1,
-      "unit": 12.48,
-      "ext": 12.48,
-      "src": "BF §3b amazon.com",
-      "note": ""
      }
     ],
-    "goods": 1617.35,
-    "shipping": 100,
-    "tax": 165.78,
-    "crash": 116.87,
-    "total": 1883.13,
+    "goods": 1668.25,
+    "shipping": 110,
+    "tax": 171,
+    "crash": 50.75,
+    "total": 1949.25,
     "tubes25": 2,
     "fees": [
      {
@@ -4280,10 +5031,10 @@
      },
      {
       "cat": "Energy",
-      "item": "Ovonic 6S 6500 100C — 2-pack listing (2 packs)",
+      "item": "HOOVO 6S 8000 100C — 2-pack listing (2 packs)",
       "qty": 1,
-      "unit": 138.99,
-      "ext": 138.99,
+      "unit": 199.99,
+      "ext": 199.99,
       "src": "BE §1 amazon.com",
       "note": "second pack per R7; EC5 leads: re-terminate to XT90S"
      },
@@ -4303,7 +5054,7 @@
       "unit": 26.2,
       "ext": 52.4,
       "src": "BF §1 onlinemetals.com",
-      "note": "cut list 0.93 + 0.503 + 0.93 + 0.503 m"
+      "note": "cut list 0.9483 + 0.4732 + 0.9483 + 0.4732 m"
      },
      {
       "cat": "Airframe",
@@ -4352,12 +5103,129 @@
      },
      {
       "cat": "Airframe",
-      "item": "Minimum hardware kit (tape hinges)",
+      "item": "FLY RC Amass XT90S anti-spark, 5 pairs (B0893CGLP7)",
       "qty": 1,
-      "unit": 117.32,
-      "ext": 117.32,
-      "src": "BF §3 amazon.com (itemised in file)",
+      "unit": 13.99,
+      "ext": 13.99,
+      "src": "BF §3a item 1 amazon.com",
       "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "10 AWG silicone wire 5 ft red + 5 ft black (B0D968WN4W)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 2 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "BNTECHGO 12 AWG silicone wire 10+10 ft (B01ABOPMEI)",
+      "qty": 1,
+      "unit": 14.98,
+      "ext": 14.98,
+      "src": "BF §3a item 3 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 4 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Nylon control horns 12 sets, M2x14 screws (B0B58ZSC8J)",
+      "qty": 1,
+      "unit": 8.98,
+      "ext": 8.98,
+      "src": "BF §3a item 7 amazon.com",
+      "note": "HS J17"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Du-Bro 230 Kwik-Link 2-56 pushrods, 5 (B0006O8TAI)",
+      "qty": 1,
+      "unit": 12.48,
+      "ext": 12.48,
+      "src": "BF §3a item 8 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Heat-shrink kit 2:1, 900 pcs (B0BG6V4HV4)",
+      "qty": 1,
+      "unit": 6.99,
+      "ext": 6.99,
+      "src": "BF §3a item 10 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Zip ties 4/6/8/12 in, 200 (B0CSXGZXM8)",
+      "qty": 1,
+      "unit": 3.99,
+      "ext": 3.99,
+      "src": "BF §3a item 11 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ZORZA UBEC 5 V 5 A, 2 pcs (B0CQ1R55BV)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "BF §3a item 12 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "Gorilla 5-min epoxy 0.85 oz (B001Z3C3AG)",
+      "qty": 1,
+      "unit": 5.97,
+      "ext": 5.97,
+      "src": "BF §3a item 13 amazon.com",
+      "note": ""
+     },
+     {
+      "cat": "Airframe",
+      "item": "ruthex RX-M3x5.7 heat-set inserts, 100 (B08BCRZZS3)",
+      "qty": 1,
+      "unit": 9.99,
+      "ext": 9.99,
+      "src": "HS §2c amazon.com",
+      "note": "replaces generic M3 inserts"
+     },
+     {
+      "cat": "Airframe",
+      "item": "Loctite 242 threadlocker 6 ml (B000I1RSNS)",
+      "qty": 1,
+      "unit": 7.03,
+      "ext": 7.03,
+      "src": "HS §2d amazon.com",
+      "note": "metal-to-metal threads only"
+     },
+     {
+      "cat": "Airframe",
+      "item": "A2 metric fasteners per HS §6 (14 lines: M2/M3/M5 screws, nylocks, nuts, washers)",
+      "qty": 1,
+      "unit": 22.04,
+      "ext": 22.04,
+      "src": "HS §6 boltdepot.com",
+      "note": "replaces Mywish kit B0CQWYFTXC"
+     },
+     {
+      "cat": "Airframe",
+      "item": "300 mm servo extension leads, 10 (B0FYCJLY1V), 2 more packs for the 11.8 m harness",
+      "qty": 2,
+      "unit": 6.99,
+      "ext": 13.98,
+      "src": "BF §3a item 4 amazon.com",
+      "note": "BUILD-MANUAL G2: price of 2026-10-13"
      },
      {
       "cat": "Airframe",
@@ -4513,11 +5381,11 @@
       "note": ""
      }
     ],
-    "goods": 1518.2,
-    "shipping": 100,
-    "tax": 155.62,
-    "crash": 226.18,
-    "total": 1773.82,
+    "goods": 1608.26,
+    "shipping": 110,
+    "tax": 164.85,
+    "crash": 116.89,
+    "total": 1883.11,
     "tubes25": 2,
     "fees": [
      {
@@ -4537,21 +5405,21 @@
     "nLimit": 3,
     "FS": 1.5,
     "nUlt": 4.5,
-    "Mroot": 69.497873,
-    "sigJ": 148631590,
-    "MS_J": 1.8502123,
-    "sigS": 110957450,
-    "Mhover": 25.532949,
-    "Lb": 0.41794551,
+    "Mroot": 74.735916,
+    "sigJ": 159833930,
+    "MS_J": 1.7205358,
+    "sigS": 119320300,
+    "Mhover": 27.457363,
+    "Lb": 0.44100351,
     "Tmax": 32.950344,
-    "Mb": 13.771448,
-    "sigB": 33975642,
-    "MS_B": 8.094034,
-    "defl_max": 0.0022575268,
-    "defl_hover": 0.0010388158,
-    "fn": 37.475852,
+    "Mb": 14.531217,
+    "sigB": 35850074,
+    "MS_B": 7.6708349,
+    "defl_max": 0.0026521622,
+    "defl_hover": 0.0013123843,
+    "fn": 34.509535,
     "mTip": 0.245,
-    "mEff": 0.2632475,
+    "mEff": 0.26425421,
     "Ij_mm4": 5196.0362,
     "Is_mm4": 7954.6075,
     "Ib_mm4": 5147.7289,
@@ -4578,8 +5446,8 @@
       "nSpring": 6
      }
     ],
-    "Mclamp": 13.771448,
-    "tauSock": 10993465,
+    "Mclamp": 14.531217,
+    "tauSock": 11599973,
     "engage": 0.3,
     "engageD": 13.498313,
     "E_DESIGN": 69000000000,
@@ -4590,31 +5458,31 @@
      {
       "name": "Lift units, front",
       "m": 0.49,
-      "x": 0.358,
+      "x": 0.373,
       "src": "LP"
      },
      {
       "name": "Lift units, rear",
       "m": 0.49,
-      "x": -0.492,
+      "x": -0.525,
       "src": "LP"
      },
      {
       "name": "Booms + clamps",
-      "m": 0.588,
-      "x": -0.278,
+      "m": 0.606,
+      "x": -0.288,
       "src": "AM"
      },
      {
       "name": "Wing (foam/glass + spar)",
-      "m": 1.191,
-      "x": -0.096,
+      "m": 1.334,
+      "x": -0.109,
       "src": "F11; centroid 40 % c EST"
      },
      {
       "name": "Tail",
-      "m": 0.117,
-      "x": -0.777,
+      "m": 0.138,
+      "x": -0.819,
       "src": "geometry"
      },
      {
@@ -4625,8 +5493,8 @@
      },
      {
       "name": "Landing gear",
-      "m": 0.325,
-      "x": -0.06,
+      "m": 0.443,
+      "x": -0.068,
       "src": "EST"
      },
      {
@@ -4642,10 +5510,10 @@
       "src": "BL; at pod tail (same station as CAD)"
      },
      {
-      "name": "Servos (4)",
+      "name": "Servos (5)",
       "m": 0.216,
-      "x": -0.107,
-      "src": "PB; 2 wing + 2 tail, mean EST"
+      "x": -0.543,
+      "src": "BA; 2 wing (-0.55 c) + 3 tail (cad/params.mjs), mass-weighted mean"
      },
      {
       "name": "Wiring",
@@ -4655,8 +5523,8 @@
      },
      {
       "name": "Battery (placed for CG)",
-      "m": 0.82,
-      "x": 0.052,
+      "m": 0.986,
+      "x": 0.129,
       "src": "PB"
      },
      {
@@ -4666,21 +5534,21 @@
       "src": "R12; bay x EST"
      }
     ],
-    "target": -0.066853249,
-    "xb": 0.052373793,
-    "cgBattFwd": -0.062875241,
-    "cgBattAft": -0.070831256,
-    "pctFwd": 26.3339,
-    "pctAft": 29.6661,
-    "cgNoPayload": -0.085929009,
-    "thrustCentroid": -0.066853249,
+    "target": -0.07621012,
+    "xb": 0.12918365,
+    "cgBattFwd": -0.071760847,
+    "cgBattAft": -0.080659393,
+    "pctFwd": 26.365314,
+    "pctAft": 29.634686,
+    "cgNoPayload": -0.09460029,
+    "thrustCentroid": -0.07621012,
     "pct": {
      "target": 28,
-     "noPayload": 35.989459,
-     "np": 46.370589,
+     "noPayload": 34.756645,
+     "np": 38.671004,
      "thrust": 28
     },
-    "SM_noPayload": 0.1038113
+    "SM_noPayload": 0.039143583
    }
   }
  },
@@ -4689,48 +5557,48 @@
    "pack": "Ovonic 6S 6500 100C (2-pack)",
    "Wh": 144.3,
    "usd": 69.495,
-   "m": 6.182,
-   "cruise_min": 11.94,
+   "m": 6.432,
+   "cruise_min": 13.05,
    "ok": true
   },
   {
    "pack": "Ovonic Roam 6S 6500 150C",
    "Wh": 144.3,
    "usd": 71.99,
-   "m": 6.13,
-   "cruise_min": 12.09,
+   "m": 6.378,
+   "cruise_min": 13.24,
    "ok": true
   },
   {
    "pack": "HOOVO 6S 8000 100C (2-pack)",
    "Wh": 177.6,
    "usd": 99.995,
-   "m": 6.384,
-   "cruise_min": 15.43,
+   "m": 6.64,
+   "cruise_min": 16.93,
    "ok": true
   },
   {
    "pack": "Zeee 6S 9000 100C (2-pack)",
    "Wh": 199.8,
    "usd": 121.045,
-   "m": 6.567,
-   "cruise_min": 17.49,
+   "m": 6.829,
+   "cruise_min": 19.2,
    "ok": true
   },
   {
    "pack": "iFlight Fullsend E 6S 8000 60C",
    "Wh": 177.6,
    "usd": 122.99,
-   "m": 6.389,
-   "cruise_min": 15.41,
+   "m": 6.645,
+   "cruise_min": 16.92,
    "ok": true
   },
   {
    "pack": "Zeee 6S 10000 120C (2-pack)",
    "Wh": 222,
    "usd": 137.695,
-   "m": 6.584,
-   "cruise_min": 20.09,
+   "m": 6.847,
+   "cruise_min": 22.11,
    "ok": true
   }
  ]

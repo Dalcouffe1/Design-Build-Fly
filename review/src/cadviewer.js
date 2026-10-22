@@ -6,7 +6,7 @@ function CadViewer(wrap, M){
   if (typeof THREE === 'undefined' || !THREE.OrbitControls){
     wrap.querySelector('.fallback').hidden = false; canvas.hidden = true; return null;
   }
-  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});   // throws without WebGL: startCad() shows the fallback
   renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputEncoding = THREE.sRGBEncoding;
   const scene = new THREE.Scene();
@@ -135,7 +135,7 @@ function CadViewer(wrap, M){
     const hit = ray.intersectObjects(meshes, false).find(h => !(xray && SHELL.test(h.object.userData.part)));
     if (!hit){ tip.hidden = true; return; }
     const n = hit.object.userData.part, p = M.parts[n];
-    tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = n.replace(/_/g, ' '); tip.lastChild.textContent = p.d;
+    tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = n.split('~')[0].replace(/_/g, ' '); tip.lastChild.textContent = p.d;
     tip.hidden = false;
   }
   canvas.addEventListener('pointermove', e => { if (e.pointerType !== 'mouse' || e.buttons) return; const t = performance.now(); if (t - hoverT < 60) return; hoverT = t; pick(e); });
@@ -151,8 +151,11 @@ function CadViewer(wrap, M){
     toggleXray(){ setXray(!xray); return xray; },
     toggleEdges(){ items.forEach(i => i.ln.visible = !i.ln.visible); kick(); return items[0].ln.visible; },
     highlight(name){
-      for (const [n, m] of Object.entries(mats)) { m.emissive.set(n === name ? (css('--accent') || '#b8481b') : '#000000'); m.emissiveIntensity = n === name ? 0.55 : 0; }
-      if (name){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[name].d; tip.hidden = false; } else tip.hidden = true;
+      // a part file can have several mesh variants ("Name~k", one per placement rotation): light them all
+      const is = n => name && (n === name || n.split('~')[0] === name);
+      for (const [n, m] of Object.entries(mats)) { m.emissive.set(is(n) ? (css('--accent') || '#b8481b') : '#000000'); m.emissiveIntensity = is(n) ? 0.55 : 0; }
+      const key = name && Object.keys(M.parts).find(is);
+      if (key){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[key].d; tip.hidden = false; } else tip.hidden = true;
       kick();
     },
     refresh(){ resize(); kick(); }

@@ -29,3 +29,7 @@ review/img/
 
 # the drawing set PDF is a deliverable
 !cad/drawings/DBF-DRW-001.PDF
+review/_preview/
+
+# downloaded ArduPilot parameter metadata (check_params.py fetches it again)
+firmware/tools/cache/
