@@ -129,7 +129,7 @@ def run_case(d: Path, threads=THREADS, force=False):
             cfg = re.sub(r"CFL_NUMBER= [0-9.]+", f"CFL_NUMBER= {settings['cfl']}", cfg)
             cfg = re.sub(r"CFL_ADAPT_PARAM= \(.*\)", f"CFL_ADAPT_PARAM= ( 0.5, 1.1, 0.1, {settings['cflmax']} )", cfg)
             cfg = re.sub(r"LIMITER_ITER= \d+", f"LIMITER_ITER= {settings['limfreeze']}", cfg)
-            cfg = re.sub(r"ITER= \d+", "ITER= 8000", cfg)
+            cfg = re.sub(r"(?m)^ITER= \d+", "ITER= 8000", cfg)   # only the main count, never LINEAR_SOLVER_ITER / LIMITER_ITER / CONV_STARTITER
             (d / "case.cfg").write_text(cfg)
         mesh = MESH_DIR / (re.search(r"MESH_FILENAME= (\S+)", (d / "case.cfg").read_text()).group(1))
         if not (d / mesh.name).exists():
@@ -189,9 +189,16 @@ def surface_cp(d: Path):
     hdr = [h.strip().strip('"') for h in rows[0]]
     data = np.array([[float(v) for v in r] for r in rows[1:] if len(r) == len(hdr)])
     ix, iy = hdr.index("x"), hdr.index("y")
-    icp = hdr.index("Pressure_Coefficient")
+    if "Pressure_Coefficient" in hdr:
+        cp = data[:, hdr.index("Pressure_Coefficient")]
+    elif "Pressure" in hdr:
+        # INC_NONDIM= INITIAL_VALUES: gauge pressure scaled by rho V^2 (freestream 0), so Cp = p / (0.5) = 2 p;
+        # check: the stagnation point reads 0.50, i.e. Cp = 1.0
+        cp = 2.0 * data[:, hdr.index("Pressure")]
+    else:
+        return None
     icf = hdr.index("Skin_Friction_Coefficient_x") if "Skin_Friction_Coefficient_x" in hdr else None
-    out = {"x": data[:, ix].tolist(), "y": data[:, iy].tolist(), "Cp": data[:, icp].tolist()}
+    out = {"x": data[:, ix].tolist(), "y": data[:, iy].tolist(), "Cp": cp.tolist()}
     if icf is not None:
         out["Cfx"] = data[:, icf].tolist()
     return out
