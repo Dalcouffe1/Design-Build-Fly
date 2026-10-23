@@ -148,7 +148,7 @@
   "raymer_FF_fully_turbulent": 0.0113576,
   "xfoil_ncrit9": 0.00827741,
   "xfoil_ncrit5": 0.00850272,
-  "su2_SA_fully_turbulent": null,
+  "su2_SA_fully_turbulent": 0.0179782,
   "note": "dCD on S_ref at section cl = cruise CL; exposed wing only"
  },
  "sizing": {

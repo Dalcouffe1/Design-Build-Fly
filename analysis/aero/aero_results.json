@@ -46,7 +46,7 @@
  "tools": {
   "XFOIL": "XFOIL 6.99 (MIT, https://web.mit.edu/drela/Public/web/xfoil/XFOIL6.99.zip, checked 2026-10-21)",
   "NeuralFoil": "NeuralFoil 0.3.3 xxxlarge (PyPI, checked 2026-10-21), via AeroSandbox 4.2.10",
-  "SU2": "\u2014",
+  "SU2": "SU2 8.5.0 win64-omp (https://github.com/su2code/SU2/releases/tag/v8.5.0, checked 2026-10-21)",
   "AVL": "AVL 3.52 (MIT, https://web.mit.edu/drela/Public/web/avl/avl352.exe, checked 2026-10-21)",
   "AeroSandbox": "AeroSandbox 4.2.10 VLM + AeroBuildup (NeuralFoil section polars)",
   "gmsh": "gmsh 4.15.2 (PyPI, checked 2026-10-21)"
@@ -3579,7 +3579,12 @@
   "xfoil_cruise_Re": 1.3651,
   "xfoil_cruise_Ncrit5": 1.377,
   "neuralfoil_stall_Re": 1.2787,
-  "su2_SA_cruise_Re": null,
+  "su2_SA_cruise_Re": {
+   "CL_max": 22.4071,
+   "alpha_deg": 12.0,
+   "converged": false,
+   "note": "fully turbulent SA; steady RANS near stall is unsteady, values are 300-iteration means"
+  },
   "experiment_Genc_Lock_Kaynak_2008_Re2e5": {
    "CL_max": 1.3,
    "alpha_stall_deg": 12,
@@ -3810,7 +3815,7 @@
    "raymer_FF_fully_turbulent": 0.0113576,
    "xfoil_ncrit9": 0.00827741,
    "xfoil_ncrit5": 0.00850272,
-   "su2_SA_fully_turbulent": null,
+   "su2_SA_fully_turbulent": 0.0179782,
    "note": "dCD on S_ref at section cl = cruise CL; exposed wing only"
   },
   "e_oswald_fit": 0.841307,
@@ -3965,13 +3970,514 @@
    "t_cruise_avail_min": 8.825
   }
  },
- "cfd": "\u2014",
+ "cfd": {
+  "solver": "INC_RANS, FDS + MUSCL, implicit Euler; SA fully turbulent; SST + Langtry-Menter LM transition",
+  "Re": 360474.0,
+  "meshes": {
+   "L1": {
+    "level": 1,
+    "cells": 55384,
+    "nodes": 30749,
+    "h1": 0.0001,
+    "ratio": 1.25,
+    "nlayers": 22,
+    "bl_thickness": 0.0538101,
+    "n_side": 120,
+    "wake_h": 0.03,
+    "R_far": 60.0,
+    "wall_s": 2.62028,
+    "file": "naca2415_L1.su2"
+   },
+   "L2": {
+    "level": 2,
+    "cells": 130792,
+    "nodes": 70914,
+    "h1": 5e-05,
+    "ratio": 1.2,
+    "nlayers": 30,
+    "bl_thickness": 0.0590941,
+    "n_side": 170,
+    "wake_h": 0.02,
+    "R_far": 60.0,
+    "wall_s": 6.98253,
+    "file": "naca2415_L2.su2"
+   },
+   "L3": {
+    "level": 3,
+    "cells": 267902,
+    "nodes": 144141,
+    "h1": 2.5e-05,
+    "ratio": 1.16,
+    "nlayers": 40,
+    "bl_thickness": 0.0590189,
+    "n_side": 240,
+    "wake_h": 0.014,
+    "R_far": 60.0,
+    "wall_s": 15.3099,
+    "file": "naca2415_L3.su2"
+   }
+  },
+  "mesh_study": {
+   "alpha_2": {
+    "cells": {
+     "L1": 55384,
+     "L2": 130792,
+     "L3": 267902
+    },
+    "CL": {
+     "L1": 0.402963,
+     "L2": 11.1029,
+     "L3": 0.412512
+    },
+    "CD": {
+     "L1": 0.0165313,
+     "L2": -2.33602,
+     "L3": 0.014912
+    },
+    "GCI_CL": {
+     "p": null,
+     "GCI_fine_pct": null,
+     "f_ext": null,
+     "note": "oscillatory or converged to round-off; GCI undefined"
+    },
+    "GCI_CD": {
+     "p": null,
+     "GCI_fine_pct": null,
+     "f_ext": null,
+     "note": "oscillatory or converged to round-off; GCI undefined"
+    },
+    "pct_change_CL_L2_L3": -2591.52,
+    "pct_change_CD_L2_L3": 15765.3
+   },
+   "alpha_10": {
+    "cells": {
+     "L1": 55384,
+     "L2": 130792,
+     "L3": 267902
+    },
+    "CL": {
+     "L1": 1.04423,
+     "L2": -4.12235,
+     "L3": 1.16826
+    },
+    "CD": {
+     "L1": 0.0443018,
+     "L2": -1.26234,
+     "L3": 0.0281202
+    },
+    "GCI_CL": {
+     "p": null,
+     "GCI_fine_pct": null,
+     "f_ext": null,
+     "note": "oscillatory or converged to round-off; GCI undefined"
+    },
+    "GCI_CD": {
+     "p": null,
+     "GCI_fine_pct": null,
+     "f_ext": null,
+     "note": "oscillatory or converged to round-off; GCI undefined"
+    },
+    "pct_change_CL_L2_L3": 452.862,
+    "pct_change_CD_L2_L3": 4589.08
+   }
+  },
+  "polar_L2_SA": [
+   {
+    "alpha_deg": -4.0,
+    "CL": -0.100838,
+    "CD": 0.0293098,
+    "CM": -0.00906711,
+    "converged": false,
+    "CL_std": 0.0338453
+   },
+   {
+    "alpha_deg": -2.0,
+    "CL": -0.00264645,
+    "CD": 0.0147686,
+    "CM": 0.0447101,
+    "converged": true,
+    "CL_std": 7.99884e-06
+   },
+   {
+    "alpha_deg": 2.0,
+    "CL": 11.1029,
+    "CD": -2.33602,
+    "CM": -1.00104,
+    "converged": false,
+    "CL_std": 14.1806
+   },
+   {
+    "alpha_deg": 4.0,
+    "CL": -0.438606,
+    "CD": -1.74743,
+    "CM": -0.533252,
+    "converged": false,
+    "CL_std": 3.18042
+   },
+   {
+    "alpha_deg": 8.0,
+    "CL": 0.994911,
+    "CD": 0.0256979,
+    "CM": 0.0335481,
+    "converged": true,
+    "CL_std": 6.84762e-05
+   },
+   {
+    "alpha_deg": 10.0,
+    "CL": -4.12235,
+    "CD": -1.26234,
+    "CM": -3.28183,
+    "converged": false,
+    "CL_std": 3.81452
+   },
+   {
+    "alpha_deg": 12.0,
+    "CL": 22.4071,
+    "CD": -11.7191,
+    "CM": 9.56221,
+    "converged": false,
+    "CL_std": 423.908
+   },
+   {
+    "alpha_deg": 13.0,
+    "CL": -0.764977,
+    "CD": -2.77429,
+    "CM": -2.476,
+    "converged": false,
+    "CL_std": 7.55185
+   },
+   {
+    "alpha_deg": 15.0,
+    "CL": 1.16587,
+    "CD": 0.0834776,
+    "CM": 0.0232461,
+    "converged": true,
+    "CL_std": 0.0015687
+   },
+   {
+    "alpha_deg": 16.0,
+    "CL": 1.0695,
+    "CD": 0.105174,
+    "CM": 0.0270922,
+    "converged": false,
+    "CL_std": 0.00461053
+   },
+   {
+    "alpha_deg": 17.0,
+    "CL": 1.02544,
+    "CD": 0.127661,
+    "CM": 0.0350797,
+    "converged": false,
+    "CL_std": 0.00139379
+   },
+   {
+    "alpha_deg": 18.0,
+    "CL": 1.90053,
+    "CD": 0.351623,
+    "CM": 0.123837,
+    "converged": false,
+    "CL_std": 0.962706
+   },
+   {
+    "alpha_deg": 20.0,
+    "CL": 1.16602,
+    "CD": 0.310468,
+    "CM": 0.140853,
+    "converged": false,
+    "CL_std": 0.107263
+   }
+  ],
+  "polar_L2_SSTLM": [
+   {
+    "alpha_deg": 4.0,
+    "CL": 0.302416,
+    "CD": 0.231158,
+    "CM": 0.0523779,
+    "converged": false,
+    "CL_std": 0.567243
+   },
+   {
+    "alpha_deg": 6.0,
+    "CL": 0.803814,
+    "CD": 0.0169029,
+    "CM": 0.0339496,
+    "converged": true,
+    "CL_std": 0.000152686
+   },
+   {
+    "alpha_deg": 8.0,
+    "CL": 0.947335,
+    "CD": 0.0243348,
+    "CM": 0.027734,
+    "converged": false,
+    "CL_std": 0.00497849
+   },
+   {
+    "alpha_deg": 10.0,
+    "CL": 1.00112,
+    "CD": 0.0349538,
+    "CM": 0.0148119,
+    "converged": false,
+    "CL_std": 0.00738907
+   },
+   {
+    "alpha_deg": 14.0,
+    "CL": 0.983034,
+    "CD": 0.0823187,
+    "CM": 0.0155743,
+    "converged": false,
+    "CL_std": 0.00225256
+   },
+   {
+    "alpha_deg": 16.0,
+    "CL": 0.832686,
+    "CD": 0.266914,
+    "CM": 0.116365,
+    "converged": false,
+    "CL_std": 0.177738
+   }
+  ],
+  "timings": {
+   "L1_SA_ap02.0": {
+    "iters": 4000,
+    "wall_s": 828.4,
+    "converged": false
+   },
+   "L1_SA_ap10.0": {
+    "iters": 2878,
+    "wall_s": 675.6,
+    "converged": true
+   },
+   "L2_SA_ap02.0": {
+    "iters": 8000,
+    "wall_s": 2459.6,
+    "converged": false
+   },
+   "L2_SA_ap10.0": {
+    "iters": 4000,
+    "wall_s": 3025.8,
+    "converged": false
+   },
+   "L3_SA_ap02.0": {
+    "iters": 2666,
+    "wall_s": 3738.2,
+    "converged": true
+   },
+   "L3_SA_ap10.0": {
+    "iters": 2471,
+    "wall_s": 3642.7,
+    "converged": true
+   },
+   "L2_SA_am04.0": {
+    "iters": 4000,
+    "wall_s": 3266.9,
+    "converged": false
+   },
+   "L2_SA_am02.0": {
+    "iters": 1714,
+    "wall_s": 1476.7,
+    "converged": true
+   },
+   "L2_SA_ap04.0": {
+    "iters": 8000,
+    "wall_s": 2381.4,
+    "converged": false
+   },
+   "L2_SA_ap08.0": {
+    "iters": 4925,
+    "wall_s": 1909.3,
+    "converged": true
+   },
+   "L2_SA_ap12.0": {
+    "iters": 8000,
+    "wall_s": 2214.5,
+    "converged": false
+   },
+   "L2_SA_ap13.0": {
+    "iters": 8000,
+    "wall_s": 2460.9,
+    "converged": false
+   },
+   "L2_SA_ap15.0": {
+    "iters": 8000,
+    "wall_s": 2650.9,
+    "converged": true
+   },
+   "L2_SA_ap16.0": {
+    "iters": 6000,
+    "wall_s": 2511.9,
+    "converged": false
+   },
+   "L2_SA_ap17.0": {
+    "iters": 6000,
+    "wall_s": 2398.9,
+    "converged": false
+   },
+   "L2_SA_ap18.0": {
+    "iters": 8000,
+    "wall_s": 2426.2,
+    "converged": false
+   },
+   "L2_SA_ap20.0": {
+    "iters": 8000,
+    "wall_s": 3158.2,
+    "converged": false
+   },
+   "L2_SSTLM_ap04.0": {
+    "iters": 8000,
+    "wall_s": 2821.0,
+    "converged": false
+   },
+   "L2_SSTLM_ap06.0": {
+    "iters": 4000,
+    "wall_s": 2089.8,
+    "converged": true
+   },
+   "L2_SSTLM_ap08.0": {
+    "iters": 8000,
+    "wall_s": 3384.0,
+    "converged": false
+   },
+   "L2_SSTLM_ap10.0": {
+    "iters": 4000,
+    "wall_s": 1709.5,
+    "converged": false
+   },
+   "L2_SSTLM_ap14.0": {
+    "iters": 6000,
+    "wall_s": 2107.4,
+    "converged": false
+   },
+   "L2_SSTLM_ap16.0": {
+    "iters": 6000,
+    "wall_s": 2121.2,
+    "converged": false
+   }
+  },
+  "wall_s_total": 10986.9,
+  "threads_per_case": 4,
+  "jobs": 5
+ },
+ "comparison_2D": [
+  {
+   "alpha_deg": 0,
+   "xfoil_CL": 0.2279,
+   "xfoil_CD": 0.00826,
+   "neuralfoil_CL": 0.212399,
+   "neuralfoil_CD": 0.00821391,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
+   "thin_airfoil_CL": 0.219988
+  },
+  {
+   "alpha_deg": 2,
+   "xfoil_CL": 0.4517,
+   "xfoil_CD": 0.00911,
+   "neuralfoil_CL": 0.448003,
+   "neuralfoil_CD": 0.00905754,
+   "su2_SA_CL": 11.1029,
+   "su2_SA_CD": -2.33602,
+   "su2_SA_conv": false,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
+   "thin_airfoil_CL": 0.439313
+  },
+  {
+   "alpha_deg": 4,
+   "xfoil_CL": 0.7569,
+   "xfoil_CD": 0.01034,
+   "neuralfoil_CL": 0.774339,
+   "neuralfoil_CD": 0.010746,
+   "su2_SA_CL": -0.438606,
+   "su2_SA_CD": -1.74743,
+   "su2_SA_conv": false,
+   "su2_SSTLM_CL": 0.302416,
+   "su2_SSTLM_CD": 0.231158,
+   "su2_SSTLM_conv": false,
+   "thin_airfoil_CL": 0.658637
+  },
+  {
+   "alpha_deg": 8,
+   "xfoil_CL": 1.0779,
+   "xfoil_CD": 0.01405,
+   "neuralfoil_CL": 1.04236,
+   "neuralfoil_CD": 0.0142515,
+   "su2_SA_CL": 0.994911,
+   "su2_SA_CD": 0.0256979,
+   "su2_SA_conv": true,
+   "su2_SSTLM_CL": 0.947335,
+   "su2_SSTLM_CD": 0.0243348,
+   "su2_SSTLM_conv": false,
+   "thin_airfoil_CL": 1.09729
+  },
+  {
+   "alpha_deg": 10,
+   "xfoil_CL": 1.2035,
+   "xfoil_CD": 0.01849,
+   "neuralfoil_CL": 1.11508,
+   "neuralfoil_CD": 0.0187605,
+   "su2_SA_CL": -4.12235,
+   "su2_SA_CD": -1.26234,
+   "su2_SA_conv": false,
+   "su2_SSTLM_CL": 1.00112,
+   "su2_SSTLM_CD": 0.0349538,
+   "su2_SSTLM_conv": false,
+   "thin_airfoil_CL": 1.31661
+  },
+  {
+   "alpha_deg": 12,
+   "xfoil_CL": 1.29,
+   "xfoil_CD": 0.02632,
+   "neuralfoil_CL": 1.19676,
+   "neuralfoil_CD": 0.0257579,
+   "su2_SA_CL": 22.4071,
+   "su2_SA_CD": -11.7191,
+   "su2_SA_conv": false,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
+   "thin_airfoil_CL": 1.53594
+  },
+  {
+   "alpha_deg": 14,
+   "xfoil_CL": 1.3381,
+   "xfoil_CD": 0.04014,
+   "neuralfoil_CL": 1.25082,
+   "neuralfoil_CD": 0.0372473,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
+   "su2_SSTLM_CL": 0.983034,
+   "su2_SSTLM_CD": 0.0823187,
+   "su2_SSTLM_conv": false,
+   "thin_airfoil_CL": 1.75526
+  },
+  {
+   "alpha_deg": 16,
+   "xfoil_CL": 1.354,
+   "xfoil_CD": 0.0607,
+   "neuralfoil_CL": 1.27466,
+   "neuralfoil_CD": 0.0552335,
+   "su2_SA_CL": 1.0695,
+   "su2_SA_CD": 0.105174,
+   "su2_SA_conv": false,
+   "su2_SSTLM_CL": 0.832686,
+   "su2_SSTLM_CD": 0.266914,
+   "su2_SSTLM_conv": false,
+   "thin_airfoil_CL": 1.97458
+  }
+ ],
  "timings_s": {
   "xfoil": 357.865,
   "neuralfoil": 0.0839243,
   "avl": 34.1517,
   "aerosandbox": 4.34127,
-  "su2_total": null,
+  "su2_total": 10986.9,
   "mesh_2d": {
    "L1": 2.62028,
    "L2": 6.98253,

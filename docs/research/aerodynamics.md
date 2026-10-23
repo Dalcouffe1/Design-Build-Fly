@@ -1,4 +1,4 @@
-# Aerodynamics: section polars, whole-aircraft VLM, drag build-up and 2-D RANS CFD (C0, v0.3.1)
+# Aerodynamics: section polars, whole-aircraft VLM, drag build-up and 2-D RANS CFD (C0, v0.3.1 analysis, updated for v0.4)
 
 Baseline: concept C0, 4-lift twin-boom quadplane, NACA 2415 XPS wing (span 2.4 m, chord
 0.2387 m, S 0.5728 m², AR 10.06), NACA 0009 H-tail and fins on the boom tops, 0.85 × 0.16 m
@@ -17,6 +17,23 @@ Verdict first:
 | Oswald e 0.80 | 0.835 (fit; inviscid 0.927 AVL) | holds |
 | Neutral point 46.7 % MAC, SM 18.7 % at the 28 % CG | NP **41.1 %** with the pod (47.3 % without); SM **13.1 %** at 28 %, **5.2 %** at the no-payload CG (36 %) | holds at 28 %; **no-payload case at risk** |
 | Cruise trim | α 3.2°, elevator −3.8° (AVL); at 12 m/s: α 11.7°, elevator −9.4° | holds |
+
+## Design v0.4 update (2026-10-23)
+
+Sections 3 to 9 record the analysis of the v0.3.1 geometry (chord 239 mm, bare round landing legs), which drove the redesign: printed teardrop fairings on the legs, the wing sized on the trimmed CL_max, the pod's neutral-point shift added to the sizing, and a ballast rule when flying without payload. Every script was then re-run on the v0.4 geometry; `analysis/aero/aero_results.json` holds the current values, and the review reads them from there:
+
+| Quantity | v0.4 value |
+|---|---|
+| Wing | S 0.632 m², chord 263 mm, AR 9.12 |
+| Cruise Reynolds number | 3.60×10⁵ |
+| CL_max, aircraft trimmed | 1.122 (section 1.30 adopted from wind-tunnel data) |
+| Stall speed at MTOW | 12.05 m/s (R11: ≤ 12, at the limit) |
+| CD0, with faired legs | 0.0427 |
+| Cruise L/D at 20 m/s | 8.32 |
+| Cruise electrical power | 297 W (sizing design value 323 W) |
+| Cruise available | 14.2 min (sizing 13.1 min); bare round legs 8.8 min |
+| Neutral point, AVL with pod | 40.4 % MAC; static margin 12.4 % at the 28 % CG, 5.3 % with the bay empty |
+| CFD | §6 below (final status) |
 
 ## 1. Tools and versions (all checked 2026-10-21)
 
@@ -139,37 +156,23 @@ is within authority but with modest margin (the trim at CL 1.13 is ~−8.5°, ES
 See §6 details below (filled from `out/su2_2d.json`; `plots/su2_mesh_study.png`,
 `plots/su2_convergence.png`, `plots/cp_distributions.png`).
 
-**Status 2026-10-21: partial.** Set-up: incompressible RANS (SU2 INC_RANS, FDS + MUSCL, Venkatakrishnan
-limiter frozen after 300 iterations, LU-SGS, adaptive CFL 2→50), chord 1, Re 3.27e5 via μ, SA fully
-turbulent; SST + Langtry–Menter transition as a sensitivity set. gmsh hybrid meshes, far field 60 c,
-quad boundary layer (first cell 1e-4 / 5e-5 / 2.5e-5 c, y+ ≈ 0.8 on the medium mesh): L1 55,384
-cells, L2 131,378, L3 267,902 (`out/mesh_2d.json`). Matrix: 31 cases (mesh study at α 2° and 10° on
-L1–L3; α −4…20° sweep on L2 with SA; α 0…16° with SST-LM), 5 concurrent runs × 4 threads.
-10 of 31 cases had finished when this document was written (`out/su2/*/done.txt`); the remainder
-and the automatic retry of four diverged low-α L2 cases (CFL cap 10) are run by `py su2_2d.py`,
-which skips finished cases, then `py drag_buildup.py plots.py assemble_results.py`.
+**Status 2026-10-23, design v0.4 (chord 263 mm, Re 3.60×10⁵): complete, with the medium mesh unresolved.** Set-up as before: incompressible RANS (SU2 INC_RANS, FDS + MUSCL, Venkatakrishnan limiter, adaptive CFL), SA fully turbulent, SST + Langtry–Menter transition as a sensitivity set, gmsh hybrid meshes with a quad boundary layer (y+ below 1): L1 55,384 cells, L2 130,792, L3 267,902. The v0.3.1 matrix (Re 3.27×10⁵) is archived in `out/archive_v031/`.
 
-Results so far (300-iteration means; `out/su2/<case>/history.csv`):
-
-| Case | CL | CD | residual / convergence |
+| Case | CL | CD | Status |
 |---|---|---|---|
-| L1 SA α 10° | 1.040 | 0.0447 | rms P −9.3, Cauchy 1e-6, converged |
-| L2 SA α 10° | 1.117 | 0.0335 | rms P −9.8, converged |
-| L3 SA α 10° | 1.161 | 0.0286 | rms P −10.0, converged |
-| L1 SA α 2° | 0.402 | 0.0166 | oscillating (rms P −5), not converged |
-| L2 SA α 2° | — | — | diverged at iteration ~900 after reaching CL 0.41 / CD 0.0157 (retry queued) |
-| L3 SA α 2° | 0.411 | 0.0152 | rms P −9.3, converged |
+| L1 SA α 10° | 1.044 | 0.0443 | converged |
+| L2 SA α 10° | — | — | did not converge |
+| L3 SA α 10° | 1.168 | 0.0281 | converged |
+| L1 SA α 2° | 0.403 | 0.0165 | converged |
+| L2 SA α 2° | — | — | did not converge |
+| L3 SA α 2° | 0.413 | 0.0149 | converged |
+| XFOIL (Ncrit 9), α 10° / 2° | 1.204 / 0.452 | 0.0185 / 0.0091 | transitional |
 
-Mesh study at α 10° (Celik et al. 2008 GCI, r = √2): CL p = 1.6, GCI_fine 6.3 %, Richardson
-extrapolate ≈ 1.20; CD p = 2.4, GCI_fine 17 %, extrapolate ≈ 0.025. The drag is not yet mesh
-independent at 10° (the TE wake box and the 60 c far field are the suspects); the lift is within
-the usual 5 %. At α 2° L3 gives CL 0.411 / CD 0.0152 against XFOIL 0.437 / 0.0094 (transitional)
-and the fully-turbulent Raymer estimate 0.0116 on the exposed wing — SA fully turbulent over-predicts
-the section drag by ~60 % at this Re because it has no laminar run, as expected; the SST-LM set is
-the fair comparison and was still running. XFOIL at 10° (cruise Re): CL 1.14, CD 0.024 → L3 SA
-within 2 % on lift and 20 % high on drag. Cp at 2° (`plots/cp_distributions.png`, L2 SA when its retry
-lands; L3 surface file is written) matches XFOIL except the laminar-bubble plateau at x/c 0.4–0.6 on
-the upper surface, which the fully-turbulent run cannot show. Wall-clock: L1 ≈ 11–13 min, L2 ≈
+From the coarse to the fine mesh lift changes 10.6 % at 10° and 2.3 % at 2°. A three-mesh GCI is undefined because the medium mesh did not converge, so the fine mesh is taken as the reference without an extrapolated value. On it, SA lift sits 2.9 % below XFOIL at 10° and 8.7 % below at 2°, and SA drag is higher at 2° (0.0149 against 0.0091): the expected signature of a fully turbulent model at a Reynolds number where the real boundary layer stays laminar over much of the chord.
+
+Of the 29 cases, 6 produced no usable result and 7 of the remaining 23 settled to a steady force history. The medium-mesh sweep converged only at -2°, 8°, 15° (CL -0.003, 0.995, 1.166); elsewhere it diverged or oscillated, as did most transition-model runs. Two driver faults found during the run are fixed in `su2_2d.py`: the retry rewrote every `ITER` key (including the linear-solver limit, which stopped those runs within seconds), and the surface-pressure reader expected a coefficient column the incompressible solver does not write (Cp = 2 p with INC_NONDIM INITIAL_VALUES). **Conclusion for the design:** the section CL_max and drag used in the sizing rest on XFOIL, NeuralFoil and the Genç, Lock and Kaynak (2008) wind-tunnel data; the converged fine-mesh CFD agrees with them within about 10 % in lift and is a cross-check, not a source. A converged medium mesh (lower CFL, longer limiter freeze) would complete a formal GCI; it does not change any design number.
+
+Wall-clock: L1 ≈ 11–13 min, L2 ≈
 12–22 min, L3 ≈ 38–43 min per case at 4 threads with 5 cases sharing 20 logical CPUs.
 
 ## 7. Drag build-up at cruise

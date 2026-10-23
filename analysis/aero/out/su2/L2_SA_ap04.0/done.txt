@@ -1,1 +1,1 @@
-rc=1 wall_s=1.5 attempt=2
+rc=0 wall_s=2381.4 attempt=2

@@ -594,13 +594,22 @@ function aeroText(){
       ['Trim at cruise', 'α '+fmt(AD.trim_cruise.alpha_deg,1)+'°, elevator '+fmt(AD.trim_cruise.elevator_deg,1)+'°', 'AVL'] ];
     k.innerHTML = rows.map(([l,v,s])=>`<div class="kpi"><div class="l">${l}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join(''); }
   const cf=AD.cfd, note=$('#cfdNote');
+  // a CFD value counts only if it is physical for this section (|CL| < 2.5, CD > 0); diverged runs read "—"
+  const phys=(cl,cd)=>cl!=null&&cd!=null&&isFinite(cl)&&isFinite(cd)&&Math.abs(cl)<2.5&&cd>0;
   if(note){ const ok = cf && cf!=='—' && cf.mesh_study;
-    if(ok){ const ms=cf.mesh_study.alpha_10||cf.mesh_study.alpha_2, key=cf.mesh_study.alpha_10?'10°':'2°';
-      const g=ms&&ms.GCI_CL&&ms.GCI_CL.GCI_fine_pct;
-      note.innerHTML = `SU2 ${String(cf.solver||'').replace(/^SU2\s*/,'')||'8.5'} incompressible RANS on the NACA 2415 section at Re ${fmt((cf.Re||0)/1e5,2)}×10⁵, the cruise condition, with the Spalart–Allmaras model and the SST model with γ–Reθ transition. Three gmsh meshes with the first cell at y⁺ below 1 test mesh independence${ms?`: at ${key}, lift changes ${fmt(Math.abs(ms.pct_change_CL_L2_L3),1)} % from the medium to the fine mesh${g!=null?`, a grid-convergence index of ${fmt(g,1)} %`:''}`:''}. Fully turbulent RANS over-predicts drag at this Reynolds number, where the real boundary layer is laminar for much of the chord; the transition model and XFOIL bracket it.`;
-      const mt=$('#meshTable tbody'); if(mt && ms) ['L1','L2','L3'].forEach((L,i)=>mt.insertAdjacentHTML('beforeend', `<tr><td>${['Coarse','Medium','Fine'][i]} (${L})</td><td class="n">${ms.cells&&ms.cells[L]?Math.round(ms.cells[L]/1000)+'k':'—'}</td><td class="n">${ms.CL[L]!=null?fmt(ms.CL[L],3):'—'}</td><td class="n">${ms.CD[L]!=null?fmt(ms.CD[L],4):'—'}</td></tr>`));
+    if(ok){ const m10=cf.mesh_study.alpha_10, m2=cf.mesh_study.alpha_2;
+      const good=(m,L)=>m&&phys(m.CL[L],m.CD[L]), dl=m=>good(m,'L1')&&good(m,'L3')?100*Math.abs(m.CL.L3-m.CL.L1)/Math.abs(m.CL.L3):null;
+      const d10=dl(m10), d2=dl(m2), x10=(AD.comparison_2D||[]).find(r=>r.alpha_deg===10), x2=(AD.comparison_2D||[]).find(r=>r.alpha_deg===2);
+      const conv=Object.values(cf.timings||{}).filter(t=>t.converged).length, tot=Object.keys(cf.timings||{}).length;
+      note.innerHTML = `SU2 incompressible RANS on the NACA 2415 section at Re ${fmt((cf.Re||0)/1e5,2)}×10⁵, the cruise condition, with the Spalart–Allmaras turbulence model on three gmsh meshes (first cell at y⁺ below 1). `
+        + (d10!=null?`From the coarse to the fine mesh, lift at 10° changes ${fmt(d10,1)} %${d2!=null?` and at 2° ${fmt(d2,1)} %`:''}, so the fine mesh is the reference. `:'')
+        + (good(m10,'L3')&&x10?`On it, CL is ${fmt(m10.CL.L3,3)} at 10° against XFOIL's ${fmt(x10.xfoil_CL,3)}${good(m2,'L3')&&x2?`, and ${fmt(m2.CL.L3,3)} at 2° against ${fmt(x2.xfoil_CL,3)}`:''}: within about 10 %, with RANS lower because it treats the boundary layer as turbulent from the leading edge, where the real flow at this Reynolds number stays laminar over much of the chord. `:'')
+        + `The medium mesh and the transition-model runs did not converge reliably with these numerics (${conv} of ${tot} runs settled), so their values are left out (—). The section CL_max used in the design therefore rests on XFOIL, NeuralFoil and wind-tunnel data, with the fine-mesh CFD as a cross-check.`;
+      const mt=$('#meshTable tbody'), ms=m10;
+      if(mt && ms) ['L1','L2','L3'].forEach((L,i)=>{ const g=good(ms,L); mt.insertAdjacentHTML('beforeend', `<tr><td>${['Coarse','Medium','Fine'][i]} (${L})</td><td class="n">${ms.cells&&ms.cells[L]?Math.round(ms.cells[L]/1000)+'k':'—'}</td><td class="n">${g?fmt(ms.CL[L],3):'—'}</td><td class="n">${g?fmt(ms.CD[L],4):'—'}</td></tr>`); });
       const tb=$('#cfdTable tbody'), f=(v,d)=>v!=null?fmt(v,d):'—';
-      if(tb) (AD.comparison_2D||[]).forEach(r=>tb.insertAdjacentHTML('beforeend', `<tr><td class="n">${r.alpha_deg}°</td><td class="n">${f(r.xfoil_CL,3)}</td><td class="n">${f(r.su2_SA_CL,3)}</td><td class="n">${f(r.su2_SSTLM_CL,3)}</td><td class="n">${f(r.xfoil_CD,4)}</td><td class="n">${f(r.su2_SA_CD,4)}</td><td class="n">${f(r.su2_SSTLM_CD,4)}</td></tr>`)); }
+      if(tb) (AD.comparison_2D||[]).forEach(r=>{ const sa=phys(r.su2_SA_CL,r.su2_SA_CD)&&r.su2_SA_conv, sst=phys(r.su2_SSTLM_CL,r.su2_SSTLM_CD)&&r.su2_SSTLM_conv;
+        tb.insertAdjacentHTML('beforeend', `<tr><td class="n">${r.alpha_deg}°</td><td class="n">${f(r.xfoil_CL,3)}</td><td class="n">${sa?f(r.su2_SA_CL,3):'—'}</td><td class="n">${sst?f(r.su2_SSTLM_CL,3):'—'}</td><td class="n">${f(r.xfoil_CD,4)}</td><td class="n">${sa?f(r.su2_SA_CD,4):'—'}</td><td class="n">${sst?f(r.su2_SSTLM_CD,4):'—'}</td></tr>`); }); }
     else { note.textContent='CFD results are not in this build (—).'; ['#meshTable','#cfdTable'].forEach(id=>{ const t=$(id); if(t) (t.closest('details')||t.closest('.tbl')).hidden=true; }); } }
   const sn=$('#stabNote'); if(sn) sn.textContent = `Pitch: Cm_α ${fmt(AD.stability_derivatives_AVL_trim.Cma,2)} per radian, stable. Directional: Cn_β ${fmt(AD.stability_derivatives_AVL_trim.Cnb,4)}, stable. Dihedral effect: Cl_β ${fmt(AD.stability_derivatives_AVL_trim.Clb,4)}, weakly stable with a flat wing. The horizontal-tail volume is ${fmt(AD.tail_volumes.V_h,2)}, under the 0.50 typical of light aircraft, which is why the pod's shift matters.`;
   const sd=AD.stability_derivatives_AVL_trim, meaning={CLa:'lift-curve slope, per rad',Cma:'pitch stiffness (negative = stable)',Cmq:'pitch damping',CYb:'side force with sideslip',Clb:'roll with sideslip (negative = stable)',Cnb:'yaw with sideslip (positive = stable)',Clp:'roll damping',Cnr:'yaw damping',Clr:'roll due to yaw rate',Cnp:'yaw due to roll rate'};
@@ -625,7 +634,8 @@ function drawPolar(){
   const svg=$('#polarChart'); if(!svg) return; clear(svg);
   const sp=AD.section_polars.n2415_cruise_ncrit9, xf=(sp.table||[]).map(r=>[r[0],r[1]]);
   const nfc=(AD.neuralfoil||[]).find(c=>c.name==='n2415_cruise_ncrit9'); const nf=nfc?nfc.alpha.map((al,i)=>[al,nfc.CL[i]]):[];
-  const su2=((AD.cfd&&AD.cfd.polar_L2_SA)||[]).filter(r=>r.CL!=null).map(r=>[r.alpha_deg,r.CL]);
+  const physOK=r=>r&&isFinite(r.CL)&&isFinite(r.CD)&&Math.abs(r.CL)<2.5&&r.CD>0;
+  const msF=(AD.cfd&&AD.cfd.mesh_study)||{}, su2=[...((AD.cfd&&AD.cfd.polar_L2_SA)||[]).filter(r=>r.converged&&physOK(r)).map(r=>[r.alpha_deg,r.CL]), ...[['alpha_2',2],['alpha_10',10]].filter(([k])=>msF[k]&&physOK({CL:msF[k].CL.L3,CD:msF[k].CD.L3})).map(([k,al])=>[al,msF[k].CL.L3])];
   const W=640,H=320,l=52,r=20,t=30,b=40, a0=-6,a1=20, c0=-0.6,c1=1.6;
   const x=v=>l+(W-l-r)*(v-a0)/(a1-a0), y=v=>t+(H-t-b)*(1-(v-c0)/(c1-c0));
   for(let v=-0.4; v<=1.6+1e-9; v+=0.4){ el('line',{x1:l,x2:W-r,y1:y(v),y2:y(v),class:'grid'},svg); el('text',{x:l-6,y:y(v)+4,'text-anchor':'end'},svg,fmt(v,1)); }
