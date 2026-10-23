@@ -150,12 +150,22 @@ def run_case(d: Path, threads=THREADS, force=False):
     print(f"  {d.name}: CL {r['CL']:.4f} CD {r['CD']:.5f} CM {r['CM']:.4f}  iters {r['iters']}  conv {r['converged']}  {wall:.0f} s")
     return r
 
+NAN_RESULT = {"CL": float("nan"), "CD": float("nan"), "CM": float("nan"), "CL_final": float("nan"), "CD_final": float("nan"),
+              "CL_std_last300": None, "CD_std_last300": None, "rmsP_final": None, "rmsP_drop": None, "iters": 0, "converged": False, "wall_s": None}
+
 def parse_case(d: Path):
+    # a crashed run can leave no history, or only a header: report it as not converged (the caller retries it)
     hist = d / "history.csv"
+    if not hist.exists():
+        return {**NAN_RESULT, "dir": d.name}
     with open(hist) as f:
         rows = list(csv.reader(f))
+    if len(rows) < 3:
+        return {**NAN_RESULT, "dir": d.name}
     hdr = [h.strip().strip('"') for h in rows[0]]
     data = np.array([[float(v) for v in r] for r in rows[1:] if len(r) == len(hdr)])
+    if data.ndim != 2 or len(data) < 2:
+        return {**NAN_RESULT, "dir": d.name}
     col = {h: i for i, h in enumerate(hdr)}
     cl, cd, cm = data[:, col["CL"]], data[:, col["CD"]], data[:, col["CMz"]]
     rp = data[:, col["rms[P]"]]
@@ -217,13 +227,25 @@ def main():
         dirs.append(write_case(L, a, m, iters=6000 if high else 4000, cfl=1.0 if high else 2.0, cflmax=20.0 if high else 50.0, limfreeze=800 if high else 300))
     print(f"SU2 2-D: {len(dirs)} cases, {N_JOBS} jobs x {THREADS} threads on {NCPU} CPUs")
     results = {}
+    def safe_run(d):   # one broken case must never stop the batch
+        try:
+            return run_case(d)
+        except Exception as e:
+            print(f"  {d.name}: failed ({e})")
+            return {**NAN_RESULT, "dir": d.name, "error": str(e)}
+    failed = []
     with ThreadPoolExecutor(max_workers=N_JOBS) as ex:
-        for d, r in zip(dirs, ex.map(run_case, dirs)):
-            results[d.name] = r
+        for d, r in zip(dirs, ex.map(safe_run, dirs)):
+            if _finite(r):
+                results[d.name] = r
+            else:
+                failed.append(d.name)   # kept out of the polars and the mesh study (NaN is not valid JSON either)
+    if failed:
+        print(f"  {len(failed)} cases without a usable result: {', '.join(failed)}")
     # assemble
     res = {"tool": "SU2 8.5.0 win64-omp (https://github.com/su2code/SU2/releases/tag/v8.5.0, checked 2026-10-21)",
            "solver": "INC_RANS, FDS + MUSCL, implicit Euler; SA fully turbulent; SST + Langtry-Menter LM transition",
-           "Re": RE, "V_mps": V, "mu_model": MU_C, "threads_per_case": THREADS, "jobs": N_JOBS, "cases": results}
+           "Re": RE, "V_mps": V, "mu_model": MU_C, "threads_per_case": THREADS, "jobs": N_JOBS, "cases": results, "failed_cases": failed}
     mesh_info = json.loads((OUT / "mesh_2d.json").read_text()) if (OUT / "mesh_2d.json").exists() else {}
     res["mesh_study"] = {}
     for a in (2.0, 10.0):
