@@ -10,7 +10,7 @@ Everything here is generated from `analysis/results.json` and `cad/hardware.json
 | `hardware.json` | Machine-readable twin of `docs/research/hardware-spec.md`: fasteners, nuts, washers, inserts, fits, general tolerances (same IDs as the spec and the drawings) |
 | `BuildVtol.cs` | SOLIDWORKS API builder: 77 part files, the 397-component `VTOL_Concept.SLDASM` (STEP, EASM), `VTOL_Exploded.SLDASM`, interference detection and mass roll-up → `verification.txt` |
 | `build.ps1` | Runs `params.mjs`, then compiles and runs the builder, mesh export, drawings and renders (needs SOLIDWORKS 2025 + .NET Framework 4 `csc`) |
-| `Drawings.cs` | Builds drawing DBF-DRW-001 rev B (nine ANSI B sheets, see below) with driven dimensions, tolerances and fits from `params.txt`; exports `.SLDDRW`, a vector PDF and sheet PNGs to `drawings/` |
+| `Drawings.cs` | Builds drawing DBF-DRW-001 rev C (nine ANSI B sheets, see below) with driven dimensions, tolerances and fits from `params.txt`; zoned layout with a self-check of overlaps (`drawings/layout-check.txt`); exports `.SLDDRW`, a vector PDF and sheet PNGs to `drawings/`. `Drawings.exe model drawings params.txt 2,3` builds only the listed sheets as `probe_*` files for layout iteration |
 | `ExportMesh.cs` | Exports each part as a binary STL (metres, part frame) plus colour and description → `mesh/`; `review/mesh.mjs` packs them (one pre-rotated mesh per part orientation) for the interactive viewer in the review page |
 | `Snap.cs` | Saves iso/top/side/front PNGs of the assembly → `images/` |
 | `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside (v0.3.1 geometry; not re-run for rev B, see below) |
@@ -40,21 +40,21 @@ Every screw, nut, washer and heat-set insert in `hardware.json` is a part genera
 
 Mass: `verification.txt` rolls up every part as volume × density (6061 from the SOLIDWORKS library; A2 stainless, brass, PETG, PA6-CF and nylon densities EST; XPS 32 kg/m³ from the sizing) or the vendor mass (motors, battery, servos, props, FC). `analysis/sizing.mjs` does not track fastener mass as an item (it sits inside the clamp and mount allowances), so the fastener total is reported there for the team rather than added to the MTOW.
 
-## Drawing set DBF-DRW-001 rev B (`drawings/`)
+## Drawing set DBF-DRW-001 rev C (`drawings/`)
 
 | Sheet | Content |
 |---|---|
-| 1 | General arrangement: three views + isometric, overall dimensions, revision table, breakdown and ballast notes |
-| 2 | Exploded assembly (`VTOL_Exploded.SLDASM`) with auto-balloons |
-| 3 | Parts list: SOLIDWORKS BOM of the assembly, every fastener included |
+| 1 | General arrangement (1:20, isometric 1:30): span, length, height, boom pitch, motor spacing, prop diameters; revision table (A, B, C), breakdown, ballast and ground-clearance notes |
+| 2 | Exploded assembly (`VTOL_Exploded.SLDASM`, 1:20) with 24 balloons, one per major part type in two tidy columns; item numbers are those of sheet 3 (fasteners and small hardpoints are not ballooned) |
+| 3 | Parts list: parts-only SOLIDWORKS BOM (75 items, fasteners one line per type with quantities) in three columns, 2.5 mm text, descriptions shortened to the first clause |
 | 4 | Wing panel, saddle and wing-bolt pillar: spar socket, joiner bore with the FT06 slip-fit tolerance, M5 hole and nut pocket |
 | 5 | Motor mount upper half and cap, splice plug: bore 25.6 ±0.2, floor 4.50 ±0.15, Ø25 pattern position Ø0.2, counterbores, insert holes, splice bolts |
-| 6 | Boom clamps, gear clamp (with the leg socket FT03) and tail clamp halves with hole callouts |
-| 7 | Tube cut list with ISO 2768-m tolerances and cross-hole positions, landing leg, leg fairing |
+| 6 | Boom clamps, gear clamp and tail clamp halves (six section + side pairs, front/rear boom lower on one pair) with hole callouts |
+| 7 | Tube cut list with ISO 2768-m tolerances and cross-hole positions, landing leg, leg fairing, and the gear-clamp leg socket (FT03) with the F05 cross-bolt |
 | 8 | Fastener schedule (ID, standard, size, qty, order, joints, torque, threadlocker, vendor) and torque / threadlocker / insert notes |
 | 9 | Printed hardpoints and trays: fin shoe, spar collar, rear hardpoint, pusher cup, servo tray, root tongue |
 
-Every sheet carries the general tolerance block from `hardware.json general_tolerances` (printed parts ±0.5 % min ±0.5; controlled bores and insert holes per the fit table; hole position Ø0.4, motor pattern Ø0.2; cut tubes ISO 2768-m) and the rev B release note (first-article checks M1–M7 of the hardware spec apply).
+Every sheet carries a general-tolerance table (bottom left) from `hardware.json general_tolerances` (printed parts ±0.5 % min ±0.5; controlled bores and insert holes per the fit table; hole position Ø0.4, motor pattern Ø0.2; cut tubes ISO 2768-m), a numbered notes block (2.5 mm text), and the rev C release note (first-article checks M1–M7 of the hardware spec apply). Rev C (2026-10-23) corrected the layout and ballooning of rev B: fixed view zones per sheet, dimensions stacked outside the geometry 8 mm apart with hole callouts as separate notes beyond the dimension (no extension line through text), view titles under the last dimension row, title-block text at 2.0 mm, nothing over the title block; `layout-check.txt` logs every registered item and any overlap.
 
 ## Simulations (`sim/results.txt`)
 

@@ -1,10 +1,10 @@
 <a class="skip" href="#main">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <div class="mast"><span class="org">Design-Build-Fly <span aria-hidden="true">·</span> UC Berkeley capstone</span><span class="org">DBF-RPT-001 <span aria-hidden="true">·</span> Issue 3</span></div>
+  <div class="mast"><span class="org">Design-Build-Fly <span aria-hidden="true">·</span> UC Berkeley capstone</span><span class="org">DBF-RPT-001 <span aria-hidden="true">·</span> Issue 4</span></div>
   <h1>Lift + Cruise VTOL Design Review</h1>
   <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise.</p>
-  <p class="docref">Engineering design review <b>DBF-RPT-001</b>, issue 3, 21 October 2026. Design revision {{BASIS_VER}}, ready for build: drawing set DBF-DRW-001 revision B.</p>
+  <p class="docref">Engineering design review <b>DBF-RPT-001</b>, issue 4, 24 October 2026. Design revision {{BASIS_VER}}, ready for build: drawing set DBF-DRW-001 revision C.</p>
   <div class="record">
     <table class="revrec">
       <caption>Revision record</caption>
@@ -13,17 +13,18 @@
         <tr><td>1</td><td>2026-10-13</td><td>Design review after the budget redesign and the six-reviewer audit</td></tr>
         <tr><td>2</td><td>2026-10-18</td><td>Drawing set DBF-DRW-001 (5 sheets), wing saddle, interactive CAD model, accessibility fixes</td></tr>
         <tr><td>3</td><td>2026-10-21</td><td>Design {{BASIS_VER}}: aerodynamics and CFD, resized wing, leg fairings, every fastener in the CAD, drawing rev B (9 sheets), build manual, test plan, flight software, trade study</td></tr>
+        <tr><td>4</td><td>2026-10-24</td><td>One chapter at a time with Part tabs; animated CFD flow views (2-D section, 3-D aircraft); drawing rev C (layout, ballooning and callouts corrected, geometry unchanged)</td></tr>
       </tbody>
     </table>
     <div class="signoff" role="group" aria-labelledby="soTitle">
       <p class="so-title" id="soTitle">Approval</p>
-      <div class="sig signed"><span class="sig-line">Design-Build-Fly team</span><span class="sig-cap">Prepared · 21 October 2026</span></div>
+      <div class="sig signed"><span class="sig-line">Design-Build-Fly team</span><span class="sig-cap">Prepared · 24 October 2026</span></div>
       <div class="sig"><span class="sig-line" aria-label="Not yet signed"></span><span class="sig-cap">Checked by, with date</span></div>
       <div class="sig"><span class="sig-line" aria-label="Not yet signed"></span><span class="sig-cap">Approved for the client, with date</span></div>
     </div>
   </div>
 </header>
-<div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-RPT-001 · Issue 3</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
+<div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-RPT-001 · Issue 4</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
 <nav class="toc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol id="tocList"></ol></nav>
 <div class="binder" id="binder"><nav class="ptabs" id="ptabs" aria-label="Report parts"></nav><nav class="cstrip" id="cstrip" aria-label="Chapters in this part"></nav></div>
 <main id="main">
@@ -126,7 +127,7 @@
       <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.4.0, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
       <tr><td>Configuration</td><td><span class="chip met">done</span></td><td>29-variant trade study with literature survey (<a class="xref" href="#iterations">§2</a>)</td><td>—</td></tr>
       <tr><td>Sizing and aero</td><td><span class="chip met">v0.4</span></td><td>Sizing, XFOIL, NeuralFoil, AVL, drag build-up, 2-D RANS CFD (<a class="xref" href="#aero">§4</a>)</td><td>Any measured input (M-items)</td></tr>
-      <tr><td>CAD and drawings</td><td><span class="chip met">rev B</span></td><td><span data-cad="comps">—</span> components with every fastener; drawing set DBF-DRW-001 rev B, 9 sheets (<a class="xref" href="#model3d">§2</a>)</td><td>As-built check against the first article</td></tr>
+      <tr><td>CAD and drawings</td><td><span class="chip met">rev B</span></td><td><span data-cad="comps">—</span> components with every fastener; drawing set DBF-DRW-001 rev C, 9 sheets (<a class="xref" href="#model3d">§2</a>)</td><td>As-built check against the first article</td></tr>
       <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (<a class="xref" href="#simulation">§9</a>)</td><td>FEA re-run on the rev B clamps (hand calcs within 15 %)</td></tr>
       <tr><td>Build</td><td><span class="chip met">written</span></td><td>Build manual DBF-MAN-001, cut, print and wiring lists, templates (<a class="xref" href="#build">§11</a>)</td><td>Parts on hand</td></tr>
       <tr><td>Flight software</td><td><span class="chip met">configured</span></td><td>Parameter file, setup guide, checklists, SITL A–G (<a class="xref" href="#controls">§12</a>)</td><td>Bench setup on the real board</td></tr>
@@ -283,7 +284,7 @@
   <p><code>params.mjs</code> checks the pusher-to-lift-disc clearance, currently <span data-k="CADP.discClear" data-d="0" data-m="1000"></span> mm (minimum 20 mm). Interference detection reported 280 contacts: 201 are the intended press fits of the heat-set inserts, and the remaining 79 are slivers totalling 0.59 cm³ where flat printed faces meet curved foam. It found two real clashes, both errors in the hardware spec, now corrected: the landing-leg screw must be M3 × 30 so the nut and head clear the tube, and the motor counterbore must be Ø7.5 to take the Ø7.0 washer.</p>
   <p class="src">cad/BuildVtol.cs, cad/params.mjs ← analysis/results.json and cad/hardware.json; checks in cad/verification.txt; outputs cad/model/VTOL_Concept.SLDASM, VTOL_Exploded.SLDASM, .STEP, .EASM (open the EASM in the free eDrawings viewer, or the STEP in any CAD tool)</p>
   <h3 id="m3-drw">Engineering drawings</h3>
-  <p>Drawing DBF-DRW-001, revision B, is a nine-sheet ANSI B set generated from the SOLIDWORKS model. Dimensions are driven from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. Every sheet carries a general tolerance block (printed parts ±0.5 % with a ±0.5 mm floor, cut tubes ISO 2768-m, hole positions Ø0.4, motor pattern Ø0.2), and the critical bores carry their fits. Select a sheet to view it at full size, or save the <a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revB.pdf">vector PDF</a>.</p>
+  <p>Drawing DBF-DRW-001, revision C, is a nine-sheet ANSI B set generated from the SOLIDWORKS model. Dimensions are driven from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. Every sheet carries a general tolerance block (printed parts ±0.5 % with a ±0.5 mm floor, cut tubes ISO 2768-m, hole positions Ø0.4, motor pattern Ø0.2), and the critical bores carry their fits. Select a sheet to view it at full size, or save the <a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revC.pdf">vector PDF</a>.</p>
   <div class="tbl"><table>
     <thead><tr><th>Sheet</th><th>Title</th><th>Contents</th></tr></thead>
     <tbody>
@@ -595,7 +596,7 @@
     <li><a href="docs/build/wiring.csv" data-dl="DBF-MAN-001_wiring.csv">Wiring list</a> <span>every circuit: from, to, gauge, connector, output (CSV)</span></li>
     <li><a href="templates.html">Hot-wire templates</a> <span>1:1 NACA 2415 and 0009 sections with registration marks and scale bar (SVG)</span></li>
     <li><a href="cad/hardware.json" data-dl="DBF-hardware.json">Fastener and fit data</a> <span>every screw, insert, nut and washer with its hole sizes and torque (JSON)</span></li>
-    <li><a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revB.pdf">Drawing set DBF-DRW-001</a> <span>vector PDF</span></li>
+    <li><a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revC.pdf">Drawing set DBF-DRW-001</a> <span>vector PDF</span></li>
   </ul>
 <h3 id="ft-fab">Fabrication notes</h3>
   <ul class="tight">

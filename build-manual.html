@@ -40,7 +40,7 @@ h3 .subno{font:inherit;color:var(--fg-3);margin-right:.2em;font-variant-numeric:
 figcaption .figno{font-weight:600;color:var(--fg)}
 h3{font-size:1.25rem;margin-top:2.75rem;margin-bottom:.4rem;padding-top:1rem;border-top:1px solid var(--line);scroll-margin-top:64px}
 h4{font-size:1rem;letter-spacing:.005em}
-p,li{max-width:70ch}
+p,li{max-width:64ch;text-wrap:pretty}
 p{margin:.65rem 0}
 b,strong{font-weight:600}
 a{color:var(--fg);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:var(--accent)}
@@ -79,16 +79,17 @@ table.revrec td:nth-child(2){white-space:nowrap}
 /* ---------- sections ---------- */
 main{min-width:0}
 section.sec{display:block;scroll-margin-top:64px}
-section.sec+section.sec{margin-top:96px}
+section.sec+section.sec{margin-top:0}
+section.sec[hidden]{display:none}
 [id]{scroll-margin-top:64px}
 .sechead{padding-top:18px;padding-bottom:14px;margin-bottom:16px;border-top:2px solid var(--ink);border-bottom:1px solid var(--line-2)}
 .sechead h2{font-size:2rem}
 .sechead + h3,.sechead + * h3:first-child{border-top:0}
-.verdict{font-size:1.125rem;line-height:1.62;color:var(--fg);max-width:74ch}
+.verdict{font-size:1.125rem;line-height:1.62;color:var(--fg);max-width:66ch}
 .lede{font-size:1.125rem;line-height:1.62}
 
 /* source citation */
-.src{font:.8125rem/1.55 var(--f-mono);color:var(--fg-3);margin:.35rem 0 1.3rem;max-width:none;word-break:break-word}
+.src{font:.8125rem/1.55 var(--f-mono);color:var(--fg-3);margin:.35rem 0 1.3rem;max-width:72ch;word-break:break-word}
 .src::before{content:"Source  ";white-space:pre;font-weight:500;color:var(--fg-2);letter-spacing:.02em}
 .src a{color:var(--fg-2)}
 .est{display:inline-block;font:600 .75rem/1 var(--f-body);letter-spacing:.04em;text-transform:uppercase;color:var(--warn);border:1px solid var(--warn);border-radius:var(--r-s);padding:2px 4px;vertical-align:2px}
@@ -119,14 +120,14 @@ section.sec+section.sec{margin-top:96px}
 .card .tag{float:right;margin-left:8px}
 
 /* decisions */
-.decision{border:1px solid var(--open-line);border-radius:var(--r);padding:16px 20px 14px;background:var(--surface);margin:16px 0}
+.decision{color:var(--fg);border:1px solid var(--open-line);border-radius:var(--r);padding:16px 20px 14px;background:var(--surface);margin:16px 0}
 .decision.red{border-color:var(--bad-line)}
-.decision b.q{display:block;font:600 1.125rem/1.35 var(--f-display);letter-spacing:.003em;margin-bottom:8px;max-width:70ch}
+.decision b.q{display:block;color:var(--fg);font:600 1.125rem/1.35 var(--f-display);letter-spacing:.003em;margin-bottom:8px;max-width:70ch}
 .decision b.q::before{content:"Open";display:inline-block;font:600 .8125rem/1 var(--f-body);color:var(--open);border:1px solid currentColor;border-radius:var(--r-s);padding:4px 6px;margin-right:10px;vertical-align:.18em}
 .decision.red b.q::before{content:"Blocking";color:var(--bad);background:var(--bad-soft)}
 .decision>div{max-width:78ch;color:var(--fg-2)}
 .decision>div b{color:var(--fg)}
-.decision .rec{margin-top:12px;padding:10px 14px;background:var(--surface-2);border-radius:var(--r-s);color:var(--fg)}
+.decision .rec{max-width:70ch;margin-top:12px;padding:10px 14px;background:var(--surface-2);border-radius:var(--r-s);color:var(--fg)}
 .decision.red .rec{background:var(--bad-soft)}
 .decision .src{margin:12px 0 0;padding-top:10px;border-top:1px solid var(--line)}
 
@@ -207,7 +208,7 @@ svg .axis{stroke:var(--line-3)} svg .grid{stroke:var(--line);stroke-dasharray:2 
 .viewer .ctl{display:flex;flex-wrap:wrap;align-items:center;gap:10px 24px;padding:10px 12px;border-top:1px solid var(--line-3);background:var(--surface)}
 .cgrp{display:flex;align-items:center;gap:10px}
 .cgl{font:600 .8125rem/1 var(--f-body);color:var(--fg-2)}
-.segbar{display:inline-flex;gap:3px;padding:3px;border:1px solid var(--line-3);border-radius:var(--r-s);background:var(--surface-2)}
+.segbar{display:inline-flex;gap:2px}
 .viewer .ctl button{min-height:44px;padding:0 15px;border:0;border-radius:var(--r-s);background:var(--surface);color:var(--fg-2);font:400 1rem var(--f-body);cursor:pointer;transition:background .12s,color .12s}
 .viewer .ctl button:hover{background:var(--surface-2);color:var(--fg)}
 .viewer .ctl button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
@@ -417,7 +418,7 @@ h4.subhd{margin:28px 0 8px;font-size:1rem;color:var(--fg-2)}
 .backlink{display:inline-flex;align-items:center;min-height:44px}
 
 /* audit: focus never hides under the running head; pressed toggles survive High Contrast */
-html{scroll-padding-top:64px}
+html{scroll-padding-top:120px}
 @media (forced-colors: active){[aria-pressed="true"]{forced-color-adjust:none;background:Highlight!important;color:HighlightText!important;outline:2px solid Highlight}}
 /* audit: grid minimums never exceed the column at large text */
 #tocList{grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr))}
@@ -426,11 +427,80 @@ dl.terms{grid-template-columns:repeat(auto-fill,minmax(min(100%,19rem),1fr))}
 table.revrec td:nth-child(2){white-space:normal}
 @media (max-width:360px){.viewer .ctl .segbar button{padding:0 6px}}
 
+/* ---------- binder: the report reads one chapter at a time ---------- */
+.runhead{display:none}
+body:not(.home) header.top, body:not(.home) .toc, body:not(.home) .closing{display:none}
+.binder{position:sticky;top:0;z-index:12;margin:28px 0 30px;background:var(--bg);border-bottom:1px solid var(--line-2);padding-top:calc(env(safe-area-inset-top,0px))}
+body:not(.home) .binder{margin-top:0}
+.ptabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid var(--ink)}
+.ptabs a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:52px;padding:6px 14px;border:1px solid var(--line-2);border-bottom:0;margin-right:-1px;background:var(--surface);color:var(--fg-2);text-decoration:none;border-radius:var(--r) var(--r) 0 0}
+.ptabs a .pn{font-size:.8125rem;color:var(--fg-3)}
+.ptabs a .pt{font:600 1rem/1.2 var(--f-display)}
+.ptabs a:hover{color:var(--fg)}
+.ptabs a.on{background:var(--ink);border-color:var(--ink);color:var(--ink-fg)}
+.ptabs a.on .pn{color:var(--ink-fg);opacity:.8}
+.cstrip{display:flex;gap:2px;overflow-x:auto;scrollbar-width:thin;padding:0}
+.cstrip a{flex:none;display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;color:var(--fg-2);text-decoration:none;font:600 1rem/1.2 var(--f-display);border-bottom:2px solid transparent;white-space:nowrap}
+.cstrip a .n{color:var(--fg-3);font-variant-numeric:tabular-nums}
+.cstrip a:hover{color:var(--fg)}
+.cstrip a.on{color:var(--fg);border-bottom-color:var(--accent)}
+.cstrip a[hidden]{display:none}
+/* previous / next at the foot of a chapter */
+.pnext{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:56px 0 24px;padding-top:18px;border-top:2px solid var(--ink)}
+.pnext a{display:flex;flex-direction:column;gap:4px;min-height:44px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r);background:var(--surface);color:var(--fg);text-decoration:none}
+.pnext a:hover{border-color:var(--fg-2)}
+.pnext a.next{text-align:right;grid-column:2}
+.pnext .dir{font-size:.8125rem;color:var(--fg-3)}
+.pnext .t{font:600 1.0625rem/1.3 var(--f-display)}
+@media (max-width:560px){
+  .ptabs a{padding:6px 8px;min-height:48px}
+  .ptabs a .pt{font-size:.875rem}
+  .cstrip a{padding:0 10px;font-size:.875rem}
+  .pnext{grid-template-columns:minmax(0,1fr)}
+  .pnext a.next{grid-column:1}
+}
+@media print{ .binder,.pnext{display:none!important} body:not(.home) header.top, body:not(.home) .toc, body:not(.home) .closing{display:block!important} section.sec[hidden]{display:block!important} }
+/* ---------- flow visualisation (aerodynamics) ---------- */
+.flowviz{margin:18px 0 8px;border:1px solid var(--line-3);border-radius:var(--r);background:var(--surface);overflow:hidden}
+.fv-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 12px;border-bottom:1px solid var(--line-3)}
+.fv-bar .seg{border:0;background:none;padding:0;gap:2px}
+.fv-bar .seg button{padding:0 12px;background:var(--surface-2)}
+.fv-bar .seg button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
+.fv-bar .seg[hidden]{display:none}
+.fv-play{margin-left:auto;min-height:44px;padding:0 16px;border:1px solid var(--line-2);border-radius:var(--r-s);background:var(--surface);color:var(--fg-2);font:500 .875rem var(--f-body);cursor:pointer}
+.fv-play:hover{color:var(--fg);border-color:var(--fg-2)}
+.fv-canvas{display:block;width:100%;aspect-ratio:2.22;background:var(--surface);touch-action:pan-y}
+.flowviz[data-mode="3d"] .fv-canvas{aspect-ratio:16/9;touch-action:none;cursor:grab}
+.flowviz[data-mode="3d"] .fv-canvas:active{cursor:grabbing}
+.fv-foot{display:grid;grid-template-columns:minmax(220px,340px) minmax(0,1fr);gap:12px 24px;align-items:start;padding:12px 14px 14px;border-top:1px solid var(--line-3)}
+.fv-legend{display:flex;flex-direction:column;gap:5px}
+.fvl-t{font-size:.8125rem;color:var(--fg-2)}
+.fvl-bar{display:block;height:10px;border:1px solid var(--line-2);border-radius:var(--r-s)}
+.fvl-k{display:flex;justify-content:space-between;font-size:.8125rem;color:var(--fg-3);font-variant-numeric:tabular-nums}
+.fvl-k.fvl-abs{position:relative;display:block;height:1.2em}
+.fvl-k.fvl-abs span{position:absolute;top:0;transform:translateX(-50%)}
+.fvl-k.fvl-abs span:first-child{transform:none}
+.fvl-k.fvl-abs span:last-child{transform:translateX(-100%)}
+.fv-read{margin:0;font-size:.875rem;color:var(--fg-2);max-width:72ch}
+@media (max-width:560px){
+  .fv-canvas{aspect-ratio:1.78}
+  .fv-foot{grid-template-columns:minmax(0,1fr)}
+  .fv-play{margin-left:0}
+}
+@media print{ .fv-bar{display:none} }
+/* viewer segmented groups sit straight on the bar (no inner tray); buttons carry the tint */
+.viewer .ctl .segbar button{background:var(--surface-2)}
+.viewer .ctl .segbar button:hover{background:var(--surface-3)}
+.viewer .ctl .segbar button[aria-pressed="true"]{background:var(--ink);color:var(--ink-fg)}
+
 /* ---------- companion document page ---------- */
 .doc h2{margin-top:72px;padding-top:16px;border-top:2px solid var(--ink);font-size:1.875rem}
 .doc h3{margin-top:40px;padding-top:12px;border-top:1px solid var(--line-2);font-size:1.25rem}
 .doc h4{margin-top:28px;font-size:1.125rem}
-.doc p,.doc li{max-width:72ch}
+.doc p,.doc li{max-width:64ch;text-wrap:pretty}
+.doc td{text-wrap:pretty}
+.doc table{width:auto;max-width:100%}
+.doc td:not(.n){max-width:60ch}
 .doc p,.doc li,.doc dd,.doc td,.doc blockquote{overflow-wrap:break-word}
 .doc ul,.doc ol{padding-left:1.4em}
 .doc li{margin:.25em 0}
@@ -451,7 +521,7 @@ table.revrec td:nth-child(2){white-space:normal}
 .doc dl.stepf{margin:0;display:grid;gap:0}
 .doc dl.stepf>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .doc dl.stepf dt{font-weight:600;font-size:.875rem;color:var(--fg-2);padding-top:2px}
-.doc dl.stepf dd{margin:0;max-width:72ch}
+.doc dl.stepf dd{margin:0;max-width:64ch;text-wrap:pretty}
 .doc dl.stepf .chk dt{color:var(--ok)}
 .doc dl.stepf .warn dt{color:var(--warn)}
 .doc ol.proc{margin:0;padding-left:1.3em}
@@ -489,7 +559,7 @@ table.revrec td:nth-child(2){white-space:normal}
 <div class="tbl"><table><thead><tr><th>Field</th><th>Value</th></tr></thead><tbody>
 <tr><td>Document</td><td>DBF-MAN-001</td></tr>
 <tr><td>Revision</td><td><b>B, 2026-10-21</b> (Rev A same day; Rev B folds in design v0.4 / drawing DBF-DRW-001 rev B: wing 0.632 m², chord 263 mm; booms 960.8 + 485.9 mm; slip-fit joiner with stops; leg fairings; rudders; F05 M3 × 30; Ø7.5 motor counterbores; BOM v0.4; firmware output map; ballast rule)</td></tr>
-<tr><td>Design baseline</td><td>C0 4-lift twin boom, v0.4 sizing (<code>analysis/results.json</code>, <code>cad/README.md</code> "Model content"), hardware rev B (<code>cad/hardware.json</code>, <code>docs/research/hardware-spec.md</code> incl. "CAD implementation notes (rev B)"), drawing set DBF-DRW-001 rev B, 9 sheets (<code>cad/drawings/</code>), aero inputs <code>docs/research/aerodynamics.md</code>, firmware package <code>firmware/</code> (<code>README.md</code>, <code>vtol_c0.param</code>).</td></tr>
+<tr><td>Design baseline</td><td>C0 4-lift twin boom, v0.4 sizing (<code>analysis/results.json</code>, <code>cad/README.md</code> "Model content"), hardware rev B (<code>cad/hardware.json</code>, <code>docs/research/hardware-spec.md</code> incl. "CAD implementation notes (rev B)"), drawing set DBF-DRW-001 rev C, 9 sheets (<code>cad/drawings/</code>), aero inputs <code>docs/research/aerodynamics.md</code>, firmware package <code>firmware/</code> (<code>README.md</code>, <code>vtol_c0.param</code>).</td></tr>
 <tr><td>Scope</td><td>Everything from opening the boxes to a flight-ready aircraft on the bench: receiving, printing, tube work, foam cores, skins and control surfaces, tail, booms, pod, electrical, avionics, firmware hand-off, weight and balance, final inspection, transport breakdown. Flight testing is in review <a class="rref" href="VTOL-Review.html#flighttest">§14</a> and <code>firmware/checklists.md</code> and is not repeated.</td></tr>
 <tr><td>Companion files</td><td><code>docs/build/cut-list.csv</code>, <code>docs/build/print-list.csv</code>, <code>docs/build/wiring.csv</code>, <code>docs/build/templates/*.svg</code> (1:1 hot-wire templates from <code>docs/build/templates/make_templates.py</code>, which reads <code>cad/params.txt</code>), <code>cad/hardware.json</code> (fastener IDs F01–F13, N01–N04, W01, I01, fits FT01–FT11), <code>cad/verification.txt</code> (part masses).</td></tr>
 <tr><td>Drawing sheets (rev B)</td><td>1 general arrangement (breakdown and ballast notes) · 2 exploded assembly · 3 parts list · 4 wing panel, saddle, wing-bolt pillar · 5 motor mount and boom splice · 6 boom, gear and tail clamps · 7 tube cut list, landing leg, leg fairing · 8 fastener schedule and torques · 9 printed hardpoints and trays (<code>cad/README.md</code> "Drawing set").</td></tr>
