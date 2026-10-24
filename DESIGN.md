@@ -369,12 +369,14 @@ The type scale has ten steps: 12, 13, 14, 16, 18, 20, 24, 30, 32 and 42 px. Don'
 
 ## Layout
 
-The page is one continuous engineering report, read top to bottom like a printed one. There is no sidebar and no tab switching; every chapter is on the page at once.
+The report reads one chapter at a time, like turning to a tab in a bound report. A binder bar holds the three Parts and the chapters of the current Part; print shows every chapter in order.
 - **Width and gutters:** a 1040px maximum page, centred, with 24px side gutters (16px at 560px and below). Prose stops at 70ch; tables, figures and the 3D model use the full column.
 - **Cover:** a report title page: a mast line (organisation and programme left, document number and issue right) over a Frame Rule hairline, the title and subtitle, a one-sentence document reference naming the document (bold), issue, date and the generated design revision, then the revision record beside the approval signature lines. Below 760px the approval block stacks under the record. A 2px ink rule closes the cover.
 - **Contents page:** grouped into three Parts (The decision, The design, Build and fly), one column per Part (stacking on narrow screens). Each Part has a small numeral line ("Part I" to "Part III") above its name, then a 2px ink rule and its chapters as 44px rows: number in Ink Pencil, title in Subhead. Companion pages use a two-level contents: chapters, with their work packages as wrapped links underneath, and appendices (revision notes, inconsistency logs) lettered and placed last.
-- **Running head:** once the contents scrolls away, a thin Vellum bar fixed to the top shows the document number and issue, the chapter being read, and a link back to Contents. It slides in, never covers content (anchors carry a 64px scroll margin), and drops the document number on phones.
-- **Chapters:** each opens with a 2px ink rule and its numbered heading, closed by a Frame Rule, with 96px of space before it.
+- **Binder:** a sticky bar under the cover. Top row: three Part tabs ("Part I" numeral over the Part name) in a three-column grid on a 2px ink rule; the current Part fills with Drafting Ink. Second row: the current Part's chapters as a sideways-scrolling strip of 44px links, number in Ink Pencil, the open chapter underlined with a 2px International Orange rule. Anchors carry a 120px scroll margin so the bar never covers a target.
+- **Routing:** each chapter is its own hash route; links and § cross-references open the chapter that holds their target and move focus to it, and the browser's Back button returns. The home route shows the cover, contents, overview and closing; any other chapter hides them.
+- **Previous / next:** each chapter ends with two framed cards (Previous left, Next right; stacked on phones) under a 2px ink rule.
+- **Chapters:** each opens with a 2px ink rule and its numbered heading, closed by a Frame Rule.
 - **Summary first:** each chapter leads with its verdict paragraph, key parameters and charts. Supporting detail sits behind named disclosures: long tables ("Show the full table · 43 rows"), the facts behind each decision card, history.
 - **Overview order:** verdict and key parameters, the general-arrangement drawing, decisions needed (the first card is the explicit approval ask), requirement status, the consolidated measurement list, and a glossary.
 - **Closing:** the report ends with the ask and a dated list of next steps under a 2px ink rule.
@@ -451,6 +453,13 @@ Every corner is square or nearly so: a 2px radius on controls, cards, chips, ste
 - **Controls:** a Sheet bar under the stage with two captioned segmented groups, View (Isometric, Top, Side, Front) and Display (X-ray, Explode, Edges); the model name and revision sit at the right end (below on phones).
 - **Parts list:** a disclosure split into parts and fasteners, one 44px button each; hover or focus highlights the part in International Orange and shows a framed label (Subhead name, Small description).
 - **Behaviour:** renders on demand, loads only when its chapter is reached, shows a short offline note and "Try again" when the library fails (controls hidden), and on touch screens takes gestures only after a "Tap to rotate the model" tap. Camera moves and explode jump instantly under reduced motion.
+
+### Flow visualisation
+- **Frame:** one Sheet block with a Construction Line frame: a control bar, the canvas, and a foot holding the legend and a one-line readout.
+- **Controls:** borderless segmented groups inside the bar (the frame is the only box): view (Wing section, 2-D CFD / Whole aircraft, 3-D); for the section, angle of attack and Speed / Pressure; for the aircraft, camera presets. Play/Pause sits at the right end (wraps on phones).
+- **Section view:** the solver's field drawn as a diverging ramp on the dark ground (cool #6f9fd0 below the reference, the ground-adjacent #32373d at it, warm #e09a5c above), the aerofoil in Sheet Tint with an Ink Graphite outline, white particle traces fading over ten steps, and labels on Sheet plates kept inside the canvas. The free stream runs left to right; the aerofoil pitches to the chosen angle.
+- **Aircraft view:** painter-sorted lifting-surface panels in Construction Line grey with streamlines on the same ramp through a mid grey (#5c646e) so far-field lines stay visible; drag or arrow keys orbit.
+- **Behaviour:** data parse and animation start only when the figure scrolls into view and stop when it leaves; under reduced motion the section shows static streamlines and the aircraft view no particles. The ramp colours are data encodings, not palette roles.
 
 ### Shop files
 - A ruled list: file link (600, International Orange Rule underline) and a Small description, stacking on phones.

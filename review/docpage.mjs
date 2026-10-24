@@ -160,7 +160,10 @@ ${css}
 .doc h2{margin-top:72px;padding-top:16px;border-top:2px solid var(--ink);font-size:1.875rem}
 .doc h3{margin-top:40px;padding-top:12px;border-top:1px solid var(--line-2);font-size:1.25rem}
 .doc h4{margin-top:28px;font-size:1.125rem}
-.doc p,.doc li{max-width:72ch}
+.doc p,.doc li{max-width:64ch;text-wrap:pretty}
+.doc td{text-wrap:pretty}
+.doc table{width:auto;max-width:100%}
+.doc td:not(.n){max-width:60ch}
 .doc p,.doc li,.doc dd,.doc td,.doc blockquote{overflow-wrap:break-word}
 .doc ul,.doc ol{padding-left:1.4em}
 .doc li{margin:.25em 0}
@@ -181,7 +184,7 @@ ${css}
 .doc dl.stepf{margin:0;display:grid;gap:0}
 .doc dl.stepf>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .doc dl.stepf dt{font-weight:600;font-size:.875rem;color:var(--fg-2);padding-top:2px}
-.doc dl.stepf dd{margin:0;max-width:72ch}
+.doc dl.stepf dd{margin:0;max-width:64ch;text-wrap:pretty}
 .doc dl.stepf .chk dt{color:var(--ok)}
 .doc dl.stepf .warn dt{color:var(--warn)}
 .doc ol.proc{margin:0;padding-left:1.3em}

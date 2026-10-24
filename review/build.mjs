@@ -60,6 +60,14 @@ const IMG = {}; for (const [k, f] of Object.entries(imgs)) { try { IMG[k] = b64(
 for (let i = 1; i <= 12; i++) { try { IMG['drw' + i] = 'data:image/png;base64,' + readFileSync(new URL(`../cad/drawings/DBF-DRW-001_sheet${i}.png`, import.meta.url)).toString('base64'); } catch (e) { if (i <= 5) console.log('missing drawing sheet', i); } }
 const BASIS_VER = (r('../docs/DESIGN-BASIS.md').match(/\(v(\d+\.\d+(?:\.\d+)?)/) || [])[1];
 if (!BASIS_VER) throw new Error('design-basis version not found');
+// flow visualisation data (analysis/aero/flowfield_2d.py, flowfield_3d.py); 3-D trimmed to 4 decimals
+const FLOW2 = (() => { const f = new URL('../analysis/aero/out/flowviz/flow2d.json', import.meta.url); if (!existsSync(f)) { console.log('flow2d.json missing'); return null; } const d = JSON.parse(readFileSync(f, 'utf8'));
+  // repack the Int16 fields as Int8 for the page (u, v to 1/64 of V∞, Cp to 1/24): finer than the colour ramp resolves, and half the bytes
+  const i8 = (b64, from, to) => { const s16 = new Int16Array(Uint8Array.from(Buffer.from(b64, 'base64')).buffer); const o = new Int8Array(s16.length); for (let k = 0; k < s16.length; k++) o[k] = Math.max(-127, Math.min(127, Math.round(s16[k] / from * to))); return Buffer.from(o.buffer).toString('base64'); };
+  d.angles.forEach(a => { delete a.cp_wall; a.u = i8(a.u, a.u_scale, 64); a.v = i8(a.v, a.v_scale, 64); a.cp = i8(a.cp, a.cp_scale, 24); a.u_scale = 64; a.v_scale = 64; a.cp_scale = 24; a.int8 = true; });
+  return d; })();
+const FLOW3 = (() => { const f = new URL('../analysis/aero/out/flowviz/flow3d.json', import.meta.url); if (!existsSync(f)) { console.log('flow3d.json missing'); return null; } const d = JSON.parse(readFileSync(f, 'utf8')); const q = v => Math.round(v * 1e4) / 1e4;
+  d.streamlines = d.streamlines.map(l => ({ xyz: l.xyz.map(q), s: l.s.map(v => Math.round(v * 1e3) / 1e3) })); for (const g of Object.values(d.panels)) if (g && g.quads) { g.quads = g.quads.map(qq => qq.map(q)); delete g.gamma; } return d; })();
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
 const html = `<title>Lift + Cruise VTOL Review</title>
 <meta name="description" content="Concept-stage engineering design review of a student lift + cruise VTOL">
@@ -68,6 +76,8 @@ const html = `<title>Lift + Cruise VTOL Review</title>
 <style>
 ${r('./src/style.css')}
 </style>
+${FLOW2 ? `<script type="application/json" id="flow2dData">${JSON.stringify(FLOW2).replace(/</g, '\\u003c')}</script>` : ''}
+${FLOW3 ? `<script type="application/json" id="flow3dData">${JSON.stringify(FLOW3).replace(/</g, '\\u003c')}</script>` : ''}
 <script type="application/json" id="meshData">${JSON.stringify(MESH).replace(/</g, '\\u003c')}</script>
 ${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER).split('{{BASIS_VER}}').join(BASIS_VER)}
 <script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; let MESH = null; const MESH_META = ${JSON.stringify({ tris: MESH.tris, comps: MESH.comps.length, files: new Set(Object.keys(MESH.parts).map(k => k.split('~')[0])).size })}; const TRADE = ${JSON.stringify(TRADE)}; const AEROD = ${JSON.stringify(AEROD)}; const TESTS = ${JSON.stringify(TESTS)}; const BUILD = ${JSON.stringify(BUILD)}; const HW = ${JSON.stringify(HW)};</script>
@@ -78,6 +88,7 @@ ${r('../analysis/model.js')}
 ${r('./src/cadviewer.js')}
 </script>
 <script>
+${r('./src/flowviz.js')}
 ${r('./src/app.js')}
 </script>
 `;

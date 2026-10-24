@@ -19,3 +19,7 @@ out/su2/**/history.csv
 out/su2/**/surface_flow.csv
 out/su2/**/*.log
 out/run_*.log
+
+# flow-visualisation raw solver output (flowfield_2d.py): volume CSV ~30 MB per case; the compact fields live in out/flowviz/
+out/su2_flow/
+out/run_flow*.log

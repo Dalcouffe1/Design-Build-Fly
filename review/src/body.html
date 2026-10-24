@@ -25,6 +25,7 @@
 </header>
 <div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-RPT-001 · Issue 3</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
 <nav class="toc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol id="tocList"></ol></nav>
+<div class="binder" id="binder"><nav class="ptabs" id="ptabs" aria-label="Report parts"></nav><nav class="cstrip" id="cstrip" aria-label="Chapters in this part"></nav></div>
 <main id="main">
 <section class="sec" id="overview" data-title="Overview" data-part="1" data-n="0">
   <div class="sechead"><h2><span class="secno">0</span> Overview</h2></div>
@@ -366,6 +367,20 @@
   <details class="more"><summary>SU2 against XFOIL and NeuralFoil, angle by angle</summary>
   <div class="tbl"><table id="cfdTable"><thead><tr><th class="n">α</th><th class="n">XFOIL CL</th><th class="n">SU2 SA CL</th><th class="n">SU2 SST-LM CL</th><th class="n">XFOIL CD</th><th class="n">SU2 SA CD</th><th class="n">SU2 SST-LM CD</th></tr></thead><tbody></tbody></table></div>
   </details>
+  <h3 id="ae-flow">How the air moves over the wing</h3>
+  <p id="flowNote">The section view is the SU2 solution itself: each white trace is a particle carried by the computed velocity field around the NACA 2415, on a background coloured by local speed or pressure. The aircraft view traces streamlines through the vortex-lattice model of the wing, tail and fins at cruise trim.</p>
+  <figure class="flowviz" id="flowViz">
+    <div class="fv-bar">
+      <div class="seg" role="group" aria-label="Flow view"><button type="button" data-fv="2d">Wing section, 2-D CFD</button><button type="button" data-fv="3d">Whole aircraft, 3-D</button></div>
+      <div class="seg fv-2d" id="fvAlpha" role="group" aria-label="Angle of attack"></div>
+      <div class="seg fv-2d" role="group" aria-label="Colour by"><button type="button" data-ff="speed">Speed</button><button type="button" data-ff="cp">Pressure</button></div>
+      <div class="seg fv-3d" role="group" aria-label="Camera" hidden><button type="button" data-fcam="iso">Three-quarter</button><button type="button" data-fcam="rear">From behind</button><button type="button" data-fcam="top">Top</button></div>
+      <button type="button" class="fv-play" id="fvPause" aria-pressed="false">Pause</button>
+    </div>
+    <canvas id="fvCanvas" class="fv-canvas" tabindex="0" role="img" aria-label="Flow visualisation"></canvas>
+    <div class="fv-foot"><div class="fv-legend" id="fvLegend"></div><p class="fv-read" id="fvRead" aria-live="polite"></p></div>
+  </figure>
+  <p class="src">2-D: analysis/aero/flowfield_2d.py → out/flowviz/flow2d.json (SU2 8.5.0 incompressible RANS, Spalart–Allmaras fully turbulent, fine mesh unless labelled; field resampled to a 220 × 128 grid; motion slowed for viewing). 3-D: analysis/aero/flowfield_3d.py → out/flowviz/flow3d.json (AeroSandbox 4.2.10 vortex lattice, 120 streamlines, RK4). Static renders: analysis/aero/plots/flow_*.png. Method, convergence and limits: docs/research/aerodynamics.md §11</p>
   <h3 id="ae-stab">Stability</h3>
   <p id="stabNote"></p>
   <details class="more"><summary>AVL stability derivatives at cruise trim</summary>

@@ -39,10 +39,10 @@ function runningHead(){
   update();
 }
 // in-page links move focus to their target so keyboard and screen-reader users land where the page scrolled
-document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l) return;
-  const t=document.getElementById(l.getAttribute('href').slice(1)); if(!t) return;
-  const f = t.matches('section.sec') ? t.querySelector('h2') : (l.classList.contains('skip') ? (t.querySelector('h2')||t) : t);
-  requestAnimationFrame(()=>{ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); }); });
+// in-page links go through the router (one chapter shows at a time); focus follows the content that appears
+document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l || e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey) return;
+  const id=l.getAttribute('href').slice(1); const t=document.getElementById(id); if(!t) return;
+  e.preventDefault(); if(location.hash!=='#'+id) history.pushState(null,'','#'+id); route(id, true); });
 
 // ---------- data binding ----------
 function fill(){
@@ -480,7 +480,7 @@ function touchGate(view){
   if(window.IntersectionObserver) new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) arm(false); })).observe(view);
 }
 
-function redrawAll(){ drawTrade(); drawDrag(); drawPolar(); drawTornado(); drawPack(); drawCap(); drawDuty(); drawCG(); drawState(); drawGantt(); if(CV && CV.refresh) CV.refresh(); }
+function redrawAll(){ drawTrade(); drawDrag(); drawPolar(); drawTornado(); drawPack(); drawCap(); drawDuty(); drawCG(); drawState(); drawGantt(); if(CV && CV.refresh) CV.refresh(); FlowViz.redraw(); }
 function lazyCad(){ const v=$('#cadView'); if(!v) return;
   if(!('IntersectionObserver' in window)){ initCad(); return; }
   const io=new IntersectionObserver(es=>{ if(es.some(x=>x.isIntersecting)){ io.disconnect(); initCad(); } }, {rootMargin:'600px 0px'}); io.observe(v); }
@@ -695,8 +695,8 @@ let rzT=0; window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT=setTim
 
 // ---------- print: paper palette for the charts, every disclosure open ----------
 let printOpened=[];
-addEventListener('beforeprint', ()=>{ document.documentElement.classList.add('printing'); printOpened=[...document.querySelectorAll('details:not([open])')]; printOpened.forEach(d=>d.open=true); redrawAll(); });
-addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('printing'); printOpened.forEach(d=>d.open=false); printOpened=[]; redrawAll(); });
+addEventListener('beforeprint', ()=>{ secs.forEach(s=>s.hidden=false); document.documentElement.classList.add('printing'); printOpened=[...document.querySelectorAll('details:not([open])')]; printOpened.forEach(d=>d.open=true); redrawAll(); });
+addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('printing'); printOpened.forEach(d=>d.open=false); printOpened=[]; curSec=null; route(); });
 
 // ---------- shop files: inside the claude.ai viewer, plain download links do nothing ----------
 // so links marked data-dl are fetched and offered through the downloads capability (the viewer confirms each save);
@@ -706,6 +706,38 @@ addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('
     try{ const res=await fetch(link.getAttribute('href')); if(!res.ok) throw new Error('fetch '+res.status); await dl.save({filename:link.dataset.dl, data:await res.blob()}); }
     catch(err){ if(err && err.code==='declined') return; link.removeAttribute('data-dl'); } }); })();
 
+// ---------- binder: part tabs, chapter strip, one chapter at a time ----------
+const PART_SHORT = {1:'The decision', 2:'The design', 3:'Build and fly'};
+function buildBinder(){
+  const pt=$('#ptabs'), cs=$('#cstrip'); if(!pt||!cs) return;
+  [1,2,3].forEach(p=>{ const first=secs.find(s=>s.dataset.part===String(p)); if(!first) return;
+    pt.insertAdjacentHTML('beforeend', `<a href="#${first.id}" data-part="${p}"><span class="pn">Part ${['I','II','III'][p-1]}</span> <span class="pt">${PART_SHORT[p]}</span></a>`); });
+  secs.forEach(s=>cs.insertAdjacentHTML('beforeend', `<a href="#${s.id}" data-part="${s.dataset.part}" data-sec="${s.id}"><span class="n">${s.dataset.n}</span> ${s.dataset.title}</a>`));
+  // previous / next at the foot of every chapter
+  secs.forEach((s,i)=>{ const pv=secs[i-1], nx=secs[i+1];
+    s.insertAdjacentHTML('beforeend', `<nav class="pnext" aria-label="Chapter navigation">${pv?`<a class="prev" href="#${pv.id}"><span class="dir">Previous</span><span class="t">${pv.dataset.n} ${pv.dataset.title}</span></a>`:'<span></span>'}${nx?`<a class="next" href="#${nx.id}"><span class="dir">Next</span><span class="t">${nx.dataset.n} ${nx.dataset.title}</span></a>`:''}</nav>`); });
+}
+let curSec=null;
+function route(hash, focus){
+  const id=(hash||location.hash.slice(1)||'').trim(); let t=id?document.getElementById(id):null;
+  let sec = t ? (t.matches('section.sec') ? t : t.closest('section.sec')) : null;
+  const home = !sec || sec.id==='overview' || id==='contents' || id==='main';
+  if(!sec) sec=$('#overview');
+  secs.forEach(s=>{ s.hidden = s!==sec; });
+  document.body.classList.toggle('home', home);
+  const part=sec.dataset.part;
+  $$('#ptabs a').forEach(x=>{ const on=x.dataset.part===part; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','true'); else x.removeAttribute('aria-current'); });
+  $$('#cstrip a').forEach(x=>{ x.hidden = x.dataset.part!==part; const on=x.dataset.sec===sec.id; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','page'); else x.removeAttribute('aria-current'); });
+  if(curSec!==sec){ curSec=sec; redrawAll(); a11yNames(); }
+  requestAnimationFrame(()=>{
+    const target = (t && t!==sec && !t.matches('section.sec')) ? t : (home && (!id || id==='overview') ? null : sec);
+    if(target){ target.scrollIntoView({block:'start'}); } else window.scrollTo(0,0);
+    if(focus){ const f = target ? (target.matches('section.sec') ? target.querySelector('h2') : target) : sec.querySelector('h2'); if(f){ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); } }
+    const cs=$('#cstrip a.on'); if(cs) cs.scrollIntoView({block:'nearest',inline:'center'});
+  });
+}
+addEventListener('popstate', ()=>route());
+
 // ---------- boot ----------
 numberHeadings(); buildNav(); xrefs(); fill(); derived(); tables(); hardware(); tradeText(); aeroText(); buildText(); testText(); drawings(); numberFigures(); sortable(); summarise(); measurements(); a11yNames();
 set('cadTris', MESH_META.tris.toLocaleString('en-US')); set('cadComps', MESH_META.comps); set('escHoverA', fmt(s0.I_hover/4,1));
@@ -713,5 +745,5 @@ $$('[data-cad="parts"]').forEach(e=>e.textContent=MESH_META.files); $$('[data-ca
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
-redrawAll(); runningHead(); lazyCad();
+buildBinder(); route(); lazyCad(); FlowViz.lazy();
 })();

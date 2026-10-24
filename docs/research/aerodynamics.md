@@ -175,6 +175,8 @@ Of the 29 cases, 6 produced no usable result and 7 of the remaining 23 settled t
 Wall-clock: L1 ≈ 11–13 min, L2 ≈
 12–22 min, L3 ≈ 38–43 min per case at 4 threads with 5 cases sharing 20 logical CPUs.
 
+Flow-field pictures of these cases (0° to 15°, fine mesh) and 3-D streamlines over the aircraft: §11.
+
 ## 7. Drag build-up at cruise
 
 `analysis/aero/out/drag_buildup.json`; `plots/drag_breakdown.png`, `plots/drag_pie.png`,
@@ -272,3 +274,117 @@ BOM line yet, EST < $10). The 10 min floor corresponds to ≤ 436 W electrical c
 - M4 CG and static margin: weigh at the two legs, confirm 28 % ± 2 % MAC with and without the
   payload allowance; fly a trim-speed sweep to check dδe/dCL is negative (positive = unstable).
 - M5 Gear fairing A/B: time-to-climb or watt-meter at 20 m/s with and without the fairings.
+
+## 11. Flow visualisation (2026-10-24)
+
+The client asked to see the air move, not only the coefficients. Two data sets feed the review page's
+animated flow views; both are produced by scripts in `analysis/aero/` and written to
+`analysis/aero/out/flowviz/` (compact JSON, tracked) with reference images in `analysis/aero/plots/`.
+Raw solver volume files (about 30 MB per case) stay in `out/su2_flow/` and are git-ignored.
+
+### 11.1 2-D section flow, NACA 2415 at the cruise Reynolds number (`flowfield_2d.py`)
+
+**Method.** Same solver and numerics as the converged cases of §6 (SU2 8.5.0 win64-omp, INC_RANS,
+FDS + MUSCL with the Venkatakrishnan limiter frozen after 300 iterations, implicit Euler, CFL 2
+adaptive to 50; Spalart–Allmaras, fully turbulent; chord 1, Re 3.60×10⁵ through the constant
+viscosity), with the volume solution written as the ASCII restart (`OUTPUT_FILES= (SURFACE_CSV, CSV)`),
+which SU2 8.5 writes with PointID, x, y, pressure and velocity. All five angles ran on the fine gmsh
+4.15.2 mesh L3 (267,902 cells, 143,665 nodes, quad boundary layer y⁺ < 1), five concurrent cases at
+4 OpenMP threads each on 20 logical CPUs; the 15° case used the high-angle settings of `su2_2d.py`
+(CFL 1 adaptive to 20, limiter frozen after 800 iterations, 6,000 iterations). The field is
+resampled onto a 220 × 128 grid in chord units (x −0.6 to 1.8, y −0.7 to 0.7, spacing 0.011 c) by
+linear interpolation on the solver's own triangulation (quads split), so grid points inside the
+aerofoil fall in no triangle and are masked exactly; the aerofoil outline is the chained wall-node
+loop of the mesh (478 nodes). SU2 writes the incompressible solution non-dimensionally (far-field
+speed in the file 1.0000 at every angle), so u/V∞ and v/V∞ are read directly and Cp = 2 (p − p∞).
+
+| α | CL | CD | CM c/4 | Iterations | Force history | Cp at stagnation | Cp min (wall) | Upper-surface separation (est.) | Wall-clock |
+|---|---|---|---|---|---|---|---|---|---|
+| 0° | 0.202 | 0.0142 | 0.042 | 2,804 (Cauchy stop) | steady, σ(CL) 5×10⁻⁶ | 1.03 | −0.65 | none to 0.995 c | 74 min |
+| 4° | 0.620 | 0.0164 | 0.039 | 2,385 (Cauchy stop) | steady, σ(CL) 1×10⁻⁵ | 1.02 | −1.22 | none | 69 min |
+| 8° | 1.009 | 0.0227 | 0.034 | 2,275 (Cauchy stop) | steady, σ(CL) 2×10⁻⁴ | 1.01 | −2.51 | none | 67 min |
+| 12° | 1.277 | 0.0367 | 0.021 | 3,867 (Cauchy stop) | steady, σ(CL) 2×10⁻⁴ | 1.00 | −4.26 | x/c ≈ 0.87 | 82 min |
+| 15° | 1.294 | 0.0668 | 0.020 | 6,000 (full count) | steady, σ(CL) 9×10⁻⁴ | 1.01 | −5.13 | x/c ≈ 0.59 | 94 min |
+
+Source: `out/flowviz/flow2d.json` (per-angle `CL`, `CD`, `CM`, `iters`, `CL_std_last300`,
+`Cp_stag_max`, `Cp_min_wall`, `x_sep_upper_est`, `wall_s`); σ(CL) is the standard deviation over the
+last 300 iterations, the steady criterion of `su2_2d.parse_case` (< 2×10⁻³). Wall-clock is longer
+than the §6 figures because the five cases ran at the same time as the 3-D streamline job.
+
+**Convergence.** All five cases converged on L3: four stopped on the Cauchy criterion, the 15° case ran
+its full 6,000 iterations with the force history steady over the last 300 (σ(CL) 9×10⁻⁴, inside the
+criterion). No case fell back to the coarse mesh, so no field is a time average or a labelled last
+iterate; the `converged` flag and `field_note` in the JSON record this per angle. The new points sit
+on the §6 fine-mesh curve: L3 gave CL 0.413 at 2° and 1.168 at 10° (`out/su2_2d.json`), and the new
+0°–12° values interpolate them with a slope of 0.10 per degree. Stagnation Cp reads 1.00–1.03 at every
+angle, which checks the Cp = 2 p convention at the stagnation point (1.03 at 0° is the limiter
+overshoot on the coarsest surface spacing at the leading edge).
+
+**What the images show** (`plots/flow_0.png` … `flow_15.png`, `flow_cp_8.png`).
+- *Stagnation point*: the yellow marker in `flow_cp_8.png` sits just below the leading edge on the
+  lower surface (x/c 0.01, y/c −0.02 at 8°) and walks further aft on the lower surface as α rises;
+  the velocity-magnitude field is dark there and in the no-slip layer along the wall.
+- *Suction peak*: the bright band over the leading edge is the upper-surface acceleration, |V|/V∞
+  reaching 1.26 at 0°, 1.57 at 8° and 1.77 at 15° on the grid (the wall Cp minimum −5.1 at 15°
+  corresponds to |V|/V∞ ≈ 2.5 at the boundary-layer edge, inside the first grid cell).
+- *Separation onset*: at 0°, 4° and 8° the near-wall flow (probed 0.5 % c off the upper surface) runs
+  from leading to trailing edge without reversing. At 12° a reversed-flow pocket appears at the
+  trailing edge (from x/c ≈ 0.87); at 15° it has grown into a closed recirculation bubble from
+  x/c ≈ 0.59 to about 0.2 c behind the trailing edge, visible as the closed streamline loop in
+  `flow_15.png`. SA fully turbulent still gives a small lift increase from 12° to 15° (1.277 →
+  1.294) with drag almost doubling (0.037 → 0.067): the model is at the top of its lift curve, not past
+  it. XFOIL (transitional, Ncrit 9) puts CL_max at 1.365 and the Genç, Lock and Kaynak (2008) tunnel
+  data at 1.30 with stall at 12° (`aero_results.json` `CL_max_2D`), so the pictures show the SA
+  trailing-edge-separation route to stall, which is later and softer than the laminar-separation route
+  the real wing at Re 2–4×10⁵ is likely to take.
+- *Wake*: the low-speed wake thickens from a thin sheet at 0° to a 0.15 c deficit at 15°, deflected
+  downward by the circulation.
+
+**Web export** `out/flowviz/flow2d.json` (1.35 MB): header keys `tool`, `solver`, `Re`, `V_mps`,
+`frame`, `grid` (nx 220, ny 128, x0/x1/y0/y1, element k = j·nx + i with j the y index), `encoding`,
+`outline` (478 [x, y] pairs, TE → upper → LE → lower), and `angles[]` with `alpha`, `mesh`,
+`converged`, `field_note`, forces, and the fields `u`, `v`, `cp` as base64 little-endian Int16
+(u/V∞ and v/V∞ ×10⁴, Cp ×10³), `mask` as base64 Uint8 (1 = inside the aerofoil or no data) and
+`cp_wall` along the outline. 240 × 140 points took the file to 1.6 MB, so the grid was reduced to
+220 × 128.
+
+### 11.2 3-D streamlines over the lifting surfaces (`flowfield_3d.py`)
+
+**Method.** AeroSandbox 4.2.10 `VortexLatticeMethod` on the v0.4 wing, H-tail and twin fins of
+`asb_model.airplane()` (results.json span 2.4 m and chord 0.263 m; tail from cad/params.txt), 24
+spanwise × 8 chordwise panels per surface half (1,152 panels), cruise 20 m/s at the AVL-trimmed
+α = 3.02° (`aero_results.json` `trim_cruise`); the elevator deflection and the pod are not in the
+lattice. The VLM gives CL 0.433 and CDi 0.0066 against AVL's trimmed 0.408 (with −3.6° elevator)
+and 0.0062. Streamlines are integrated with fourth-order Runge–Kutta along the unit velocity
+direction (free stream + horseshoe-vortex induced velocity from `get_velocity_at_points`, vortex core
+regularised to 4 mm for the field evaluation only), 5 mm step, 400 steps (2.0 m of path), from 120
+seeds on a plane 0.4 m ahead of the wing: three rows across the span at ±60 mm about the chord
+line, dense rows from 0.95 to 1.12 semi-spans at both tips, and a row at the tailplane height.
+
+**What the image shows** (`plots/flow_3d.png`). Over the wing the streamlines speed up on the upper
+surface (|V|/V∞ up to 1.08, red) and slow underneath (0.94, blue), and leave the trailing edge
+deflected downward; the rear projection shows the sheet behind the wing displaced down by the
+downwash and, outboard of each tip, the lines curling up and inboard around the tip vortex. A
+wing-only lattice evaluated at the tailplane quarter chord gives a downwash of −1.6° across the
+tail span (`out/flow3d_summary.json` `downwash_at_htail`), i.e. ε/α ≈ 0.5 at this lift (3.02° of
+free-stream incidence, wing CL ≈ 0.43), the order AVL's tail contribution to Cmα in §4 implies.
+
+**Web export** `out/flowviz/flow3d.json` (353 KB), CAD / review-viewer frame (X forward from the
+wing leading edge, Y up, Z right, metres): `panels.{wing,htail,fin}.quads` as flat 12-value corner
+lists (front-left, back-left, back-right, front-right) with the bound-vortex strength `gamma`, and
+`streamlines[]` with `seed_cad`, `xyz` (flat [X,Y,Z,…], 80 points per line) and `s` (|V|/V∞ per
+point for colouring).
+
+### 11.3 Limits
+
+- 2-D RANS, Spalart–Allmaras fully turbulent, steady solver: no laminar separation bubble and no
+  transition, so stall is the trailing-edge type and arrives later than XFOIL or the tunnel data
+  suggest; the 15° field is a converged steady solution of a flow that is probably unsteady in
+  reality. Section only: no tip, sweep or fuselage effects.
+- VLM is inviscid potential flow with the wake fixed in the x direction: no boundary layer, no
+  separation, no profile drag, no pod or boom interference; the tip-vortex roll-up is the induced
+  field of the discrete horseshoe trailing legs, regularised with a 4 mm core, not a resolved vortex.
+- Both are illustrations of the converged models already used in §3–§6; they add no design number.
+
+Tools: SU2 8.5.0 win64-omp, gmsh 4.15.2, AeroSandbox 4.2.10, numpy 2.5.4, scipy 1.18.1, matplotlib
+3.11.2 (all as in §1, checked 2026-10-21).
