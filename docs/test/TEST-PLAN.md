@@ -1,9 +1,11 @@
 # Test and evaluation plan — C0 lift + cruise VTOL
 
 **Document DBF-TP-001 rev B** · 2026-10-21 · Status: draft for team review
-Applies to: C0 4-lift twin-boom quadplane, design v0.4 (`analysis/results.json` generated 2026-10-21 with the aero build-up `analysis/aero/aero_results.json`; CAD rev B `cad/README.md`, `cad/verification.txt`; firmware `firmware/vtol_c0.param` on ArduPlane 4.7.2 stable; BOM `docs/purchasing/C0_BOM.csv`).
+Applies to: C0 4-lift twin-boom quadplane, design v0.4 (`analysis/results.json` generated 2026-10-21 with the aero build-up `analysis/aero/aero_results.json`; CAD model rev C `cad/README.md`, `cad/verification.txt`; firmware `firmware/vtol_c0.param` on ArduPlane 4.7.2 stable; BOM `docs/purchasing/C0_BOM.csv`).
 
 Rev B changes from rev A: all predictions re-based on v0.4 (MTOW 6.43 kg, hover 888 W, cruise 297–323 W, cruise available 13.1–14.2 min, Vs 12.05 m/s predicted, neutral point 40.4 % MAC); rev A inconsistencies 1, 2, 4, 6, 7, 9, 10, 11 resolved by the design (§12); new tests C16, C17, S10, G09, F13 and a real stall-speed determination (F09); SITL portions of E05/E06/F0 marked done with evidence; spare servo and spare pushrods removed from the BOM (reserve $103.21) and from every test's assumptions.
+
+2026-10-25: values re-based on the R11 wing re-size, chord 266.6 mm, MTOW 6.45 kg (hover 892 W, cruise 298–325 W, cruise available 12.9–14.1 min, Vs 12.00 m/s predicted, neutral point 40.3 % MAC, R10 cruise threshold 420 W; CAD model rev C, drawing DBF-DRW-001 rev D). The rev B list above and the §12 log keep their old numbers.
 
 Conventions: every number names its source as a repo file, a shown formula *(calc)*, or a URL with the date checked. **EST** = engineering estimate. **—** = unknown, never invented. Numbers quoted from `analysis/results.json` are `concepts.C0.*` unless stated; `aero_results.json` = `analysis/aero/aero_results.json`. Requirement IDs R1–R20 are from `docs/DESIGN-BASIS.md`. "Review §N" and "review MN.k" refer to the chapters and measurements of design review DBF-RPT-001.
 
@@ -38,22 +40,22 @@ Out of scope: the browser flight-simulator code (outside the project brief), des
 |---|---|---|
 | **Test director (TD)** | Owns the test card, calls go/no-go, holds the abort authority, signs the data sheet. | Has read this plan and the card; not the pilot. |
 | **Safety officer (SO)** | Range clear, fire bag + extinguisher + first-aid kit, LiPo handling, crowd line, calls "abort" for any safety breach. | TRUST or Part 107 (R18). |
-| **Pilot in command (PIC)** | Flies; is the only person who touches the transmitter; has passed SITL rehearsal E06 (§13 M1 of the review). | TRUST (or Part 107), AMA member for liability (R19), ≥ 1 h SITL on `firmware/vtol_c0.param`. |
+| **Pilot in command (PIC)** | Flies; is the only person who touches the transmitter; has passed SITL rehearsal E06 (§[flighttest] M1 of the review). | TRUST (or Part 107), AMA member for liability (R19), ≥ 1 h SITL on `firmware/vtol_c0.param`. |
 | **GCS operator (GCS)** | Reads the handset CRSF telemetry (or Mission Planner over the ELRS MAVLink overlay / CoreWing BLE-WiFi near the pad): battery, mode, altitude, VIBE, EKF status every 30 s; saves logs. | Has run E06 scenarios. |
 | Visual observer (VO) | Keeps VLOS on the aircraft and the sky (R18); part of the 4-person team. | — |
 
-Crew roles are the review's (§13 "Crew, field procedure and charging") with the test director added. Names: — (assign in the matrix "Crew" column at sign-off).
+Crew roles are the review's (§[flighttest] "Crew, field procedure and charging") with the test director added. Names: — (assign in the matrix "Crew" column at sign-off).
 
 ## 4. Safety rules
 
 1. **Props off** for every bench test unless the card says otherwise. Battery is plugged in last through the XT90-S (R20, §10) and unplugged first.
 2. **Arming.** RC arm switch (CH5, `RC5_OPTION,153`) only; no stick arming (`ARMING_RUDDER,0`); arming only in VTOL modes (`Q_OPTIONS` bit 18). Motor emergency stop on CH7 (`RC7_OPTION,31`). Source: `firmware/vtol_c0.param` §7–8.
-3. **LiPo.** Charge and store in the LiPo bag inside the ammo can; never unattended; crashed pack isolated outdoors 30 min (§13 review). Fire bag within 5 m of any powered test.
+3. **LiPo.** Charge and store in the LiPo bag inside the ammo can; never unattended; crashed pack isolated outdoors 30 min (§[flighttest] review). Fire bag within 5 m of any powered test.
 4. **Thrust stand and tied-down runs.** Prop plane never in line with a person; 3 m clear radius; eye protection; stand bolted or sandbagged so that it cannot move at 3.13 kgf (X4110S max, `docs/research/budget-lift.md` A3) × 4.
 5. **Structural tests.** Nobody under a loaded wing; load in 1 kg steps; a second person watches the joiner region.
 6. **Flight.** VLOS at all times; geofence `FENCE_ALT_MAX,110` m home-relative (SITL breach peak 113.1 m, under the 121.9 m (400 ft) limit, `firmware/sitl/README.md` scenario F; R18); crowd line 30 m from the take-off point and never under the flight path; flight path over open ground only; no people downrange during transitions.
-7. **Ballast rule.** Without a payload, 0.5 kg of ballast is fitted in the payload bay for every flight (static margin 5.3 % at the empty-bay CG vs 12.4 % at 28 % MAC, `aero_results.json neutral_point.static_margin_pct`; `cad/README.md` operating rule; `cad/drawings/DBF-DRW-001.PDF` sheet 1 note 5).
-8. **Post-flight.** IR thermometer on every motor, ESC and the pack within 30 s of landing (§8 M1 of the review): pack > 60 °C EST or any unit 15 °C hotter than its neighbours grounds the aircraft.
+7. **Ballast rule.** Without a payload, 0.5 kg of ballast is fitted in the payload bay for every flight (static margin 5.2 % at the empty-bay CG vs 12.3 % at 28 % MAC, `aero_results.json neutral_point.static_margin_pct`; `cad/README.md` operating rule; `cad/drawings/DBF-DRW-001.PDF` sheet 1 note 5).
+8. **Post-flight.** IR thermometer on every motor, ESC and the pack within 30 s of landing (§[testing] M1 of the review): pack > 60 °C EST or any unit 15 °C hotter than its neighbours grounds the aircraft.
 
 ## 5. Abort criteria (all tests)
 
@@ -62,10 +64,10 @@ Any crew member can call "ABORT". The PIC then: in hover → land now (QLAND if 
 | Trigger | Threshold | Source |
 |---|---|---|
 | Vibration | VIBE X/Y/Z > 30 m/s² sustained or clipping count rising | ArduPilot "Measuring Vibration" (ardupilot.org/plane/docs/common-measuring-vibration.html, checked 2026-10-21) |
-| Attitude error in hover | > 15° | review §14 F2 |
+| Attitude error in hover | > 15° | review §[flighttest] F2 |
 | Oscillation | Any visible attitude or altitude oscillation | ArduPilot QuadPlane tuning step 5 (ardupilot.org/plane/docs/quadplane-vtol-tuning-process.html, checked 2026-10-21) |
 | Battery | Sag-compensated voltage < 21.0 V (3.5 V/cell) or < 1,950 mAh remaining on any non-mission flight (the firmware's low-battery RTL point) | `firmware/vtol_c0.param` BATT_LOW_VOLT, BATT_LOW_MAH, BATT_FS_LOW_ACT 1 (RTL); critical 19.8 V / 1,300 mAh → QLAND |
-| Temperature | Motor can > 80 °C EST after a hover; ESC > 70 °C EST | review §13 T3; ESC limit EST (SoloGood publishes none, —) |
+| Temperature | Motor can > 80 °C EST after a hover; ESC > 70 °C EST | review §[testing] T3; ESC limit EST (SoloGood publishes none, —) |
 | Wind | Steady > 5 m/s or gusts > 8 m/s (R16); for F01–F06, steady > 3 m/s EST | R16; EST for early flights |
 | RC link | LQ < 70 % EST or any failsafe message | EST |
 | GCS/EKF | "EKF variance", "GPS glitch", compass inconsistent | ArduPilot pre-arm/EKF messages |
@@ -89,7 +91,7 @@ Go for any flight test requires all of:
 
 - Take-off pad: 3 × 3 m flat mown grass or hard surface, clear of obstacles 20 m radius, marked with the geofence home point.
 - Crew line 30 m upwind of the pad; spectators behind the crew line. Fire bag, extinguisher and first-aid kit at the crew line.
-- Transition runway: a straight ≥ 200 m EST into wind at ≥ 30 m AGL (review M15.1: under 200 m or a ceiling under 30 m blocks R9 at that site). **Transitions start at the upwind field edge with an immediate turn after "Transition done"** (`firmware/README.md` §9.6; SITL: a straight transition reached the 300 m fence circle about 6 s after transition end). GPS-walk the field and set `FENCE_RADIUS` to the usable radius (default 300 m, `firmware/vtol_c0.param` §10).
+- Transition runway: a straight ≥ 200 m EST into wind at ≥ 30 m AGL (review M[schedule].1: under 200 m or a ceiling under 30 m blocks R9 at that site). **Transitions start at the upwind field edge with an immediate turn after "Transition done"** (`firmware/README.md` §9.6; SITL: a straight transition reached the 300 m fence circle about 6 s after transition end). GPS-walk the field and set `FENCE_RADIUS` to the usable radius (default 300 m, `firmware/vtol_c0.param` §10).
 - Tether anchor (G05): two sandbag-weighted ground stakes, 2 × 4 m lines of ≥ 50 kg rated cord to the landing-leg clamps, slack so the aircraft can reach 1.5 m.
 - Site ceilings: RFS 400 ft, Clark Kerr 200 ft, La Loma 20 ft inside the fences (R19). Only RFS supports transition tests.
 
@@ -99,8 +101,8 @@ Method: T test, A analysis, I inspection, D demonstration. Status is "open" for 
 
 | Req | Requirement (short) | Method | Test ID(s) | Pass criterion (numeric) | Status |
 |---|---|---|---|---|---|
-| R1 | Lift rotors + pusher + wing; lift rotors stopped in cruise | I, D | I03, F07, F12 | Built aircraft matches `cad/drawings/DBF-DRW-001.PDF` rev B sheet 1; log shows lift motor outputs (RCOU C5–C8) at `Q_M_PWM_MIN` (1000) for ≥ 95 % of cruise time | open |
-| R2 | MTOW 8–15 kg target, < 25 kg cap; outcome 6.43 kg | T | S09, G01 | Take-off mass with pack and 0.5 kg ballast ≤ 6.43 × 1.15 = 7.40 kg *(calc, review M4.1 margin; `sized.m`)* and < 25 kg | open |
+| R1 | Lift rotors + pusher + wing; lift rotors stopped in cruise | I, D | I03, F07, F12 | Built aircraft matches `cad/drawings/DBF-DRW-001.PDF` rev D sheet 1; log shows lift motor outputs (RCOU C5–C8) at `Q_M_PWM_MIN` (1000) for ≥ 95 % of cruise time | open |
+| R2 | MTOW 8–15 kg target, < 25 kg cap; outcome 6.45 kg | T | S09, G01 | Take-off mass with pack and 0.5 kg ballast ≤ 6.45 × 1.15 = 7.42 kg *(calc, review M[model3d].1 margin; `sized.m`)* and < 25 kg | open |
 | R3 | Span 2–3 m | I | I03 | Tip-to-tip 2.40 ± 0.02 m (`results.json base.span`) | open |
 | R4 | Largest piece fits a standard car | D | S08 | Longest piece ≤ 1.2 m (`geo.longestPiece`); pod piece ≤ 0.5 m with the joiner slid out (`cad/README.md` wing root); every piece fits in the team's car with the hatch closed | open |
 | R5 | Two-person carry; assembly ≤ 15 min | D | S08, G07 | Two people carry the assembled aircraft 50 m; median of 3 assembly runs ≤ 15 min | open |
@@ -108,13 +110,13 @@ Method: T test, A analysis, I inspection, D demonstration. Status is "open" for 
 | R7 | Second pack, spares, reserve ≥ $100 target | I | I01 | Two packs, spare motor, spare ESCs (3 in the two 4-packs), spare props received; reserve = 2,000 − ledger ≥ $100 (BOM $103.21) | open |
 | R8 | Flight-tested by 2027-04-30 | D | F12 | F12 passed and dated ≤ 2027-04-30 | open |
 | R9 | Mission: VTOL take-off → hover → transition → cruise → back-transition → hover → vertical land | D | F12 | One continuous flight with all phases in the log, no failsafe, undamaged landing | open |
-| R10 | ≥ 10 min cruise + ≥ 2 min hover, ≥ 20 % energy reserve | T, A | C11, F08, F13, F12 | F12 log: cruise ≥ 600 s, hover ≥ 120 s, remaining ≥ 20 % of measured usable capacity (C11) and ≥ 1,300 mAh (`BATT_CRT_MAH`); cruise power at 20 m/s ≤ 421 W *(calc §9.1 C07)* | open |
+| R10 | ≥ 10 min cruise + ≥ 2 min hover, ≥ 20 % energy reserve | T, A | C11, F08, F13, F12 | F12 log: cruise ≥ 600 s, hover ≥ 120 s, remaining ≥ 20 % of measured usable capacity (C11) and ≥ 1,300 mAh (`BATT_CRT_MAH`); cruise power at 20 m/s ≤ 420 W *(calc: (0.8 × 144.3 × 0.95 − 892.4 × 160/3600) × 3600/600 = 420 W, `sized.P_hover`, `base`)* | open |
 | R11 | Cruise 18–22 m/s; stall ≤ 12 m/s; transition complete ≥ 1.3 × Vs | T, A | F08, F09, C09 | Trimmed cruise at 20 ± 2 m/s calibrated airspeed; measured Vs ≤ 12.0 m/s (12.0–12.5 = team decision, aero §9; > 12.5 fail, `docs/research/aerodynamics.md` M2); `AIRSPEED_MIN` 16 ≥ 1.3 × measured Vs (Vs ≤ 12.3); airspeed calibration error ≤ 10 % | open |
 | R12 | 0.5 kg payload reserve and bay volume | I, D | G01, G09, S10, F12 | 0.5 kg ballast fits the bay, is retained at 2 × 8 g, and is flown in F12 within CG limits | open |
-| R13 | Hover T/W ≥ 1.6 at MTOW, storage-low voltage | T | C07, F03 | Each motor ≥ 2.57 kgf max at 3.7 V/cell (22.2 V) on the stand (= 1.6 × 6.43 / 4 *(calc)*; maker 3.13 kgf); learned `Q_M_THST_HOVER` ≤ 0.60 | open |
+| R13 | Hover T/W ≥ 1.6 at MTOW, storage-low voltage | T | C07, F03 | Each motor ≥ 2.58 kgf max at 3.7 V/cell (22.2 V) on the stand (= 1.6 × 6.45 / 4 *(calc)*; maker 3.13 kgf); learned `Q_M_THST_HOVER` ≤ 0.60 | open |
 | R14 | Lift motor-out: cruise continues (hard); hover (desired, not met by C0) | A, D, I | E06, F07, I03 | SITL motor-fail scenario in hover (documents the accepted limitation; open — not in the A–G set); cruise with lift motors stopped shown in F07; hover limits ≤ 5 m AGL / ≤ 60 s written on every hover card | open |
 | R15 | Pusher-out in cruise → re-enter hover and land | D | E06, F10 | SITL D (transition timeout → QRTL) done; in flight: pusher to idle at ≥ 60 m, Q_ASSIST engages below 13 m/s, QLAND completes, altitude loss ≤ 30 m EST | SITL done; flight open |
-| R16 | Operate in steady wind ≤ 5 m/s, gusts ≤ 8 m/s | D, A | F07, F12 | At least one F07 or F12 flight in recorded steady wind 3–5 m/s with attitude error < 15°; gusts to 8 m/s by analysis only (margin: `AIRSPEED_MIN` 16 vs Vs 12.05) | open |
+| R16 | Operate in steady wind ≤ 5 m/s, gusts ≤ 8 m/s | D, A | F07, F12 | At least one F07 or F12 flight in recorded steady wind 3–5 m/s with attitude error < 15°; gusts to 8 m/s by analysis only (margin: `AIRSPEED_MIN` 16 vs Vs 12.00) | open |
 | R17 | Open-source autopilot with maintained VTOL support | I | E11 | Flight firmware is ArduPlane 4.7.2 stable for CoreWingF405WingV2 (`firmware/vtol_c0.param` header; `docs/research/firmware.md` §4 R10/R20: beta risk closed) | open (firmware identified; flash check pending) |
 | R18 | FAA: 44809/Part 107, TRUST, registration, Remote ID, VLOS, ≤ 400 ft | I, T | I02, E12 | Documents on file; BeeID serial on uasdoc.faa.gov; broadcast seen on a Remote ID app; `FENCE_ALT_MAX` 110 m (SITL peak 113.1 m) | open |
 | R19 | Campus: flight request, post-flight report, $1M liability | I | I02 | Approved request on file ≥ 7 business days before each on-campus flight; AMA card per pilot | open |
@@ -129,14 +131,14 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 ### 9.1 Series C — component and coupon tests
 
 #### C01 — Printed hole and bore coupon (first article)
-- **Objective.** Set the printer's as-printed offsets so every bore and insert hole meets `docs/research/hardware-spec.md` §5b (FT02, FT07, FT08) and the rev B drawing tolerance block (`cad/README.md` drawing set).
+- **Objective.** Set the printer's as-printed offsets so every bore and insert hole meets `docs/research/hardware-spec.md` §5b (FT02, FT07, FT08) and the rev D drawing tolerance block (`cad/README.md` drawing set).
 - **Article.** One coupon per material (ELEGOO PETG, Polymaker PA6-CF20) printed on the team printer: M3 clearance holes modelled 3.4 / 3.6 mm, insert holes 3.8 / 3.9 / 4.0 / 4.1 mm, a 25.4 mm bore ring modelled 25.5 / 25.6 / 25.7 mm (hardware-spec M2), plus a 22.4 mm joiner bore ring (FT06 slip fit, 22.455 ± 0.20).
 - **Instrumentation.** Calipers (hand tools, R6) or drill-shank gauges.
 - **Procedure.** (1) Print both coupons with the production profile. (2) Measure each hole at two diameters. (3) Choose the model value that prints 3.4, 4.0, 22.46 and 25.6 ± 0.1 mm. (4) Record the offsets in `cad/params.mjs` notes.
 - **Data.** Hole ID vs modelled value, per material.
 - **Pass.** A model value exists for each target within ± 0.1 mm; otherwise adjust flow/scale and reprint (fail = no setting reaches ± 0.2 mm).
 - **Predicted.** Desktop FDM ± 0.5 %, floor ± 0.5 mm (Xometry FDM tolerances via hardware-spec §5b, checked 2026-10-21): expect holes 0.2–0.4 mm undersize.
-- **Risk.** PA6-CF needs a hardened nozzle (review §11 "Prints"); if the printer cannot, PETG mounts are not acceptable near motors (HDT ~68 °C, review M7.2) → Gap list.
+- **Risk.** PA6-CF needs a hardened nozzle (review §[build] "Prints"); if the printer cannot, PETG mounts are not acceptable near motors (HDT ~68 °C, review M[propulsion].2) → Gap list.
 - **Duration** 3 h print + 0.5 h. **Crew** 1. **Prereq.** Filament received (Order B).
 
 #### C02 — Heat-set insert torque-out, PETG and PA6-CF
@@ -178,7 +180,7 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Objective.** Calibrate the 20 kg load cell + HX711 + Arduino Nano stand (BOM "Test & safety") so lift and pusher thrust are trusted to ± 2 % of reading at the hover point.
 - **Setup.** Pivot-beam stand: motor on one arm, load cell under the other, arms equal (1:1) so thrust = cell reading; the watt meter in the pack lead; a servo tester or the FC in motor-test mode drives the ESC (DShot150 per `firmware/vtol_c0.param` §3; for a servo tester use the ESC's PWM mode). Water jugs as masses: 1.00 L = 0.998 kg at 20 °C; verify each jug on a kitchen scale.
 - **Procedure.** (1) Zero. (2) Load 0, 0.5, 1, 2, 3, 5, 10 kg (use the jug positions on the arm so the moment arm equals the motor's). (3) Read the HX711 at each step, up and down. (4) Fit a line; record gain and offset in the Nano sketch. (5) Repeat after 10 min powered to check drift. (6) Tare with the motor and prop fitted.
-- **Pass.** Error ≤ 2 % of reading from 0.5 to 5 kg and ≤ 2 % FS (0.4 kg) above (review T1 "2 % FS" superseded: 2 % FS = 400 g is 25 % of the 1,608 g hover point). Hysteresis ≤ 1 %. Drift ≤ 20 g over 10 min.
+- **Pass.** Error ≤ 2 % of reading from 0.5 to 5 kg and ≤ 2 % FS (0.4 kg) above (review T1 "2 % FS" superseded: 2 % FS = 400 g is 25 % of the 1,613 g hover point). Hysteresis ≤ 1 %. Drift ≤ 20 g over 10 min.
 - **Predicted.** HX711 24-bit on a 20 kg cell: resolution ≪ 1 g; linearity is set by the stand geometry (EST).
 - **Risk.** Stand flexes under 3 kgf: brace it; re-check calibration with the motor arm loaded by a jug at the motor station.
 - **Duration** 4 h build + 1 h. **Crew** 2. **Prereq.** Order A received.
@@ -186,41 +188,41 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 #### C07 — Lift motor thrust curve, every motor (review T2, R13 strict)
 - **Objective.** Measure thrust, current, voltage and electrical power vs throttle for each of the 5 X4110S motors with the JeeFly 1755 prop and a SoloGood 45A ESC on the flight pack, and derive the hover operating point and FM·η.
 - **Setup.** C06 stand; watt meter in the pack lead; IR thermometer; throttle in 10 % steps from 20 to 100 % (10 points), 5 s dwell, 20 s rest; pack voltage ≥ 24.0 V (4.0 V/cell) at the start and the 100 % point repeated at 22.2 V to match the maker table voltage.
-- **Procedure.** (1) Tare. (2) Step throttle; log thrust, V, A, W at each dwell. (3) Note the throttle at 1,608 g (hover) and 3,130 g (maker max). (4) 100 % for 10 s: record max thrust and current. (5) IR temperature of the can after the sweep. (6) Repeat for every motor, same ESC; then one motor on each of the other ESCs.
+- **Procedure.** (1) Tare. (2) Step throttle; log thrust, V, A, W at each dwell. (3) Note the throttle at 1,613 g (hover) and 3,130 g (maker max). (4) 100 % for 10 s: record max thrust and current. (5) IR temperature of the can after the sweep. (6) Repeat for every motor, same ESC; then one motor on each of the other ESCs.
 - **Data.** 10-point table per motor; reduce with `docs/test/analysis/thrust_stand.py` (fits T = a·thr^b and P_elec vs T, reports throttle at hover, FM·η at hover, and `Q_M_THST_EXPO` fit).
-- **Pass.** Max thrust ≥ 2.57 kgf per motor at 22.2 V (R13 strict: 1.6 × 6.43 kg / 4 *(calc, `sized.m`)*; the review's 2.4 kgf gave T/W 1.55 at 6.18 kg and 1.49 at 6.43 kg, so it is superseded); electrical power at 1,608 g ≤ 314 W per motor (= 1,258 W / 4; 1,258 W is the hover power at which 10 min cruise at the sizing's 323 W is no longer available: (0.8 × 144.3 × 0.95 − 322.7 × 600/3600) × 3600 / 160 s *(calc, `results.json base`, `sized.P_cruise`)*); motor-to-motor spread at hover ≤ 5 % in thrust at equal throttle; max current ≤ 36 A (80 % of the 45 A ESC rating, EST).
-- **Predicted.** Maker table at 22.2 V, 17 × 5.8: 1,500 g / 8.1 A / 180 W; 2,000 g / 13.1 A / 291 W; 3,130 g / 27.7 A / 615 W (`docs/research/budget-lift.md` A3). Sizing hover point: 1,608 g at 222 W, FM·η 0.518 (`sized.Tunit_g`, `P_hover_per_motor`, `FMeta`); ideal power 104.5 W = T^1.5 / √(2 ρ A), A = 0.1464 m² (`sized.Pi_unit`, `sized.A`). Expected hover throttle ≈ 0.51 = 1,608 / 3,130 *(calc)*; the param file comment still says 0.49 at 6.18 kg. The 17 × 5.5 JeeFly is not the maker's 17 × 5.8 (`docs/purchasing/C0_BOM.csv`): expect a few % less thrust at equal power (EST).
+- **Pass.** Max thrust ≥ 2.58 kgf per motor at 22.2 V (R13 strict: 1.6 × 6.45 kg / 4 *(calc, `sized.m`)*; the review's 2.4 kgf gave T/W 1.55 at 6.18 kg and 1.49 at 6.45 kg, so it is superseded); electrical power at 1,613 g ≤ 312 W per motor (= 1,248 W / 4; 1,248 W is the hover power at which 10 min cruise at the sizing's 325 W is no longer available: (0.8 × 144.3 × 0.95 − 325.2 × 600/3600) × 3600 / 160 s *(calc, `results.json base`, `sized.P_cruise`)*); motor-to-motor spread at hover ≤ 5 % in thrust at equal throttle; max current ≤ 36 A (80 % of the 45 A ESC rating, EST).
+- **Predicted.** Maker table at 22.2 V, 17 × 5.8: 1,500 g / 8.1 A / 180 W; 2,000 g / 13.1 A / 291 W; 3,130 g / 27.7 A / 615 W (`docs/research/budget-lift.md` A3). Sizing hover point: 1,613 g at 223 W, FM·η 0.518 (`sized.Tunit_g`, `P_hover_per_motor`, `FMeta`); ideal power 105.0 W = T^1.5 / √(2 ρ A), A = 0.1464 m² (`sized.Pi_unit`, `sized.A`). Expected hover throttle ≈ 0.52 = 1,613 / 3,130 *(calc)*; the param file comment still says 0.49 at 6.18 kg. The 17 × 5.5 JeeFly is not the maker's 17 × 5.8 (`docs/purchasing/C0_BOM.csv`): expect a few % less thrust at equal power (EST).
 - **Risk.** ESC desync at full throttle on DShot150: lower `Q_M_SPIN_MIN`, check ESC timing in BLHeli configurator. Prop strike: cage the stand.
 - **Duration** 0.5 h per motor, 4 h total. **Crew** 2. **Prereq.** C06.
 
 #### C08 — Hover-duty heat (review T3, expanded)
 - **Objective.** Validate the lumped thermal model (90 s hover ≈ 73 °C at the v0.3.1 hover thrust, `cad/sim/results.txt` and `cad/README.md`; v0.4 hover thrust is 4 % higher) and the ESC temperature under hover current.
-- **Setup.** C06 stand; thrust held at 1,608 g (hover) by throttle; IR thermometer on the motor can (bell) and ESC heat-shrink every 15 s; ambient logged.
+- **Setup.** C06 stand; thrust held at 1,613 g (hover) by throttle; IR thermometer on the motor can (bell) and ESC heat-shrink every 15 s; ambient logged.
 - **Procedure.** (1) Start at ambient. (2) Hold hover thrust 90 s, reading temperatures every 15 s. (3) Cool with the prop at idle until the can < 45 °C. (4) Repeat 3 times. (5) One run of 3 × 90 s with only 30 s rests (worst case, never flown) to find the limit. (6) Fit the time constant.
-- **Pass.** Can ≤ 80 °C EST after one 90 s run; no ESC cut-out; ESC ≤ 70 °C EST; measured time constant ≥ 100 s (review M10.2: under 100 s invalidates the lumped model).
-- **Predicted.** 73 °C at 90 s (v0.3.1); steady-state upper bound 134 °C at 41.6 W EST heat and h = 50 W/m²K EST (`cad/sim/results.txt motor_T_steady`); with 222 W per motor (v0.4, `sized.P_hover_per_motor`) vs 208 W, expect ~2–3 °C more (EST).
+- **Pass.** Can ≤ 80 °C EST after one 90 s run; no ESC cut-out; ESC ≤ 70 °C EST; measured time constant ≥ 100 s (review M[simulation].2: under 100 s invalidates the lumped model).
+- **Predicted.** 73 °C at 90 s (v0.3.1); steady-state upper bound 134 °C at 41.6 W EST heat and h = 50 W/m²K EST (`cad/sim/results.txt motor_T_steady`); with 223 W per motor (v0.4, `sized.P_hover_per_motor`) vs 208 W, expect ~2–3 °C more (EST).
 - **Duration** 2 h. **Crew** 2. **Prereq.** C07.
 
 #### C09 — Pusher thrust curve, X4110S + APC 14 × 8.5EP (review T4, expanded)
 - **Objective.** Static thrust and current of the pusher set; set `TKOFF_THR_MAX` and confirm the transition current budget.
 - **Setup.** C06 stand with the pusher adapter (M6 bolt-on, hardware-spec J03b); throttle 20–100 % in 10 % steps.
-- **Pass.** Static thrust ≥ 1.5 kgf at 60 % throttle (review T4); peak current ≤ 40 A (review M7.3; above that drop to a 13 × 8 prop); prop runout by eye < 1 mm at the tip (FT10 spin check).
-- **Predicted.** — (no vendor table for 14 × 8.5EP on the X4110S, `docs/research/pusher-battery-servo.md` §1b). Cruise thrust needed 8.2 N = 0.84 kgf at 20 m/s (sizing, `sized.D_cruise`) or 7.6 N (aero build-up, `aero_results.json drag.cruise.D_N`); P_cruise 323 W / 14.5 A (sizing) or 297 W / 13.4 A (aero) at η_prop 0.6 EST (`sized.P_cruise`, `aero_results.json mission`).
+- **Pass.** Static thrust ≥ 1.5 kgf at 60 % throttle (review T4); peak current ≤ 40 A (review M[propulsion].3; above that drop to a 13 × 8 prop); prop runout by eye < 1 mm at the tip (FT10 spin check).
+- **Predicted.** — (no vendor table for 14 × 8.5EP on the X4110S, `docs/research/pusher-battery-servo.md` §1b). Cruise thrust needed 8.3 N = 0.85 kgf at 20 m/s (sizing, `sized.D_cruise`) or 7.6 N (aero build-up, `aero_results.json drag.cruise.D_N`); P_cruise 325 W / 14.6 A (sizing) or 298 W / 13.4 A (aero) at η_prop 0.6 EST (`sized.P_cruise`, `aero_results.json mission`).
 - **Duration** 1 h. **Crew** 2. **Prereq.** C06.
 
-#### C10 — Stopped-prop behaviour and drag (review T5 + §4 M3)
+#### C10 — Stopped-prop behaviour and drag (review T5 + §[iterations] M1)
 - **Objective.** Confirm an unpowered lift prop does not windmill at cruise speed and measure its drag.
 - **Setup (zero-cost).** Motor + prop on a mast on a car roof rack (or held out of a window on a 1 m pole by a passenger — only on a closed lot), unpowered, 20 m/s = 72 km/h = 45 mph by the car speedometer; phone video; for drag, the unit on a pivot arm with a luggage scale (Gaps) or the HX711 load cell reading the arm force.
-- **Pass.** No windmilling (review T5); prop stops ≤ 30° from the airflow direction (review M3.1); drag ≤ 0.8 N per stopped unit EST (model 0.54 N = ½ ρ V² CdA with CdA_rotor 0.00222 m², `aero_results.json drag.CdA_per_rotor_unit` *(calc)*; `docs/research/aerodynamics.md` M3: ΔP > 60 W across four units means the prop Cd EST is low and a prop-parking scheme is needed).
+- **Pass.** No windmilling (review T5); prop stops ≤ 30° from the airflow direction (review M[iterations].1); drag ≤ 0.8 N per stopped unit EST (model 0.54 N = ½ ρ V² CdA with CdA_rotor 0.00222 m², `aero_results.json drag.CdA_per_rotor_unit` *(calc)*; `docs/research/aerodynamics.md` M3: ΔP > 60 W across four units means the prop Cd EST is low and a prop-parking scheme is needed).
 - **Risk.** Road safety: closed lot, driver only drives, ≤ 72 km/h.
 - **Duration** 1 h. **Crew** 3. **Prereq.** C07.
 
 #### C11 — Battery capacity, sag and internal resistance
 - **Objective.** Measure usable energy, voltage sag at hover and transition current, and per-cell internal resistance of both Ovonic 6S 6500 packs.
-- **Setup.** Discharge load = two lift motors on the C06 stand or the tied-down airframe at a constant current near cruise (15 A, `sized.I_cruise` 14.5 A; review M6.4 said 16 A) with the watt meter logging Wh, V, A; the IR thermometer on the pack; cell voltages by the charger's balance readout at rest.
-- **Procedure.** (1) Full charge (4.20 V/cell). (2) Rest 30 min; record resting V. (3) Discharge at 15 ± 2 A until 3.50 V/cell under load (21.0 V); log Wh, Ah, V every 30 s (watt meter readout on phone video). (4) At 50 % delivered Ah, pause and apply a 10 s step to 40 A (hover, `sized.I_hover` 40.0 A) and a 3 s step to ≈ 73 A (`sized.I_trans`, four lift motors at ≈ 60 % plus pusher, or two motors at full): record V before and during. (5) Rest 30 min; record recovery voltage and pack temperature. (6) Recharge, log mAh returned. (7) Reduce with `docs/test/analysis/battery_test.py`.
-- **Pass.** Delivered ≥ 110 Wh from 4.20 to 3.50 V/cell at 15 A (0.8 × 144.3 × 0.95 = 109.7 Wh *(calc)*: the energy the sizing assumes usable before the 20 % reserve); sag ≥ 3.4 V/cell at 40 A and ≥ 3.2 V/cell at the 73 A step (review M7.4); per-cell internal resistance ≤ 7.5 mΩ (= (3.70 − 3.40) / 40.0 A *(calc)*, EST); pack ≤ 60 °C EST after discharge; both packs within 3 % of each other.
-- **Predicted.** 144.3 Wh nameplate (`packs[0].Wh`); loaded-pack voltage 21.0 V at hover (`firmware/vtol_c0.param` BATT_LOW_VOLT comment); mission needs 98.2 Wh from the pack (93.25 / 0.95 *(calc, `sized.E_Wh`, `base.etaBatt`)*), landing at 32 % of nameplate *(calc)*.
+- **Setup.** Discharge load = two lift motors on the C06 stand or the tied-down airframe at a constant current near cruise (15 A, `sized.I_cruise` 14.6 A; review M[mass].4 said 16 A) with the watt meter logging Wh, V, A; the IR thermometer on the pack; cell voltages by the charger's balance readout at rest.
+- **Procedure.** (1) Full charge (4.20 V/cell). (2) Rest 30 min; record resting V. (3) Discharge at 15 ± 2 A until 3.50 V/cell under load (21.0 V); log Wh, Ah, V every 30 s (watt meter readout on phone video). (4) At 50 % delivered Ah, pause and apply a 10 s step to 40 A (hover, `sized.I_hover` 40.2 A) and a 3 s step to ≈ 73 A (`sized.I_trans`, four lift motors at ≈ 60 % plus pusher, or two motors at full): record V before and during. (5) Rest 30 min; record recovery voltage and pack temperature. (6) Recharge, log mAh returned. (7) Reduce with `docs/test/analysis/battery_test.py`.
+- **Pass.** Delivered ≥ 110 Wh from 4.20 to 3.50 V/cell at 15 A (0.8 × 144.3 × 0.95 = 109.7 Wh *(calc)*: the energy the sizing assumes usable before the 20 % reserve); sag ≥ 3.4 V/cell at 40 A and ≥ 3.2 V/cell at the 73 A step (review M[propulsion].4); per-cell internal resistance ≤ 7.5 mΩ (= (3.70 − 3.40) / 40.2 A *(calc)*, EST); pack ≤ 60 °C EST after discharge; both packs within 3 % of each other.
+- **Predicted.** 144.3 Wh nameplate (`packs[0].Wh`); loaded-pack voltage 21.0 V at hover (`firmware/vtol_c0.param` BATT_LOW_VOLT comment); mission needs 98.8 Wh from the pack (93.85 / 0.95 *(calc, `sized.E_Wh`, `base.etaBatt`)*), landing at 32 % of nameplate *(calc)*.
 - **Risk.** Over-discharge: watch 3.5 V/cell; LiPo bag under the pack.
 - **Duration** 2 h per pack. **Crew** 2. **Prereq.** C06.
 
@@ -229,20 +231,20 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Setup.** Servo on a bench block, 50 mm arm, luggage scale or hanging jug on a string over a pulley (zero-cost: masses only), bench 6.0 V from the FC BEC or a UBEC (hardware kit, BOM); servo tester or FC output.
 - **Procedure.** (1) Centre at 1500 µs; mark. (2) Hang masses at 50 mm until the arm stalls (torque = m g × 0.05 m: 8 kg·cm = 0.785 N·m needs 1.60 kg at 50 mm *(calc)*); hold ≤ 2 s to avoid heating. (3) Command ± 45°, measure travel. (4) Return to centre 10 times from each side; measure the arm tip position. (5) Time a 60° sweep by phone video (30 fps).
 - **Pass.** Stall ≥ 6.4 kg·cm at 6.0 V (80 % of the 8 kg·cm rating, EST; rating from `docs/research/budget-avionics.md` §6, shop.emax-usa.com checked 2026-10-13); centring repeatability ≤ 1° (≤ 0.9 mm at 50 mm *(calc)*, EST); no buzzing at centre under 1 kg·cm; all five within 10 % of each other.
-- **Predicted.** 8 kg·cm at 6.0 V, 10 at 7.4 V (budget-avionics §6). Hinge-moment need: ≤ 4 kg·cm per aileron (review M12.3; measured in S07). Pushrods: 2-56 Du-Bro Kwik-Link cut to the CAD lengths (ailerons 39 mm, elevator 21 mm, rudders 96 mm, `cad/README.md` controls); the 5-pack covers five surfaces with no spare pushrod.
+- **Predicted.** 8 kg·cm at 6.0 V, 10 at 7.4 V (budget-avionics §6). Hinge-moment need: ≤ 4 kg·cm per aileron (review M[controls].3; measured in S07). Pushrods: 2-56 Du-Bro Kwik-Link cut to the CAD lengths (ailerons 45 mm, elevator 33 mm, rudders 100 mm, `cad/README.md` controls); the 5-pack covers five surfaces with no spare pushrod.
 - **Duration** 1.5 h. **Crew** 1. **Prereq.** Order B.
 
 #### C13 — Harness, connector and ESC heating
 - **Objective.** Confirm the 12 AWG ESC feeds, 14 AWG pusher/BEC feeds, XT90-S and XT60H connectors (BOM) stay cool at hover and transition current.
 - **Setup.** Run during G03 (tied-down full-system run); IR thermometer on each connector, the pack lead, each ESC and the FC current-sensor board.
 - **Pass.** Any connector or wire ≤ 60 °C EST after 60 s hover current + 10 s transition current; ESC ≤ 70 °C EST; no discolouration.
-- **Predicted.** 10.0 A per lift ESC at hover (40.0 / 4 *(calc)*); pack lead 40.0 A hover (42.3 A at 21 V), 73.0 A transition (`sized.I_hover`, `I_hover_loaded`, `I_trans`); XT90 continuous rating — (not in repo).
+- **Predicted.** 10.05 A per lift ESC at hover (40.2 / 4 *(calc)*); pack lead 40.2 A hover (42.5 A at 21 V), 73.5 A transition (`sized.I_hover`, `I_hover_loaded`, `I_trans`); XT90 continuous rating — (not in repo).
 - **Duration** in G03. **Crew** 2. **Prereq.** G03 setup.
 
-#### C14 — Tape-skin mass sample (review M8.4)
+#### C14 — Tape-skin mass sample (review M[structures].4)
 - **Objective.** Check the wing skin mass assumption before the sizing is frozen for the build.
 - **Procedure.** Cut a 0.5 m² XPS sample, weigh on the kitchen scale, tape one side as per the build, weigh again.
-- **Pass.** ≤ 0.1 kg/m² per side (review M8.4); otherwise update `base.wGlass` (0.06 kg/m², `results.json`) and re-run `analysis/sizing.mjs`.
+- **Pass.** ≤ 0.1 kg/m² per side (review M[structures].4); otherwise update `base.wGlass` (0.06 kg/m², `results.json`) and re-run `analysis/sizing.mjs`.
 - **Duration** 0.5 h. **Crew** 1. **Prereq.** Foam and tape received.
 
 #### C15 — Prop and hub inspection
@@ -272,34 +274,34 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Objective.** Prove the wing, joiner, joiner stops, sockets and saddle at limit load and compare tip deflection with the FEA.
 - **Article.** Complete wing (both panels on the saddle and joiner, M5 wing bolts torqued to 1.0 N·m EST, hardware-spec J10), no aileron servos needed.
 - **Setup.** Wing inverted on two padded supports at the pod width (saddle edges, ≈ 0.1 m each side of centre); ruler or dial gauge at each tip against a fixed reference; sandbags or water jugs (kitchen-scale-weighed, ± 10 g) at six stations per side.
-- **Load schedule.** Total 15.4 kg = n × (m − m_wing) = 3.0 × (6.43 − 1.29) *(calc; `sized.m`, `sized.m_wing`; the wing's own 1.29 kg already loads the spar in the inverted position, so this is slightly above 3.0 g at the root — conservative)*. Elliptic spanwise: per side, stations at 0.1 / 0.3 / 0.5 / 0.7 / 0.9 / 1.1 m from centre: 1.63 / 1.58 / 1.48 / 1.32 / 1.08 / 0.61 kg *(calc: elliptic integral over 0.2 m bins, data sheet `cards/DS-S01.md`)*. Chordwise at 30 % chord (spar line; chord 0.263 m, `sized.chord`).
-- **Procedure.** (1) Zero the tip gauges. (2) Load symmetrically in four increments (25, 50, 75, 100 % of schedule), reading both tips each step; listen for cracking; look at the socket foam cover and the saddle bolts. (3) Hold 100 % for 30 s (review M8.1). (4) Unload in the same steps. (5) Record residual tip deflection after 5 min. (6) Slide the joiner out and inspect for marks or bow against a straight edge; check the stop discs are still bonded.
-- **Pass.** Tip deflection at 100 % ≤ 120 mm (10 % of the 1.2 m semi-span, review M8.1); residual ≤ 2 mm EST; no permanent set in the joiner (straightness ≤ 0.5 mm over 0.76 m, EST); no foam crush at the sockets; no bolt loosening; stop discs intact.
-- **Predicted.** Spar tip 15.2 mm at 3.0 g, scaled from the FEA 21.9 mm at 4.5 g on the v0.3.1 root moment (`cad/sim/results.txt spar_tip_disp` × (72.3 / 69.5) × 3/4.5 *(calc; `struct.Mroot` v0.4 vs `spar_load_N` note)*; the studies were not re-run for rev B, `cad/README.md` simulations). The FEA bonds an idealised joiner (OD = socket ID), so the real wing with 0.23 mm joiner clearance and foam compliance will deflect more; between 15 and 60 mm is the expected band (EST). Root moment at 3.0 g: 48.2 N·m = n W b / (3π) *(calc; `struct.Mroot` 72.3 × 3/4.5)*; joiner stress 103 MPa, RF 2.67 on 275 MPa yield (`struct.sigJ` 154.6 MPa × 3/4.5 *(calc)*).
+- **Load schedule.** Total 15.4 kg = n × (m − m_wing) = 3.0 × (6.45 − 1.31) *(calc; `sized.m`, `sized.m_wing`; the wing's own 1.31 kg already loads the spar in the inverted position, so this is slightly above 3.0 g at the root — conservative)*. Elliptic spanwise: per side, stations at 0.1 / 0.3 / 0.5 / 0.7 / 0.9 / 1.1 m from centre: 1.63 / 1.58 / 1.48 / 1.32 / 1.08 / 0.61 kg *(calc: elliptic integral over 0.2 m bins, data sheet `cards/DS-S01.md`)*. Chordwise at 30 % chord (spar line; chord 0.267 m, `sized.chord`).
+- **Procedure.** (1) Zero the tip gauges. (2) Load symmetrically in four increments (25, 50, 75, 100 % of schedule), reading both tips each step; listen for cracking; look at the socket foam cover and the saddle bolts. (3) Hold 100 % for 30 s (review M[structures].1). (4) Unload in the same steps. (5) Record residual tip deflection after 5 min. (6) Slide the joiner out and inspect for marks or bow against a straight edge; check the stop discs are still bonded.
+- **Pass.** Tip deflection at 100 % ≤ 120 mm (10 % of the 1.2 m semi-span, review M[structures].1); residual ≤ 2 mm EST; no permanent set in the joiner (straightness ≤ 0.5 mm over 0.76 m, EST); no foam crush at the sockets; no bolt loosening; stop discs intact.
+- **Predicted.** Spar tip 15.2 mm at 3.0 g, scaled from the FEA 21.9 mm at 4.5 g on the v0.3.1 root moment (`cad/sim/results.txt spar_tip_disp` × (72.5 / 69.5) × 3/4.5 *(calc; `struct.Mroot` v0.4 vs `spar_load_N` note)*; the studies were not re-run for CAD rev B or rev C, `cad/README.md` simulations). The FEA bonds an idealised joiner (OD = socket ID), so the real wing with 0.23 mm joiner clearance and foam compliance will deflect more; between 15 and 60 mm is the expected band (EST). Root moment at 3.0 g: 48.3 N·m = n W b / (3π) *(calc; `struct.Mroot` 72.5 × 3/4.5)*; joiner stress 103 MPa, RF 2.66 on 275 MPa yield (`struct.sigJ` 155.0 MPa × 3/4.5 *(calc)*).
 - **Risk.** A failure drops 15 kg of bags: nobody under the wing; pad the floor.
 - **Duration** 2 h. **Crew** 3. **Prereq.** C05, C17, wing built.
 
-#### S02 — Boom static stiffness (review M10.1)
+#### S02 — Boom static stiffness (review M[simulation].1)
 - **Objective.** Measure boom tip deflection under a known load with the real printed clamp to check the FEA boundary condition.
-- **Setup.** One boom clamped in its front and rear wing clamps on the wing (or in a bench fixture using the real clamps); a jug of known mass hung at the front motor station (arm Lb = 0.448 m, `struct.Lb`); ruler/dial gauge at the motor station.
+- **Setup.** One boom clamped in its front and rear wing clamps on the wing (or in a bench fixture using the real clamps); a jug of known mass hung at the front motor station (arm Lb = 0.450 m, `struct.Lb`); ruler/dial gauge at the motor station.
 - **Procedure.** Hang 1.0, 2.0, 3.0 kg (9.8–29.4 N, up to the 30.7 N full-thrust case `struct.Tmax`); read deflection each step and after removal.
-- **Pass.** Deflection at 3.0 kg ≤ 1.5 × prediction = 3.7 mm (review M10.1 rule; FEA 2.18 mm at Lb 0.431 m scaled by (0.448/0.431)³ = 2.45 mm *(calc)*); residual 0; no clamp slip (witness line).
-- **Predicted.** 2.58 mm hand (P L³ / 3EI, `struct.defl_max`), 2.45 mm FEA-scaled at 30.7 N (`cad/sim/results.txt boom_disp_max` 2.18 mm at the v0.3.1 arm).
+- **Pass.** Deflection at 3.0 kg ≤ 1.5 × prediction = 3.7 mm (review M[simulation].1 rule; FEA 2.18 mm at Lb 0.431 m scaled by (0.450/0.431)³ = 2.48 mm *(calc)*); residual 0; no clamp slip (witness line).
+- **Predicted.** 2.62 mm hand (P L³ / 3EI, `struct.defl_max`), 2.48 mm FEA-scaled at 30.7 N (`cad/sim/results.txt boom_disp_max` 2.18 mm at the v0.3.1 arm).
 - **Duration** 1 h. **Crew** 2. **Prereq.** Booms built.
 
-#### S03 — Boom modal tap test (review M8.2)
-- **Objective.** First bending frequency of each boom with the lift unit fitted, vs the hand 33.9 Hz / FEA 38.5 Hz.
+#### S03 — Boom modal tap test (review M[structures].2)
+- **Objective.** First bending frequency of each boom with the lift unit fitted, vs the hand 33.7 Hz / FEA 38.5 Hz.
 - **Setup.** Aircraft assembled on its gear; phone taped to the motor mount running a free accelerometer logging app (e.g. phyphox, phyphox.org, free; EST adequacy: phone IMU rates 100–400 Hz give ≤ 50–200 Hz bandwidth); tap the motor with a rubber mallet handle.
 - **Procedure.** 10 taps per boom, vertical then lateral; export the accelerometer CSV; FFT in the app or with numpy; read the first peak.
-- **Pass.** f1 within 27–46 Hz EST (hand 33.9 Hz − 20 % to FEA 38.5 Hz + 20 %) in both planes; and not within ± 15 % of the hover rotor frequency or twice it (review M8.2). Hover rpm comes from C07 throttle and the no-load 8,880 rpm × throttle fraction EST (BLHeli_S has no telemetry on these ESCs, —).
-- **Predicted.** 33.9 Hz hand at the v0.4 arm (`struct.fn`), 38.5 Hz FEA at v0.3.1 (`cad/sim/results.txt boom_f1`); a compliant clamp lowers it (`analysis/sizing.mjs` comment on fn).
+- **Pass.** f1 within 27–46 Hz EST (hand 33.7 Hz − 20 % to FEA 38.5 Hz + 20 %) in both planes; and not within ± 15 % of the hover rotor frequency or twice it (review M[structures].2). Hover rpm comes from C07 throttle and the no-load 8,880 rpm × throttle fraction EST (BLHeli_S has no telemetry on these ESCs, —).
+- **Predicted.** 33.7 Hz hand at the v0.4 arm (`struct.fn`), 38.5 Hz FEA at v0.3.1 (`cad/sim/results.txt boom_f1`); a compliant clamp lowers it (`analysis/sizing.mjs` comment on fn).
 - **Duration** 1 h. **Crew** 2. **Prereq.** S02.
 
-#### S04 — Boom clamp and splice slip proof (hardware-spec M7, review M8.5)
+#### S04 — Boom clamp and splice slip proof (hardware-spec M7, review M[structures].5)
 - **Objective.** Prove the printed clamps and the rear splice do not slip under full thrust or torsion.
-- **Procedure.** (1) Torsion: hang 2 kg on a 0.25 m lever (4.9 N·m, hardware-spec M7) from a motor mount, then from the tail clamp; check the paint witness line. (2) Bending: hang 1.5 × Tmax = 46.0 N (4.69 kg *(calc; `struct.Tmax`)*) from the front motor station with the rear free (review M8.5); check rotation at the clamps with a protractor app.
-- **Pass.** Witness line unmoved; rotation ≤ 1°; no crack (review M8.5).
-- **Predicted.** Clamp friction capacity about 16 N·m about the boom axis at 0.5 N·m per screw, μ 0.3 EST (hardware-spec J04); clamp moment 13.7 N·m (`struct.Mclamp`); socket shear 11.0 MPa (`struct.tauSock`).
+- **Procedure.** (1) Torsion: hang 2 kg on a 0.25 m lever (4.9 N·m, hardware-spec M7) from a motor mount, then from the tail clamp; check the paint witness line. (2) Bending: hang 1.5 × Tmax = 46.0 N (4.69 kg *(calc; `struct.Tmax`)*) from the front motor station with the rear free (review M[structures].5); check rotation at the clamps with a protractor app.
+- **Pass.** Witness line unmoved; rotation ≤ 1°; no crack (review M[structures].5).
+- **Predicted.** Clamp friction capacity about 16 N·m about the boom axis at 0.5 N·m per screw, μ 0.3 EST (hardware-spec J04); clamp moment 13.8 N·m (`struct.Mclamp`); socket shear 11.0 MPa (`struct.tauSock`).
 - **Duration** 1 h. **Crew** 2. **Prereq.** C02, booms built.
 
 #### S05 — Motor-mount pull and insert test on real parts
@@ -309,33 +311,33 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Predicted.** Lift unit reaction at full thrust 30.7 N (`struct.Tmax`).
 - **Duration** 0.5 h. **Crew** 2. **Prereq.** C02, C03, C16, mounts printed.
 
-#### S06 — Landing-gear drop test (review M8.3)
+#### S06 — Landing-gear drop test (review M[structures].3)
 - **Objective.** Measure peak deceleration in a 0.3 m drop and decide on compliant feet; check the leg fairings survive.
-- **Setup.** Empty airframe (no pack; ballast to flight mass with a jug strapped in the bay, total 6.43 kg) with the FC powered by a bench battery and logging (`LOG_DISARMED,1` temporarily) or a phone accelerometer in the bay; grass surface; leg fairings fitted (`cad/README.md` gear: printed 3:1 teardrop, 170 mm, taped at the clamp).
+- **Setup.** Empty airframe (no pack; ballast to flight mass with a jug strapped in the bay, total 6.45 kg) with the FC powered by a bench battery and logging (`LOG_DISARMED,1` temporarily) or a phone accelerometer in the bay; grass surface; leg fairings fitted (`cad/README.md` gear: printed 3:1 teardrop, 170 mm, taped at the clamp).
 - **Procedure.** Lift to 0.30 m under the feet (tape measure), release level, three drops; inspect legs, gear clamps, boom clamps, fairings and the ballast mount (S10) after each.
-- **Pass.** Peak ≤ 8 g (review M8.3) — otherwise fit softer feet (foam/TPU, about 100 mm travel keeps n ≤ 8, review §8 "Landing loads"); no crack or permanent bend in the 0.205 m legs; fairings undamaged and still taped.
-- **Predicted.** Impact speed 2.43 m/s = √(2 g h) (review §8 Load cases); bare aluminium legs as springs: n = 2(1 + h/s) = 32 g at 20 mm stroke, 8 g at 100 mm (`struct.strokes`). So without compliant feet the test is expected to **fail**; run it first with the planned feet.
+- **Pass.** Peak ≤ 8 g (review M[structures].3) — otherwise fit softer feet (foam/TPU, about 100 mm travel keeps n ≤ 8, review §[structures] "Landing loads"); no crack or permanent bend in the 0.205 m legs; fairings undamaged and still taped.
+- **Predicted.** Impact speed 2.43 m/s = √(2 g h) (review §[structures] Load cases); bare aluminium legs as springs: n = 2(1 + h/s) = 32 g at 20 mm stroke, 8 g at 100 mm (`struct.strokes`). So without compliant feet the test is expected to **fail**; run it first with the planned feet.
 - **Risk.** Damage to the pod: the drop is onto the gear only, pad the pod with foam.
 - **Duration** 1 h. **Crew** 2. **Prereq.** S01, S10, gear built.
 
 #### S07 — Control-surface hinge moment and joiner/spar post-test inspection
-- **Objective.** (a) Measure the aileron hinge moment to size the servo margin (review M12.3); (b) inspect the joiner, sockets and saddle after S01 and S06.
+- **Objective.** (a) Measure the aileron hinge moment to size the servo margin (review M[controls].3); (b) inspect the joiner, sockets and saddle after S01 and S06.
 - **Procedure.** (a) Spring/luggage scale (Gaps; zero-cost: hang a jug from a string over the trailing edge) on a built aileron at 25 % of its chord behind the hinge with the surface held by the servo at 20° in a 20 m/s stream (car-roof, as C10) or, failing that, static estimate from Ch = ½ ρ V² S_a c_a Ch_δ δ with Ch_δ EST −0.5/rad and the hand calc on the card. (b) Slide the joiner out; straight-edge; look for socket foam crush and saddle bolt witness marks.
-- **Pass.** (a) Hinge moment ≤ 4 kg·cm (review M12.3, half of 8 kg·cm). (b) No set > 0.5 mm; no crush.
+- **Pass.** (a) Hinge moment ≤ 4 kg·cm (review M[controls].3, half of 8 kg·cm). (b) No set > 0.5 mm; no crush.
 - **Predicted.** — (hinge moment not computed in the repo, `docs/research/pusher-battery-servo.md` caveat 5).
 - **Duration** 1.5 h. **Crew** 2. **Prereq.** S01.
 
 #### S08 — Transport, car fit and two-person carry (R4, R5)
 - **Objective.** Demonstrate break-down into the measured car and the assembled carry.
-- **Procedure.** (1) Measure the team car's load space (review M4.2). (2) Break the aircraft into its transport pieces (wing panels off the saddle, joiner slid out of the pod piece, booms off at the field breakdown joint — 4 screws per boom, hardware-spec J05; tail off with four screws, `cad/README.md` tail). (3) Load everything with the pack box and tools; close the hatch. (4) Two people carry the assembled aircraft 50 m over grass and set it down; no part touched the ground.
+- **Procedure.** (1) Measure the team car's load space (review M[model3d].2). (2) Break the aircraft into its transport pieces (wing panels off the saddle, joiner slid out of the pod piece, booms off at the field breakdown joint — 4 screws per boom, hardware-spec J05; tail off with four screws, `cad/README.md` tail). (3) Load everything with the pack box and tools; close the hatch. (4) Two people carry the assembled aircraft 50 m over grass and set it down; no part touched the ground.
 - **Pass.** All pieces fit; longest piece 1.20 m (`geo.longestPiece`) ≤ measured clear length (R4 working envelope 1.5 × 0.5 × 0.4 m, `docs/DESIGN-BASIS.md` R4); pod piece ≤ 0.5 m with the joiner out; carry completed without strain or contact.
 - **Duration** 1 h. **Crew** 2. **Prereq.** C17, airframe built.
 
-#### S09 — Built component masses and empty weight (review M4.1)
+#### S09 — Built component masses and empty weight (review M[model3d].1)
 - **Objective.** Weigh every part as it comes off the bench and the empty airframe, and compare with the sizing mass roll-up and the CAD roll-up.
-- **Procedure.** Kitchen scale (5 kg, 1 g) per part; bathroom scale or two kitchen scales for the assembled airframe; log against `cad/verification.txt` "Mass roll-up" (modelled 6.25 kg incl. pack; fasteners 228 g, printed 1.38 kg, tubes 1.66 kg, foam 0.86 kg without skins, vendor 2.12 kg) and the sizing items (`cg.items`).
-- **Pass.** Empty mass without pack and payload ≤ 5.11 kg × 1.15 = 5.88 kg (`sized.m` − 0.82 − 0.5 *(calc)*, review M4.1); otherwise re-run `analysis/sizing.mjs`.
-- **Predicted.** Wing 1.29, booms + clamps 0.615, lift units 0.968, tail 0.128, pod 0.6 EST, gear 0.443 EST (CAD legs 433 g + fairings 101 g + clamps 210 g), avionics 0.25 EST, pusher set 0.227, servos (5) 0.216, wiring 0.37 EST kg (`cg.items`; `cad/verification.txt`).
+- **Procedure.** Kitchen scale (5 kg, 1 g) per part; bathroom scale or two kitchen scales for the assembled airframe; log against `cad/verification.txt` "Mass roll-up" (modelled 6.27 kg incl. pack; fasteners 228 g, printed 1.38 kg, tubes 1.66 kg, foam 0.88 kg without skins, vendor 2.12 kg) and the sizing items (`cg.items`).
+- **Pass.** Empty mass without pack and payload ≤ 5.13 kg × 1.15 = 5.90 kg (`sized.m` − 0.82 − 0.5 *(calc)*, review M[model3d].1); otherwise re-run `analysis/sizing.mjs`.
+- **Predicted.** Wing 1.31, booms + clamps 0.617, lift units 0.968, tail 0.130, pod 0.6 EST, gear 0.443 EST (CAD legs 433 g + fairings 101.5 g + clamps 210 g), avionics 0.25 EST, pusher set 0.227, servos (5) 0.216, wiring 0.37 EST kg (`cg.items`; `cad/verification.txt`).
 - **Duration** ongoing. **Crew** 1. **Prereq.** none.
 
 #### S10 — Ballast-mount retention (new in rev B)
@@ -365,7 +367,7 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 
 #### E03 — Servo direction, throws and centering on the airframe (5 servos)
 - **Procedure.** In MANUAL and FBWA: stick right → right aileron up; stick back → elevator up; rudder right → both rudders (S4 left boom, S11 right boom) trailing edge right; in FBWA roll the aircraft and check surfaces counter the motion. Measure throws with a ruler at the trailing edge; set `SERVOn_MIN/MAX/TRIM/REVERSED`.
-- **Pass.** Correct sense on all 5 servos; aileron ± 20° EST, elevator ± 20° EST, rudder ± 20° EST (no repo values, —; typical sport-plane throws); surfaces return to within 1 mm of neutral; no binding at full throw; servo current at full throw ≤ 1 A each EST. Elevator reserve at stall: trim needs about −8.8° elevator at Vs (`aero_results.json stall.trim_at_Vstall.elevator_deg`), so the elevator throw must be ≥ 15° EST.
+- **Pass.** Correct sense on all 5 servos; aileron ± 20° EST, elevator ± 20° EST, rudder ± 20° EST (no repo values, —; typical sport-plane throws); surfaces return to within 1 mm of neutral; no binding at full throw; servo current at full throw ≤ 1 A each EST. Elevator reserve at stall: trim needs about −8.7° elevator at Vs (`aero_results.json stall.trim_at_Vstall.elevator_deg`), so the elevator throw must be ≥ 15° EST.
 - **Duration** 1 h. **Crew** 2. **Prereq.** C12, E01.
 
 #### E04 — RC link: channel map, switches, telemetry and range walk
@@ -380,10 +382,10 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 - **Pass.** Each failsafe produces the configured mode within the timeout; parameters restored and verified with `firmware/tools/check_params.py`.
 - **Duration** 1.5 h. **Crew** 2. **Prereq.** E04.
 
-#### E06 — SITL rehearsal (review F0, §13 M1): scripted portion done, pilot portion open
+#### E06 — SITL rehearsal (review F0, §[flighttest] M1): scripted portion done, pilot portion open
 - **Done.** Scripted scenarios A–G passed 2026-10-21 (`firmware/sitl/README.md`; `firmware/sitl/results/`): nominal AUTO mission with VTOL land 0.1 m from home, forward transition 10 s, "Transition airspeed reached 16.0" 5 s after start. Attitude-tracking RMS 0.67°/0.62° (VTOL), 4.5°/1.7° (fixed wing).
 - **Open.** (1) Each pilot hand-flies in Mission Planner SITL with the Pocket Crush as a joystick: QLOITER take-off, FBWA transition from the upwind edge with an immediate turn, failed transition (throttle low → QRTL), RC loss in cruise, RC loss in hover, low battery, fence; (2) `SIM_ENGINE_FAIL` on one lift motor in hover (documents the R14 limitation; not in the A–G set).
-- **Pass.** Every pilot recovers a failed transition and a pusher-out without ground contact in 3 of 3 attempts and keeps inside the 300 m fence after a transition (review M14.1: a pilot who cannot does not fly F06–F12).
+- **Pass.** Every pilot recovers a failed transition and a pusher-out without ground contact in 3 of 3 attempts and keeps inside the 300 m fence after a transition (review M[flighttest].1: a pilot who cannot does not fly F06–F12).
 - **Duration** 2 h per pilot. **Crew** PIC + GCS. **Prereq.** E11.
 
 #### E07 — Compass and GPS calibration
@@ -411,23 +413,23 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 - **Duration** 1 h. **Crew** 1. **Prereq.** FC received.
 
 #### E12 — Remote ID check (R18)
-- **Procedure.** Look up the BeeID serial at uasdoc.faa.gov (review M15.3); power the module; confirm broadcast with a free Remote ID receiver app on a phone (e.g. OpenDroneID OSM, free, Android) showing the serial and position.
+- **Procedure.** Look up the BeeID serial at uasdoc.faa.gov (review M[schedule].3); power the module; confirm broadcast with a free Remote ID receiver app on a phone (e.g. OpenDroneID OSM, free, Android) showing the serial and position.
 - **Pass.** Serial listed; broadcast received at 30 m EST.
 - **Duration** 0.5 h. **Crew** 1. **Prereq.** BeeID received, registration done.
 
 ### 9.4 Series G — ground tests on the complete aircraft
 
-#### G01 — Weight and balance (review M9.1)
+#### G01 — Weight and balance (review M[cg].1)
 - **Procedure.** Two kitchen scales under the wing at known stations (or one scale and a pivot): weigh with pack and 0.5 kg ballast; compute CG from the moments. Mark the CG target on the pod. Move the pack to bring the CG within 2 cm of the thrust centroid.
-- **Pass.** Take-off mass ≤ 7.40 kg (R2 line); CG at 28 ± 2 % MAC (target `cg.pct.target` 28; ± 2 % MAC = ± 5.3 mm *(calc, MAC = chord 0.2632 m)*) with ballast; CG never aft of 32.4 % MAC (= neutral point 40.4 % − 8 % SM, `aero_results.json neutral_point.AVL_pod_pct_MAC`, review M9.1 rule *(calc)*); CG within 20 mm of the thrust centroid at x = −0.0737 m from the LE (`cg.thrustCentroid`).
-- **Predicted.** CG at 26.5–29.5 % MAC over the battery travel (`cg.pctFwd`, `pctAft`); static margin 12.4 % at 28 % (aero, AVL with pod), 11.5 % by the sizing (`geo.SM`).
+- **Pass.** Take-off mass ≤ 7.42 kg (R2 line); CG at 28 ± 2 % MAC (target `cg.pct.target` 28; ± 2 % MAC = ± 5.3 mm *(calc, MAC = chord 0.2666 m)*) with ballast; CG never aft of 32.3 % MAC (= neutral point 40.3 % − 8 % SM, `aero_results.json neutral_point.AVL_pod_pct_MAC`, review M[cg].1 rule *(calc)*); CG within 20 mm of the thrust centroid at x = −0.0746 m from the LE (`cg.thrustCentroid`).
+- **Predicted.** CG at 26.6–29.4 % MAC over the battery travel (`cg.pctFwd`, `pctAft`); static margin 12.3 % at 28 % (aero, AVL with pod), 11.9 % by the sizing (`geo.SM`).
 - **Duration** 1 h. **Crew** 2. **Prereq.** S09, avionics fitted.
 
 #### G09 — CG with and without ballast; ballast rule check (new in rev B)
 - **Objective.** Confirm the empty-bay CG and that the 0.5 kg ballast restores the 28 % MAC target (`docs/research/aerodynamics.md` M4; `cad/README.md` operating rule).
 - **Procedure.** Repeat G01 (1) with pack only, no ballast; (2) with pack + 0.5 kg ballast at the bay station; (3) with the ballast moved ± 30 mm to map the sensitivity; record the pack station for each.
-- **Pass.** Empty-bay CG recorded and confirmed aft of 32.4 % MAC → the ballast rule is mandatory (expected); with ballast CG 28 ± 2 % MAC; the rule and the ballast station are written on the GA sheet note 5 and on every flight card.
-- **Predicted.** 35.2 % MAC without payload (`cg.pct.noPayload`; `aero_results.json geometry.CG_no_payload_pct_MAC`), static margin 5.3 % (aero) / 4.3 % (sizing `cg.SM_noPayload`); 28 % with ballast.
+- **Pass.** Empty-bay CG recorded and confirmed aft of 32.3 % MAC → the ballast rule is mandatory (expected); with ballast CG 28 ± 2 % MAC; the rule and the ballast station are written on the GA sheet note 5 and on every flight card.
+- **Predicted.** 35.1 % MAC without payload (`cg.pct.noPayload`; `aero_results.json geometry.CG_no_payload_pct_MAC`), static margin 5.2 % (aero) / 4.9 % (sizing `cg.SM_noPayload`); 28 % with ballast.
 - **Duration** 0.5 h. **Crew** 2. **Prereq.** G01, S10.
 
 #### G02 — Hand-carry sensor sanity walk
@@ -438,9 +440,9 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 #### G03 — Full-system tied-down run (review T6, expanded; includes C13, E09)
 - **Objective.** All four lift motors and the pusher under load on the airframe: pack sag, harness heat, vibration, EMI, and the pitch/roll authority check.
 - **Setup.** Aircraft strapped to a heavy bench or to ground stakes by the landing-leg clamps with ≥ 4 ratchet or rope ties rated ≥ 50 kg each (total restraint > 4 × 3.13 kgf = 12.5 kgf, `budget-lift.md` A3); props on; everyone ≥ 5 m away behind a barrier; watt meter in line; IR thermometer; logging.
-- **Procedure.** (1) Arm in QSTABILIZE; raise throttle to the C07 hover throttle (~51 %) for 60 s; (2) 3 s at 100 % on all four (review M7.4 burst); (3) in FBWA, pusher to 100 % for 10 s (G06 may be combined); (4) full transition current: hover throttle plus pusher 75 % (`TKOFF_THR_MAX`) for 10 s; (5) read temperatures within 30 s; (6) download the log.
-- **Pass.** Pack ≥ 3.4 V/cell at hover draw and ≥ 3.2 V/cell in the burst (review T6, §5 M4); hover current 40.0 A ± 15 % EST; transition current ≤ 85 A (`Q_M_BAT_CURR_MAX`); VIBE < 30 m/s², clipping 0; motors/ESCs/connectors within the C08/C13 limits; no desync; no loose fasteners after (witness marks).
-- **Predicted.** 40.0 A hover at 22.2 V, 42.3 A at 21 V, 73.0 A transition (`sized.I_hover`, `I_hover_loaded`, `I_trans`).
+- **Procedure.** (1) Arm in QSTABILIZE; raise throttle to the C07 hover throttle (~52 %) for 60 s; (2) 3 s at 100 % on all four (review M[propulsion].4 burst); (3) in FBWA, pusher to 100 % for 10 s (G06 may be combined); (4) full transition current: hover throttle plus pusher 75 % (`TKOFF_THR_MAX`) for 10 s; (5) read temperatures within 30 s; (6) download the log.
+- **Pass.** Pack ≥ 3.4 V/cell at hover draw and ≥ 3.2 V/cell in the burst (review T6, §[mass] M1); hover current 40.2 A ± 15 % EST; transition current ≤ 85 A (`Q_M_BAT_CURR_MAX`); VIBE < 30 m/s², clipping 0; motors/ESCs/connectors within the C08/C13 limits; no desync; no loose fasteners after (witness marks).
+- **Predicted.** 40.2 A hover at 22.2 V, 42.5 A at 21 V, 73.5 A transition (`sized.I_hover`, `I_hover_loaded`, `I_trans`).
 - **Risk.** Restraint failure: tie to the leg clamps not the legs; check knots; nobody in the rotor plane.
 - **Duration** 2 h. **Crew** 3. **Prereq.** S04, E02, E03, E05, G01.
 
@@ -453,7 +455,7 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 - **Setup.** Two 4 m tether lines to the leg clamps from stakes 3 m apart, slack to 1.5 m; grass; crew 10 m away; wind ≤ 3 m/s EST; ballast fitted.
 - **Procedure.** QSTABILIZE: arm, throttle up slowly until light on the gear, back down (ArduPilot step 5 lift-off check); then lift to 1 m, hold 30 s, land. Then QHOVER, 1 m, 30 s. Three cycles, motors cooled < 45 °C between (review F3).
 - **Pass.** 30 s stable at 1 m; attitude error < 15°; lift output < 60 % (review F2); VIBE < 30; no oscillation; tether never taut.
-- **Predicted.** Hover throttle ≈ 0.51 (1,608 / 3,130 *(calc)*).
+- **Predicted.** Hover throttle ≈ 0.52 (1,613 / 3,130 *(calc)*).
 - **Duration** 2 h. **Crew** 4. **Prereq.** G03, G04, G09, flight request approved, I02.
 
 #### G06 — Pusher ground run on the airframe
@@ -462,13 +464,13 @@ All E tests: **props off**, aircraft on a bench, pack through the XT90-S, fire b
 - **Duration** 0.5 h. **Crew** 3. **Prereq.** C09, G03.
 
 #### G07 — Assembly and breakdown time (R5)
-- **Procedure.** Stopwatch, two people, from the loaded car to armed pre-flight (review M4.3), including sliding the joiner in and bolting both panels (C17), the booms (4 screws each) and the tail (4 screws); three runs on different days; then breakdown back into the car.
+- **Procedure.** Stopwatch, two people, from the loaded car to armed pre-flight (review M[model3d].3), including sliding the joiner in and bolting both panels (C17), the booms (4 screws each) and the tail (4 screws); three runs on different days; then breakdown back into the car.
 - **Pass.** Median assembly ≤ 15 min; no tool other than the hex keys; witness marks aligned after assembly.
 - **Duration** 1.5 h. **Crew** 2. **Prereq.** S08.
 
 #### G08 — Field procedure rehearsal
-- **Procedure.** Full dry run of a flight session at the site without arming: set-up, pre-flight checklist, crew calls, abort call, post-flight temperatures, log download, pack change, field charging (review M14.2: time one full charge at the field supply).
-- **Pass.** Checklist completed with no missed item; charge time per pack ≤ 1.5 h (review M14.2) on the field supply (— source to be found, Gaps).
+- **Procedure.** Full dry run of a flight session at the site without arming: set-up, pre-flight checklist, crew calls, abort call, post-flight temperatures, log download, pack change, field charging (review M[flighttest].2: time one full charge at the field supply).
+- **Pass.** Checklist completed with no missed item; charge time per pack ≤ 1.5 h (review M[flighttest].2) on the field supply (— source to be found, Gaps).
 - **Duration** 2 h. **Crew** 4. **Prereq.** G05 planned.
 
 ### 9.5 Series F — flight tests
@@ -478,17 +480,17 @@ All flight tests use the card in `docs/test/cards/`. Common rules: weight and CG
 | ID | Title | Review step | Build-up points | Pass criteria (summary; full on the card) | Prereq |
 |---|---|---|---|---|---|
 | F01 | First lift-off, QSTABILIZE hops | F3 start | lift-off and set down; 1 m hover 10 s; ± 5° roll/pitch inputs | no oscillation; attitude error < 15°; VIBE < 30; clipping 0 | G05 |
-| F02 | QHOVER hover-throttle learn and notch log (two 60 s batch-logged hovers) | F3 | 1–3 m, 2 × 60 s with `INS_LOG_BAT_MASK,1`, `INS_LOG_BAT_OPT,4` (`docs/research/firmware.md` D13) | learned `Q_M_THST_HOVER` 0.3–0.6 and ≤ 0.60; FFT peak identified; front/rear output split ≤ 15 % (review M9.2) | F01 |
-| F03 | QLOITER free hover, 3 × 60 s, thermal | F3 | ≤ 5 m AGL; position hold; 1 m/s translations | hold within 2 m EST; motors ≤ 80 °C; cooled < 45 °C between; hover current 40.0 A ± 15 % | F02 |
+| F02 | QHOVER hover-throttle learn and notch log (two 60 s batch-logged hovers) | F3 | 1–3 m, 2 × 60 s with `INS_LOG_BAT_MASK,1`, `INS_LOG_BAT_OPT,4` (`docs/research/firmware.md` D13) | learned `Q_M_THST_HOVER` 0.3–0.6 and ≤ 0.60; FFT peak identified; front/rear output split ≤ 15 % (review M[cg].2) | F01 |
+| F03 | QLOITER free hover, 3 × 60 s, thermal | F3 | ≤ 5 m AGL; position hold; 1 m/s translations | hold within 2 m EST; motors ≤ 80 °C; cooled < 45 °C between; hover current 40.2 A ± 15 % | F02 |
 | F04 | Q-mode handling at low forward speed | F4 | box pattern at 5–8 m/s, ≤ 10 m AGL | no unexpected Q_ASSIST; attitude error < 15°; airspeed sensor reads 5–8 m/s ± 2 | F03 |
 | F05 | Hover failsafes and R20 demonstration | — | at 20 m AGL EST over the pad: RC off → QLAND; `FENCE_ALT_MAX` temporarily 25 m, climb → RTL; low battery forced → RTL; critical forced → QLAND | each action within timeout; touchdown within 5 m of the pad EST | F04, E05 |
 | F06 | Partial transitions (Q_ASSIST on) | F5 | ≥ 30 m AGL from the upwind edge; FBWA with throttle until 12 m/s then back to QHOVER; × 3 | airspeed rising within 6 s (review F5); altitude loss ≤ 10 m EST; lift motors re-engage on back-transition | F05, I02 (RFS) |
-| F07 | Full transition, circuit, back-transition, QLAND | F6 | after 3 × F06: FBWA to `AIRSPEED_MIN` 16 from the upwind edge, immediate turn, one circuit at 18 m/s, back-transition, QLAND | transition ≤ 15 s and ≤ 100 m (review M12.2); turn started ≤ 3 s after "Transition done"; lift outputs at min in cruise (R1); QLAND touchdown ≤ 1 m/s EST | F06 × 3 |
-| F08 | Airspeed calibration and cruise performance | F6+ | `ARSPD_AUTOCAL` 5 min circuits; then 2 × 60 s legs at 20 m/s reciprocal headings; record current | `ARSPD_RATIO` 1.5–3.0 and airspeed vs GPS mean error ≤ 10 % (review M12.1); cruise power ≤ 421 W / 19.0 A at 20 m/s *(calc)*; predicted 297–323 W, 13.4–14.5 A | F07 |
-| F13 | Gear-fairing A/B at 20 m/s (new in rev B) | — | same reciprocal legs as F08 with fairings on, then (separate flight) fairings removed; watt-meter/BAT power at 20 m/s | with fairings ≤ 421 W (R10); predicted 297 W faired vs 477 W bare (`aero_results.json drag.gear_faired_case`, `gear_round_case`); ΔP ≥ 100 W confirms the fairings are load-bearing for R10 | F08 |
+| F07 | Full transition, circuit, back-transition, QLAND | F6 | after 3 × F06: FBWA to `AIRSPEED_MIN` 16 from the upwind edge, immediate turn, one circuit at 18 m/s, back-transition, QLAND | transition ≤ 15 s and ≤ 100 m (review M[controls].2); turn started ≤ 3 s after "Transition done"; lift outputs at min in cruise (R1); QLAND touchdown ≤ 1 m/s EST | F06 × 3 |
+| F08 | Airspeed calibration and cruise performance | F6+ | `ARSPD_AUTOCAL` 5 min circuits; then 2 × 60 s legs at 20 m/s reciprocal headings; record current | `ARSPD_RATIO` 1.5–3.0 and airspeed vs GPS mean error ≤ 10 % (review M[controls].1); cruise power ≤ 420 W / 18.9 A at 20 m/s *(calc, R10 line)*; predicted 298–325 W, 13.4–14.6 A | F07 |
+| F13 | Gear-fairing A/B at 20 m/s (new in rev B) | — | same reciprocal legs as F08 with fairings on, then (separate flight) fairings removed; watt-meter/BAT power at 20 m/s | with fairings ≤ 420 W (R10); predicted 298 W faired vs 478 W bare (`aero_results.json drag.gear_faired_case`, `gear_round_case`); ΔP ≥ 100 W confirms the fairings are load-bearing for R10 | F08 |
 | F09 | Stall-speed determination in fixed-wing mode (new in rev B; replaces the rev A margin approach) | aero M2 | ≥ 80 m AGL EST, Q_ASSIST forced off, FBWA, idle, decelerate ≤ 0.3 m/s² to the pitch break; three runs; recover; then with Q_ASSIST auto note the assist speed | measured Vs (calibrated) ≤ 12.0 m/s = pass (R11); 12.0–12.5 = team decision (aero §9 option: accept); > 12.5 = fail; altitude loss ≤ 30 m EST; `AIRSPEED_MIN` 16 ≥ 1.3 × Vs (Vs ≤ 12.3) | F08 |
 | F10 | Fixed-wing failsafes: pusher-out (R15), RC loss in cruise (R20) | — | ≥ 60 m AGL EST: pusher throttle to idle in FBWA → Q_ASSIST → QLAND; separate flight: RC off in cruise → RTL → QRTL | hover re-entered with altitude loss ≤ 30 m EST; RTL → QRTL → land within `RTL_RADIUS` 100 m of home | F09 |
-| F11 | Mission dress rehearsal (half duration) | F7 prep | 1 min hover, transition, 5 min cruise at 20 m/s, back-transition, 1 min hover, land | energy used ≤ 60 % of C11 usable (predicted 56.5 Wh = 51 % *(calc)*); all phases logged; no failsafe | F10, F13 |
+| F11 | Mission dress rehearsal (half duration) | F7 prep | 1 min hover, transition, 5 min cruise at 20 m/s, back-transition, 1 min hover, land | energy used ≤ 60 % of C11 usable (predicted 56.8 Wh = 52 % *(calc)*); all phases logged; no failsafe | F10, F13 |
 | F12 | Full mission (R8, R9, R10) | F7 | ≥ 1 min hover, transition, ≥ 10 min cruise at 18–22 m/s, back-transition, ≥ 1 min hover, vertical land; with 0.5 kg ballast; fairings on; wind 3–5 m/s if available (R16) | landing ≥ 20 % of C11 usable energy and ≥ 1,300 mAh; no failsafe; aircraft undamaged; dated ≤ 2027-04-30 | F11 × 2 |
 
 Cards: `docs/test/cards/FTC-F01.md` … `FTC-F13.md`.
@@ -498,8 +500,8 @@ Cards: `docs/test/cards/FTC-F01.md` … `FTC-F13.md`.
 | ID | Title | Req | Procedure | Pass |
 |---|---|---|---|---|
 | I01 | Budget ledger audit | R6, R7 | Every receipt (goods, tax, shipping) logged against `docs/purchasing/C0_BOM.csv` "Actual USD"; sum; spares (motor, 3 ESCs, prop pair) and second pack checked in; note that no spare servo or pushrods are held | Total ≤ $2,000.00; reserve ≥ $100 target (BOM: $1,896.79 committed, $103.21 reserve); spares on the shelf |
-| I02 | Legal and site compliance | R18, R19 | Checklist from review §15 "Compliance checklist": legal path chosen (by 2026-11-06), TRUST per pilot, registration + marking, BeeID serial (E12), AMA per pilot, flight request ≥ 7 business days, post-flight report ≤ 3 business days, site ceiling in `FENCE_ALT_MAX` (≤ 110) | All items "done" before the first flight; a request on file for each flight date |
-| I03 | Configuration inspection | R1, R3, R14 | Built aircraft against `cad/drawings/DBF-DRW-001.PDF` rev B sheet 1: 4 lift rotors, pusher, wing, tail with rudders; span 2.40 m; disc clearance pusher-to-rear-lift ≥ 20 mm (`cad/verification.txt` 68.2 mm); pusher ground clearance ≥ 40 mm (41.9 mm); ballast note 5 and hover limits printed on hover cards | Matches drawing; span 2.40 ± 0.02 m; clearances met; cards carry the limits |
+| I02 | Legal and site compliance | R18, R19 | Checklist from review §[schedule] "Compliance checklist": legal path chosen (by 2026-11-06), TRUST per pilot, registration + marking, BeeID serial (E12), AMA per pilot, flight request ≥ 7 business days, post-flight report ≤ 3 business days, site ceiling in `FENCE_ALT_MAX` (≤ 110) | All items "done" before the first flight; a request on file for each flight date |
+| I03 | Configuration inspection | R1, R3, R14 | Built aircraft against `cad/drawings/DBF-DRW-001.PDF` rev D sheet 1: 4 lift rotors, pusher, wing, tail with rudders; span 2.40 m; disc clearance pusher-to-rear-lift ≥ 20 mm (`cad/verification.txt` 69.7 mm); pusher ground clearance ≥ 40 mm (41.9 mm); ballast note 5 and hover limits printed on hover cards | Matches drawing; span 2.40 ± 0.02 m; clearances met; cards carry the limits |
 
 ## 10. Data management
 
@@ -522,9 +524,9 @@ Cards: `docs/test/cards/FTC-F01.md` … `FTC-F13.md`.
 | `MSG`, `EV`, `ERR` | text | failsafe and arming events |
 
 **Reduction scripts** (each ships with a sample dataset and has been run on it):
-- `thrust_stand.py` — fits thrust vs throttle (power law), thrust vs electrical power, reports throttle and power at the hover point (1,608 g), FM·η against the sizing 0.518, max thrust vs the 2.57 kgf pass, and a `Q_M_THST_EXPO` estimate.
+- `thrust_stand.py` — fits thrust vs throttle (power law), thrust vs electrical power, reports throttle and power at the hover point (1,613 g), FM·η against the sizing 0.518, max thrust vs the 2.58 kgf pass, and a `Q_M_THST_EXPO` estimate.
 - `battery_test.py` — integrates Wh and Ah from a discharge log, finds the sag at the 40 A and 73 A step loads, estimates per-cell internal resistance, applies the C11 pass criteria.
-- `log_summary.py` — parses a `.bin` (pymavlink) or a Mission Planner text export (`.log`) and prints hover throttle, VIBE max/clip, current and voltage min/mean per mode, airspeed stats, mode timeline and the R10 phase durations; cruise current pass 19.0 A.
+- `log_summary.py` — parses a `.bin` (pymavlink) or a Mission Planner text export (`.log`) and prints hover throttle, VIBE max/clip, current and voltage min/mean per mode, airspeed stats, mode timeline and the R10 phase durations; cruise current pass 18.9 A.
 
 **Test report template** (`docs/test/cards/REPORT-TEMPLATE.md`): header (test ID, rev, date, site, crew, article serials, firmware hash, weather), configuration and deviations from the card, run table (run, time, condition, result), measured vs predicted table with pass/fail, anomalies, log file names, decision (pass / pass with limits / fail), sign-off (TD, SO).
 
@@ -550,7 +552,7 @@ Dates come from the review schedule (`review/src/app.js drawGantt` rows, §11) a
 | 2027-04-17 → 04-18 | Full mission | F12 |
 | 2027-04-18 → 04-30 | Buffer: repair, weather, re-fly | re-runs |
 
-Critical dependencies: any Order B item arriving after 2027-02-15 pushes first hover past 2027-03-13 (review M15.2); the RFS approval decides whether F06–F13 can happen at all (review risk register).
+Critical dependencies: any Order B item arriving after 2027-02-15 pushes first hover past 2027-03-13 (review M[schedule].2); the RFS approval decides whether F06–F13 can happen at all (review risk register).
 
 ## 12. Inconsistencies: rev A list and their rev B status
 
@@ -572,6 +574,8 @@ Critical dependencies: any Order B item arriving after 2027-02-15 pushes first h
 | 14 (new) | Cruise power | Two predictions: 323 W (sizing) and 297 W (aero build-up); F08/F13 measure; the R10 threshold 421 W uses the sizing hover power. Bare legs: 477 W → R10 fails (8.8 min), so the fairings are flight-critical for R10 (F13). |
 | 15 (new) | Param file header still says MTOW 6.18 kg and hover throttle 0.49 | Cosmetic; expected learned hover throttle at 6.43 kg is 0.51 (C07, F02). |
 
+*2026-10-25 (R11 wing re-size): item 12 is now Vs 12.00 m/s predicted (CL_max,3D 1.121 used by both the aero build-up and the sizing, margin to R11 0.0 %; F09 still decides); item 13 is 5.2 % (aero) / 4.9 % (sizing); item 14 is 325 W (sizing) / 298 W (aero) against the R10 threshold 420 W, bare legs 478 W (8.8 min); item 15: expected hover throttle at 6.45 kg is 0.52. The rev B wording above is kept as written.*
+
 ## 13. Gaps — equipment not in the BOM
 
 Zero-cost substitutes are used wherever possible; items below are only needed if the substitute fails. Prices are live reads with the date; none is in the $1,896.79 committed spend (R6 cannot be raised; these would come from the $103.21 reserve, BOM).
@@ -591,7 +595,7 @@ Zero-cost substitutes are used wherever possible; items below are only needed if
 | Spare servo / pushrods (removed from the BOM) | None: a failure ends the session; buy from the reserve | EMAX ES3005HV $19.99 (shop.emax-usa.com, checked 2026-10-13 in `docs/research/budget-avionics.md` §6); Du-Bro 2-56 pushrods $12.48 (BOM line) | from the $103.21 reserve |
 | Ballast block | Sand or lead shot in a taped block, 0.500 kg on the kitchen scale | — | $0 |
 | Tether lines and stakes | Rope and tent stakes on hand | — | $0 |
-| Hardened nozzle for PA6-CF | Check the team printer (review §14) | Hardened steel nozzle | — |
+| Hardened nozzle for PA6-CF | Check the team printer (review §[build]) | Hardened steel nozzle | — |
 | Remote ID receiver app | OpenDroneID OSM (free Android app) | — | $0 |
 | pymavlink for log reduction | Mission Planner text export + `log_summary.py` text mode | `pip install pymavlink` (free; already used for SITL, `firmware/sitl/README.md`) | $0 |
 

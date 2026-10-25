@@ -18,22 +18,22 @@ Verdict first:
 | Neutral point 46.7 % MAC, SM 18.7 % at the 28 % CG | NP **41.1 %** with the pod (47.3 % without); SM **13.1 %** at 28 %, **5.2 %** at the no-payload CG (36 %) | holds at 28 %; **no-payload case at risk** |
 | Cruise trim | α 3.2°, elevator −3.8° (AVL); at 12 m/s: α 11.7°, elevator −9.4° | holds |
 
-## Design v0.4 update (2026-10-23)
+## Design v0.4 update (2026-10-25)
 
-Sections 3 to 9 record the analysis of the v0.3.1 geometry (chord 239 mm, bare round landing legs), which drove the redesign: printed teardrop fairings on the legs, the wing sized on the trimmed CL_max, the pod's neutral-point shift added to the sizing, and a ballast rule when flying without payload. Every script was then re-run on the v0.4 geometry; `analysis/aero/aero_results.json` holds the current values, and the review reads them from there:
+Sections 3 to 9 record the analysis of the v0.3.1 geometry (chord 239 mm, bare round landing legs), which drove the redesign: printed teardrop fairings on the legs, the wing sized on the trimmed CL_max, the pod's neutral-point shift added to the sizing, and a ballast rule when flying without payload. Every script was then re-run on the v0.4 geometry. On 2026-10-25 the sizing was changed to read CL_max, boom and rotor drag areas and the pod neutral-point shift from `analysis/aero/aero_results.json` instead of hand-copied values, and the sizing → aero loop was iterated to convergence (CL_max 1.132 → 1.122 → 1.121), which closed R11. `analysis/aero/aero_results.json` holds the current values, and the review reads them from there:
 
 | Quantity | v0.4 value |
 |---|---|
-| Wing | S 0.632 m², chord 263 mm, AR 9.12 |
-| Cruise Reynolds number | 3.60×10⁵ |
-| CL_max, aircraft trimmed | 1.122 (section 1.30 adopted from wind-tunnel data) |
-| Stall speed at MTOW | 12.05 m/s (R11: ≤ 12, at the limit) |
-| CD0, with faired legs | 0.0427 |
-| Cruise L/D at 20 m/s | 8.32 |
-| Cruise electrical power | 297 W (sizing design value 323 W) |
-| Cruise available | 14.2 min (sizing 13.1 min); bare round legs 8.8 min |
-| Neutral point, AVL with pod | 40.4 % MAC; static margin 12.4 % at the 28 % CG, 5.3 % with the bay empty |
-| CFD | §6 below (final status) |
+| Wing | S 0.640 m², chord 266.6 mm, AR 9.00 |
+| Cruise Reynolds number | 3.65×10⁵ |
+| CL_max, aircraft trimmed | 1.121 (section 1.30 adopted from wind-tunnel data) |
+| Stall speed at MTOW | 12.00 m/s (R11: ≤ 12, met at the limit) |
+| CD0, with faired legs | 0.0422 |
+| Cruise L/D at 20 m/s | 8.33 |
+| Cruise electrical power | 298 W (sizing design value 325 W) |
+| Cruise available | 14.1 min (sizing 12.9 min); bare round legs 8.8 min |
+| Neutral point, AVL with pod | 40.3 % MAC; static margin 12.3 % at the 28 % CG, 5.2 % with the bay empty |
+| CFD | §6 and §11. The SU2 cases were run at the 263 mm chord (Re 3.60×10⁵); the re-size changes Re by 1.3 %, too little to move the section results, so they were not re-run |
 
 ## 1. Tools and versions (all checked 2026-10-21)
 

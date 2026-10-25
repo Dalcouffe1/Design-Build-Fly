@@ -1,4 +1,4 @@
-// Builds the SOLIDWORKS drawing set DBF-DRW-001 rev C for the model (one .SLDDRW, nine ANSI B sheets):
+﻿// Builds the SOLIDWORKS drawing set DBF-DRW-001 rev D for the model (one .SLDDRW, nine ANSI B sheets):
 //   1 General arrangement (GA): front elevation, plan, side elevation, isometric; overall dimensions; revision table
 //   2 Exploded assembly with one balloon per major part (VTOL_Exploded.SLDASM, offsets from cad/params.mjs)
 //   3 Parts list (parts-only bill of materials of the assembly: fasteners grouped by type with quantities)
@@ -11,11 +11,13 @@
 // The parts are built by API without sketch dimensions, so every dimension is a driven dimension between sketch points
 // placed at known model coordinates (cad/params.txt): the values are the model geometry. Tolerances are set on the
 // dimensions from docs/research/hardware-spec.md (cad/hardware.json fits and general_tolerances).
-// Layout (rev C): every sheet is laid out in fixed zones (sheet metres, origin bottom-left). Views are placed by their
+// Layout (since rev C): every sheet is laid out in fixed zones (sheet metres, origin bottom-left). Views are placed by their
 // GetOutline box; dimensions stack outward from the geometry on each side (>= 8 mm between rows, text clear of the
 // part); view labels sit below the last dimension row; notes and the general-tolerance table sit bottom-left, clear of
 // the title block. Every annotation is registered in a layout check that reports overlaps, out-of-border items and
 // title-block collisions (console and cad/drawings/layout-check.txt).
+// Rev D: every size that follows the sizing (chord, stations, section heights, tube lengths, fairing, gear socket) is read
+// from cad/params.txt, in the dimensions and in the note text; only purchased-hardware sizes stay as literals.
 // Exports DBF-DRW-001.SLDDRW, DBF-DRW-001.PDF (all sheets) and a PNG per sheet.
 // Usage: Drawings.exe <cad/model dir> <cad/drawings dir> <cad/params.txt> [sheets]
 //   [sheets] = comma list such as 2,3 builds only those sheets as probe_sheetN.png / probe.SLDDRW (layout iteration).
@@ -37,9 +39,11 @@ class Drawings
     static Dictionary<string, List<double[]>> XPos = new Dictionary<string, List<double[]>>();   // exploded positions per part (cad/params.txt xcomp lines, instance order)
     static CultureInfo IC = CultureInfo.InvariantCulture;
     static double D(string k) { return double.Parse(P[k], IC); }
+    static string Mm(string k, string fmt) { return (D(k) * 1000).ToString(fmt, IC); }   // params value in mm as note text
+    static string Mm(double v, string fmt) { return (v * 1000).ToString(fmt, IC); }
     static StringBuilder LogText = new StringBuilder();
     static void Log(string s) { Console.WriteLine(s); LogText.AppendLine(s); }
-    const string REV = "C", DATE = "2026-10-23";
+    const string REV = "D", DATE = "2026-10-25";
     static bool Probe = false; static HashSet<int> Only = new HashSet<int>();
     static List<string[]> Titles = new List<string[]>(); static List<double> SheetScales = new List<double>();
     static int SheetCount = 0;
@@ -147,9 +151,10 @@ class Drawings
             if (lt.Contains("$PRPSHEET:\"Description\"")) { n.SetText(t1 + "\n" + t2); Size(n, 0.0036); }
             else if (lt.Contains("SW-File Name")) Size(n, 0.0042);
             else if (lt.Contains("$PRP:\"Revision\"")) Size(n, 0.0030);
+            else if (lt.Contains("$PRP:\"DrawnDate\"")) Size(n, 0.0016);   // the ISO date fills the 11 mm DATE box at the default height
             else if (lt.Contains("COMPANYNAME")) { Size(n, 0.0040); Annotation an = (Annotation)n.GetAnnotation(); TextFormat tf = (TextFormat)an.GetTextFormat(0); tf.TypeFaceName = "Century Gothic"; an.SetTextFormat(0, false, tf); }
             else if (lt.StartsWith("DIMENSIONS ARE IN INCHES")) { Size(n, 0.0020); n.SetText("DIMENSIONS IN MM\nTHIRD-ANGLE PROJECTION\nTOLERANCES: SEE TABLE\nFITS: hardware.json"); }
-            else if (lt.StartsWith("THE INFORMATION CONTAINED")) { Size(n, 0.0020); n.SetText("UC BERKELEY CAPSTONE\nREV C " + DATE + "\nFIRST-ARTICLE M1–M7 APPLY"); }
+            else if (lt.StartsWith("THE INFORMATION CONTAINED")) { Size(n, 0.0020); n.SetText("UC BERKELEY CAPSTONE\nREV " + REV + " " + DATE + "\nFIRST-ARTICLE M1–M7 APPLY"); }
             else if (lt == "PROPRIETARY AND CONFIDENTIAL") { Size(n, 0.0020); n.SetText("DESIGN-BUILD-FLY"); }
             else if (lt.Contains("$PRPSHEET:\"Material\"") || lt.Contains("$PRPSHEET:\"Finish\"")) n.SetText("SEE PARTS LIST");
         }
@@ -467,24 +472,27 @@ class Drawings
         VI side = new VI { V = sideV, Name = "side elevation", G = Outline(sideV) }; Views.Add(side);
         Log(string.Format(IC, "  view plan outline [{0:0.000},{1:0.000}]-[{2:0.000},{3:0.000}]", plan.G[0], plan.G[1], plan.G[2], plan.G[3]));
         Log(string.Format(IC, "  view side outline [{0:0.000},{1:0.000}]-[{2:0.000},{3:0.000}]", side.G[0], side.G[1], side.G[2], side.G[3]));
+        double span = 2 * (D("panelLen") + D("fusR"));
+        var rev = new List<string[]> { new[] { "REV", "DATE", "DESCRIPTION", "BY" },
+            new[] { "A", "2026-10-18", "CONCEPT GEOMETRY FOR DESIGN REVIEW (v0.3.1), 5 SHEETS", "DBF" },
+            new[] { "B", "2026-10-21", "HARDWARE SPEC APPLIED: SPLIT MOUNTS AND CLAMPS, BOOM\nSPLICE, M5 WING BOLTS, RUDDERS, ALL FASTENERS,\nTOLERANCES, FASTENER SCHEDULE; 9 SHEETS", "DBF" },
+            new[] { "C", "2026-10-23", "DRAWING LAYOUT AND BALLOONING CORRECTED", "DBF" },
+            new[] { "D", DATE, "WING RESIZED FOR R11 STALL (CHORD " + Mm("chord", "0.0") + ", S " + (D("chord") * span).ToString("0.000", IC) + " M2);\nSIZES FROM PARAMS", "DBF" } };
+        Table("revision table", 0.245, 0.262, rev, new[] { 0.012, 0.024, 0.118, 0.012 }, NOTE_H, 0.0045);
+        double revBottom = Boxes[Boxes.Count - 1].Y0;
         VI iso = Place("isometric", asm, "*Isometric", 0.322, 0.185, 20, false);
-        Fit(iso, 0.240, 0.142, 0.412, 0.230, new[] { 20.0, 25, 30 });
+        Fit(iso, 0.240, 0.142, 0.412, revBottom - 0.004, new[] { 20.0, 25, 30, 40 });
         double half = D("panelLen") + D("fusR"), yB = D("yB"), yIn = D("yIn"), xF = D("xFront"), xR = D("xRear"), x0 = D("xStub0");
         double yG = D("yGround"), finTop = D("yFin") + D("vH"), finX = D("xFinLE"), pushX = D("pushX"), yProp = D("yProp"), yPod = D("yPod");
         Dim(plan, new[] { xF, yB, yIn }, new[] { xF, yB, -yIn }, 'T', null, 0, 0, 0, null, "LIFT MOTOR SPACING");
         Dim(front, new[] { 0.0, 0, half }, new[] { 0.0, 0, -half }, 'T', null, 0, 0, 0, null, "SPAN");
-        Dim(plan, new[] { 0.45, yPod, 0.0 }, new[] { x0, yB, yIn }, 'R', null, 0, 0, 0, null, "OVERALL LENGTH");
+        Dim(plan, new[] { D("tailX") + D("fusL"), yPod, 0.0 }, new[] { x0, yB, yIn }, 'R', null, 0, 0, 0, null, "OVERALL LENGTH");
         Dim(plan, new[] { xF, yB, -yIn }, new[] { xR, yB, -yIn }, 'L', null, 0, 0, 0, null, "BOOM PITCH");
         Dim(front, new[] { finX, yG, -yIn }, new[] { finX, finTop, -yIn }, 'L', null, 0, 0, 0, null, "HEIGHT");
         Dim(front, new[] { pushX, yPod - D("pushProp") / 2, 0.0 }, new[] { pushX, yPod + D("pushProp") / 2, 0.0 }, 'R', "<MOD-DIAM>", 0, 0, 0, null, "PUSHER PROP");
         Dim(side, new[] { xF - D("liftProp") / 2, yProp, yIn }, new[] { xF + D("liftProp") / 2, yProp, yIn }, 'T', "<MOD-DIAM>", 0, 0, 0, null, "LIFT PROP");
         LabelBelow(front, "FRONT ELEVATION"); LabelBelow(plan, "PLAN"); LabelBelow(side, "SIDE ELEVATION"); LabelBelow(iso, "ISOMETRIC");
-        var rev = new List<string[]> { new[] { "REV", "DATE", "DESCRIPTION", "BY" },
-            new[] { "A", "2026-10-18", "CONCEPT GEOMETRY FOR DESIGN REVIEW (v0.3.1), 5 SHEETS", "DBF" },
-            new[] { "B", "2026-10-21", "HARDWARE SPEC APPLIED: SPLIT MOUNTS AND CLAMPS, BOOM SPLICE, M5 WING\nBOLTS, RUDDERS, ALL FASTENERS, TOLERANCES, FASTENER SCHEDULE; 9 SHEETS", "DBF" },
-            new[] { "C", DATE, "DRAWING LAYOUT AND BALLOONING CORRECTED", "DBF" } };
-        Table("revision table", 0.245, 0.262, rev, new[] { 0.012, 0.024, 0.118, 0.012 }, NOTE_H, 0.0045);
-        Notes(0.018, 0.072, "1. DIMENSIONS IN MM, THIRD-ANGLE PROJECTION. PROPS SHOWN PARKED FORE-AFT (NOTIONAL: THE ESCs CANNOT PARK THEM).\n2. SIZED CONCEPT, MTOW 6.43 kg (analysis/results.json, AERO INPUTS 2026-10-21). EVERY FASTENER IS MODELLED: SHEETS 2, 3 AND 8.\n3. TRANSPORT BREAKDOWN: 2 x M5 WING BOLTS, 8 x M3 BOOM-CLAMP SCREWS, 4 x M3 TAIL-SHOE SCREWS; THE JOINER SLIDES OUT OF THE SADDLE (SHEET 4).\n4. NO-PAYLOAD FLIGHT: 0.5 kg BALLAST IN THE PAYLOAD BAY KEEPS THE CG AT 28 % MAC. PUSHER PROP GROUND CLEARANCE " + ((yPod - D("pushProp") / 2 - yG) * 1000).ToString("0", IC) + " mm.", NOTES_W);
+        Notes(0.018, 0.072, "1. DIMENSIONS IN MM, THIRD-ANGLE PROJECTION. PROPS SHOWN PARKED FORE-AFT (NOTIONAL: THE ESCs CANNOT PARK THEM).\n2. SIZED CONCEPT, MTOW " + D("mtow").ToString("0.00", IC) + " kg, SPAN " + Mm(span, "0") + " (analysis/results.json). EVERY FASTENER IS MODELLED: SHEETS 2, 3 AND 8.\n3. TRANSPORT BREAKDOWN: 2 x M5 WING BOLTS, 8 x M3 BOOM-CLAMP SCREWS, 4 x M3 TAIL-SHOE SCREWS; THE JOINER SLIDES OUT OF THE SADDLE (SHEET 4).\n4. NO-PAYLOAD FLIGHT: 0.5 kg BALLAST IN THE PAYLOAD BAY KEEPS THE CG AT 28 % MAC. PUSHER PROP GROUND CLEARANCE " + ((yPod - D("pushProp") / 2 - yG) * 1000).ToString("0", IC) + " mm.", NOTES_W);
         EndSheet();
     }
 
@@ -661,7 +669,7 @@ class Drawings
     static void Sheet4_Wing()
     {
         BeginSheet("WING", 10, "WING PANEL, SADDLE", "AND WING BOLT");
-        double c = D("chord"), L = D("panelLen"), Lin = L * 0.45, sx = D("sparX"), sy = D("sparY"), r = D("sparOD") / 2, w = 2 * D("fusR");
+        double c = D("chord"), L = D("panelLen"), Lin = L - D("ailSpan"), sx = D("sparX"), sy = D("sparY"), r = D("sparOD") / 2, w = 2 * D("fusR");
         string wp = Part("Wing_Panel_R"); Open(wp, (int)swDocumentTypes_e.swDocPART);
         VI plan = Place("wing panel plan", wp, "*Top", 0.094, 0.170, 10, true);
         VI sec = Place("root section", wp, "*Front", 0.262, 0.228, 2, true);
@@ -675,24 +683,24 @@ class Drawings
         Dim(sec, new[] { 0.0, NacaY(0, false), 0 }, new[] { -c, 0, 0 }, 'B', null, 0, 0, 0, null, "CHORD");
         Dim(sec, new[] { -0.30 * c, NacaY(0.30, false), 0 }, new[] { -0.30 * c, NacaY(0.30, true), 0 }, 'R');   // thickness at 30 % chord (note 1)
         string sd = Part("Wing_Saddle"); Open(sd, (int)swDocumentTypes_e.swDocPART);
-        VI sp = Place("saddle plan", sd, "*Top", 0.215, 0.150, 5, true);
+        VI sp = Place("saddle plan", sd, "*Top", 0.215, 0.150, 5, true);   // between the panel plan dims and the saddle section (checked visually at chord 266.6)
         VI ss = Place("saddle section", sd, "*Front", 0.342, 0.128, 2, true);
         Dim(sp, new[] { 0.0, 0, -w / 2 }, new[] { 0.0, 0, w / 2 }, 'L');
         Dim(sp, new[] { 0.0, 0, -w / 2 }, new[] { -c, 0, -w / 2 }, 'B', null, 0, 0, 0, null, "CHORD");
         Dim(sp, new[] { D("boltX"), 0, -D("boltZ") }, new[] { D("boltX"), 0, D("boltZ") }, 'R');
-        double rj = D("joinOD") / 2 + 0.000115;
+        double rj = D("joinBoreD") / 2;
         Dim(ss, new[] { sx - rj, sy, 0 }, new[] { sx + rj, sy, 0 }, 'T', "<MOD-DIAM>", 2, -0.0002, 0.0002, null, "JOINER BORE, SLIP FIT FT06");
         Dim(ss, new[] { 0.0, sy, 0 }, new[] { sx, sy, 0 }, 'B', null, 0, 0, 0, null, "JOINER AT 30 % CHORD");
         string bp = Part("Bolt_Pillar"); Open(bp, (int)swDocumentTypes_e.swDocPART);
         VI pv = Place("bolt pillar", bp, "*Front", 0.375, 0.228, 1, true);
-        double h = D("yU70") - D("yL70");
-        Dim(pv, new[] { -0.008, 0, 0 }, new[] { 0.008, 0, 0 }, 'B', "<MOD-DIAM>");
-        Dim(pv, new[] { -0.0041, 0, 0 }, new[] { 0.0041, 0, 0 }, 'B', null, 1, 0, 0, " AF", "M5 NUT POCKET, 8.5 DEEP");
-        Dim(pv, new[] { 0.008, 0, 0 }, new[] { 0.008, h, 0 }, 'R', null, 1);
+        double h = D("pillarH"), pr = D("pillarD") / 2;
+        Dim(pv, new[] { -pr, 0, 0 }, new[] { pr, 0, 0 }, 'B', "<MOD-DIAM>");
+        Dim(pv, new[] { -0.0041, 0, 0 }, new[] { 0.0041, 0, 0 }, 'B', null, 1, 0, 0, " AF", "M5 NUT POCKET, " + Mm("pillarNutDepth", "0.0") + " DEEP");
+        Dim(pv, new[] { pr, 0, 0 }, new[] { pr, h, 0 }, 'R', null, 1);
         Dim(pv, new[] { -0.00285, h, 0 }, new[] { 0.00285, h, 0 }, 'T', "<MOD-DIAM>", 1, -0.0002, 0.0002, null, "THRU, M5 CLEARANCE (PRINT 5.7)");
         LabelBelow(plan, "WING PANEL, RIGHT (LEFT IS MIRROR)"); LabelBelow(sec, "ROOT SECTION");
         LabelBelow(sp, "WING SADDLE"); LabelBelow(ss, "SADDLE SECTION"); LabelBelow(pv, "BOLT PILLAR");
-        Notes(0.018, 0.092, "1. NACA 2415, XPS CORE, PACKING-TAPE SKIN. AILERON 26 % CHORD, 2 % HINGE GAP, OUTER 55 % OF SPAN (616 DIM). SPAR SOCKET 800 DIM, BOOM STATION 353.7 FROM THE ROOT, ROOT THICKNESS 39.5 AT 30 % CHORD. SADDLE: 2X BOLT PILLARS <MOD-DIAM>16.4 AT 130 (DIM), 70 % CHORD.\n2. SPAR SOCKET 1.000 x 0.058 in 6061-T6 BONDED 800 mm INTO THE ROOT AT 30 % CHORD (FT05, FOAM-SAFE GLUE).\n3. JOINER 0.875 x 0.058 in, 760 mm: SLIP FIT IN THE SOCKETS (FT01, -0.08/+0.53 DIAMETRAL, MEASURE M1) AND THE SADDLE (FT06); NOT BONDED, CAPTURED BY TWO PRINTED STOPS 300 mm INSIDE THE SOCKETS.\n4. WING BOLT J10: F09 ISO 7380 M5 x 20 THROUGH THE PILLAR AND THE ROOT TONGUE (SHEET 9) INTO N02 M5 NYLOCK, 1.0 N·m EST; HEAD IN A <MOD-DIAM>10.3 x 1.0 SPOT-FACE.\n5. PANEL POCKETS (SPAR COLLAR, REAR HARDPOINT, SERVO TRAY, TONGUE, PITOT CLAMP) CUT TO THE PART OUTLINES OF SHEET 9, BONDED WITH FOAM-SAFE GLUE.\n6. SADDLE TABS: 2 x F08 M3 x 12 PER SIDE INTO RX-M3x5.7 INSERTS IN THE POD FRAME RAILS (J11).", NOTES_W);
+        Notes(0.018, 0.092, "1. NACA 2415, XPS CORE, PACKING-TAPE SKIN. AILERON 26 % CHORD, 2 % HINGE GAP, OUTER " + (D("ailFrac") * 100).ToString("0", IC) + " % OF SPAN (" + Mm("ailSpan", "0") + " DIM). SPAR SOCKET " + Mm("sparLen", "0") + " DIM, BOOM STATION " + Mm("zBoomPanel", "0.0") + " FROM THE ROOT, ROOT THICKNESS " + Mm("thick30", "0.0") + " AT 30 % CHORD. SADDLE: 2X BOLT PILLARS <MOD-DIAM>" + Mm("pillarD", "0.#") + " IN <MOD-DIAM>" + Mm("pillarBoreD", "0.0") + " BORES AT " + Mm(2 * D("boltZ"), "0") + " (DIM), 70 % CHORD.\n2. SPAR SOCKET 1.000 x 0.058 in 6061-T6 BONDED " + Mm("sparLen", "0") + " mm INTO THE ROOT AT 30 % CHORD (FT05, FOAM-SAFE GLUE).\n3. JOINER 0.875 x 0.058 in, " + Mm("joinLen", "0") + " mm: SLIP FIT IN THE SOCKETS (FT01, -0.08/+0.53 DIAMETRAL, MEASURE M1) AND THE SADDLE (FT06); NOT BONDED, CAPTURED BY TWO PRINTED STOPS " + Mm(D("joinLen") / 2 - D("fusR"), "0") + " mm INSIDE THE SOCKETS.\n4. WING BOLT J10: F09 ISO 7380 M5 x 20 THROUGH THE PILLAR AND THE ROOT TONGUE (SHEET 9) INTO N02 M5 NYLOCK, 1.0 N·m EST; HEAD IN A <MOD-DIAM>10.3 x 1.0 SPOT-FACE; NUT POCKET 8.2 AF x " + Mm("pillarNutDepth", "0.0") + " FROM THE LOWER SURFACE (SCREW END 0.5 PAST THE NUT).\n5. PANEL POCKETS (SPAR COLLAR, REAR HARDPOINT, SERVO TRAY, TONGUE, PITOT CLAMP) CUT TO THE PART OUTLINES OF SHEET 9, BONDED WITH FOAM-SAFE GLUE.\n6. SADDLE TABS: 2 x F08 M3 x 12 PER SIDE INTO RX-M3x5.7 INSERTS IN THE POD FRAME RAILS (J11).", NOTES_W);
         EndSheet();
     }
 
@@ -760,7 +768,7 @@ class Drawings
         double cA = 0.052, cB = 0.250, r1 = 0.232, r2 = 0.1695, r3 = 0.1065;
         VI[] b = Half("Boom_Clamp_F_Lower", "boom clamp lower", cA, r1, -0.0167, -0.0006, 0.034, 0.012, "2X <MOD-DIAM>3.4 THRU, CBORE <MOD-DIAM>6.5 x 4.3 (FRONT) / x 7.5 (REAR)", true);
         VI[] a = Half("Boom_Clamp_F_Upper", "boom clamp upper", cB, r1, 0.0006, D("clampTopF"), 0.034, 0.012, "2X <MOD-DIAM>3.4 THRU, DIAGONAL", false);
-        VI[] e = Half("Gear_Clamp_Lower", "gear clamp lower", cA, r2, -0.0287, -0.0006, 0.034, 0.012, "4X <MOD-DIAM>3.4, CBORE <MOD-DIAM>6.5 x 15.3", false);
+        VI[] e = Half("Gear_Clamp_Lower", "gear clamp lower", cA, r2, D("gearClampBot"), -0.0006, 0.034, 0.012, "4X <MOD-DIAM>3.4, CBORE <MOD-DIAM>6.5 x 15.3", false);
         VI[] d = Half("Gear_Clamp_Upper", "gear clamp upper", cB, r2, 0.0006, 0.0167, 0.034, 0.012, "4X <MOD-DIAM>4.0 ±0.1 x 7.5 DEEP, I01", false);
         VI[] g = Half("Tail_Clamp_Cap", "tail clamp cap", cA, r3, -0.015, -0.0006, 0.050, 0.018, "4X <MOD-DIAM>3.4, CBORE <MOD-DIAM>6.5 x 5.6", false);
         VI[] f = Half("Tail_Clamp_Upper", "tail clamp upper", cB, r3, 0.0006, 0.0157, 0.050, 0.018, "4X <MOD-DIAM>4.0 x 7.5 DEEP (I01), 2 FROM TOP", false);
@@ -776,35 +784,37 @@ class Drawings
     {
         BeginSheet("TUBES", 2, "TUBE CUT LIST", "AND LANDING LEG");
         string mm = "{0:0.0}";
+        double gcb = D("gearClampBot"), sock = gcb + D("legSocketDepth"), yBolt = D("legBoltY"), legHole = sock - yBolt;   // gear-clamp bottom, socket floor, F05 bolt (clamp frame); leg hole below the leg top
+        double fc = D("fairChord"), fo = D("fairBore") / 2 + D("fairWall");
         var rows = new List<string[]> {
             new[] { "ITEM", "PART", "STOCK (6061-T6)", "CUT LENGTH mm", "TOL mm (ISO 2768-m)", "QTY", "HOLES" },
             new[] { "T01", "Wing spar socket", "1.000 x 0.058 in", string.Format(IC, mm, D("sparLen") * 1000), "±0.8", "2", "none; bonded in the panel (FT05)" },
             new[] { "T02", "Wing joiner", "0.875 x 0.058 in", string.Format(IC, mm, D("joinLen") * 1000), "±0.8", "1", "none; slip fit FT01/FT06, lap if tight" },
             new[] { "T03", "Front boom", "1.000 x 0.035 in", string.Format(IC, mm, D("segF") * 1000), "±0.8", "2", "1 x Ø3.4 cross hole (Z) 18 ±0.3 from the splice end, drilled through the mount" },
             new[] { "T04", "Rear boom stub", "1.000 x 0.035 in", string.Format(IC, mm, D("segR") * 1000), "±0.8", "2", "1 x Ø3.4 cross hole (Z) 18 ±0.3 from the splice end" },
-            new[] { "T05", "Landing leg", "1.000 x 0.058 in", string.Format(IC, mm, D("legLen") * 1000), "±0.5", "4", "1 x Ø3.4 cross hole (X) 7 ±0.3 from the top end, drilled through the gear clamp" } };
+            new[] { "T05", "Landing leg", "1.000 x 0.058 in", string.Format(IC, mm, D("legLen") * 1000), "±0.5", "4", "1 x Ø3.4 cross hole (X) " + Mm(legHole, "0.#") + " ±0.3 from the top end, drilled through the gear clamp" } };
         Table("tube cut list", 0.018, 0.262, rows, new[] { 0.012, 0.034, 0.034, 0.030, 0.040, 0.012, 0.170 }, NOTE_H, 0.0045);
         string leg = Part("Landing_Leg"); Open(leg, (int)swDocumentTypes_e.swDocPART);
         VI lv = Place("landing leg", leg, "*Front", 0.360, 0.150, 2, true);
         double R = D("legOD") / 2, Ll = D("legLen");
         Dim(lv, new[] { R, 0.0, 0 }, new[] { R, Ll, 0 }, 'R', null, 0, -0.0005, 0.0005);
         Dim(lv, new[] { -R, Ll, 0 }, new[] { R, Ll, 0 }, 'T', "<MOD-DIAM>", 1, -0.0001, 0.0001);
-        Dim(lv, new[] { -R, Ll - 0.007, 0 }, new[] { -R, Ll, 0 }, 'L', null, 1, -0.0003, 0.0003, null, "<MOD-DIAM>3.4 THRU (X)");
+        Dim(lv, new[] { -R, Ll - legHole, 0 }, new[] { -R, Ll, 0 }, 'L', null, 1, -0.0003, 0.0003, null, "<MOD-DIAM>3.4 THRU (X)");
         string bf = Part("Boom_Front"); Open(bf, (int)swDocumentTypes_e.swDocPART);
         VI bv = Place("front boom", bf, "*Top", 0.150, 0.182, 5, true);
         Dim(bv, new[] { 0.0, 0, 0.0127 }, new[] { D("segF"), 0, 0.0127 }, 'T', null, 1, -0.0008, 0.0008);
         Dim(bv, new[] { 0.0, 0, -0.0127 }, new[] { 0.018, 0, -0.0127 }, 'B', null, 0, -0.0003, 0.0003, null, "<MOD-DIAM>3.4 THRU (Z), SPLICE BOLT");
         string gf = Part("Gear_Fairing"); Open(gf, (int)swDocumentTypes_e.swDocPART);
         VI fv = Place("leg fairing", gf, "*Top", 0.085, 0.124, 1, true);
-        Dim(fv, new[] { 0.3 * 0.0816, 0, 0 }, new[] { -0.7 * 0.0816, 0, 0 }, 'B', null, 1, 0, 0, null, "CHORD");
-        Dim(fv, new[] { 0.0, 0, -0.0136 }, new[] { 0.0, 0, 0.0136 }, 'R', null, 1, 0, 0, null, "LEG BORE 25.6");
+        Dim(fv, new[] { 0.3 * fc, 0, 0 }, new[] { -0.7 * fc, 0, 0 }, 'B', null, 1, 0, 0, null, "CHORD");
+        Dim(fv, new[] { 0.0, 0, -fo }, new[] { 0.0, 0, fo }, 'R', null, 1, 0, 0, null, "LEG BORE " + Mm("fairBore", "0.0"));
         string gl = Part("Gear_Clamp_Lower"); Open(gl, (int)swDocumentTypes_e.swDocPART);
         VI gs = Place("gear clamp lower socket", gl, "*Front", 0.262, 0.124, 1, true);
-        Dim(gs, new[] { 0.0, -0.0287, 0 }, new[] { 0.0, -0.0147, 0 }, 'R', null, 1, 0, 0, null, "SOCKET DEPTH");
-        Dim(gs, new[] { -0.01285, -0.0287, 0 }, new[] { 0.01285, -0.0287, 0 }, 'B', "<MOD-DIAM>", 1, -0.0002, 0.0002, null, "BLIND SOCKET FT03");
-        Dim(gs, new[] { 0.017, -0.0287, 0 }, new[] { 0.017, -0.0217, 0 }, 'L', null, 1, 0, 0, null, "F05 CROSS-BOLT");
-        LabelBelow(lv, "LANDING LEG"); LabelBelow(bv, "FRONT BOOM, SPLICE END AT LEFT"); LabelBelow(fv, "LEG FAIRING SECTION (PETG, 170 LONG) QTY 4"); LabelBelow(gs, "LEG SOCKET IN THE GEAR CLAMP LOWER (SHEET 6)");
-        Notes(0.018, 0.075, "1. LEGS ARE CUT FROM THE SPAR-SOCKET TUBE OFFCUT: 2 x 800 + 4 x 205 = 2420 mm OF A 96 in (2438 mm) LENGTH. BOOMS: 2 x (" + (D("segF") * 1000).ToString("0.0", IC) + " + " + (D("segR") * 1000).ToString("0.0", IC) + ") = " + (2 * (D("segF") + D("segR")) * 1000).ToString("0", IC) + " mm FROM TWO 72 in LENGTHS.\n2. END SQUARENESS 0.5 (EST). DEBURR ALL CUT ENDS AND HOLES. TUBE OD ±0.10, WALL ±0.05 (VENDOR, HS §5a): MEASURE ON RECEIPT (M1).\n3. BOOMS BUTT AT THE REAR MOTOR MOUNT CENTRE OVER THE PRINTED SPLICE PLUG (SHEET 5). LEG: J07 F05 M3 x 30 + W01 + N01 CROSS-BOLT, HEAD CBORE <MOD-DIAM>7.5 x 4.0, NUT POCKET 5.7 AF x 4.3; LEG DRILLED <MOD-DIAM>3.4 THROUGH THE CLAMP.\n4. LEG FAIRINGS: 3:1 TEARDROP (NACA 0033) SLIPPED OVER EACH LEG, TRAILING EDGE AFT, VASE-MODE 0.8 mm WALL (EST), CLOCKED AGAINST THE GEAR CLAMP AND TAPED; NO FASTENERS (DRAG: analysis/aero/aero_results.json).", NOTES_W);
+        Dim(gs, new[] { 0.0, gcb, 0 }, new[] { 0.0, sock, 0 }, 'R', null, 1, 0, 0, null, "SOCKET DEPTH");
+        Dim(gs, new[] { -0.01285, gcb, 0 }, new[] { 0.01285, gcb, 0 }, 'B', "<MOD-DIAM>", 1, -0.0002, 0.0002, null, "BLIND SOCKET FT03");
+        Dim(gs, new[] { 0.017, gcb, 0 }, new[] { 0.017, yBolt, 0 }, 'L', null, 1, 0, 0, null, "F05 CROSS-BOLT");
+        LabelBelow(lv, "LANDING LEG"); LabelBelow(bv, "FRONT BOOM, SPLICE END AT LEFT"); LabelBelow(fv, "LEG FAIRING SECTION (PETG, " + Mm("fairLen", "0") + " LONG) QTY 4"); LabelBelow(gs, "LEG SOCKET IN THE GEAR CLAMP LOWER (SHEET 6)");
+        Notes(0.018, 0.075, "1. LEGS ARE CUT FROM THE SPAR-SOCKET TUBE OFFCUT: 2 x " + Mm("sparLen", "0") + " + 4 x " + Mm("legLen", "0") + " = " + Mm(2 * D("sparLen") + 4 * D("legLen"), "0") + " mm OF A 96 in (" + Mm("legStock", "0") + " mm) LENGTH. BOOMS: 2 x (" + (D("segF") * 1000).ToString("0.0", IC) + " + " + (D("segR") * 1000).ToString("0.0", IC) + ") = " + (2 * (D("segF") + D("segR")) * 1000).ToString("0", IC) + " mm FROM TWO 72 in LENGTHS.\n2. END SQUARENESS 0.5 (EST). DEBURR ALL CUT ENDS AND HOLES. TUBE OD ±0.10, WALL ±0.05 (VENDOR, HS §5a): MEASURE ON RECEIPT (M1).\n3. BOOMS BUTT AT THE REAR MOTOR MOUNT CENTRE OVER THE PRINTED SPLICE PLUG (SHEET 5). LEG: J07 F05 M3 x 30 + W01 + N01 CROSS-BOLT, HEAD CBORE <MOD-DIAM>7.5 x 4.0, NUT POCKET 5.7 AF x 4.3; LEG DRILLED <MOD-DIAM>3.4 THROUGH THE CLAMP.\n4. LEG FAIRINGS: 3:1 TEARDROP (NACA 0033) SLIPPED OVER EACH LEG, TRAILING EDGE AFT, VASE-MODE " + Mm("fairWall", "0.0") + " mm WALL (EST), CLOCKED AGAINST THE GEAR CLAMP AND TAPED; NO FASTENERS (DRAG: analysis/aero/aero_results.json).", NOTES_W);
         EndSheet();
     }
 
@@ -822,7 +832,7 @@ class Drawings
             rows.Add(new[] { f[0], Short(f[1], 56), f[2], f[3], f[4], joints, f[6], Short(f[7], 92), Short(f[8] + " " + f[9], 90) });
         }
         Table("fastener schedule", 0.018, 0.262, rows, new[] { 0.012, 0.054, 0.028, 0.012, 0.016, 0.082, 0.022, 0.086, 0.084 }, NOTE_H, 0.0050);
-        Notes(0.018, 0.122, "(docs/research/hardware-spec.md §2d, §4)\n1. QTY PER AIRCRAFT; ORDER INCLUDES SPARES. F12 PROP SCREWS AND F13 ADAPTER SCREWS: LENGTH PROVISIONAL, CHECK M5 (HUB THICKNESS NOT PUBLISHED).\n2. TORQUES MARKED EST IN THE SPEC: CONFIRM INSERT TORQUE-OUT >= 2x ON A COUPON (M3). NO TORQUE DRIVER ON HAND: HANG A KNOWN MASS FROM THE HEX KEY, T = m g L (0.6 N·m = 1.02 kg AT L 60 mm; 0.5 N·m = 0.85 kg; 1.0 N·m = 1.70 kg).\n3. LOCTITE 242 ONLY ON METAL-TO-METAL THREADS (F01 MOTOR BASE, F12/F13 HUB SCREWS), ONE DROP ON THE LAST 2–3 THREADS, KEPT OFF THE PA6-CF. NEVER ON NYLOCKS.\n4. SCREWS IN BRASS INSERTS GET NO THREADLOCKER: TORQUE, THEN A PAINT WITNESS MARK CHECKED PRE-FLIGHT. REPLACE A NYLOCK THAT TURNS BY HAND.\n5. INSERTS RX-M3x5.7 IN Ø4.0 ±0.1 HOLES >= 7.0 DEEP (FT08, INTERFERENCE INTENDED); SOLDERING IRON ~20 °C ABOVE THE PRINT TEMPERATURE, SET PER MATERIAL.\n6. CLEARANCE HOLES: ISO 273 NORMAL (M2 2.4, M3 3.4, M5 5.5) PRINTED AT +0.2 AND CHECKED ON THE HOLE COUPON (M2); MOTOR-PATTERN HOLES DRILLED TO 3.4 AFTER PRINTING.\n7. MOTOR SCREWS: TIP <= 3.2 mm PROUD OF THE FLOOR BEFORE EVERY MOTOR INSTALL (M4); 3.3 mm REACHES THE WINDINGS.\n8. FIELD BREAKDOWN (R4): 2 x F09, 8 x BOOM-CLAMP SCREWS (F06/F04), 4 x F02 SHOE SCREWS; 14 SCREWS IN A LABELLED BAG.", 0.390);
+        Notes(0.018, 0.116, "(docs/research/hardware-spec.md §2d, §4)\n1. QTY PER AIRCRAFT; ORDER INCLUDES SPARES. F12 PROP SCREWS AND F13 ADAPTER SCREWS: LENGTH PROVISIONAL, CHECK M5 (HUB THICKNESS NOT PUBLISHED).\n2. TORQUES MARKED EST IN THE SPEC: CONFIRM INSERT TORQUE-OUT >= 2x ON A COUPON (M3). NO TORQUE DRIVER ON HAND: HANG A KNOWN MASS FROM THE HEX KEY, T = m g L (0.6 N·m = 1.02 kg AT L 60 mm; 0.5 N·m = 0.85 kg; 1.0 N·m = 1.70 kg).\n3. LOCTITE 242 ONLY ON METAL-TO-METAL THREADS (F01 MOTOR BASE, F12/F13 HUB SCREWS), ONE DROP ON THE LAST 2–3 THREADS, KEPT OFF THE PA6-CF. NEVER ON NYLOCKS.\n4. SCREWS IN BRASS INSERTS GET NO THREADLOCKER: TORQUE, THEN A PAINT WITNESS MARK CHECKED PRE-FLIGHT. REPLACE A NYLOCK THAT TURNS BY HAND.\n5. INSERTS RX-M3x5.7 IN Ø4.0 ±0.1 HOLES >= 7.0 DEEP (FT08, INTERFERENCE INTENDED); SOLDERING IRON ~20 °C ABOVE THE PRINT TEMPERATURE, SET PER MATERIAL.\n6. CLEARANCE HOLES: ISO 273 NORMAL (M2 2.4, M3 3.4, M5 5.5) PRINTED AT +0.2 AND CHECKED ON THE HOLE COUPON (M2); MOTOR-PATTERN HOLES DRILLED TO 3.4 AFTER PRINTING.\n7. MOTOR SCREWS: TIP <= 3.2 mm PROUD OF THE FLOOR BEFORE EVERY MOTOR INSTALL (M4); 3.3 mm REACHES THE WINDINGS.\n8. FIELD BREAKDOWN (R4): 2 x F09, 8 x BOOM-CLAMP SCREWS (F06/F04), 4 x F02 SHOE SCREWS; 14 SCREWS IN A LABELLED BAG.", 0.390);
         EndSheet();
     }
 
@@ -833,7 +843,7 @@ class Drawings
         string fs = Part("Fin_Shoe"); Open(fs, (int)swDocumentTypes_e.swDocPART);
         VI fv = Place("fin shoe", fs, "*Top", 0.105, 0.222, 1, true);
         double xc = D("xTC") - D("xFinLE");
-        Dim(fv, new[] { xc - 0.016, 0.0, 0.023 }, new[] { xc + 0.016, 0.0, 0.023 }, 'T', null, 0, 0, 0, " FLANGE");
+        Dim(fv, new[] { xc - D("shoeFlangeX") / 2, 0.0, 0.023 }, new[] { xc + D("shoeFlangeX") / 2, 0.0, 0.023 }, 'T', null, 0, 0, 0, " FLANGE");
         Dim(fv, new[] { xc, 0, -0.0175 }, new[] { xc, 0, 0.0175 }, 'R', null, 0, 0, 0, null, "2X <MOD-DIAM>3.4 THRU");
         string sc = Part("Spar_Collar"); Open(sc, (int)swDocumentTypes_e.swDocPART);
         VI cv = Place("spar collar", sc, "*Front", 0.262, 0.215, 1, true);
@@ -861,7 +871,7 @@ class Drawings
         Dim(tv, new[] { 0.010, 0, 0 }, new[] { 0.010, 0, 0.010 }, 'R', null, 0, -0.0002, 0.0002, null, "WING BOLT <MOD-DIAM>5.7");
         LabelBelow(fv, "FIN SHOE (PETG) QTY 2"); LabelBelow(cv, "SPAR COLLAR (PETG) QTY 2"); LabelBelow(rv, "REAR HARDPOINT (PETG) QTY 2");
         LabelBelow(pv, "PUSHER CUP (PA6-CF) QTY 1"); LabelBelow(sv, "SERVO TRAY (PETG) QTY 5"); LabelBelow(tv, "ROOT TONGUE (PETG) QTY 2");
-        Notes(0.018, 0.075, "1. FIN SHOE J09: FLOOR 3.0, WALLS 20 x 1.6 AROUND THE FIN ROOT (FIN BONDED IN); 2X F02 M3 x 16 THROUGH THE FLANGE AND A CRUSH SLEEVE 7 x 3.4 x 6.8 INTO THE TAIL-CLAMP INSERTS.\n2. SPAR COLLAR J05a, REAR HARDPOINT J05b: BONDED FLUSH INTO THE WING LOWER SURFACE AT THE BOOM STATION, INSERTS <MOD-DIAM>4.0 x 7.5 FACE DOWN.\n3. PUSHER CUP J12: 4X F01 + W01 FROM INSIDE INTO THE MOTOR BASE, 4X F07 RADIAL THROUGH THE POD RING. SERVO TRAY J14: 4X F10 + N03, TAB HOLES PROVISIONAL (M6).\n4. ROOT TONGUE J10: 25 mm BONDED IN THE PANEL ROOT, 25 mm IN THE SADDLE PILLAR. OTHER PRINTED PARTS: DIMENSIONS IN THE PART FILES (PARTS LIST). TORQUES: SHEET 8.", NOTES_W);
+        Notes(0.018, 0.075, "1. FIN SHOE J09: FLOOR " + Mm("shoeFloor", "0.0") + ", WALLS " + Mm("shoeWall", "0") + " x 1.6 AROUND THE FIN ROOT (FIN BONDED IN); 2X F02 M3 x 16 THROUGH THE FLANGE AND A CRUSH SLEEVE 7 x 3.4 x 6.8 INTO THE TAIL-CLAMP INSERTS.\n2. SPAR COLLAR J05a, REAR HARDPOINT J05b: BONDED FLUSH INTO THE WING LOWER SURFACE AT THE BOOM STATION, INSERTS <MOD-DIAM>4.0 x 7.5 FACE DOWN.\n3. PUSHER CUP J12: 4X F01 + W01 FROM INSIDE INTO THE MOTOR BASE, 4X F07 RADIAL THROUGH THE POD RING. SERVO TRAY J14: 4X F10 + N03, TAB HOLES PROVISIONAL (M6).\n4. ROOT TONGUE J10: 25 mm BONDED IN THE PANEL ROOT, 25 mm IN THE SADDLE PILLAR. OTHER PRINTED PARTS: DIMENSIONS IN THE PART FILES (PARTS LIST). TORQUES: SHEET 8.", NOTES_W);
         EndSheet();
     }
 }

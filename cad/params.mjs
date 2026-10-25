@@ -6,7 +6,7 @@
 //   sched=ID|standard|size|qty|order|joints|torque|threadlocker|vendor|partno|unit   fastener schedule rows
 //   comp=Part|X|Y|Z|r11,r12,r13,r21,r22,r23,r31,r32,r33       assembly placement (rotation rows = images of the part axes)
 //   xcomp=Part|X|Y|Z|matrix                                   same component in the exploded assembly (VTOL_Exploded.SLDASM)
-// v0.3.1 + hardware spec 2026-10-21 (docs/research/hardware-spec.md, HS): every joint carries its real fasteners.
+// v0.4 (CAD rev C) + hardware spec 2026-10-21 (docs/research/hardware-spec.md, HS): every joint carries its real fasteners.
 import { readFileSync, writeFileSync } from 'fs';
 const R = JSON.parse(readFileSync(new URL('../analysis/results.json', import.meta.url)));
 const HW = JSON.parse(readFileSync(new URL('./hardware.json', import.meta.url)));
@@ -69,7 +69,14 @@ const yB = -0.03, rB = P.boomOD/2;
 const yMotor = yB + 0.021;                       // motor base on the mount top: boom centre + 21.0 (HS J02 block, upper half +0.6..+21.0)
 const yPropHub = yMotor + P.motorH;              // lift prop hub sits on the bell top (HS J03); hub 8 mm EST, prop plate 2.5 above it
 const yPlate = yPropHub + 0.008;
-const yLegTop = yB - 0.0147, yGround = yLegTop - P.legLen;   // leg in a blind socket 14.0 deep from the gear-clamp bottom at -28.7 (HS J07)
+// gear clamp lower half -28.7..-0.6 below the boom centre, blind leg socket 14.0 deep (FT03), F05 cross-bolt at -21.7 (HS J06/J07)
+const gearClampBot = -0.0287, legSocketDepth = 0.014, legBoltY = -0.0217;   // socket depth: hardware.json FT03 "blind, 14.0 deep"
+const yLegTop = yB + gearClampBot + legSocketDepth, yGround = yLegTop - P.legLen;   // leg top at the socket floor
+// AERO leg fairing (3:1 teardrop, NACA 0033): bore 25.6 over the 25.4 leg, 0.8 vase wall EST; chord = 3 x outer thickness;
+// length from 20 mm above the leg bottom (dome foot 18 + 2) to 1 mm under the gear clamp
+const fairBore = 0.0256, fairWall = 0.0008, fairChord = 3*(fairBore + 2*fairWall);
+const fairY0 = 0.020, fairLen = (P.legLen - legSocketDepth) - fairY0 - 0.001;
+Object.assign(P, { gearClampBot, legSocketDepth, legBoltY, fairBore, fairWall, fairChord, fairLen, fairY0 });
 P.clampTopF = yLower(xSp) - yB; P.clampTopR = yLower(0.80) - yB;   // clamp tops meet the wing lower surface (review finding cad_sim-7)
 P.yB = yB; P.tailT = 0.09*g.hC; P.yMotor = yMotor; P.yProp = yPropHub + 0.004; P.yGround = yGround;
 const xFinLE = g.xRear - g.D/2 - 0.05;
@@ -93,6 +100,14 @@ Object.assign(P, { boltZ: fusR - 0.015, boltX, yU70, yL70, yMid70, zBoomPanel, y
   trayBodyY: TRAY.bodyY, trayPlateZ: TRAY.plateZ, trayPlateT: TRAY.plateT,
   pitotX: -0.05, pitotY: yL21 - 0.0095, pitotZ: -1.0, hornHpX: -0.75*chord, tailX, yPod, battX: cg.x, battY: -0.052,
   bayX0: 0.15, bayX1: 0.30, bayY0: -0.020, bayY1: 0.015, bayZ: 0.04, canopyX0: 0.07, canopyX1: 0.33, canopyR: 0.055, canopyY: 0.015 });
+// sizes that follow the wing section and stations (read by BuildVtol.cs, Drawings.cs and docs/build/templates/make_templates.py)
+const FT06 = HW.fits.find(f => f.id === 'FT06'), N02 = HW.nuts.find(n => n.id === 'N02');
+const pillarH = yU70 - yL70;
+// J10 nut pocket from the lower surface: M5 x 20 head on the 1.0 spot-face, screw end 0.5 past the nylock (HS CAD notes), 0.1 mm steps
+const pillarNutDepth = Math.ceil(((pillarH - 0.001 - 0.020) + 0.0005 + N02.h_mm/1000)*1e4 - 1e-6)/1e4;
+Object.assign(P, { mtow: s.m, ailFrac: 0.55, ailSpan: Lail, thick30: yUpper(0.30) - yLower(0.30), pillarH,
+  pillarD: 0.016, pillarBoreD: 0.0164, pillarNutDepth, joinBoreD: FT06.hole.nominal_mm/1000,
+  legStock: 96*IN });
 
 // ---------------- rotation matrices (rows = images of the part axes X, Y, Z; SOLIDWORKS MathTransform convention, probed 2026-10-21) ----------------
 const ID = [[1,0,0],[0,1,0],[0,0,1]];
@@ -175,7 +190,7 @@ for (const sz of [1, -1]) {
   const z = sz*P.boltZ, zr = sz*fusR;
   add('Bolt_Pillar', [boltX, yL70, z], ID, 'saddle');
   add('Root_Tongue', [boltX, yMid70, sz*0.055], sz > 0 ? ID : YAW180, sz > 0 ? 'wingR' : 'wingL');   // 50 long, 25 in the panel, 25 in the pillar slot
-  screw('F09', [boltX, yU70 - 0.001, z], ID, 'saddle', { nut: yU70 - 0.001 - (yL70 + 0.0085), nutId: 'N02' });   // head in the 1.0 spot-face; nut pocket ceiling 8.5 above the lower surface
+  screw('F09', [boltX, yU70 - 0.001, z], ID, 'saddle', { nut: yU70 - 0.001 - (yL70 + pillarNutDepth), nutId: 'N02' });   // head in the 1.0 spot-face; nut pocket ceiling pillarNutDepth above the lower surface
   // J11 saddle tabs to the pod: 2 x F08 per side along Z into inserts in the pod side at the parallel section
   for (const xx of [-0.10*chord, -0.30*chord]) screw('F08', [xx, -0.030, sz*0.086], sz > 0 ? YtoZ : YtoNZ, 'saddle', { insert: 0.006 });
 }
@@ -205,9 +220,9 @@ for (const sz of [1, -1]) {
   // J06/J07 gear clamps and legs
   for (const xl of [g.xFront - 0.09, g.xRear + 0.09]) {
     add('Gear_Clamp_Upper', [xl, yB, z], ID, 'gear'); add('Gear_Clamp_Lower', [xl, yB, z], ID, 'gearlow'); add('Landing_Leg', [xl, yGround, z], ID, 'leg');
-    add('Gear_Fairing', [xl, yGround + 0.020, z], ID, 'leg');   // AERO leg fairing: from above the dome foot (18) to 1 mm under the gear clamp (170 long)
-    for (const sx of [1, -1]) for (const sz2 of [1, -1]) screw('F03', [xl + sx*0.012, yB - 0.0287 + 0.0153, z + sz2*0.0175], rotUp, 'gearlow', { insert: 0.014 });
-    screw('F05', [xl + 0.0135, yB - 0.0217, z], YtoX, 'leg', { washer: true, nut: 0.0262 });   // along -X: head seat x +13 (+0.5 washer), nut bears at x -12.7 just outside the leg tube (M3 x 30)
+    add('Gear_Fairing', [xl, yGround + fairY0, z], ID, 'leg');   // AERO leg fairing: from above the dome foot (18) to 1 mm under the gear clamp (fairLen)
+    for (const sx of [1, -1]) for (const sz2 of [1, -1]) screw('F03', [xl + sx*0.012, yB + gearClampBot + 0.0153, z + sz2*0.0175], rotUp, 'gearlow', { insert: 0.014 });
+    screw('F05', [xl + 0.0135, yB + legBoltY, z], YtoX, 'leg', { washer: true, nut: 0.0262 });   // along -X: head seat x +13 (+0.5 washer), nut bears at x -12.7 just outside the leg tube (M3 x 30)
   }
   // J08 tail clamps, J09 fin shoes + crush sleeves, fins and rudders (C6)
   add('Tail_Clamp_Upper', [xTC, yB, z], ID, 'tail'); add('Tail_Clamp_Cap', [xTC, yB, z], ID, 'tailcap');

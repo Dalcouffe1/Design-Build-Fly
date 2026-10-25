@@ -23,7 +23,7 @@ Build (Join-Path $root 'cad\BuildVtol.cs') $exe
 $mx = Join-Path $root 'cad\ExportMesh.exe'
 Build (Join-Path $root 'cad\ExportMesh.cs') $mx
 & $mx (Join-Path $root 'cad\model') (Join-Path $root 'cad\mesh')
-# drawing set DBF-DRW-001 rev B (cad/drawings): SLDDRW, vector PDF, sheet PNGs for the review page
+# drawing set DBF-DRW-001 rev D (cad/drawings): SLDDRW, vector PDF, sheet PNGs for the review page
 $dx = Join-Path $root 'cad\Drawings.exe'
 Build (Join-Path $root 'cad\Drawings.cs') $dx
 & $dx (Join-Path $root 'cad\model') (Join-Path $root 'cad\drawings') (Join-Path $root 'cad\params.txt')

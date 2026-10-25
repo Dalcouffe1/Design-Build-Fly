@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F07 · Review step: F6 · Requirements: R1, R9, R11, R1
 
 **Weather limits:** Steady <= 5 m/s, gusts <= 8 m/s; into wind; one flight in 3-5 m/s steady wind if available counts for R16.
 
-**Predicted:** Cruise thrust 8.2 N at L/D 7.7 (results.json sized.D_cruise, LD v0.4) or 7.6 N at L/D 8.3 (aero_results drag.cruise); cruise power 323 W sizing / 297 W aero (14.5 / 13.4 A at 22.2 V); back-transition stop distance 100 m (vtol_c0.param Q_TRANS_DECEL comment).
+**Predicted:** Cruise thrust 8.3 N at L/D 7.6 (results.json sized.D_cruise, LD v0.4) or 7.6 N at L/D 8.3 (aero_results drag.cruise); cruise power 325 W sizing / 298 W aero (14.6 / 13.4 A at 22.2 V); back-transition stop distance 100 m (vtol_c0.param Q_TRANS_DECEL comment).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session (2 flights), 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -48,7 +48,7 @@ QTUN.TrnMs; ARSP; GPS track (transition distance from mode change to AIRSPEED_MI
 ## Pass criteria
 - [ ] Transition time <= 15 s and distance <= 100 m (review 10 M2); SITL 10-11 s. Turn started <= 3 s after Transition done (log: roll command vs the message time).
 - [ ] Lift outputs RCOU C5-C8 at Q_M_PWM_MIN (1000) for >= 95 % of the fixed-wing segment (R1 'lift rotors stopped in cruise').
-- [ ] Level flight at 18-20 m/s with pusher throttle <= 70 % EST; cruise current near 13.4-14.5 A (aero 297 W / sizing 323 W).
+- [ ] Level flight at 18-20 m/s with pusher throttle <= 70 % EST; cruise current near 13.4-14.6 A (aero 298 W / sizing 325 W).
 - [ ] Back-transition and QLAND with touchdown <= 1 m/s EST and no yaw departure.
 - [ ] If flown in 3-5 m/s wind: attitude error < 15 deg throughout (R16).
 

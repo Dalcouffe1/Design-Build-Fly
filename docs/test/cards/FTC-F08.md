@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F08 · Review step: F6 follow-on; review 10 M1, 4 M2 ·
 
 **Weather limits:** Steady <= 5 m/s, gusts <= 8 m/s; calm air preferred for the power legs (still-air drag back-out, review 4 M2).
 
-**Predicted:** P_cruise 323 W / 14.5 A (results.json sized v0.4) or 297 W / 13.4 A (aero_results mission); CD0 0.0459 / 0.0427; L/D 7.7 / 8.3; drag 8.2 / 7.6 N. Cruise available 13.1 min (sizing) / 14.2 min (aero).
+**Predicted:** P_cruise 325 W / 14.6 A (results.json sized v0.4) or 298 W / 13.4 A (aero_results mission); CD0 0.0457 / 0.0422; L/D 7.6 / 8.3; drag 8.3 / 7.6 N. Cruise available 12.9 min (sizing) / 14.1 min (aero).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session (2 flights), 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -37,7 +37,7 @@ Start every transition at the upwind field edge and turn as soon as 'Transition 
 
 ## Abort criteria (card-specific items first, then the universal list)
 - ARSPD_RATIO outside 1.5-3.0 during flight 1 (GCS reads it): land and check for leaks (ArduPilot airspeed calibration page).
-- Cruise current > 22 A sustained EST at 20 m/s (pack endurance at risk; pass is 19.0 A).
+- Cruise current > 22 A sustained EST at 20 m/s (pack endurance at risk; pass is 18.9 A).
 - Aircraft within 50 m of the 300 m fence in fixed-wing flight.
 Universal (TEST-PLAN.md s5): VIBE > 30 m/s2 or rising clipping; attitude error > 15 deg; any oscillation; sag-compensated voltage < 21.0 V or < 1,950 mAh remaining (firmware low-battery RTL point; critical 19.8 V / 1,300 mAh -> QLAND); motor can > 80 degC EST after landing; wind above the card limit; LQ < 70 % EST or any failsafe message; EKF/GPS/compass warning; people or animals inside the range; manned aircraft converging.
 
@@ -46,7 +46,7 @@ ARSP.Airspeed, ARSP.Ratio; GPS.Spd per leg (mean of reciprocal legs removes wind
 
 ## Pass criteria
 - [ ] ARSPD_RATIO 1.5-3.0 (ardupilot.org calibrating-an-airspeed-sensor, checked 2026-10-21) and airspeed vs reciprocal-leg GPS mean error <= 10 % (review 10 M1).
-- [ ] Cruise at 20 m/s: electrical power <= 421 W = 19.0 A at 22.2 V (calc in TEST-PLAN.md C07 note; aerodynamics.md M1 threshold 420 W) so R10 holds on the selected pack; implied CD0 <= 0.046 x 1.2 EST (sizing CD0 0.0459, aero 0.0427).
+- [ ] Cruise at 20 m/s: electrical power <= 420 W = 18.9 A at 22.2 V (calc in TEST-PLAN.md R10 line; aerodynamics.md M1 threshold 420 W) so R10 holds on the selected pack; implied CD0 <= 0.046 x 1.2 EST (sizing CD0 0.0457, aero 0.0422).
 - [ ] Trimmed level flight achievable at 18, 20 and 22 m/s (R11 band).
 
 ## Run log

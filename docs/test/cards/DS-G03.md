@@ -5,12 +5,12 @@ Restraint: ____ ties, rated ____ kg each, to the leg clamps (total > 12.5 kgf). 
 
 | Step | Command | Duration | Pack V (W-meter) | I (A) W-meter | I (A) FC log | V/cell min | VIBE X/Y/Z max | Clip | Notes |
 |---|---|---|---|---|---|---|---|---|---|
-| 1 | QSTABILIZE hover throttle (~51 %) | 60 s | | | | ≥ 3.4 | < 30 | 0 | |
+| 1 | QSTABILIZE hover throttle (~52 %) | 60 s | | | | ≥ 3.4 | < 30 | 0 | |
 | 2 | 100 % all four (burst) | 3 s | | | | ≥ 3.2 | | | |
 | 3 | FBWA pusher 100 % | 10 s | | | | | | | |
 | 4 | hover + pusher 75 % (transition) | 10 s | | | | | ≤ 85 A total | | |
 
-Predicted: 40.0 A hover at 22.2 V, 42.3 A at 21 V, 73.0 A transition (results.json sized v0.4).
+Predicted: 40.2 A hover at 22.2 V, 42.5 A at 21 V, 73.5 A transition (results.json sized v0.4).
 
 ## Temperatures within 30 s (IR)
 | M1 | M2 | M3 | M4 | pusher | ESC1 | ESC2 | ESC3 | ESC4 | ESC pusher | XT90-S | XT60H max | pack lead | FC board | pack |

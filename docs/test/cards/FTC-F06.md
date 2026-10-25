@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F06 · Review step: F5 · Requirements: R9, R11
 
 **Weather limits:** Steady <= 5 m/s (R16), gusts <= 8 m/s; into wind only.
 
-**Predicted:** Transition power 1,533 W / 73.0 A at 21 V (results.json sized.P_trans, I_trans v0.4); SITL: Transition airspeed reached 16.0 five seconds after the start (firmware/sitl/README.md), so 12 m/s in ~4 s.
+**Predicted:** Transition power 1,543 W / 73.5 A at 21 V (results.json sized.P_trans, I_trans v0.4); SITL: Transition airspeed reached 16.0 five seconds after the start (firmware/sitl/README.md), so 12 m/s in ~4 s.
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session (3 flights), 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.

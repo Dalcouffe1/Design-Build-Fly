@@ -3,7 +3,7 @@ DBF-TP-001 rev B data sheet · Test S01 · Date ____ · Operator ____ · Witness
 
 Article: complete wing on saddle + slip-fit joiner captured by the stop discs (C17 passed), M5 × 20 wing bolts 1.0 N·m EST (hardware-spec J10). Inverted on padded supports at ±0.10 m from centre. Tip gauges zeroed.
 
-## Load schedule (TEST-PLAN.md S01; total 15.4 kg = 3.0 × (6.43 − 1.29) kg, results.json sized.m / m_wing v0.4, elliptic; bags at 30 % chord of the 263 mm chord)
+## Load schedule (TEST-PLAN.md S01; total 15.4 kg = 3.0 × (6.45 − 1.31) kg, results.json sized.m / m_wing v0.4, elliptic; bags at 30 % chord of the 267 mm chord)
 | Station from centre (m) | 0.1 | 0.3 | 0.5 | 0.7 | 0.9 | 1.1 | per side |
 |---|---|---|---|---|---|---|---|
 | Mass per side at 100 % (kg) | 1.63 | 1.58 | 1.48 | 1.32 | 1.08 | 0.61 | 7.71 |
@@ -29,7 +29,7 @@ Actual bag masses used (kitchen scale): ____ (attach list)
 | 0 % after 5 min (residual) | | | | | |
 
 Pass: tip at 100 % ≤ 120 mm; residual ≤ 2 mm EST; joiner straight ≤ 0.5 mm over 0.76 m; no crush; no loosening.
-Predicted: 15.2 mm (FEA idealised joiner at v0.3.1, cad/sim/results.txt spar_tip_disp × (72.3/69.5) × 3/4.5); real 15–60 mm EST. Joiner (slip fit, rev B) slid out post-test: straightness ____ mm; stop discs intact: Y / N.
+Predicted: 15.2 mm (FEA idealised joiner at v0.3.1, cad/sim/results.txt spar_tip_disp × (72.5/69.5) × 3/4.5); real 15–60 mm EST. Joiner (slip fit, rev B) slid out post-test: straightness ____ mm; stop discs intact: Y / N.
 
 ## Result
 PASS / FAIL · Deviations: ____ · Signed (TD) ______ Date ______

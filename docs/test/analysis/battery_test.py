@@ -24,8 +24,8 @@ V_HOVER_PASS = 3.40   # review 5 M4
 V_TRANS_PASS = 3.20   # review 5 M4
 R_CELL_PASS_MOHM = 7.5  # EST (calc (3.70-3.40)/40.0 A, v0.4)
 NAMEPLATE_WH = 144.3  # results.json packs[0].Wh
-I_HOVER = 40.006      # results.json sized.I_hover (v0.4)
-I_TRANS = 73.0        # results.json sized.I_trans (v0.4)
+I_HOVER = 40.199      # results.json sized.I_hover (v0.4, R11 re-size 2026-10-25)
+I_TRANS = 73.463      # results.json sized.I_trans (v0.4, R11 re-size 2026-10-25)
 
 
 def read_csv(path):

@@ -5,7 +5,7 @@ Pack: Ovonic 6S 6500 100C s/n ____ (A / B) · nameplate 144.3 Wh (results.json p
 
 Full charge: resting ____ V (≥ 25.1) · cells (balance readout) ____ / ____ / ____ / ____ / ____ / ____ · pack temp start ____ °C
 
-## Discharge log at 15 ± 2 A (cruise current 14.5 A, results.json sized.I_cruise) (every 30 s; or film the watt meter and transcribe). Save as CSV `t_s,volt_V,curr_A` for battery_test.py.
+## Discharge log at 15 ± 2 A (cruise current 14.6 A, results.json sized.I_cruise) (every 30 s; or film the watt meter and transcribe). Save as CSV `t_s,volt_V,curr_A` for battery_test.py.
 | t (s) | V (V) | I (A) | Ah | Wh | Note |
 |---|---|---|---|---|---|
 | 0 | | | | | |
@@ -15,7 +15,7 @@ Full charge: resting ____ V (≥ 25.1) · cells (balance readout) ____ / ____ / 
 ## Step loads at ~50 % delivered Ah
 | Step | I before (A) | V before (V) | I during (A) | V during (V) | ΔV (V) | R_pack = ΔV/ΔI (mΩ) | R_cell = R_pack / 6 (mΩ) |
 |---|---|---|---|---|---|---|---|
-| 10 s at 40.0 A (hover, results.json sized.I_hover) | | | | | | | |
+| 10 s at 40.2 A (hover, results.json sized.I_hover) | | | | | | | |
 | 3 s at ~73 A (transition, sized.I_trans) | | | | | | | |
 
 Pass: delivered ≥ 110 Wh to 3.50 V/cell under load; V/cell ≥ 3.4 at 40 A, ≥ 3.2 at 73 A; R_cell ≤ 7.5 mΩ EST; pack ≤ 60 °C EST; packs within 3 %.

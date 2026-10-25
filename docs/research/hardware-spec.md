@@ -521,6 +521,12 @@ sections above are listed so the spec and the model agree:
   unchanged) because the front rotor moves forward with the chord; the wing section at 70 % chord is 24.1 mm instead of
   21.8, so the M5 × 20 keeps the 1.0 spot-face and the nut pocket is **8.5 deep** from the lower surface (screw end 3.0
   above the lower surface, 0.5 past the nut). Tail chords grow in proportion (stabiliser 89.3 mm, fin root 155.6 mm).
+- **R11 wing re-size (2026-10-25, CAD rev C, drawing DBF-DRW-001 rev D).** CL_max 1.121 (`analysis/aero/aero_results.json`)
+  closes stall <= 12 m/s with chord 266.6 mm, S 0.640 m², MTOW 6.45 kg (`analysis/results.json`). Front boom **965.7 mm**
+  (rear stub 485.9 unchanged). The section at 70 % chord is 24.4 mm, so the J10 nut pocket is **9.0 deep** (`cad/params.mjs`
+  pillarNutDepth, same rule: screw end 0.5 past the nut); its ceiling now reaches the tongue slot floor (8.8), so the
+  nylock bears on the root tongue. Tail chords: stabiliser 91.2 mm, fin root 156.3 mm. All of these sizes are read from
+  `cad/params.txt` by the model, the drawings and the foam templates.
 - **J05 clamp screws: 2 per clamp on a diagonal** (x ±12, z ±17.5 opposite corners) so the spar-collar insert bosses
   sit beside the spar tube, not under it (an insert hole on the spar axis would break into the tube).
 - **J09.** The tail clamp is 50 long, centred 33.9 mm behind the fin LE (fin 22.5 % chord) so the shoe flange (32 × 46)
@@ -552,7 +558,7 @@ sections above are listed so the spec and the model agree:
   pocket 4.3 deep (nut bearing at −12.7, just outside the tube) and the counterbore 4.0 deep (head seat at +13.0, washer
   to 13.5), so the screw must be 30 long (end 0.2 inside the nut's outer face). Order line BD-5 becomes M3 × 30 (Bolt
   Depot socket cap; product number 6385 and price EST $0.10, not verified). `cad/hardware.json` F05 carries the change.
-- **J15.** The avionics bay floor is at y −20 (7 mm above the battery top at the re-sized battery station x = 0.179), so the
+- **J15.** The avionics bay floor is at y −20 (7 mm above the battery top at the re-sized battery station x = 0.181, CAD rev C; 0.179 at rev B), so the
   FC tray, the CoreWing envelope and the four F07 tray screws clear the battery.
 - **Interference detection (SOLIDWORKS InterferenceDetectionMgr, `cad/verification.txt`):** the 67 heat-set inserts are
   reported as intended press fits (Ø4.6 in Ø4.0); the remaining reported volumes are listed in the file with their cause.

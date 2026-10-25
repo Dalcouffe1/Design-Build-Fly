@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F01 · Review step: F3 (start); ArduPilot QuadPlane tun
 
 **Weather limits:** Steady <= 3 m/s EST, gusts <= 5 m/s EST; 10-30 degC.
 
-**Predicted:** Hover throttle ~0.51 = 1,608 g / 3,130 g (results.json sized.Tunit_g v0.4, params.Tmax_g); hover current 40.0 A at 22.2 V (sized.I_hover); hover power 888 W (sized.P_hover).
+**Predicted:** Hover throttle ~0.52 = 1,613 g / 3,130 g (results.json sized.Tunit_g v0.4, params.Tmax_g); hover current 40.2 A at 22.2 V (sized.I_hover); hover power 892 W (sized.P_hover).
 
 **Crew:** TD, SO, PIC, GCS (VO = SO) · **Duration:** 1 session, 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -39,7 +39,7 @@ Start every transition at the upwind field edge and turn as soon as 'Transition 
 
 ## Abort criteria (card-specific items first, then the universal list)
 - Any oscillation at lift-off: throttle down at once; halve Q_A_RAT_* P/I/D per tuning step 6 before the next attempt.
-- Attitude error > 15 deg; drift > 3 m from the pad; lift output > 70 % to hold 1 m (expected ~51 %).
+- Attitude error > 15 deg; drift > 3 m from the pad; lift output > 70 % to hold 1 m (expected ~52 %).
 Universal (TEST-PLAN.md s5): VIBE > 30 m/s2 or rising clipping; attitude error > 15 deg; any oscillation; sag-compensated voltage < 21.0 V or < 1,950 mAh remaining (firmware low-battery RTL point; critical 19.8 V / 1,300 mAh -> QLAND); motor can > 80 degC EST after landing; wind above the card limit; LQ < 70 % EST or any failsafe message; EKF/GPS/compass warning; people or animals inside the range; manned aircraft converging.
 
 ## Data to record
@@ -48,8 +48,8 @@ QTUN.ThO (hover throttle), ATT roll/pitch vs DesRoll/DesPitch, VIBE X/Y/Z and Cl
 ## Pass criteria
 - [ ] No oscillation at any point; attitude error < 15 deg (review F2).
 - [ ] VIBE < 30 m/s2, clipping 0 (ArduPilot measuring vibration, checked 2026-10-21).
-- [ ] Hover output < 60 % (review F2); expected ~0.51 = 1,608 / 3,130 g (calc; results.json sized.Tunit_g v0.4; the param-file comment 0.49 is the 6.18 kg value).
-- [ ] Hover current 40.0 A +-15 % EST (results.json sized.I_hover v0.4).
+- [ ] Hover output < 60 % (review F2); expected ~0.52 = 1,613 / 3,130 g (calc; results.json sized.Tunit_g v0.4; the param-file comment 0.49 is the 6.18 kg value).
+- [ ] Hover current 40.2 A +-15 % EST (results.json sized.I_hover v0.4).
 - [ ] Motors <= 80 degC EST after landing.
 
 ## Run log

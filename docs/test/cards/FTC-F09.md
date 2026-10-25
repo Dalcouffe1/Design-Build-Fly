@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F09 · Review step: not in the review matrix; docs/rese
 
 **Weather limits:** Steady <= 4 m/s EST, gusts <= 6 m/s EST; smooth air; morning preferred.
 
-**Predicted:** Vs 12.05 m/s at 6.43 kg with CL_max,3D 1.122 (aero_results stall.V_stall_mps; critical-section method on the AVL loading; 2-D CL_max 1.30 adopted from experiment at Re 2e5); the sizing's CL_max 1.132 gives 12.00 m/s (results.json base, sized.S 0.632 m2, W 63.1 N); margin to R11 -0.4 %. Pitch at the break ~11.3 deg (stall.trim_at_Vstall.alpha_deg).
+**Predicted:** Vs 12.00 m/s at 6.45 kg with CL_max,3D 1.121 (aero_results stall.V_stall_mps; critical-section method on the AVL loading; 2-D CL_max 1.30 adopted from experiment at Re 2e5); the sizing now uses the same CL_max 1.121 and gives 12.00 m/s (results.json base, sized.S 0.640 m2, W 63.3 N); margin to R11 0.0 %. Pitch at the break ~11.2 deg (stall.trim_at_Vstall.alpha_deg).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session (3 runs), 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -46,10 +46,10 @@ Universal (TEST-PLAN.md s5): VIBE > 30 m/s2 or rising clipping; attitude error >
 ARSP.Airspeed (calibrated) and CTUN.As at the pitch break for each run; ATT pitch/roll time history; RCOU elevator (C3) at the break vs the throw limit; BARO/GPS altitude loss per run; MSG (assist engage in point 2); wind at the time.
 
 ## Pass criteria
-- [ ] Measured Vs (mean of three runs, calibrated airspeed, corrected to MTOW 6.43 kg by Vs_MTOW = Vs_test x sqrt(6.43 / m_test)) <= 12.0 m/s = PASS (R11).
+- [ ] Measured Vs (mean of three runs, calibrated airspeed, corrected to MTOW 6.45 kg by Vs_MTOW = Vs_test x sqrt(6.45 / m_test)) <= 12.0 m/s = PASS (R11).
 - [ ] 12.0 < Vs <= 12.5 m/s = team decision: accept (R11 is an assumed value) or add 5 % wing area (docs/research/aerodynamics.md 9 item 3); > 12.5 m/s = FAIL (aerodynamics.md M2).
 - [ ] AIRSPEED_MIN 16 >= 1.3 x measured Vs, i.e. Vs <= 12.3 m/s; otherwise raise AIRSPEED_MIN to 1.3 x Vs and Q_ASSIST_SPEED to AIRSPEED_MIN - 3.
-- [ ] Elevator at the break < the full throw (reserve present; prediction -8.8 deg at Vs, aero_results stall.trim_at_Vstall.elevator_deg; the tail section stalls near 8 deg local incidence, aerodynamics.md 5).
+- [ ] Elevator at the break < the full throw (reserve present; prediction -8.7 deg at Vs, aero_results stall.trim_at_Vstall.elevator_deg; the tail section stalls near 8 deg local incidence, aerodynamics.md 5).
 - [ ] Altitude loss per run <= 30 m EST; no roll departure > 45 deg (root-first stall predicted: critical section inboard, aerodynamics.md 4).
 - [ ] Q_ASSIST engagement observed at 13 +-1 m/s with assist in auto (Q_ASSIST_SPEED 13).
 

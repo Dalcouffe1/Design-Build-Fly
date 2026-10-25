@@ -3,7 +3,7 @@
 Status: v0.4.0 (2026-10-21). v0.4: full engineering draft — exact hardware and fits (docs/research/hardware-spec.md),
 aerodynamic package with CFD (docs/research/aerodynamics.md) that resized the wing and added leg fairings, CAD rev B with every
 fastener, build manual DBF-MAN-001, test plan DBF-TP-001, flight software (firmware/), 29-variant trade study
-(docs/research/configurations.md). v0.3.1 (2026-10-13): project-audit fixes. v0.3: R6 clarified as a hard cap incl. tax and shipping; R7 reserve revised;
+(docs/research/configurations.md). 2026-10-25: values re-based on the R11 wing re-size, chord 266.6 mm, MTOW 6.45 kg (CAD model rev C, drawing DBF-DRW-001 rev D; R11 now met). v0.3.1 (2026-10-13): project-audit fixes. v0.3: R6 clarified as a hard cap incl. tax and shipping; R7 reserve revised;
 budget redesign (C0 4-lift, X4110S, 6061 tubes, taped XPS wing). v0.3.1: project-audit fixes (see
 "Design outcomes" below). Previous: v0.2. Team decisions 2026-10-13: scratch-built airframe (no kit);
 R10/R11 and R14 delegated to the reviewer and set as below; project is part
@@ -46,15 +46,15 @@ engineering estimates, not measured or looked up.
 
 ## Design outcomes (v0.4.0)
 - C0 4-lift twin boom, unchanged as the concept: the 29-variant trade study (analysis/tradestudy.json) ranks the C0 family first among layouts that meet R1; a quad tailsitter scores higher but breaks R1.
-- Wing resized on the aerodynamic package's trimmed CL_max (1.132): S 0.632 m², chord 263 mm, AR 9.1, span 2.4 m. MTOW 6.43 kg (analysis/results.json).
+- Wing resized on the aerodynamic package's trimmed CL_max (1.121, analysis/aero/aero_results.json; re-sized 2026-10-25 to close R11): S 0.640 m², chord 266.6 mm, AR 9.0, span 2.4 m. MTOW 6.45 kg (analysis/results.json C0 sized).
 - R6/R7: committed $1896.79 incl. 10.25 % tax and a $110 shipping allowance; reserve $103.21 (R7 met). To hold it, the hinge tape (skin tape serves), the spare servo and the spare pushrods were dropped after the hardware itemisation.
-- R10: 13.1 min cruise available (sizing) and 14.2 min (aero build-up) after 2 min hover and the 20 % reserve. Needs the printed teardrop leg fairings: with bare round legs the build-up gives 8.8 min and R10 fails.
-- R11: stall 12.05 m/s predicted at MTOW against 12 m/s, at the limit and inside the CL_max uncertainty; AIRSPEED_MIN 16 m/s ≥ 1.3 × predicted stall. Decided by the stall flight test (DBF-TP-001).
-- R13: T/W 1.95 on maker data at nominal voltage; strict R13 needs ≥ 2.57 kgf per motor at storage-low voltage on the thrust stand.
+- R10: 12.9 min cruise available (sizing) and 14.1 min (aero build-up) after 2 min hover and the 20 % reserve. Needs the printed teardrop leg fairings: with bare round legs the build-up gives 8.8 min and R10 fails.
+- R11: stall 12.00 m/s predicted at MTOW against 12 m/s (analysis/aero/aero_results.json stall): met with no margin, so still inside the CL_max uncertainty; AIRSPEED_MIN 16 m/s ≥ 1.3 × predicted stall (15.6). Confirmed by the stall flight test (DBF-TP-001 F09).
+- R13: T/W 1.94 on maker data at nominal voltage (analysis/results.json C0 sized.TW); strict R13 needs ≥ 2.58 kgf per motor at storage-low voltage on the thrust stand.
 - R14: hover motor-out not met by C0; the 8-lift layouts exceed the cap. Accepted with hover limits (≤ 5 m AGL, ≤ 60 s).
 - R17: ArduPlane 4.7.2 stable (2026-10-11) includes the CoreWingF405WingV2 target: the beta risk and the 2027-02-22 go/no-go are closed. Parameter file firmware/vtol_c0.param passes the checker; SITL scenarios A–G pass.
-- Stability: neutral point 40.4 % MAC with the pod (AVL); static margin 12.4 % at the 28 % CG and 5.3 % at the empty-bay CG → fly with 0.5 kg ballast in the payload bay when there is no payload.
-- Structure: joiner reserve factor 1.78 on yield at 4.5 g (hand calc on the true joiner governs). Joiner is a slip fit retained by printed stops, not bonded, so the pod piece stays inside the R4 envelope.
+- Stability: neutral point 40.3 % MAC with the pod (AVL); static margin 12.3 % at the 28 % CG and 5.2 % at the empty-bay CG → fly with 0.5 kg ballast in the payload bay when there is no payload.
+- Structure: joiner reserve factor 1.77 on yield at 4.5 g (275 / 155.0 MPa, analysis/results.json C0 struct.sigJ) (hand calc on the true joiner governs). Joiner is a slip fit retained by printed stops, not bonded, so the pod piece stays inside the R4 envelope.
 
 ## Assumptions the team most needs to confirm
 1. R14 motor-out in hover. Resolved for v0.3.1: not met by C0; accepted with hover limits because no motor-out-tolerant layout fits the R6 cap.
@@ -65,7 +65,7 @@ engineering estimates, not measured or looked up.
 6. R12 payload. Any real payload raises MTOW.
 7. ~~Build vs kit~~ — resolved 2026-10-13: scratch build.
 8. R19: the policy names senior projects explicitly; confirm institutional sponsorship for the § 350 educational path and request Richmond Field Station.
-9. R2: sign off the 6.43 kg MTOW (below the 8–15 kg working target).
+9. R2: sign off the 6.45 kg MTOW (below the 8–15 kg working target).
 
 ## Repo contents at Step 1
 CLAUDE.md; docs/VTOL-REVIEW-PROMPT.md; docs/reference/REVIEW-STYLE.md;

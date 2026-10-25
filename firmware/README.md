@@ -163,7 +163,7 @@ cable and tubing: —.
 | S11 | 5 (TIM1) | Rudder R | 21 |
 | S12 (LED) | 5 | unused | 0 |
 
-The review (§12 "Outputs and wiring") puts the lift motors on S7–S10 and the rudders on S5–S6. S7 shares timer
+The review (§[controls] "Outputs and wiring") puts the lift motors on S7–S10 and the rudders on S5–S6. S7 shares timer
 group S5–S7 with S5 and S6, so DShot on S7 would force both rudder outputs into DShot. The map above keeps
 every servo out of a DShot group. It also matches ArduPilot's QuadPlane convention of lift motors on outputs 5–8
 (quadplane-frame-setup.html). `tools/check_params.py --corewing` checks this automatically.
@@ -246,7 +246,7 @@ settings (`peripherals.md` §2). Do not set a failsafe position on the handset.
 
 ## 9. First-flight build-up
 
-Fly at a site that allows the test (review §15). Hover tests: ≤ 5 m AGL, ≤ 60 s per hover (review §12, R14).
+Fly at a site that allows the test (review §[schedule]). Hover tests: ≤ 5 m AGL, ≤ 60 s per hover (review §[controls], R14).
 Transitions: ≥ 30 m AGL, into wind. Wind ≤ 5 m/s, gusts ≤ 8 m/s (R16). The full checklists are in `checklists.md`.
 
 ### 9.1 SITL rehearsal (every pilot, before any flight)
@@ -256,7 +256,7 @@ QLOITER back-transition, QLAND. Practise the E-stop and RTL switches.
 
 ### 9.2 Tethered bench run
 Props on, aircraft tied down to a heavy base, battery on, `vtol_c0_hover_phase.param` loaded. QSTABILIZE, arm,
-raise throttle to light the skids. Check for oscillation, vibration and current (≈ 37.5 A hover at full weight;
+raise throttle to light the skids. Check for oscillation, vibration and current (≈ 40.2 A hover at full weight;
 results.json `C0.sized.I_hover`).
 
 ### 9.3 First lift-off (QSTABILIZE) — tuning-process steps 5–6
@@ -267,7 +267,7 @@ results.json `C0.sized.I_hover`).
 
 ### 9.4 QHOVER, hover throttle, notch
 1. Take off in QSTABILIZE to 5 m, switch to QHOVER for ≥ 30 s with no inputs. `Q_M_HOVER_LEARN,2` saves the hover
-   throttle. Expect about 0.49 (est.) from 1545.6 g needed / 3130 g max per motor (results.json). Above 0.6 means
+   throttle. Expect about 0.52 (est.) from 1612.6 g needed / 3130 g max per motor (results.json `C0.sized.Tunit_g`, `params.Tmax_g`). Above 0.6 means
    the thrust margin is short (tuning-process step 7, "should be ~0.3–0.6").
 2. Then set `Q_P_D_ACC_P = 0.1 × Q_M_THST_HOVER` and `Q_P_D_ACC_I = 0.2 × Q_M_THST_HOVER` (tuning-process step 7).
 3. **Notch setup within the 60 s hover limit.** The tuning-process page asks for a 2-minute no-input hover.
@@ -293,7 +293,7 @@ results.json `C0.sized.I_hover`).
 
 ### 9.5 Fixed-wing preparation
 - Airspeed ratio: `ARSPD_AUTOCAL,1` for a 5-minute loiter, then back to 0 (calibrating-an-airspeed-sensor.html).
-  Review M12.1 failure threshold: > 10 % error puts the real transition speed under R11's 15.6 m/s.
+  Review M[controls].1 failure threshold: > 10 % error puts the real transition speed under R11's 15.6 m/s.
 - Fixed-wing gains start at firmware defaults. Run AUTOTUNE in FBWA after the first transitions
   (automatic-tuning-with-autotune.html).
 
@@ -307,8 +307,8 @@ results.json `C0.sized.I_hover`).
    the upwind edge of the field.
 5. Back-transition: select QLOITER (or QHOVER). The pusher stops at once and the lift motors brake the aircraft
    (quadplane-transitions.html). Allow about 100 m stopping distance at 20 m/s (2 m/s² decel).
-6. Check in the log: the transition current peak against the 74.4 A estimate (results.json `C0.sized.I_trans`),
-   battery sag, and time to `AIRSPEED_MIN`. Review M12.2 failure threshold: > 15 s or > 100 m.
+6. Check in the log: the transition current peak against the 73.5 A estimate (results.json `C0.sized.I_trans`),
+   battery sag, and time to `AIRSPEED_MIN`. Review M[controls].2 failure threshold: > 15 s or > 100 m.
 7. Only then: CRUISE circuits, RTL test at altitude, and the full R9 mission in AUTO (`sitl/mission_test.py`
    scenario A is the template: NAV_WAYPOINTs then NAV_VTOL_LAND).
 
@@ -332,5 +332,5 @@ ArduPlane **V4.7.2** SITL (the Windows build Mission Planner uses, from firmware
 model `quadplane`, `vtol_c0.param` + `sitl/sitl_overrides.param`. 133 parameters read back. All match. Only the
 3 BLHeli passthrough parameters (`SERVO_BLH_*`) are absent, because SITL has no BLHeli support. **7/7 scenarios passed.**
 Results and limits are in `sitl/README.md`. The SITL airframe is ArduPilot's generic QuadPlane model, not C0.
-Its learned hover throttle was 0.15, against about 0.49 (est.) for C0. So SITL validates modes, thresholds,
+Its learned hover throttle was 0.15, against about 0.52 (est.) for C0. So SITL validates modes, thresholds,
 failsafes and the fence. It does not validate gains or performance.

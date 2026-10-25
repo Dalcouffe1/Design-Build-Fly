@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F11 · Review step: F7 preparation · Requirements: R9,
 
 **Weather limits:** Steady <= 5 m/s, gusts <= 8 m/s.
 
-**Predicted:** 56.5 Wh for the half mission; full mission 93.2 Wh delivered = 98.2 Wh from the pack at 95 % efficiency (results.json sized.E_Wh v0.4, base.etaBatt).
+**Predicted:** 56.8 Wh for the half mission; full mission 93.9 Wh delivered = 98.8 Wh from the pack at 95 % efficiency (results.json sized.E_Wh v0.4, base.etaBatt).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session, 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -46,7 +46,7 @@ BAT EnrgTot/CurrTot per phase (log_summary.py phase table); MODE timeline; ARSP 
 
 ## Pass criteria
 - [ ] All phases present in the MODE timeline in order; no failsafe.
-- [ ] Energy used <= 60 % of C11 usable Wh (half mission 56.5 Wh = (888 x 120 + 323 x 300)/3600 Wh, calc from results.json v0.4 P_hover, P_cruise; 56.5/109.7 = 51 %, with 60 % as the limit EST).
+- [ ] Energy used <= 60 % of C11 usable Wh (half mission 56.8 Wh = (892 x 120 + 325 x 300)/3600 Wh, calc from results.json v0.4 P_hover, P_cruise; 56.8/109.7 = 52 %, with 60 % as the limit EST).
 - [ ] Hover and cruise currents within +-15 % of F03/F08 values.
 
 ## Run log

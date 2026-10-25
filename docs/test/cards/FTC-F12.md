@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F12 · Review step: F7 · Requirements: R1, R8, R9, R10
 
 **Weather limits:** Steady <= 5 m/s, gusts <= 8 m/s (R16). A flight in 3-5 m/s steady wind closes R16 by demonstration.
 
-**Predicted:** Mission energy 93.2 Wh (98.2 Wh from the pack), landing at ~32 % of nameplate (calc; results.json sized.E_Wh v0.4, base.etaBatt, packs[0].Wh); 13.1 min cruise available (sized.t_cruise_avail_min) or 14.2 min with the aero build-up drag (aero_results mission.t_cruise_avail_min).
+**Predicted:** Mission energy 93.9 Wh (98.8 Wh from the pack), landing at ~32 % of nameplate (calc; results.json sized.E_Wh v0.4, base.etaBatt, packs[0].Wh); 12.9 min cruise available (sized.t_cruise_avail_min) or 14.1 min with the aero build-up drag (aero_results mission.t_cruise_avail_min).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session, 2 packs (one flight per pack)
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.40 kg), CG ____ % MAC (28 +-2, never aft of 32.4), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -49,7 +49,7 @@ BAT EnrgTot, CurrTot, Volt (min, at landing); MODE timeline (phase durations); A
 - [ ] Cruise >= 600 s at 18-22 m/s calibrated; total hover >= 120 s (R10).
 - [ ] Energy remaining at landing >= 20 % of the C11 usable energy, and >= 1,300 mAh remaining by BAT.CurrTot vs the C11 capacity; charge-return mAh <= 0.8 x C11 Ah (R10 reserve).
 - [ ] Lift outputs at minimum for >= 95 % of cruise (R1).
-- [ ] Cruise electrical power <= 421 W at 20 m/s (R10 threshold; predicted 297-323 W).
+- [ ] Cruise electrical power <= 420 W at 20 m/s (R10 threshold; predicted 298-325 W).
 - [ ] Date <= 2027-04-30 (R8). Ballast 0.5 kg carried (R12).
 
 ## Run log

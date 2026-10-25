@@ -2,25 +2,27 @@
 """
 make_templates.py - 1:1 hot-wire aerofoil templates (SVG) for the C0 lift + cruise VTOL.
 
-Reads the chords from cad/params.txt (chord, hC, vC, vH, sparX, sparY, sparXfrac) and writes one
+Reads the chords and sizes from cad/params.txt (chord, hC, vC, vH, sparX, sparY, sparXfrac, panelLen, fusR,
+joinBoreD, finRootBlock, rudderY0, hSpan, elevSpan) and writes one
 SVG per template into this folder, plus a CSV of the section coordinates. Every SVG is drawn in
 millimetres with width/height in mm, so a browser or Inkscape prints it at true scale when the
 print dialog is set to 100 % / "actual size". A 100 mm check line and a 10 mm scale bar are on
 every sheet: measure them before cutting anything.
 
 Sections (NACA 4-digit, closed trailing edge, cosine spacing, 120 points per surface):
-  wing_root   NACA 2415, chord = params chord (263.219 mm, v0.4 / DBF-DRW-001 rev B), spar socket mark at 30 % chord on
+  wing_root   NACA 2415, chord = params chord (CAD rev C / DBF-DRW-001 rev D), spar socket mark at 30 % chord on
               the camber line, dia 26.0 (FT05 channel), aileron hinge line at 74 % chord and the
               fixed-panel cut line at 72 % chord (cad/BuildVtol.cs Aileron(): 74-100 % with a 2 %
               hinge gap).
   wing_tip    Same section (the wing has no taper: cad/params.mjs panelLen is a straight extrusion).
               Written as a separate file so the two templates can be labelled and pinned separately.
-  wing_saddle Same section again, for the centre-section saddle block (CAD Wing_Saddle, 160 mm wide).
-  tail        NACA 0009, chord = params hC (89.28 mm), elevator hinge at 70 % chord and the
+  wing_saddle Same section again, for the centre-section saddle block (CAD Wing_Saddle, 2 x fusR wide), with the
+              joiner bore (params joinBoreD = hardware.json FT06 hole).
+  tail        NACA 0009, chord = params hC, elevator hinge at 70 % chord and the
               stabiliser cut line at 68 % (BuildVtol.cs Tailplane()).
-  fin_root    NACA 0009, chord = params vC (155.59 mm), rudder hinge at 70 % chord (rudder = 30 % of
+  fin_root    NACA 0009, chord = params vC, rudder hinge at 70 % chord (rudder = 30 % of
               the local chord, 2 % gap, hardware-spec CAD implementation notes rev B / BuildVtol.cs Rudder).
-  fin_tip     NACA 0009, chord = 0.65 x vC (101.13 mm, BuildVtol.cs Fin(): 65 % tip chord).
+  fin_tip     NACA 0009, chord = 0.65 x vC (BuildVtol.cs Fin(): 65 % tip chord).
 
 Sheet size: a sheet wider than 270 mm (the wing sheets, 300 mm) does not fit US Letter or A4, so for
 those the script also writes <name>_A.svg (leading-edge half) and <name>_B.svg (trailing-edge half),
@@ -138,7 +140,7 @@ def svg_template(name: str, title: str, up, lo, c: float, marks: list, kerf: flo
     ymax, ymin = max(ys), min(ys)
     margin = 8.0
     lead = 15.0  # wire lead-in / lead-out tangent at the TE
-    W = c + lead + 2 * margin + 6  # wing root (c 263.2): 300.2 mm -> also written as two half sheets (split_sheets)
+    W = c + lead + 2 * margin + 6  # wing root: c + 37 mm (> 270) -> also written as two half sheets (split_sheets)
     H = (ymax - ymin) + 2 * margin + 45 + 4.0 * max(0, sum(1 for m in marks if m[0] == 'line') - 2)
     ox, oy = margin, margin + ymax + 20  # origin (LE) in sheet coordinates; y flipped
     X = lambda x: ox + x
@@ -232,6 +234,9 @@ def main(argv=None) -> int:
     sparY = P["sparY"] * 1000.0
     sparXfrac = P["sparXfrac"]
     chan = 26.0  # FT05 channel diameter, cad/hardware.json fits FT05
+    jbore = P["joinBoreD"] * 1000.0  # FT06 joiner bore in the saddle (params joinBoreD from hardware.json)
+    panel = P["panelLen"] * 1000.0
+    saddleW = 2 * P["fusR"] * 1000.0
     kerf = a.kerf
     os.makedirs(a.out, exist_ok=True)
 
@@ -248,18 +253,18 @@ def main(argv=None) -> int:
                   ("line", 0.74, "74 % aileron hinge"), ("line", 0.80, "80 % rear clamp / hardpoint")]
     sheets = [
         ("wing_root_naca2415", "WING ROOT - NACA 2415 - chord %.2f mm" % c, wing_up, wing_lo, c, wing_marks,
-         common + ["Root end of each 1120 mm panel. The panel has no taper; the TIP sheet is the same section."]),
+         common + ["Root end of each %.0f mm panel. The panel has no taper; the TIP sheet is the same section." % panel]),
         ("wing_tip_naca2415", "WING TIP - NACA 2415 - chord %.2f mm" % c, wing_up, wing_lo, c, wing_marks,
-         common + ["Tip end of each 1120 mm panel (identical to ROOT; separate sheet so both ends are pinned)."]),
+         common + ["Tip end of each %.0f mm panel (identical to ROOT; separate sheet so both ends are pinned)." % panel]),
         ("wing_saddle_naca2415", "WING SADDLE (centre section) - NACA 2415 - chord %.2f mm" % c, wing_up, wing_lo, c,
-         [("circle", sparX, sparY, 22.455 + kerf * 0, "joiner bore dia 22.455 (FT06, drill after cutting)"), ("line", 0.70, "70 % bolt pillar")],
-         common + ["Both faces of the 160 mm wide saddle block (cad/params.txt comp Wing_Saddle, 2 x fusR); joiner bore is a SLIP FIT (FT06 rev B, not bonded)."]),
+         [("circle", sparX, sparY, jbore, "joiner bore dia %.3f (FT06, drill after cutting)" % jbore), ("line", 0.70, "70 % bolt pillar")],
+         common + ["Both faces of the %.0f mm wide saddle block (cad/params.txt comp Wing_Saddle, 2 x fusR); joiner bore is a SLIP FIT (FT06 rev B, not bonded)." % saddleW]),
         ("tail_naca0009", "STABILISER - NACA 0009 - chord %.2f mm" % hC, tail_up, tail_lo, hC,
          [("line", 0.68, "68 % stab cut"), ("line", 0.70, "70 % elevator hinge")],
          common + ["Both ends of the %.1f mm stabiliser (params hSpan). Elevator = 70-100 %% chord, span %.1f mm (params elevSpan)." % (P["hSpan"] * 1000, P["elevSpan"] * 1000)]),
         ("fin_root_naca0009", "FIN ROOT - NACA 0009 - chord %.2f mm" % vC, finr_up, finr_lo, vC,
          [("line", 0.68, "68 % fin cut"), ("line", 0.70, "70 % rudder hinge"), ("line", 0.225, "22.5 % tail clamp centre")],
-         common + ["Fin root; fin height %.1f mm (params vH); root 21 mm sits in the printed shoe; rudder from 22 mm above the root (CAD rev B)." % (P["vH"] * 1000)]),
+         common + ["Fin root; fin height %.1f mm (params vH); root %.0f mm sits in the printed shoe; rudder from %.0f mm above the root (CAD rev C)." % (P["vH"] * 1000, P["finRootBlock"] * 1000, P["rudderY0"] * 1000)]),
         ("fin_tip_naca0009", "FIN TIP - NACA 0009 - chord %.2f mm" % (0.65 * vC), fint_up, fint_lo, 0.65 * vC,
          [("line", 0.68, "68 % fin cut"), ("line", 0.70, "70 % rudder hinge")],
          common + ["Fin tip = 65 %% of root chord (cad/BuildVtol.cs Fin()). Pin tip LE 0.35 x %.1f = %.1f mm aft of the root LE (swept LE, TE straight) EST." % (vC, 0.35 * vC)]),

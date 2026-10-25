@@ -1,7 +1,7 @@
 #
 # vtol_c0.param  -  ArduPlane QuadPlane parameters for the C0 lift + cruise VTOL
 #
-# Aircraft : C0 4-lift twin boom, MTOW 6.18 kg (est.), 6S 6500 mAh LiPo         [RJ concepts.C0.sized.m; BOM]
+# Aircraft : C0 4-lift twin boom, MTOW 6.45 kg (est.), 6S 6500 mAh LiPo         [RJ concepts.C0.sized.m; BOM]
 # Board    : CoreWing F405 Wing APP V2  (firmware target CoreWingF405WingV2)     [BOM; HW]
 # Firmware : ArduPlane 4.7.2 stable (firmware.ardupilot.org/Plane/stable/CoreWingF405WingV2, checked 2026-10-21)
 # Status   : STARTING VALUES for bench work, SITL and the first hover. Not a flight-proven tune.
@@ -74,11 +74,11 @@ Q_M_SPIN_MAX,0.95         # (default) [TP step 2]
 # 4. Lift thrust model and hover throttle
 # ---------------------------------------------------------------------------------------------
 Q_M_THST_EXPO,0.72        # 17x5.5 prop: interpolated between 0.65 (10 in) and 0.75 (20 in): 0.65+0.10*(17-10)/10 [TP step 1]. Replace with thrust-stand fit (test T2).
-Q_M_THST_HOVER,0.25       # first-flight value per [TP step 4] ("0.25, or lower than expected"). Expected learned value ~0.49 (est.) = 1545.6 g / 3130 g per motor [RJ C0.sized.Tunit_g; C0.params.Tmax_g]
+Q_M_THST_HOVER,0.25       # first-flight value per [TP step 4] ("0.25, or lower than expected"). Expected learned value ~0.52 (est.) = 1612.6 g / 3130 g per motor [RJ C0.sized.Tunit_g; C0.params.Tmax_g]
 Q_M_HOVER_LEARN,2         # (default) learn and save hover throttle [TP step 7]
 Q_M_BAT_VOLT_MAX,25.2     # thrust voltage compensation, 4.2 V x 6S [PD recommendation]
 Q_M_BAT_VOLT_MIN,19.8     # 3.3 V x 6S [PD recommendation]
-Q_M_BAT_CURR_MAX,85       # total-current cap that throttles the LIFT motors only. 85 A sits under the FC sensor/PDB 90 A cont [BP] and above hover 40.0 A and transition 73.0 A (est., v0.4) [RJ I_hover, I_trans]. See [FM] D7.
+Q_M_BAT_CURR_MAX,85       # total-current cap that throttles the LIFT motors only. 85 A sits under the FC sensor/PDB 90 A cont [BP] and above hover 40.2 A and transition 73.5 A (est., v0.4) [RJ I_hover, I_trans]. See [FM] D7.
 Q_A_THR_MIX_MAN,0.1       # (default) first-flight value [TP step 4]
 #
 # ---------------------------------------------------------------------------------------------
@@ -121,7 +121,7 @@ Q_TRANS_FAIL_ACT,1        # on timeout go to QRTL [PD values; RV]
 Q_TRANS_DECEL,2.0         # (default) back-transition stopping-distance decel: 20 m/s -> 100 m (v^2/2a) [PD]
 Q_BACKTRANS_MS,3000       # (default) pitch-limit ramp entering VTOL position modes [PD]
 Q_TRAN_PIT_MAX,3          # (default) max pitch during AUTO forward transition [PD]
-TKOFF_THR_MAX,75          # AUTO forward transitions run the pusher at TKOFF_THR_MAX [TR]; 75 % trims the 73.0 A transition peak (est., v0.4) until bench test M4 [RJ I_trans]
+TKOFF_THR_MAX,75          # AUTO forward transitions run the pusher at TKOFF_THR_MAX [TR]; 75 % trims the 73.5 A transition peak (est., v0.4) until bench test M4 [RJ I_trans]
 #
 # ---------------------------------------------------------------------------------------------
 # 7. Return, VTOL land, arming
