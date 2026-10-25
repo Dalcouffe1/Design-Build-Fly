@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F03 · Review step: F3 · Requirements: R9, R13
 
 **Weather limits:** Steady <= 3 m/s EST, gusts <= 5 m/s EST.
 
-**Predicted:** Hover electrical power 892 W total (results.json sized.P_hover v0.4); motor can ~76 degC EST after 90 s at v0.4 (lumped, cad/README.md motor thermal), so ~64 degC EST after 60 s (same lumped model, calc).
+**Predicted:** Hover electrical power 916 W total (results.json sized.P_hover v0.4); lift-unit thermal model (docs/research/thermal.md 6.1, 20 % loss EST): motor can +28 K and ESC +21 K over ambient after a 60 s hover (63 / 56 degC on a 35 degC day), 74 / 63 degC at 90 s; motor-only lumped check 76 degC at 90 s (cad/README.md). Hot day (ambient >= 25 degC EST): TEST-PLAN.md s6 hot-day rules apply; the 60 s hover limit stays.
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session, 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.53 kg), CG ____ % MAC (28 +-2, never aft of 31.8), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.
@@ -46,8 +46,8 @@ QTUN.ThO; POS/GPS position hold error; BAT Curr mean per hover; IR temperatures 
 ## Pass criteria
 - [ ] 3 x 60 s at <= 5 m AGL with motors cooled below 45 degC between (review F3).
 - [ ] Position held within 2 m EST in QLOITER; attitude error < 15 deg.
-- [ ] Motors <= 80 degC EST after each hover (review F3 abort; C08 prediction 76 degC at 90 s).
-- [ ] Hover current 40.2 A +-15 % EST (results.json sized.I_hover); sag-compensated voltage >= 21.0 V.
+- [ ] Motors <= 80 degC EST after each hover (review F3 abort; C08 prediction 74 degC at 90 s on a 35 degC day, thermal.md 6.1).
+- [ ] Hover current 41.2 A +-15 % EST (results.json sized.I_hover); sag-compensated voltage >= 21.0 V.
 
 ## Run log
 

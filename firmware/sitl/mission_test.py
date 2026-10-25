@@ -21,9 +21,13 @@ against what the running firmware reports.
 
 Usage (SITL already running, e.g. sim_vehicle.py -v ArduPlane -f quadplane in WSL/Linux):
   python mission_test.py --connect tcp:127.0.0.1:5760 --params ../vtol_c0.param sitl_overrides.param
-Usage (launch the Windows SITL binary that Mission Planner uses):
+Usage (launch the Windows SITL binary that Mission Planner uses, generic quadplane model):
   python mission_test.py --sitl-exe C:/path/ArduPlane.exe --defaults-base quadplane.parm \
          --params ../vtol_c0.param sitl_overrides.param --out results
+Usage (C0 airframe model, ArduPilot JSON physics interface, firmware/sitl/c0_physics.py):
+  python mission_test.py --sitl-exe C:/path/ArduPlane.exe --model JSON:127.0.0.1 --physics c0_physics.py \
+         --defaults-base sitl_c0_defaults.parm --params ../vtol_c0.param sitl_c0_overrides.param \
+         --out results_c0 --summary results_c0.json
 Needs: pymavlink (pip install pymavlink).
 """
 from __future__ import annotations
@@ -38,12 +42,14 @@ import subprocess
 import sys
 import time
 
+os.environ.setdefault("MAVLINK20", "1")   # 18-channel RC_CHANNELS_OVERRIDE needs the MAVLink 2 dialect
 from pymavlink import mavutil
 
 HOME = (37.9156, -122.3366, 5.0, 0.0)  # placeholder field location (lat, lon, alt m, heading); not the real site
 MODE = {0: "MANUAL", 1: "CIRCLE", 2: "STABILIZE", 5: "FBWA", 6: "FBWB", 7: "CRUISE", 10: "AUTO", 11: "RTL",
         12: "LOITER", 17: "QSTABILIZE", 18: "QHOVER", 19: "QLOITER", 20: "QLAND", 21: "QRTL", 25: "LOITER_TO_QLAND"}
 MODE_ID = {v: k for k, v in MODE.items()}
+PHYSICS_CMD_PORT = 0   # set when an external physics model is launched (c0_physics.py listens on 9004)
 RC_NEUTRAL = {1: 1500, 2: 1500, 3: 1000, 4: 1500, 5: 1500, 6: 1425, 7: 1000, 8: 1500}  # ch6 1425 = mode slot 3 (QLOITER)
 
 
@@ -97,10 +103,11 @@ class Sitl:
                 st["alt"] = msg.relative_alt / 1000.0
                 st["lat"], st["lon"] = msg.lat / 1e7, msg.lon / 1e7
                 self.sim_t = msg.time_boot_ms / 1000.0
+                n, e = self.ne_home()
                 self.rows.append(dict(t=round(self.sim_t, 2), mode=st["mode"], armed=int(st["armed"]),
                                       alt=round(st["alt"], 2), aspd=round(st["aspd"], 2), gspd=round(st["gspd"], 2),
                                       thr=st["thr"], volt=round(st["volt"], 2), curr=round(st["curr"], 1),
-                                      dist=round(self.dist_home(), 1), wp=st["wp"]))
+                                      dist=round(self.dist_home(), 1), wp=st["wp"], n=round(n, 1), e=round(e, 1)))
             elif t == "VFR_HUD":
                 st["aspd"], st["gspd"], st["thr"] = msg.airspeed, msg.groundspeed, msg.throttle
             elif t == "SYS_STATUS":
@@ -111,13 +118,16 @@ class Sitl:
                 self.texts.append((round(self.sim_t, 2), msg.text))
                 print(f"  [{self.sim_t:7.1f}] {msg.text}")
 
-    def dist_home(self):
+    def ne_home(self):
         la, lo = self.state["lat"], self.state["lon"]
         if la == 0:
-            return 0.0
+            return 0.0, 0.0
         dn = (la - HOME[0]) * 111320.0
         de = (lo - HOME[1]) * 111320.0 * math.cos(math.radians(HOME[0]))
-        return math.hypot(dn, de)
+        return dn, de
+
+    def dist_home(self):
+        return math.hypot(*self.ne_home())
 
     def wait(self, cond, timeout, step=0.2):
         end = time.time() + timeout
@@ -219,11 +229,69 @@ def summarize(s: Sitl, expect: str, ok: bool, extra=None):
                final_dist_home_m=rows[-1]["dist"] if rows else None,
                sim_duration_s=round(rows[-1]["t"] - rows[0]["t"], 1) if rows else 0,
                key_messages=[f"{t:.1f}s {m}" for t, m in trans][:40])
+    res.update(flight_metrics(s))
     if extra:
         res.update(extra)
     s.save_csv()
     print(f"==> {s.scenario}: {'PASS' if ok else 'FAIL'}  modes={modes}")
     return res
+
+
+def _window(rows, t0, t1):
+    return [r for r in rows if t0 <= r["t"] <= t1]
+
+
+def _path_m(rows):
+    d = 0.0
+    for a, b in zip(rows, rows[1:]):
+        d += math.hypot(b["n"] - a["n"], b["e"] - a["e"])
+    return round(d, 1)
+
+
+def flight_metrics(s: Sitl):
+    """Peak current / lowest voltage, forward-transition and back-transition metrics from the recorded rows
+    and the autopilot's status text."""
+    rows = s.rows
+    m = dict(peak_current_A=max((r["curr"] for r in rows), default=None),
+             min_voltage_V=min((r["volt"] for r in rows if r["volt"] > 0), default=None))
+    if not rows:
+        return m
+    t_start = [t for t, x in s.texts if "Transition started" in x]
+    t_done = [t for t, x in s.texts if "ransition done" in x]
+    if t_start and not (t_done and t_done[0] > t_start[0]):
+        m["forward_transition"] = dict(t_start_s=t_start[0], t_done_s=None,
+                                       note="transition started but never completed (expected in D and in the fence RTL of F)")
+    elif t_start:
+        t0 = t_start[0]
+        t1 = t_done[0]
+        w = _window(rows, t0, t1)
+        if w:
+            alt0 = w[0]["alt"]
+            m["forward_transition"] = dict(
+                t_start_s=t0, t_done_s=t1 if t_done else None, duration_s=round(t1 - t0, 1),
+                distance_m=_path_m(w), alt_start_m=alt0, alt_min_m=min(r["alt"] for r in w),
+                alt_loss_m=round(alt0 - min(r["alt"] for r in w), 1),
+                alt_gain_m=round(max(r["alt"] for r in w) - alt0, 1),
+                peak_current_A=max(r["curr"] for r in w), airspeed_at_done_mps=w[-1]["aspd"])
+    # back-transition: from the last row faster than 14 m/s in a fixed-wing mode (before a VTOL mode) until
+    # ground speed drops below 3 m/s
+    fw = {"FBWA", "FBWB", "CRUISE", "AUTO", "RTL", "LOITER", "CIRCLE", "MANUAL", "STABILIZE"}
+    i0 = None
+    for i, r in enumerate(rows):
+        if r["aspd"] > 14 and r["mode"] in fw:
+            i0 = i
+    if i0 is not None:
+        tail = rows[i0:]
+        slow = [r for r in tail if r["gspd"] < 3.0]
+        if slow:
+            w = _window(rows, rows[i0]["t"], slow[0]["t"])
+            m["back_transition"] = dict(t_start_s=rows[i0]["t"], t_hover_s=slow[0]["t"],
+                                        duration_s=round(slow[0]["t"] - rows[i0]["t"], 1), distance_m=_path_m(w),
+                                        alt_start_m=w[0]["alt"], alt_min_m=min(r["alt"] for r in w),
+                                        alt_loss_m=round(w[0]["alt"] - min(r["alt"] for r in w), 1),
+                                        peak_current_A=max(r["curr"] for r in w),
+                                        modes=sorted({r["mode"] for r in w}))
+    return m
 
 
 def take_off_qloiter(s: Sitl, alt):
@@ -239,7 +307,11 @@ def take_off_qloiter(s: Sitl, alt):
 
 
 def reset_battery(s: Sitl):
-    """Fresh 6S pack between scenarios: re-seed the SITL battery model and the FC mAh counter."""
+    """Fresh 6S pack between scenarios: re-seed the SITL battery model (or the external physics model's
+    pack through its command port) and the FC mAh counter."""
+    if PHYSICS_CMD_PORT:
+        import socket
+        socket.socket(socket.AF_INET, socket.SOCK_DGRAM).sendto(b"reset_battery", ("127.0.0.1", PHYSICS_CMD_PORT))
     v = s.get_param("SIM_BATT_VOLTAGE") or 25.2
     s.set_param("SIM_BATT_VOLTAGE", v - 0.01)
     s.pump(1)
@@ -399,14 +471,28 @@ def main():
     ap.add_argument("--params", nargs="+", required=True, help="param files, applied in order")
     ap.add_argument("--speedup", type=int, default=5)
     ap.add_argument("--out", default="results")
+    ap.add_argument("--summary", help="also write the summary JSON to this path (default: <out>/summary.json only)")
     ap.add_argument("--scenarios", default="ABCDEFG")
+    ap.add_argument("--model", default="quadplane",
+                    help="SITL model: quadplane (ArduPilot generic) or JSON:127.0.0.1 (c0_physics.py)")
+    ap.add_argument("--physics", help="external physics script to launch first (firmware/sitl/c0_physics.py)")
+    ap.add_argument("--physics-args", default="", help="extra arguments for the physics script, e.g. '--wind 3,270'")
     a = ap.parse_args()
     os.makedirs(a.out, exist_ok=True)
 
-    proc = None
+    proc = phys = None
+    global PHYSICS_CMD_PORT
+    if a.physics:
+        PHYSICS_CMD_PORT = 9004
+        pcmd = [sys.executable, os.path.abspath(a.physics), "--params"] + [os.path.abspath(p) for p in a.params] + \
+               ["--log", os.path.join(os.path.abspath(a.out), "physics_log.csv")] + a.physics_args.split()
+        print("physics:", " ".join(pcmd))
+        phys = subprocess.Popen(pcmd, stdout=open(os.path.join(a.out, "physics_stdout.log"), "w"),
+                                stderr=subprocess.STDOUT)
+        time.sleep(2)
     if a.sitl_exe:
         defaults = ",".join(os.path.abspath(p) for p in ([a.defaults_base] if a.defaults_base else []) + a.params)
-        cmd = [a.sitl_exe, "--model", "quadplane", "--speedup", str(a.speedup), "-w",
+        cmd = [a.sitl_exe, "--model", a.model, "--speedup", str(a.speedup), "-w",
                "--home", ",".join(str(x) for x in HOME), "--defaults", defaults]
         print("launch:", " ".join(cmd))
         proc = subprocess.Popen(cmd, cwd=a.out, stdout=open(os.path.join(a.out, "sitl_stdout.log"), "w"),
@@ -436,7 +522,10 @@ def main():
         if msg:
             v = msg.flight_sw_version
             ver = f"{v >> 24}.{(v >> 16) & 255}.{(v >> 8) & 255}"
-    results = dict(firmware=ver, params_checked=len(want), params_missing_in_sitl=missing,
+    results = dict(firmware=ver, model=a.model, physics=os.path.basename(a.physics) if a.physics else None,
+                   speedup=a.speedup, param_files=[os.path.basename(p) for p in a.params],
+                   defaults_base=os.path.basename(a.defaults_base) if a.defaults_base else None,
+                   params_checked=len(want), params_missing_in_sitl=missing,
                    params_mismatch=[dict(name=k, file=v, sitl=g) for k, v, g in mismatch], scenarios=[])
     print(f"params: {len(want)} checked, {len(missing)} not present in SITL, {len(mismatch)} mismatched")
 
@@ -455,10 +544,16 @@ def main():
         reset_battery(s)
         s.pump(5)
 
+    results["hover_throttle_learned_Q_M_THST_HOVER"] = s.get_param("Q_M_THST_HOVER")
     with open(os.path.join(a.out, "summary.json"), "w") as f:
         json.dump(results, f, indent=2)
+    if a.summary:
+        with open(a.summary, "w") as f:
+            json.dump(results, f, indent=2)
     if proc:
         proc.terminate()
+    if phys:
+        phys.terminate()
     npass = sum(1 for r in results["scenarios"] if r.get("passed"))
     print(f"\n{npass}/{len(results['scenarios'])} scenarios passed")
     return 0 if npass == len(results["scenarios"]) else 1

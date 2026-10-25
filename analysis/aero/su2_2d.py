@@ -125,7 +125,8 @@ def retry_cfg(cfg: str) -> str:
     """the same case with the safer numerics (SAFE, 8000 iterations); idempotent"""
     cfg = re.sub(r"CFL_NUMBER= [0-9.]+", f"CFL_NUMBER= {SAFE['cfl']}", cfg)
     cfg = re.sub(r"CFL_ADAPT_PARAM= \(.*\)", f"CFL_ADAPT_PARAM= ( 0.5, 1.1, 0.1, {SAFE['cflmax']} )", cfg)
-    cfg = re.sub(r"LIMITER_ITER= \d+", f"LIMITER_ITER= {SAFE['limfreeze']}", cfg)
+    # the limiter freeze only ever moves later (an L2 case that never freezes it keeps that; see numerics)
+    cfg = re.sub(r"LIMITER_ITER= (\d+)", lambda m: f"LIMITER_ITER= {max(int(m.group(1)), SAFE['limfreeze'])}", cfg)
     cfg = re.sub(r"(?m)^ITER= \d+", "ITER= 8000", cfg)   # only the main count, never LINEAR_SOLVER_ITER / LIMITER_ITER / CONV_STARTITER
     return cfg
 
@@ -322,10 +323,19 @@ def matrix(quick=False):
     m = [(L, a, "SA") for L in (1, 2, 3) for a in (2.0, 10.0)]
     m += [(2, float(a), "SA") for a in sweep if (2, float(a), "SA") not in m]
     m += [(2, float(a), "SSTLM") for a in ([2, 10] if quick else [0, 2, 4, 6, 8, 10, 12, 14, 16])]
-    return [(L, a, mod, numerics(a)) for L, a, mod in m]
+    return [(L, a, mod, numerics(a, L)) for L, a, mod in m]
 
-def numerics(alpha):
-    """first-attempt numerics: CFL 2 adaptive to 50, limiter frozen after 300 it; gentler for alpha >= 13 deg"""
+L2_NUMERICS = dict(iters=6000, cfl=1.0, cflmax=20.0, limfreeze=999999)
+
+def numerics(alpha, level=None):
+    """first-attempt numerics: CFL 2 adaptive to 50, limiter frozen after 300 it; gentler for alpha >= 13 deg.
+    Medium mesh L2 (every alpha, SA and SST-LM): CFL 1 adaptive to 20 and the limiter never frozen (999999 = the SU2
+    default).  In the run at Re 3.60e5 (2026-10-21/22) 13 of the 25 L2 cases ended unusable, and in almost every L2
+    attempt the pressure residual started to grow 100-600 iterations after the limiter freeze (iteration 300, 800 or
+    1500 on the CFL-0.5 retry; out/su2/L2_*/su2*.log), while L1 and L3 converged with the same settings.  Changed
+    2026-10-25."""
+    if level == 2:
+        return dict(L2_NUMERICS)
     high = alpha >= 13
     return dict(iters=6000 if high else 4000, cfl=1.0 if high else 2.0, cflmax=20.0 if high else 50.0, limfreeze=800 if high else 300)
 

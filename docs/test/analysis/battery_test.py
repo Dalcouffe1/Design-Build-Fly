@@ -10,9 +10,11 @@ Outputs:
   * delivered Ah and Wh (trapezoidal integration) down to the cut-off voltage (default 21.0 V = 3.50 V/cell)
   * time and energy at which the pack first crossed 3.50 V/cell
   * for each step load: V before, V during (min), dI, pack resistance R = dV/dI and per-cell R = R/6
-  * minimum V/cell at the hover step (~37.5 A) and the transition step (~75 A)
-  * pass/fail against C11: Wh >= 110 (0.8 x 144.3 x 0.95, calc), V/cell >= 3.4 at the 40 A hover step,
-    V/cell >= 3.2 at the 73 A transition step, R_cell <= 7.5 mOhm (EST, (3.70-3.40)/40 A)
+  * minimum V/cell at the hover step (~41 A) and the transition step (~76 A)
+  * pass/fail against C11: Wh >= 110 (0.8 x 144.3 x 0.95, calc), V/cell >= 3.4 at the 41 A hover step,
+    V/cell >= 3.2 at the 76 A transition step, R_cell <= 7.3 mOhm (EST, (3.70-3.40)/41.2 A)
+  * hot-day flag: R_cell > 5 mOhm = hot-day no-go (docs/research/thermal.md 6.4 item 2; TEST-PLAN.md C11, s6);
+    not part of the C11 pass, printed with the max pack start temperature 60 - 3.9 x R_cell degC
 
 Usage:  python battery_test.py sample/battery_sample.csv [--cells 6] [--cutoff-v 21.0] [--json out.json]
 """
@@ -22,10 +24,12 @@ import argparse, csv, json, statistics, sys
 WH_PASS = 110.0       # TEST-PLAN.md C11 (calc)
 V_HOVER_PASS = 3.40   # review 5 M4
 V_TRANS_PASS = 3.20   # review 5 M4
-R_CELL_PASS_MOHM = 7.5  # EST (calc (3.70-3.40)/40.0 A, v0.4)
+R_CELL_PASS_MOHM = 7.3  # EST (calc (3.70-3.40)/41.25 A = 7.27, v0.4 at 6.55 kg)
+R_CELL_HOTDAY_MOHM = 5.0  # docs/research/thermal.md 6.4 item 2: above this a pack is a hot-day no-go
+K_PER_MOHM = 3.9      # mission pack rise per mOhm/cell (calc: 29.1 K at 7.5 mOhm/cell, thermal.md 5)
 NAMEPLATE_WH = 144.3  # results.json packs[0].Wh
-I_HOVER = 40.199      # results.json sized.I_hover (v0.4, R11 re-size 2026-10-25)
-I_TRANS = 73.463      # results.json sized.I_trans (v0.4, R11 re-size 2026-10-25)
+I_HOVER = 41.249      # results.json sized.I_hover (v0.4, 11.75 m/s stall target 2026-10-25)
+I_TRANS = 75.737      # results.json sized.I_trans (v0.4, 11.75 m/s stall target 2026-10-25)
 
 
 def read_csv(path):
@@ -93,7 +97,9 @@ def reduce(rows, cells, cutoff_v):
                pass_Wh=(wh_cut is not None and wh_cut >= WH_PASS),
                pass_hover_sag=(v_hover is not None and v_hover >= V_HOVER_PASS),
                pass_trans_sag=(v_trans is not None and v_trans >= V_TRANS_PASS),
-               pass_R=(r_cell is not None and r_cell <= R_CELL_PASS_MOHM))
+               pass_R=(r_cell is not None and r_cell <= R_CELL_PASS_MOHM),
+               hot_day_ok=(r_cell is not None and r_cell <= R_CELL_HOTDAY_MOHM),
+               max_start_C_full_mission=(None if r_cell is None else 60.0 - K_PER_MOHM * r_cell))
     out["pass_all"] = all([out["pass_Wh"], out["pass_hover_sag"], out["pass_trans_sag"], out["pass_R"]])
     return out
 
@@ -119,6 +125,7 @@ def main(argv=None):
     print(f"  hover step min V/cell {f(r['Vcell_min_hover'],3)} (pass >= {V_HOVER_PASS}): {pf(r['pass_hover_sag'])}")
     print(f"  transition step min V/cell {f(r['Vcell_min_trans'],3)} (pass >= {V_TRANS_PASS}): {pf(r['pass_trans_sag'])}")
     print(f"  R_cell max {f(r['R_cell_mohm_max'],2)} mOhm (pass <= {R_CELL_PASS_MOHM} EST): {pf(r['pass_R'])}")
+    print(f"  hot day (R_cell <= {R_CELL_HOTDAY_MOHM} mOhm): {'OK' if r['hot_day_ok'] else 'NO-GO'}; max pack start temp for a full mission {f(r['max_start_C_full_mission'],1)} degC")
     print(f"  OVERALL: {pf(r['pass_all'])}")
     if a.json:
         with open(a.json, "w", encoding="utf-8") as fh:

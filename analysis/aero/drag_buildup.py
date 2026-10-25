@@ -36,14 +36,11 @@ def ff_body(f):                                     # Raymer eq. 12.31, f = L/D
     return 1 + 60 / f**3 + f / 400
 
 def pod_wetted():
-    """wetted area of the revolved pod (cad/BuildVtol.cs Fuselage()) by numerical integration"""
-    L, R, rt, a = POD_L, POD_R, POD_TAIL_R, 0.22
-    xs = np.linspace(0, L, 2001); rs = np.empty_like(xs)
+    """wetted area of the revolved pod (geom.pod_radius, the profile of cad/BuildVtol.cs Fuselage()) by numerical integration"""
+    rt = POD_TAIL_R
+    xs = np.linspace(0, POD_L, 2001); rs = np.empty_like(xs)
     for i, s in enumerate(xs):
-        if s < a: rs[i] = R * math.sqrt(max(0.0, 1 - ((s - a) / a) ** 2))
-        elif s < 0.50: rs[i] = R
-        else:
-            u = (s - 0.50) / (L - 0.50); rs[i] = rt + (R - rt) * (1 - u * u * (3 - 2 * u))
+        rs[i] = pod_radius(s)
     dr = np.gradient(rs, xs)
     return float(np.trapezoid(2 * math.pi * rs * np.sqrt(1 + dr**2), xs)), float(math.pi * rt**2)
 

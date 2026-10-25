@@ -243,7 +243,7 @@ IDs match `cad/hardware.json`. Engagement e = screw length − grip *(calc)*.
   the saddle. Hole Ø5.5. Head in a Ø10.3 × 1.0 spot-face. Nut pocket 8.2 AF × 8.0 deep
   from the lower surface; nut bears at 13.8 below the upper surface. Screw end at 21.0:
   2.2 mm past the nut, 0.8 mm inside the lower surface *(calc)*.
-- Bending is carried by the joiner (RF 1.77 at the v0.4 MTOW, analysis/results.json struct.MS_J; 1.85 at v0.3.1). The bolt only stops the
+- Bending is carried by the joiner (RF 1.75 at the 6.55 kg MTOW, analysis/results.json struct.MS_J; 1.77 at 6.45 kg, 1.85 at v0.3.1). The bolt only stops the
   panel sliding off and rotating. **1.0 N·m EST.**
 
 ### J11 — Joiner and saddle to pod
@@ -527,6 +527,16 @@ sections above are listed so the spec and the model agree:
   pillarNutDepth, same rule: screw end 0.5 past the nut); its ceiling now reaches the tongue slot floor (8.8), so the
   nylock bears on the root tongue. Tail chords: stabiliser 91.2 mm, fin root 156.3 mm. All of these sizes are read from
   `cad/params.txt` by the model, the drawings and the foam templates.
+- **Stall-target re-base (2026-10-25, CAD rev D, drawing DBF-DRW-001 rev E).** Design stall target 11.75 m/s
+  (`docs/research/stall-margin.md`), CL_max 1.114 (`analysis/aero/aero_results.json`): chord 284.2 mm, S 0.682 m²,
+  MTOW 6.55 kg (`analysis/results.json`). Front boom **991.0 mm** (rear stub 485.9 unchanged). The section at 70 % chord
+  is 26.0 mm (`cad/params.txt` pillarH), so the J10 head now sits in a **Ø10.3 × 2.0 spot-face** (pillarSpot; the
+  2.75 mm button head is near-flush, 0.75 proud *(calc)*) and the nut pocket is **9.6 deep** from the lower surface
+  (pillarNutDepth; the pocket ceiling meets the tongue-slot floor at 9.6, pillarSlotFloor, so the nylock still bears on
+  the root tongue). Screw end 22.0 below the top vs the nut's outer face at 21.4 *(calc: 26.0 − 9.6 + 5.0)*: 0.6 mm
+  past the nut (the CAD rule targets 0.5), so the nylon insert is engaged, and 4.0 mm inside the lower surface. Tail chords: stabiliser
+  101.5 mm (9.1 thick), fin root 159.7 mm. Pushrods 48.4 / 39.6 / 102.4 mm (`cad/params.txt` rodAileron / rodElevator /
+  rodRudder). Battery station x = 0.189.
 - **J05 clamp screws: 2 per clamp on a diagonal** (x ±12, z ±17.5 opposite corners) so the spar-collar insert bosses
   sit beside the spar tube, not under it (an insert hole on the spar axis would break into the tube).
 - **J09.** The tail clamp is 50 long, centred 33.9 mm behind the fin LE (fin 22.5 % chord) so the shoe flange (32 × 46)
@@ -544,8 +554,9 @@ sections above are listed so the spec and the model agree:
 - **J13.** The canopy carries a 2 mm rear flange (2 × F07 into inserts) and a 2 mm front tongue; pockets in the pod.
 - **J14.** One printed L-tray for all five servos; aileron servos lie on their side in a wing pocket with the arm
   through the open lower surface; elevator and rudder servos stand on the stabiliser top (foot down, arm up). The
-  elevator pushrod is 21 mm and inclined about 18°; the horn is on the elevator top surface.
-- **J16.** Pitot tube centre 9.5 mm below the wing lower surface at 21 % chord; the pinch screw stops 0.9 mm short of
+  elevator pushrod is 21 mm and inclined about 18° (rev B; at CAD rev D the cut length is 40 mm, `cad/params.txt`
+  rodElevator 39.6; inclination not re-checked); the horn is on the elevator top surface.
+- **J16.** Pitot tube centre 9.5 mm below the wing lower surface at 50 mm aft of the LE (21 % chord at rev B; 18 % of the 284.2 mm chord at CAD rev D); the pinch screw stops 0.9 mm short of
   the tube in the model (it bears on the tube when tightened).
 - **Leg fairings (new, aero).** `Gear_Fairing`: 3:1 teardrop (NACA 0033 section, chord 81.6, 170 long) in PETG,
   vase-mode 0.8 mm wall (EST, 29.6 g each), slipped over each leg, trailing edge aft, clocked against the gear clamp and
@@ -558,7 +569,7 @@ sections above are listed so the spec and the model agree:
   pocket 4.3 deep (nut bearing at −12.7, just outside the tube) and the counterbore 4.0 deep (head seat at +13.0, washer
   to 13.5), so the screw must be 30 long (end 0.2 inside the nut's outer face). Order line BD-5 becomes M3 × 30 (Bolt
   Depot socket cap; product number 6385 and price EST $0.10, not verified). `cad/hardware.json` F05 carries the change.
-- **J15.** The avionics bay floor is at y −20 (7 mm above the battery top at the re-sized battery station x = 0.181, CAD rev C; 0.179 at rev B), so the
+- **J15.** The avionics bay floor is at y −20 (7 mm above the battery top at the battery station x = 0.189, CAD rev D; 0.181 at rev C, 0.179 at rev B; `cad/params.txt` bayY0, battY, battH), so the
   FC tray, the CoreWing envelope and the four F07 tray screws clear the battery.
 - **Interference detection (SOLIDWORKS InterferenceDetectionMgr, `cad/verification.txt`):** the 67 heat-set inserts are
   reported as intended press fits (Ø4.6 in Ø4.0); the remaining reported volumes are listed in the file with their cause.

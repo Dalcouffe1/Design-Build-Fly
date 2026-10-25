@@ -1,6 +1,6 @@
 {
   "meta": {
-    "design": "C0 4-lift twin-boom quadplane, v0.4.0 (CAD rev C)",
+    "design": "C0 4-lift twin-boom quadplane, v0.4.0 (CAD rev D)",
     "spec": "docs/research/hardware-spec.md",
     "checked": "2026-10-21",
     "units": "mm, N*m, USD",
@@ -998,7 +998,7 @@
     "cut_tubes": {
       "class": "ISO 2768-m",
       "lengths": {
-        "boom front 965.7": 0.8,
+        "boom front 991.0": 0.8,
         "boom stub 485.9": 0.8,
         "spar socket 800": 0.8,
         "joiner 760": 0.8,

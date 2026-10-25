@@ -33,17 +33,10 @@ def cdcl_from_polar(path: Path, cl_pts):
     return out
 
 def pod_body_file(path: Path):
-    """body of revolution from cad/BuildVtol.cs Fuselage(): elliptic nose a = 0.22 m, parallel to 0.50 m,
-    smooth-step boat-tail to tailR; written as an AVL BFILE (x from nose, radius)."""
-    L, R, rt, a = POD_L, POD_R, POD_TAIL_R, 0.22
-    xs = np.linspace(0, L, 41); rs = []
-    for s in xs:
-        if s < a: r = R * np.sqrt(max(0.0, 1 - ((s - a) / a) ** 2))
-        elif s < 0.50: r = R
-        else:
-            u = (s - 0.50) / (L - 0.50); r = rt + (R - rt) * (1 - u * u * (3 - 2 * u))
-        rs.append(r)
-    rs = np.array(rs)
+    """body of revolution (geom.pod_radius: elliptic nose, parallel mid-body, smooth-step boat-tail to tailR, the
+    profile of cad/BuildVtol.cs Fuselage()); written as an AVL BFILE (x from nose, radius), 41 stations."""
+    xs = np.linspace(0, POD_L, 41)
+    rs = np.array([pod_radius(s) for s in xs])
     # AVL body file: like an airfoil file, upper surface nose->tail then lower surface tail->nose
     lines = ["C0 pod"]
     for x, r in zip(xs[::-1], rs[::-1]): lines.append(f"{x:.5f} {r:.5f}")
@@ -60,6 +53,9 @@ def write_avl(path: Path, with_pod=True):
     y_ail = POD_R + 0.45 * (b2 - POD_R)       # aileron starts at 45 % of the panel (cad/BuildVtol.cs Aileron: outer 55 %)
     xt = -X_TAIL_LE; zt = Z_HTAIL              # H_Tail mid-plane, cad/params.txt (common.Z_HTAIL)
     zfin0 = Z_BOOM + BOOM_OD / 2               # fin root on the boom top
+    # Rudder SgnDup = -1: on the Y-duplicated twin fin AVL mirrors the hinge vector, so SgnDup +1 deflects the two
+    # rudders in opposite senses (toe-in: CL/Cm from the rudder, Cn_dr = 0).  -1 gives both trailing edges the same
+    # way (verified by the result: non-zero Cnd03, CLd03 = Cmd03 = 0 in st_*.txt).
     s = f"""C0 lift+cruise VTOL (analysis/aero/avl_run.py from results.json, {DESIGN_VERSION})
 0.0                      | Mach
 0 0 0.0                  | iYsym iZsym Zsym
@@ -129,13 +125,13 @@ SECTION
 NACA
 0009
 CONTROL
-rudder 1.0 0.70 0 0 0 1.0
+rudder 1.0 0.70 0 0 0 -1.0
 SECTION
 {xt:.5f} {Y_BOOM:.4f} {zfin0 + V_H:.4f} {V_C:.5f} 0.0
 NACA
 0009
 CONTROL
-rudder 1.0 0.70 0 0 0 1.0
+rudder 1.0 0.70 0 0 0 -1.0
 """
     if with_pod:
         pod_body_file(AVL_DIR / "pod.dat")
@@ -170,7 +166,8 @@ def parse_st(path: Path):
     t = path.read_text()
     keys = ["Alpha", "CLtot", "CDtot", "Cmtot", "CLa", "CYa", "Cla", "Cma", "Cna", "CLb", "CYb", "Clb", "Cmb", "Cnb",
             "CLp", "CLq", "CLr", "Clp", "Clq", "Clr", "Cmp", "Cmq", "Cmr", "Cnp", "Cnq", "Cnr", "Xnp",
-            "CLd1", "CLd2", "CLd3", "Cmd1", "Cmd2", "Cmd3", "Cld1", "Cnd1", "Cnd3", "Cld3", "CYd3", "e"]
+            # control derivatives: AVL 3.52 prints them as d01 (aileron), d02 (elevator), d03 (rudder)
+            "CLd01", "CLd02", "CLd03", "Cmd01", "Cmd02", "Cmd03", "Cld01", "Cnd01", "CYd03", "Cld03", "Cnd03", "e"]
     d = {k: grab(t, k) for k in keys}
     m = re.search(r"Clb Cnr / Clr Cnb\s*=\s*([-+0-9.Ee]+)", t); d["spiral_param"] = float(m.group(1)) if m else None
     m = re.search(r"elevator\s*=\s*([-+0-9.Ee]+)", t); d["elevator"] = float(m.group(1)) if m else None

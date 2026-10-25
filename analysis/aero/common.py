@@ -2,7 +2,9 @@
 
 Every geometric number is read from analysis/results.json (sizing output) or cad/params.txt
 (SolidWorks build parameters derived from results.json by cad/params.mjs).  Nothing is typed in here
-except the atmosphere (ISA sea level) and the tool locations.
+except the atmosphere (ISA sea level) and the tool locations.  params.txt is read, and the NACA section
+and pod profile are implemented, in ONE place: analysis/geom.py (re-exported here, so `from common import *`
+gives naca4 and pod_radius).
 """
 from __future__ import annotations
 import json, os, re, sys
@@ -10,6 +12,9 @@ from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
+sys.path.insert(0, str(REPO / "analysis"))
+import geom
+from geom import read_params, pod_radius, naca4_outline, naca4_code, TE_CAD, TE_AERO
 OUT = HERE / "out"; OUT.mkdir(exist_ok=True)
 PLOTS = HERE / "plots"; PLOTS.mkdir(exist_ok=True)
 
@@ -27,18 +32,7 @@ SIZED = C0["sized"]
 GEO = C0["geo"]
 CG = C0["cg"]
 
-def _params_txt() -> dict:
-    d = {}
-    for line in (REPO / "cad" / "params.txt").read_text().splitlines():
-        if "=" not in line or line.startswith("comp=") or line.startswith("foil="):
-            continue
-        k, v = line.split("=", 1)
-        try:
-            d[k] = float(v)
-        except ValueError:
-            d[k] = v
-    return d
-PARAMS = _params_txt()
+PARAMS = geom.PARAMS                                   # cad/params.txt scalars (geom.read_params: the one reader)
 
 def _design_version() -> str:
     """design version from the first line of docs/DESIGN-BASIS.md ('# Design basis ... (v0.4.0, 2026-10-21)')"""
@@ -63,7 +57,8 @@ AR = SIZED["AR"]
 MTOW = SIZED["m"]                 # kg  (results.json concepts.C0.sized.m)
 W = SIZED["W"]                    # N
 G = 9.80665
-V_STALL_REQ = BASE["Vs"]          # 12 m/s (R11)
+V_STALL_REQ = 12.0               # R11 limit, m/s (docs/DESIGN-BASIS.md); stall Re and trim are evaluated here
+V_STALL_DESIGN = BASE["Vs"]      # the sizing's design stall target (11.75 m/s: R11 less a 4 % CL_max margin, docs/research/stall-margin.md)
 V_CRUISE = BASE["Vc"]             # 20 m/s (R11 midpoint)
 V_TRANS = 16.0                    # m/s, AIRSPEED_MIN per DESIGN-BASIS.md R11
 CL_MAX_SIZING = BASE["CLmax"]     # sizing CL_max (results.json base.CLmax)
@@ -90,8 +85,8 @@ Z_BOOM = PARAMS["yB"]                                  # boom axis height vs the
 # H-tail mid-plane height: cad/params.mjs places comp H_Tail at yStabMid = (yStabBot + yStabTop) / 2 (= params.txt comp=H_Tail Y)
 Z_HTAIL = 0.5 * (PARAMS["yStabBot"] + PARAMS["yStabTop"])
 
-# pod (cad/BuildVtol.cs Fuselage(): elliptic nose a=0.22 m, parallel to 0.50 m, smooth-step boat-tail to tailR)
-POD_L = PARAMS["fusL"]; POD_R = PARAMS["fusR"]; POD_TAIL_R = PARAMS["tailR"]; POD_NOSE_X = 0.45
+# pod: body of revolution, profile constants from params.txt podProfile (analysis/geometry.mjs POD); radius: geom.pod_radius(s)
+POD_L = geom.POD_L; POD_R = geom.POD_R; POD_TAIL_R = geom.POD_TAIL_R; POD_NOSE_X = geom.POD_NOSE_X
 CANOPY_L, CANOPY_R = 0.26, 0.055                       # cad/BuildVtol.cs Canopy()
 BOOM_OD = PARAMS["boomOD"]; BOOM_SEGS = [PARAMS["segF"], PARAMS["segR"]]
 MOTOR_D = PARAMS["motorD"]; MOTOR_H = PARAMS["motorH"]
@@ -118,24 +113,11 @@ TAIL_CONDITIONS = {
 }
 
 def naca4(code: str, n: int = 160, closed_te: bool = True):
-    """NACA 4-digit coordinates, cosine spaced, TE->upper->LE->lower->TE (XFOIL order).
-    Formula: Abbott & von Doenhoff, Theory of Wing Sections, §6.4; same as cad/params.mjs."""
-    import numpy as np
-    m = int(code[0]) / 100; p = int(code[1]) / 10; t = int(code[2:]) / 100
-    beta = np.linspace(0, np.pi, n)
-    x = 0.5 * (1 - np.cos(beta))
-    a4 = -0.1036 if closed_te else -0.1015
-    yt = 5 * t * (0.2969 * np.sqrt(x) - 0.1260 * x - 0.3516 * x**2 + 0.2843 * x**3 + a4 * x**4)
-    if m > 0:
-        yc = np.where(x < p, m / p**2 * (2 * p * x - x**2), m / (1 - p)**2 * ((1 - 2 * p) + 2 * p * x - x**2))
-        dyc = np.where(x < p, 2 * m / p**2 * (p - x), 2 * m / (1 - p)**2 * (p - x))
-    else:
-        yc = np.zeros_like(x); dyc = np.zeros_like(x)
-    th = np.arctan(dyc)
-    xu = x - yt * np.sin(th); yu = yc + yt * np.cos(th)
-    xl = x + yt * np.sin(th); yl = yc - yt * np.cos(th)
-    X = np.concatenate([xu[::-1], xl[1:]]); Y = np.concatenate([yu[::-1], yl[1:]])
-    return np.column_stack([X, Y])
+    """NACA 4-digit coordinates, cosine spaced (n points per surface), TE->upper->LE->lower->TE (XFOIL order).
+    Implementation: analysis/geom.py naca4_outline.  closed_te selects the TE coefficient: True = TE_AERO (-0.1036,
+    closed, the aero package's section), False = TE_CAD (-0.1015, open, the CAD section) - see analysis/geometry.mjs."""
+    m, p, t = naca4_code(code)
+    return naca4_outline(m, p, t, n, TE_AERO if closed_te else TE_CAD)
 
 def dump_json(path: Path, obj):
     def rnd(o):

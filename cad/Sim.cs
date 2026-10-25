@@ -26,11 +26,7 @@ class Sim
 
     static int Main(string[] a)
     {
-        foreach (string raw in File.ReadAllLines(a[0]))
-        {
-            string l = raw.Trim(); if (l.Length == 0 || l.StartsWith("comp=")) continue;
-            int i = l.IndexOf('='); P[l.Substring(0, i)] = l.Substring(i + 1);
-        }
+        P = ParamsFile.Load(a[0]).P;   // cad/Shared.cs: the one params.txt reader (compile with Shared.cs, see cad/README.md)
         Out = Path.GetFullPath(a[1]); Directory.CreateDirectory(Out);
         if (a.Length <= 2) foreach (string f in Directory.GetFiles(Out)) { string n = Path.GetFileName(f); if (n.EndsWith(".png") || n.EndsWith(".txt")) File.Delete(f); }
         R = new StreamWriter(Path.Combine(Out, "results.txt"), a.Length > 2);

@@ -1,1 +1,1 @@
-rc=0 wall_s=3642.7 attempt=1 cfg_sha=88eb2cbb758c2cde mesh=naca2415_L3.su2:14193757:1792636176
+rc=0 wall_s=2219.4 attempt=1 cfg_sha=7c54f9c6b054eef2 mesh=naca2415_L3.su2:14193757:1792636176

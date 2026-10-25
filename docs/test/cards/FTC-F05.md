@@ -8,14 +8,14 @@ DBF-TP-001 rev B · Test F05 · Review step: not in the review matrix; required 
 
 **Weather limits:** Steady <= 3 m/s EST, gusts <= 5 m/s EST.
 
-**Predicted:** Behaviour per firmware/vtol_c0.param s7-10; SITL scenarios C (RC loss hover -> QLAND), E (low battery -> RTL -> QRTL), F (fence 110 m -> RTL, peak 113.1 m) all PASS 2026-10-21 (firmware/sitl/results/summary.json).
+**Predicted:** Behaviour per firmware/vtol_c0.param s7-10; SITL scenarios C (RC loss hover -> QLAND), E (low battery -> RTL -> QRTL), F (fence 110 m -> RTL, peak 113.1 m) all PASS 2026-10-21 (firmware/sitl/results/summary.json) and again on the C0 airframe model 2026-10-25 (firmware/sitl/results_c0.json).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session, 2 packs
 
 ## Pre-flight (every flight)
 - [ ] Flight request approved for today and site (R19); Remote ID powered, broadcast seen (E12); registration mark on the pod; PIC TRUST/AMA documents on site (R18).
 - [ ] Weather recorded: wind steady ____ m/s, gusts ____ m/s (limit on this card), temp ____ degC, visibility >= 3 sm, no precipitation.
-- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.42 kg), CG ____ % MAC (28 +-2, never aft of 32.3), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
+- [ ] Weight and CG per G01: take-off mass ____ kg (<= 7.53 kg), CG ____ % MAC (28 +-2, never aft of 31.8), 0.5 kg ballast fitted (mandatory without payload; GA sheet note 5): Y / N; leg fairings on: Y / N.
 - [ ] Props: correct rotation, screws witness-marked, no nicks; pusher spin check.
 - [ ] Witness lines on boom clamps, gear clamps, wing bolts unmoved.
 - [ ] Packs >= 4.15 V/cell; pack strapped (J18); plugged in LAST through the XT90-S.

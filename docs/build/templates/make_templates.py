@@ -9,8 +9,9 @@ millimetres with width/height in mm, so a browser or Inkscape prints it at true 
 print dialog is set to 100 % / "actual size". A 100 mm check line and a 10 mm scale bar are on
 every sheet: measure them before cutting anything.
 
-Sections (NACA 4-digit, closed trailing edge, cosine spacing, 120 points per surface):
-  wing_root   NACA 2415, chord = params chord (CAD rev C / DBF-DRW-001 rev D), spar socket mark at 30 % chord on
+Sections (NACA 4-digit, closed trailing edge, cosine spacing, 120 points per surface; section family, camber and TE
+coefficient from cad/params.txt foilWing/foilTail/foilTE, implemented once in analysis/geom.py):
+  wing_root   NACA 2415, chord = params chord (CAD rev D / DBF-DRW-001 rev E), spar socket mark at 30 % chord on
               the camber line, dia 26.0 (FT05 channel), aileron hinge line at 74 % chord and the
               fixed-panel cut line at 72 % chord (cad/BuildVtol.cs Aileron(): 74-100 % with a 2 %
               hinge gap).
@@ -24,20 +25,21 @@ Sections (NACA 4-digit, closed trailing edge, cosine spacing, 120 points per sur
               the local chord, 2 % gap, hardware-spec CAD implementation notes rev B / BuildVtol.cs Rudder).
   fin_tip     NACA 0009, chord = 0.65 x vC (BuildVtol.cs Fin(): 65 % tip chord).
 
-Sheet size: a sheet wider than 270 mm (the wing sheets, 300 mm) does not fit US Letter or A4, so for
+Sheet size: a sheet wider than 270 mm (the wing sheets, chord + 37 mm = 321 mm at chord 284.2) does not fit US Letter or A4, so for
 those the script also writes <name>_A.svg (leading-edge half) and <name>_B.svg (trailing-edge half),
 each under 200 mm wide, overlapping by 40 mm with two registration crosses in the overlap: print both
 at 100 %, cut sheet B along its left edge, align the crosses and tape. The full sheet prints in one
 piece on Tabloid/A3 or Legal landscape.
 
-Formulas (NACA 4-digit, e.g. https://en.wikipedia.org/wiki/NACA_airfoil, checked 2026-10-21):
-  yt = 5 t (0.2969 sqrt(x) - 0.1260 x - 0.3516 x^2 + 0.2843 x^3 - 0.1036 x^4)   (closed TE)
+Formulas (NACA 4-digit, e.g. https://en.wikipedia.org/wiki/NACA_airfoil, checked 2026-10-21; analysis/geom.py naca4_surfaces):
+  yt = 5 t (0.2969 sqrt(x) - 0.1260 x - 0.3516 x^2 + 0.2843 x^3 + a4 x^4)   a4 = foilTE aero = -0.1036 (closed TE)
   yc = m/p^2 (2 p x - x^2)            for x < p
      = m/(1-p)^2 ((1-2p) + 2 p x - x^2) for x >= p
   xu = x - yt sin(theta), yu = yc + yt cos(theta); xl = x + yt sin(theta), yl = yc - yt cos(theta)
   theta = atan(dyc/dx). For the 0009 sections m = 0 so yc = 0.
-  cad/params.mjs uses the open-TE coefficient -0.1015; the closed-TE -0.1036 is used here so the
-  wire has a clean exit point. The difference is < 0.05 mm over the chord (calc).
+  The CAD (cad/params.mjs, BuildVtol.cs, Drawings.cs) uses the open-TE coefficient foilTE cad = -0.1015; the closed-TE
+  value is used here so the wire has a clean exit point. The difference is < 0.05 mm forward of 70 % chord (calc);
+  both values are defined once in analysis/geometry.mjs (see cad/README.md "Single sources").
 
 Options:
   --kerf MM   offset the outline outward by MM (default 0). A hot wire removes roughly 0.5-1.0 mm
@@ -59,51 +61,20 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
 PARAMS = os.path.join(REPO, "cad", "params.txt")
+sys.path.insert(0, os.path.join(REPO, "analysis"))
+import geom   # the one params.txt reader and NACA implementation (analysis/geom.py)
 
 N_POINTS = 120  # per surface
 
 
-def read_params(path: str) -> dict:
-    P = {}
-    with open(path, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line or line.startswith("comp=") or line.startswith("foil="):
-                continue
-            k, _, v = line.partition("=")
-            try:
-                P[k] = float(v)
-            except ValueError:
-                P[k] = v
-    return P
-
-
 def naca4(m: float, p: float, t: float, c: float, n: int = N_POINTS):
-    """Return upper and lower surface point lists in mm, LE at (0,0), TE at (c,0), y up."""
-    up, lo = [], []
-    for i in range(n + 1):
-        x = (1 - math.cos(math.pi * i / n)) / 2
-        yt = 5 * t * (0.2969 * math.sqrt(x) - 0.1260 * x - 0.3516 * x * x + 0.2843 * x ** 3 - 0.1036 * x ** 4)
-        if m == 0:
-            yc, dyc = 0.0, 0.0
-        elif x < p:
-            yc = m / p ** 2 * (2 * p * x - x * x)
-            dyc = 2 * m / p ** 2 * (p - x)
-        else:
-            yc = m / (1 - p) ** 2 * ((1 - 2 * p) + 2 * p * x - x * x)
-            dyc = 2 * m / (1 - p) ** 2 * (p - x)
-        th = math.atan(dyc)
-        up.append(((x - yt * math.sin(th)) * c, (yc + yt * math.cos(th)) * c))
-        lo.append(((x + yt * math.sin(th)) * c, (yc - yt * math.cos(th)) * c))
+    """Return upper and lower surface point lists in mm, LE at (0,0), TE at (c,0), y up; n+1 points per surface,
+    closed TE (geom.TE_AERO)."""
+    xu, yu, xl, yl = geom.naca4_surfaces(m, p, t, n + 1, geom.TE_AERO)
+    up = [(float(x), float(y)) for x, y in zip(xu * c, yu * c)]
+    lo = [(float(x), float(y)) for x, y in zip(xl * c, yl * c)]
     return up, lo
 
-
-def camber_y(m: float, p: float, c: float, xf: float) -> float:
-    if m == 0:
-        return 0.0
-    if xf < p:
-        return m / p ** 2 * (2 * p * xf - xf * xf) * c
-    return m / (1 - p) ** 2 * ((1 - 2 * p) + 2 * p * xf - xf * xf) * c
 
 
 def offset_outline(pts, d: float):
@@ -225,7 +196,7 @@ def main(argv=None) -> int:
     ap.add_argument("--kerf", type=float, default=0.0, help="outward offset in mm (default 0)")
     ap.add_argument("--out", default=HERE, help="output folder")
     a = ap.parse_args(argv)
-    P = read_params(PARAMS)
+    P = geom.read_params(PARAMS)
     c = P["chord"] * 1000.0
     hC = P["hC"] * 1000.0
     vC = P["vC"] * 1000.0
@@ -240,10 +211,10 @@ def main(argv=None) -> int:
     kerf = a.kerf
     os.makedirs(a.out, exist_ok=True)
 
-    wing_up, wing_lo = naca4(0.02, 0.40, tc, c)
-    tail_up, tail_lo = naca4(0.0, 0.0, 0.09, hC)
-    finr_up, finr_lo = naca4(0.0, 0.0, 0.09, vC)
-    fint_up, fint_lo = naca4(0.0, 0.0, 0.09, 0.65 * vC)
+    wing_up, wing_lo = naca4(geom.WING_M, geom.WING_P, tc, c)            # params foilWing (NACA 2415 at tc)
+    tail_up, tail_lo = naca4(geom.TAIL_M, geom.TAIL_P, geom.TAIL_T, hC)   # params foilTail (NACA 0009)
+    finr_up, finr_lo = naca4(geom.TAIL_M, geom.TAIL_P, geom.TAIL_T, vC)
+    fint_up, fint_lo = naca4(geom.TAIL_M, geom.TAIL_P, geom.TAIL_T, 0.65 * vC)
 
     common = [f"Source: cad/params.txt (chord {c:.3f} mm, hC {hC:.3f}, vC {vC:.3f}, t/c {tc}); generated by make_templates.py, kerf offset {kerf:.2f} mm.",
               "Cut line = black outline. Red = marks (do not cut). Blue dashed = chord line / wire lead-out.",
@@ -264,7 +235,7 @@ def main(argv=None) -> int:
          common + ["Both ends of the %.1f mm stabiliser (params hSpan). Elevator = 70-100 %% chord, span %.1f mm (params elevSpan)." % (P["hSpan"] * 1000, P["elevSpan"] * 1000)]),
         ("fin_root_naca0009", "FIN ROOT - NACA 0009 - chord %.2f mm" % vC, finr_up, finr_lo, vC,
          [("line", 0.68, "68 % fin cut"), ("line", 0.70, "70 % rudder hinge"), ("line", 0.225, "22.5 % tail clamp centre")],
-         common + ["Fin root; fin height %.1f mm (params vH); root %.0f mm sits in the printed shoe; rudder from %.0f mm above the root (CAD rev C)." % (P["vH"] * 1000, P["finRootBlock"] * 1000, P["rudderY0"] * 1000)]),
+         common + ["Fin root; fin height %.1f mm (params vH); root %.0f mm sits in the printed shoe; rudder from %.0f mm above the root (CAD rev D)." % (P["vH"] * 1000, P["finRootBlock"] * 1000, P["rudderY0"] * 1000)]),
         ("fin_tip_naca0009", "FIN TIP - NACA 0009 - chord %.2f mm" % (0.65 * vC), fint_up, fint_lo, 0.65 * vC,
          [("line", 0.68, "68 % fin cut"), ("line", 0.70, "70 % rudder hinge")],
          common + ["Fin tip = 65 %% of root chord (cad/BuildVtol.cs Fin()). Pin tip LE 0.35 x %.1f = %.1f mm aft of the root LE (swept LE, TE straight) EST." % (vC, 0.35 * vC)]),

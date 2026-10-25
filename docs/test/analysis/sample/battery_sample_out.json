@@ -40,5 +40,7 @@
  "pass_hover_sag": true,
  "pass_trans_sag": true,
  "pass_R": true,
+ "hot_day_ok": false,
+ "max_start_C_full_mission": 33.89166666666671,
  "pass_all": true
 }

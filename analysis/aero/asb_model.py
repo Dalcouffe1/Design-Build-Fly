@@ -25,15 +25,10 @@ def airplane():
     fin = asb.Wing(name="Fin", symmetric=True, xsecs=[
         asb.WingXSec(xyz_le=[xt, Y_BOOM, zfin0], chord=V_C, airfoil=naca0009),
         asb.WingXSec(xyz_le=[xt, Y_BOOM, zfin0 + V_H], chord=V_C, airfoil=naca0009)])
-    # pod: body of revolution from cad/BuildVtol.cs Fuselage()
-    L, R, rt, a = POD_L, POD_R, POD_TAIL_R, 0.22
-    xs = np.linspace(0, L, 25); fx = []
+    # pod: body of revolution (geom.pod_radius, the profile of cad/BuildVtol.cs Fuselage()), 25 stations
+    xs = np.linspace(0, POD_L, 25); fx = []
     for s in xs:
-        if s < a: r = R * np.sqrt(max(0.0, 1 - ((s - a) / a) ** 2))
-        elif s < 0.50: r = R
-        else:
-            u = (s - 0.50) / (L - 0.50); r = rt + (R - rt) * (1 - u * u * (3 - 2 * u))
-        fx.append(asb.FuselageXSec(xyz_c=[-POD_NOSE_X + s, 0, Z_BOOM], radius=max(r, 1e-4)))
+        fx.append(asb.FuselageXSec(xyz_c=[-POD_NOSE_X + s, 0, Z_BOOM], radius=max(pod_radius(s), 1e-4)))
     pod = asb.Fuselage(name="Pod", xsecs=fx)
     return asb.Airplane(name="C0", xyz_ref=[-X_CG, 0, 0], s_ref=S_REF, c_ref=CHORD, b_ref=SPAN,
                         wings=[wing, htail, fin], fuselages=[pod])

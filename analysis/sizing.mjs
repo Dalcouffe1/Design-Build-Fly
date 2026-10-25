@@ -7,6 +7,7 @@
 // BE = budget-energy-test.md, BF = budget-airframe.md. v0.2 results kept in results_v0.2_baseline.json.
 import { createRequire } from 'module';
 import { writeFileSync } from 'fs';
+import { POD as GEOM_POD } from './geometry.mjs';   // pod envelope: the single source shared with cad/params.mjs and analysis/tradestudy.mjs
 const require = createRequire(import.meta.url);
 const M = require('./model.js');
 // aero package (analysis/aero/run_all.py): read, not copied, so the sizing loop closes on the current values
@@ -16,7 +17,7 @@ const IN = 0.0254;
 // ---------- shared inputs ----------
 const BASE = {
   rho: 1.225,            // ISA sea level, kg/m^3 (EST: hot day lowers it; slider)
-  Vs: 12, Vc: 20,        // R11 (stall <= 12 m/s, cruise 18–22 m/s midpoint)
+  Vs: 11.75, Vc: 20,     // design stall target 11.75 m/s = R11 limit 12 m/s less a 4 % CL_max margin (docs/research/stall-margin.md, adopted 2026-10-25); cruise 18–22 m/s midpoint
   CLmax: AEROR.CL_max_3D.adopted,   // AERO: aero_results.json CL_max_3D.adopted (critical-section method, trimmed); was 1.2 EST
   span: 2.4,             // R3 (2–3 m); 1.2 m halves fit R4 1.5 m envelope
   e: 0.80,               // EST Oswald factor
@@ -77,8 +78,8 @@ const CONCEPTS = {
 };
 const PUSHER = X4110S;
 const POD_NP_SHIFT = AEROR.neutral_point.pod_shift_pct_MAC / 100;   // AERO: AVL neutral point with pod vs without (aero_results.json neutral_point)
-// pod and pusher stations, shared with cad/params.mjs (x from wing LE, + forward)
-const POD = { noseX: 0.45, L: 0.85, motorL: 0.032, pushD: 14*0.0254 };
+// pod and pusher stations (x from wing LE, + forward); nose station, length and radius from analysis/geometry.mjs (also used by cad/params.mjs)
+const POD = { noseX: GEOM_POD.noseX, L: GEOM_POD.L, R: GEOM_POD.R, motorL: 0.032, pushD: 14*0.0254 };
 POD.pushX = POD.noseX - POD.L - POD.motorL - 0.006;   // pusher prop plane   // pusher = X4110S on every concept (commonality; one spare covers lift and pusher)
 const CRUISE_MARGIN_MIN = 11.5; // R10 10 min x 1.15 design margin on unmeasured drag/efficiency (EST), on top of the 20 % energy reserve
 
@@ -93,7 +94,7 @@ const PACKS = [ // BE §1 (price per pack; 2-packs halved). LiPo C ratings not c
 
 // ---------- geometry (x forward from wing LE, y right, z up; metres) ----------
 function geometry(c, r, chord){
-  const D = c.motor.liftD, clr = 0.05, fusHalf = 0.08, pushR = POD.pushD/2;
+  const D = c.motor.liftD, clr = 0.05, fusHalf = POD.R, pushR = POD.pushD/2;
   const xLEtoCG = -0.28*chord;                     // CG target 28 % MAC (EST, gives ~10–15 % SM; checked below)
   const xRear = -(chord + D/2 + clr);              // rear rotor centre behind TE
   const xFront = 2*xLEtoCG - xRear;                // thrust centroid on the CG

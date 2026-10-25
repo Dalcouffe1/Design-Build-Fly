@@ -16,7 +16,9 @@ real board yet. Treat every gain as a starting value.
 | `vtol_c0_hover_phase.param` | Overlay for hover-only sessions: 10 m fence, no fixed-wing modes on the switch |
 | `vtol_c0_elrs_mavlink.param` | Overlay: switch the ELRS receiver from CRSF to MAVLink mode for a $0 Mission Planner link |
 | `tools/check_params.py` | Validator: syntax, names, ranges and the CoreWing DShot timer groups |
-| `sitl/` | SITL overrides, the scripted mission `mission_test.py`, and results from 2026-10-21 |
+| `sitl/` | SITL overrides, the scripted mission `mission_test.py`, results from 2026-10-21 (generic QuadPlane model) and 2026-10-25 (`results_c0/`, C0 airframe model) |
+| `sitl/c0_physics.py` | 6-DOF physics model of C0 for ArduPilot SITL's JSON interface (reads mass, geometry and aero from `analysis/` and `cad/`); `--validate` prints the trim checks |
+| `sitl/run_c0_sitl.ps1` | Starts the C0 model + SITL for hand-flying from Mission Planner (TCP 127.0.0.1:5760) |
 | `peripherals.md` | ESCs (BLHeli_S / Bluejay), ELRS receiver and transmitter, GPS/compass, airspeed, Remote ID, telemetry |
 | `checklists.md` | Bench, pre-flight, failsafe-test and post-flight log-review checklists |
 | `scripts/README.md` | Why there are no Lua scripts: this firmware build does not include scripting |
@@ -250,13 +252,19 @@ Fly at a site that allows the test (review §[schedule]). Hover tests: ≤ 5 m A
 Transitions: ≥ 30 m AGL, into wind. Wind ≤ 5 m/s, gusts ≤ 8 m/s (R16). The full checklists are in `checklists.md`.
 
 ### 9.1 SITL rehearsal (every pilot, before any flight)
-Run `sitl/mission_test.py` (see `sitl/README.md`). Then fly the same SITL by hand from Mission Planner's
-simulator with the Pocket Crush as a USB joystick: QSTABILIZE take-off, QLOITER, FBWA transition, CRUISE,
-QLOITER back-transition, QLAND. Practise the E-stop and RTL switches.
+Use the **C0 airframe model**, not the generic QuadPlane: `sitl\run_c0_sitl.ps1 -SitlExe <ArduPlane.exe>` starts
+`sitl/c0_physics.py` (a 6-DOF model built from the repo's mass, geometry, AVL aero, motor and prop data) and
+ArduPlane 4.7.2 SITL on its JSON physics interface; connect Mission Planner to TCP 127.0.0.1:5760 and fly with the
+Pocket Crush as a USB joystick: QSTABILIZE take-off, QLOITER, FBWA transition, CRUISE, QLOITER back-transition,
+QLAND. Practise the E-stop and RTL switches. Expect what the model shows (`sitl/README.md`, C0 section): hover at
+about 0.62–0.66 output, 37–38 A; forward transition 13–15 s and 140–170 m; a 30° nose-up, stalled-wing
+"airbrake" phase at the start of every back-transition; cruise at 20 m/s with the pusher at about 0.7.
+`sitl/mission_test.py --model JSON:127.0.0.1 --physics sitl/c0_physics.py ...` runs the seven scripted scenarios
+(§11). Add `-Wind "5,270"` (5 m/s from the west) to rehearse the R16 wind limit.
 
 ### 9.2 Tethered bench run
 Props on, aircraft tied down to a heavy base, battery on, `vtol_c0_hover_phase.param` loaded. QSTABILIZE, arm,
-raise throttle to light the skids. Check for oscillation, vibration and current (≈ 40.2 A hover at full weight;
+raise throttle to light the skids. Check for oscillation, vibration and current (≈ 41.2 A hover at full weight;
 results.json `C0.sized.I_hover`).
 
 ### 9.3 First lift-off (QSTABILIZE) — tuning-process steps 5–6
@@ -267,7 +275,7 @@ results.json `C0.sized.I_hover`).
 
 ### 9.4 QHOVER, hover throttle, notch
 1. Take off in QSTABILIZE to 5 m, switch to QHOVER for ≥ 30 s with no inputs. `Q_M_HOVER_LEARN,2` saves the hover
-   throttle. Expect about 0.52 (est.) from 1612.6 g needed / 3130 g max per motor (results.json `C0.sized.Tunit_g`, `params.Tmax_g`). Above 0.6 means
+   throttle. Expect about 0.52 (est.) from 1637.9 g needed / 3130 g max per motor (results.json `C0.sized.Tunit_g`, `params.Tmax_g`). Above 0.6 means
    the thrust margin is short (tuning-process step 7, "should be ~0.3–0.6").
 2. Then set `Q_P_D_ACC_P = 0.1 × Q_M_THST_HOVER` and `Q_P_D_ACC_I = 0.2 × Q_M_THST_HOVER` (tuning-process step 7).
 3. **Notch setup within the 60 s hover limit.** The tuning-process page asks for a 2-minute no-input hover.
@@ -301,13 +309,13 @@ results.json `C0.sized.I_hover`).
 1. Load `vtol_c0.param` again (removes the hover-phase overlay). Check `Q_ASSIST_SPEED` = 13.
 2. QLOITER to ≥ 30 m, nose into wind, with the longest clear line ahead.
 3. Switch to **FBWA** and push the throttle to about 70 %. The lift motors hold height. At `AIRSPEED_MIN` 16 m/s
-   they taper out over 5 s. In SITL this took 10–11 s from mode change to "Transition done" (sitl/results).
+   they taper out over 5 s. In SITL this took 10–11 s from mode change to "Transition done" on the generic model (sitl/results) and 13–15 s, 140–170 m on the C0 airframe model (sitl/results_c0.json).
 4. **Start the turn as soon as "Transition done" appears.** In SITL, a straight FBWA transition reached the 300 m
    fence circle about 6 s after transition end (first SITL run, scenario B, 2026-10-21). Start transitions from
    the upwind edge of the field.
 5. Back-transition: select QLOITER (or QHOVER). The pusher stops at once and the lift motors brake the aircraft
-   (quadplane-transitions.html). Allow about 100 m stopping distance at 20 m/s (2 m/s² decel).
-6. Check in the log: the transition current peak against the 73.5 A estimate (results.json `C0.sized.I_trans`),
+   (quadplane-transitions.html). Allow about 100 m stopping distance at 20 m/s (2 m/s² decel). In the C0 airframe model the airbrake phase pitches to the 30° VTOL limit and briefly stalls the wing (−17°/+33° swing, ≤ 2 m altitude loss, sitl/README.md Gains item 1); if the aircraft does this, lower `Q_TRANS_DECEL` first (gentler, longer stop), then `Q_ANGLE_MAX`, before any attitude gain. The test cards F06–F13 carry this as a watch item.
+6. Check in the log: the transition current peak against the 75.7 A estimate (results.json `C0.sized.I_trans`),
    battery sag, and time to `AIRSPEED_MIN`. Review M[controls].2 failure threshold: > 15 s or > 100 m.
 7. Only then: CRUISE circuits, RTL test at altitude, and the full R9 mission in AUTO (`sitl/mission_test.py`
    scenario A is the template: NAV_WAYPOINTs then NAV_VTOL_LAND).
@@ -320,7 +328,7 @@ Details and rationale are in docs/research/firmware.md. They should be folded in
 2. **Airspeed sensor**: the MS5525DSO ships at 0x76, the onboard baro's address. Run it at 0x77 (CSB strapped low, `ARSPD_TYPE,5`) or swap to MS4525DO (§4.3). The review row "I²C MS5525DSO airspeed" needs this note.
 3. **Telemetry (no radio in the BOM, $0)**: one RP3 V2 runs either CRSF or ELRS-MAVLink, not both (review row "CRSF + MAVLink"). Baseline for hover phases: CRSF (`SERIAL6_PROTOCOL,23`), with telemetry on the Pocket Crush. GCS link for transition flights: ELRS MAVLink mode (`SERIAL6_PROTOCOL,2`, `SERIAL6_BAUD,460`, `RSSI_TYPE,5`, ELRS ≥ 3.5 on TX and RX, Mission Planner on UDP 14550 via the Pocket Crush backpack WiFi). The RX then sends RC as RC_CHANNELS_OVERRIDE; SITL scenario G showed RC-loss failsafe 1 s after the overrides stop. Details and limits: peripherals.md §2.3–2.4.
 4. **Transition threshold**: the state diagram labels say "≥ 15 m/s" and "< 12 m/s". The table says AIRSPEED_MIN 16 and Q_ASSIST_SPEED 13. The parameters use 16 and 13.
-5. **Battery current limit**: `BATT_WATT_MAX` is not in this build. `Q_M_BAT_CURR_MAX` limits only the lift motors, so it is set to 85 A as a fault guard, not 60 A. Transition current is managed with `TKOFF_THR_MAX` 75 % and the pilot's throttle. Bench test M4 decides.
+5. **Battery current limit**: `BATT_WATT_MAX` is not in this build. `Q_M_BAT_CURR_MAX` limits only the lift motors, so it is set to 85 A as a fault guard, not 60 A. Transition current is managed with `TKOFF_THR_MAX` 75 % and the pilot's throttle. Bench test M4 decides. **`THR_MAX` 85** caps the pusher in every fixed-wing mode: the C0 SITL model gives about 890 W at 100 % throttle on a full 25.2 V pack (`sitl/validation_c0.json`, estimated motor model) against the X4110S 615 W rating; power scales roughly as throttle³, so 85 % is about 0.85³ × 890 = 547 W (est.). Cruise needs 233–302 W (SITL model / aero build-up). Bench test M1 (pusher power at full pack, TEST-PLAN C09) re-sets it; if `THR_MAX` is lowered, re-check that level speed at full throttle still exceeds `AIRSPEED_MAX` 25 m/s.
 6. **Low-battery action, two stages**: low (30 % / 1950 mAh, or 21.0 V sag-compensated) → RTL, which ends in QRTL and a vertical landing at home (`Q_RTL_MODE,1`). Critical (20 % / 1300 mAh, or 19.8 V) → QLAND in place. ArduPilot's failsafe page calls "BATT_FS_LOW_ACT = 1 (RTL) and BATT_FS_CRT_ACT = 2 (Land)" a reasonable setup. 4 = QLand is used for the explicit VTOL landing. The review had low = QLAND. The hover-phase overlay sets low → QLAND, because RTL would start a fixed-wing return. (Note: the parameter is `BATT_FS_LOW_ACT`; `BATT_FS_LLOW_ACT` does not exist.)
 7. **Fence ceiling**: 110 m above home, 12 m below the 400 ft (121.9 m) limit, so the climb overshoot after a breach stays legal. SITL peaked at 113.1 m, 3.1 m over the fence. Review wording: "fence 110 m, 12 m below the 400 ft limit".
 8. **RC loss in hover**: QLAND in place (ArduPilot behaviour in Q modes). The review's "RC loss → RTL then QLAND" applies to fixed-wing modes only.
@@ -334,3 +342,17 @@ model `quadplane`, `vtol_c0.param` + `sitl/sitl_overrides.param`. 133 parameters
 Results and limits are in `sitl/README.md`. The SITL airframe is ArduPilot's generic QuadPlane model, not C0.
 Its learned hover throttle was 0.15, against about 0.52 (est.) for C0. So SITL validates modes, thresholds,
 failsafes and the fence. It does not validate gains or performance.
+
+**Update 2026-10-25 — C0 airframe model.** The same seven scenarios were re-run on `sitl/c0_physics.py`, a 6-DOF
+model of C0 itself (SITL `--model JSON`; mass, geometry, AVL derivatives, CL_max, drag polar, motor thrust/power
+table, APC 14x8.5 prop data and the output map all read from the repo files). **7/7 passed with `vtol_c0.param`
+unchanged**; no `vtol_c0_sitl_tuned.param` was needed. Trims match the analysis: hover 0.523 thrust fraction at
+22.2 V (TEST-PLAN 0.52), cruise α 2.84° / elevator −3.45° / 7.69 N (AVL 2.86° / −3.45° / 7.70 N), stall 11.75 m/s
+(target 11.75). SITL learned `Q_M_THST_HOVER` 0.44 on a full pack (the model predicts 0.45 at 25.2 V, because
+ArduPilot references thrust to `Q_M_BAT_VOLT_MAX`; 0.52 is the 22.2 V figure). Forward transition 13–15 s and
+140–170 m with ≤ 2 m altitude loss, peak 71–75 A; back-transition ≤ 2 m loss with a −17°/+33° pitch swing during
+ArduPilot's airbrake stop (the C0 wing stalls at the 30° VTOL pitch limit). Model limitations (no prop wash, no
+rotor inflow, estimated inertia, reversed-flow aero) are listed in `sitl/README.md`. Re-run 2026-10-25 on the final data
+(results.json MTOW 6.552 kg, chord 0.2842 m; corrected AVL model with rudder derivatives Cnδr +0.000736/deg; CAD rev D):
+7/7 again, same transition times (13–14 s), losses ≤ 2 m, peak 69–75 A; the model now takes all control derivatives from
+the AVL st file.

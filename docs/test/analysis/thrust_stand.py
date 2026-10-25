@@ -9,26 +9,26 @@ Outputs (stdout, and --json <file>):
   * power-law fit thrust = a * throttle^b  (least squares in log space, points with thrust > 0)
   * Q_M_THST_EXPO estimate: ArduPilot's curve  thrust_norm = (1-expo)*x + expo*x^2  fitted to the
     normalised data (x = throttle fraction, thrust_norm = thrust / thrust at 100 %)
-  * throttle, current and electrical power at the hover thrust (default 1612.6 g, results.json
-    concepts.C0.sized.Tunit_g, v0.4 re-sized 2026-10-25), by linear interpolation on the measured points
+  * throttle, current and electrical power at the hover thrust (default 1637.9 g, results.json
+    concepts.C0.sized.Tunit_g, v0.4, 11.75 m/s stall target 2026-10-25), by linear interpolation on the measured points
   * FM*eta at hover = P_ideal / P_elec, with P_ideal = T^1.5 / sqrt(2 rho A) (analysis/sizing.mjs
     hover model; A = 0.14643846 m2 for the 17 in disc, results.json sized.A), compared with the
-    sizing value 0.518 (results.json sized.FMeta)
-  * pass/fail against the C07 criteria: max thrust >= 2580 g (R13 strict: 1.6 x 6.4503 kg / 4), P_elec at hover <= 312 W,
+    sizing value 0.516 (results.json sized.FMeta)
+  * pass/fail against the C07 criteria: max thrust >= 2621 g (R13 strict: 1.6 x 6.5515 kg / 4), P_elec at hover <= 300 W,
     max current <= 36 A (EST)
   * comparison with the maker table (SunnySky X4110S 17x5.8, 22.2 V, docs/research/budget-lift.md A3)
 
-Usage:  python thrust_stand.py sample/thrust_sample.csv [--hover-g 1545.6] [--rho 1.225] [--disc-d-m 0.4318] [--json out.json]
+Usage:  python thrust_stand.py sample/thrust_sample.csv [--hover-g 1637.9] [--rho 1.225] [--disc-d-m 0.4318] [--json out.json]
 Dependencies: numpy (optional; pure-python fallback is used if numpy is missing).
 """
 from __future__ import annotations
 import argparse, csv, json, math, sys
 
 MAKER_TABLE = [(1250, 6.1, 135), (1500, 8.1, 180), (2000, 13.1, 291), (3130, 27.7, 615)]  # g, A, W (budget-lift.md A3)
-FMETA_SIZING = 0.5176632    # results.json concepts.C0.sized.FMeta (v0.4, re-sized 2026-10-25)
-HOVER_G_DEFAULT = 1612.6008 # results.json concepts.C0.sized.Tunit_g (v0.4, re-sized 2026-10-25)
-P_HOVER_MAX_W = 312.0       # TEST-PLAN.md C07: 1248 W / 4 (calc, v0.4 re-sized)
-T_MAX_PASS_G = 2580.0       # R13 strict at MTOW 6.45 kg: 1.6 x 6450.3 / 4 (TEST-PLAN.md C07); review T2 said 2400
+FMETA_SIZING = 0.5164014    # results.json concepts.C0.sized.FMeta (v0.4, 11.75 m/s stall target 2026-10-25)
+HOVER_G_DEFAULT = 1637.8933 # results.json concepts.C0.sized.Tunit_g (v0.4, 11.75 m/s stall target 2026-10-25)
+P_HOVER_MAX_W = 300.0       # TEST-PLAN.md C07: 1202 W / 4 rounded down (calc, v0.4 at 6.55 kg)
+T_MAX_PASS_G = 2621.0       # R13 strict at MTOW 6.55 kg: 1.6 x 6551.5 / 4 (TEST-PLAN.md C07); review T2 said 2400
 I_MAX_PASS_A = 36.0         # EST, 80 % of the 45 A ESC rating
 G = 9.80665
 

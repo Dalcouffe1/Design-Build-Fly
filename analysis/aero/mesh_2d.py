@@ -9,8 +9,9 @@ r ~ 1.41 is the one su2_2d.gci() assumes; the wall-normal refinement is r = 2, s
 uniform refinement and the GCI is indicative only.
 
 First-cell height: y+ ~ (h1/c) Re sqrt(Cf/2) with Cf ~ 0.0045 (flat-plate turbulent, Schlichting) and Re from
-common.CONDITIONS["cruise"].  Estimate at the v0.4.0 cruise Re 3.60e5: L1 y+ ~ 1.7, L2 ~ 0.85, L3 ~ 0.43, i.e. the
-coarse mesh is above y+ = 1 (recompute with the formula if the chord or cruise speed changes).
+common.CONDITIONS["cruise"].  Estimate at the v0.4 cruise Re 3.89e5 (chord 0.284 m, 2026-10-25): L1 y+ ~ 1.85,
+L2 ~ 0.92, L3 ~ 0.46, i.e. the coarse mesh is above y+ = 1 and L2/L3 below it, so the chord-normalised meshes were not
+regenerated (recompute with the formula if the chord or cruise speed changes).
 
 Usage: py mesh_2d.py [level ...]  -> mesh/naca2415_L<level>.su2  (meshes are git-ignored)
 """

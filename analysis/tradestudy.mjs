@@ -16,6 +16,7 @@
 // Every estimate is tagged EST. Sources tagged [S#] are listed in SOURCES and in docs/research/configurations.md.
 import { createRequire } from 'module';
 import { readFileSync, writeFileSync } from 'fs';
+import { POD } from './geometry.mjs';   // pod envelope (noseX, L, R): the single source shared with sizing.mjs and cad/params.mjs
 const require = createRequire(import.meta.url);
 const M = require('./model.js');
 const R = JSON.parse(readFileSync(new URL('./results.json', import.meta.url)));
@@ -93,7 +94,7 @@ const HB = 0.2, BOX_DI = (0.44+0.9594*HB)/(0.44+2.219*HB)*1.034;
 
 // ---------------------------------------------------------------- geometry: twin boom (re-implemented, sizing.mjs 90–128)
 function twinBoomGeo(p, r){
-  const D = p.liftD, clr = 0.05, fusHalf = 0.08, chord = r.chord, S = r.S;
+  const D = p.liftD, clr = 0.05, fusHalf = POD.R, chord = r.chord, S = r.S;
   const pushR = p.noPusher ? 0 : POD_PUSH_D/2;
   const xLEtoCG = -0.28*chord, xRear = -(chord + D/2 + clr), xFront = 2*xLEtoCG - xRear, lh_tailLE = xRear - D/2 - clr;
   const yIn = Math.max(D/2 + fusHalf + clr, D/2 + pushR + 0.04);
@@ -328,10 +329,10 @@ function evaluate(v){
     if(v.newVendors){ bom.shipping += 15*v.newVendors; bom.total = +(bom.total + 15*v.newVendors).toFixed(2); bom.reserve = +(2000-bom.total).toFixed(2); }
   }
   const span = p.span, half = span/2;
-  const longest = Math.max(half, ...(segs.length?segs:[0]), v.id==='TA-qp'?1.2:0, 0.85);
+  const longest = Math.max(half, ...(segs.length?segs:[0]), v.id==='TA-qp'?1.2:0, POD.L);   // pod length (geometry.mjs POD.L)
   // hover gust exposure at the R16 8 m/s gust: F = 0.5 rho V^2 A Cd, Cd 1.28 flat plate (S5); tilt to hold = atan(F/W)
   const tWing = p.tc*r.chord;
-  const A = v.exposure==='planform' ? r.S : Math.max(span*tWing + 0.16*0.16, 0.85*0.16 + (g&&g.Sv?g.Sv:0.057));
+  const A = v.exposure==='planform' ? r.S : Math.max(span*tWing + (2*POD.R)*(2*POD.R), POD.L*(2*POD.R) + (g&&g.Sv?g.Sv:0.057));   // pod frontal 2R x 2R, side L x 2R
   const Fg = 0.5*p.rho*8*8*A*1.28, gustTilt = Math.atan(Fg/r.W)*180/Math.PI;
   const MS_J = R.concepts.C0.struct.MS_J * (R.concepts.C0.sized.W*R.base.span)/(r.W*span);
   const TmaxTot_kg = p.nLift*p.Tmax_g/1000/(p.coax?p.kCoax:1);
