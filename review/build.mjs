@@ -72,9 +72,12 @@ const FLOW3 = (() => { const f = new URL('../analysis/aero/out/flowviz/flow3d.js
   d.streamlines = d.streamlines.map(l => ({ xyz: l.xyz.map(q), s: l.s.map(v => Math.round(v * 1e3) / 1e3) })); for (const g of Object.values(d.panels)) if (g && g.quads) { g.quads = g.quads.map(qq => qq.map(q)); delete g.gamma; } return d; })();
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
 const html = `<title>Lift + Cruise VTOL Review</title>
+<script>try{if(localStorage.getItem('vtol-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
 <meta name="description" content="Concept-stage engineering design review of a student lift + cruise VTOL">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400..700;1,400..700&display=swap">
+<meta name="theme-color" content="#0E1116">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=STIX+Two+Text:ital@1&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,300,0,0&icon_names=air,architecture,arrow_forward,article,center_focus_strong,compare,dark_mode,description,design_services,download,event,fact_check,flight,flight_takeoff,handyman,info,light_mode,memory,menu,payments,query_stats,scale,science,search,space_dashboard,subdirectory_arrow_right,toys_fan,view_in_ar&display=block">
 <style>
 ${r('./src/style.css')}
 </style>
@@ -91,6 +94,7 @@ ${r('./src/cadviewer.js')}
 </script>
 <script>
 ${r('./src/flowviz.js')}
+${r('./src/shell.js')}
 ${r('./src/app.js')}
 </script>
 `;
@@ -108,7 +112,8 @@ console.log('wrote VTOL-Review.html (project root)');
 // ---------- companion pages: build manual and test plan, in the review's house style ----------
 // Written twice: next to the artifact page (review/, back link "./") and at the project root beside VTOL-Review.html.
 const { docPage } = await import('./docpage.mjs');
-const CHAPTERS = [...r('./src/body.html').matchAll(/<section class="sec" id="([a-z0-9]+)"/g)].map(m => m[1]);
+// numbered review chapters in page order (Report info and Downloads carry data-nonum), for the companion pages' §[id] references
+const CHAPTERS = [...r('./src/body.html').matchAll(/<section class="sec" id="([a-z0-9]+)"([^>]*)>/g)].filter(m => !/data-nonum/.test(m[2])).map(m => m[1]);
 const fontLink = (html.match(/<link rel="stylesheet" href="https:\/\/fonts\.googleapis\.com[^>]*>/) || [''])[0];
 const pages = [['../docs/build/BUILD-MANUAL.md', 'build-manual.html', 'DBF-MAN-001', 'Work instructions'],
                ['../docs/test/TEST-PLAN.md', 'test-plan.html', 'DBF-TP-001', 'Test and evaluation plan'],

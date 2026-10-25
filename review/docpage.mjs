@@ -2,7 +2,7 @@
 // Small dependency-free Markdown subset: headings, paragraphs, nested lists, task lists, tables, code blocks,
 // blockquotes, rules, and inline code / bold / italic / links. Raw HTML in the source is escaped, never passed through.
 // where "review §N" links point: set by docPage for each output (artifact vs project-root copy)
-let REVIEW = { base: './', ids: {} };
+let REVIEW = { base: './', no: {} };
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const slug = s => s.toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -17,9 +17,9 @@ function inline(t) {
   t = t.replace(/(^|[\s(])(https?:\/\/[^\s<)]+[^\s<).,;:])/g, (_, pre, url) => `${pre}<a href="${url}" rel="noopener" target="_blank">${url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '')}</a>`);
   t = t.replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?!\w)/g, '$1<i>$2</i>');
   t = t.replace(/\u0000(\d+)\u0000/g, (_, i) => `<code>${esc(codes[+i])}</code>`);
-  // "review §8" and "review M8.1" link to that chapter of the design review
-  t = t.replace(/\b([Rr]eview) (§(\d+)|M(\d+)\.\d+(?:–M\d+\.\d+)?)/g, (all, R, ref, ch1, ch2) => {
-    const id = REVIEW.ids[ch1 || ch2]; return id ? `${R} <a class="rref" href="${REVIEW.base}#${id}">${ref}</a>` : all; });
+  // "§[flighttest]" and "M[structures].2" name a review chapter by its stable id; they render as its current number, linked
+  t = t.replace(/§\[([a-z0-9]+)\]/g, (all, id) => REVIEW.no[id] ? `<a class="rref" href="${REVIEW.base}#${id}">§${REVIEW.no[id]}</a>` : all);
+  t = t.replace(/M\[([a-z0-9]+)\]\.(\d+)/g, (all, id, k) => REVIEW.no[id] ? `<a class="rref" href="${REVIEW.base}#${id}">M${REVIEW.no[id]}.${k}</a>` : all);
   return t;
 }
 
@@ -147,20 +147,21 @@ export function renderMarkdown(md) {
 
 // A full page in the report style: masthead, title, contents, body. `back` links to the review.
 export function docPage({ md, css, fontLink, docNo, kicker, back = 'vtol-review.html', chapters = [] }) {
-  REVIEW = { base: back, ids: Object.fromEntries(chapters.map((id, i) => [i + 1, id])) };
+  REVIEW = { base: back, no: Object.fromEntries(chapters.map((id, i) => [id, i + 1])) };
   const { title, toc, html } = renderMarkdown(md);
   const name = title.replace(/^DBF-[A-Z]+-\d+\s*[—:-]\s*/, '');
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(name)}</title>
+<script>try{if(localStorage.getItem('vtol-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
 ${fontLink}
 <style>
 ${css}
 /* ---------- companion document page ---------- */
-.doc h2{margin-top:72px;padding-top:16px;border-top:2px solid var(--ink);font-size:1.875rem}
+.doc h2{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.02em}
 .doc h3{margin-top:40px;padding-top:12px;border-top:1px solid var(--line-2);font-size:1.25rem}
 .doc h4{margin-top:28px;font-size:1.125rem}
-.doc p,.doc li{max-width:64ch;text-wrap:pretty}
+.doc p,.doc li{max-width:58ch;text-wrap:pretty}
 .doc td{text-wrap:pretty}
 .doc table{width:auto;max-width:100%}
 .doc td:not(.n){max-width:60ch}
@@ -175,7 +176,13 @@ ${css}
 .doc pre.code{background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-s);padding:12px 14px;overflow:auto;font-size:.875rem;line-height:1.5}
 .doc .tbl{margin:14px 0 18px}
 .doc td{vertical-align:top}
-.doc a{color:var(--fg);text-decoration-color:var(--accent-line);text-underline-offset:2px}
+.doc a{color:var(--accent);text-underline-offset:2px}
+.doc h3{border-top:0;padding-top:0}
+header.top{border-bottom:1px solid var(--line);padding-block:20px 28px}
+header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-width:24ch}
+.mast{border-bottom:1px solid var(--line);margin-bottom:28px}
+.mast .org{font:500 .8125rem/1.3 var(--f-mono);color:var(--fg-3)}
+.mast .tbbtn{margin-left:12px}
 .doc a:hover{text-decoration-color:var(--accent)}
 .backlink{color:var(--fg-2)}
 .doc .step{margin:22px 0 0;padding:14px 16px 6px;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r)}
@@ -184,7 +191,7 @@ ${css}
 .doc dl.stepf{margin:0;display:grid;gap:0}
 .doc dl.stepf>div{display:grid;grid-template-columns:7.5rem minmax(0,1fr);gap:12px;padding:8px 0;border-top:1px solid var(--line)}
 .doc dl.stepf dt{font-weight:600;font-size:.875rem;color:var(--fg-2);padding-top:2px}
-.doc dl.stepf dd{margin:0;max-width:64ch;text-wrap:pretty}
+.doc dl.stepf dd{margin:0;max-width:58ch;text-wrap:pretty}
 .doc dl.stepf .chk dt{color:var(--ok)}
 .doc dl.stepf .warn dt{color:var(--warn)}
 .doc ol.proc{margin:0;padding-left:1.3em}
@@ -204,7 +211,7 @@ ${css}
 <a class="skip" href="#doc">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <div class="mast"><span class="org"><a class="backlink" href="${back}">← Design review DBF-RPT-001</a></span><span class="org">${esc(docNo)}</span></div>
+  <div class="mast"><span class="org"><a class="backlink" href="${back}">← Design review DBF-RPT-001</a></span><span class="org">${esc(docNo)} <button type="button" class="tbbtn" id="themeBtn"></button></span></div>
   <h1>${inline(name)}</h1>
 </header>
 <div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">${esc(docNo)}</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
@@ -217,6 +224,9 @@ ${html}
 </main>
 </div>
 <script>
+// theme: shared with the design review (same storage key)
+(()=>{ const b=document.getElementById('themeBtn'), r=document.documentElement; const lab=()=>{ b.textContent = r.dataset.theme==='light'?'Dark theme':'Light theme'; };
+  lab(); b.addEventListener('click',()=>{ r.dataset.theme = r.dataset.theme==='light'?'dark':'light'; try{ localStorage.setItem('vtol-theme', r.dataset.theme); }catch(e){} lab(); }); })();
 // running head: the section being read; step check-off kept in this browser only (a shop convenience, not a record)
 (()=>{ const rh=document.getElementById('runhead'), sec=document.getElementById('rhSec'), toc=document.getElementById('contents');
   const hs=[...document.querySelectorAll('.doc h2, .doc h3')]; let raf=0;

@@ -16,20 +16,16 @@ const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).
 
 // ---------- navigation: contents list (the binder below shows one chapter at a time) ----------
 const secs = $$('section.sec');
-const PARTS = {1:'The decision', 2:'The design', 3:'Build and fly'}, ROMAN = ['I','II','III'];
+const GROUP_NAMES = {home:'Overview', design:'Design', verify:'Verification', program:'Program', build:'Build and software', doc:'Documentation'};
 function buildNav(){
-  const box = $('#tocList'); let cur=null, ol=null;
-  secs.forEach(s=>{ const p=s.dataset.part;
-    if(p!==cur){ cur=p; box.insertAdjacentHTML('beforeend', `<li class="part"><span class="pn">Part ${ROMAN[p-1]}</span> ${PARTS[p]}<ol></ol></li>`); ol=box.lastElementChild.querySelector('ol'); }
+  const box = $('#tocList'); if(!box) return; let cur=null, ol=null;
+  secs.forEach(s=>{ const p=s.dataset.group; if(s.dataset.nonum) return;
+    if(p!==cur){ cur=p; box.insertAdjacentHTML('beforeend', `<li class="part">${GROUP_NAMES[p]||''}<ol></ol></li>`); ol=box.lastElementChild.querySelector('ol'); }
     ol.insertAdjacentHTML('beforeend', `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span class="t">${s.dataset.title}</span></a></li>`); });
 }
 // chapter numbers follow page order; "§N" links are filled from their target chapter
 function xrefs(){ $$('a.xref').forEach(x=>{ const t=document.getElementById(x.getAttribute('href').slice(1)); const s=t&&t.closest('section.sec'); if(s) x.textContent='§'+s.dataset.n; }); }
 const secNo = id => { const s=document.getElementById(id); return s ? s.dataset.n : '—'; };
-// in-page links go through the router (one chapter shows at a time); focus follows the content that appears
-document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l || e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  const id=l.getAttribute('href').slice(1); const t=document.getElementById(id); if(!t) return;
-  e.preventDefault(); if(location.hash!=='#'+id){ try{ history.pushState(null,'','#'+id); }catch(err){} } route(id, true); });
 
 // ---------- data binding ----------
 function fill(){
@@ -82,7 +78,7 @@ function derived(){
 
 // ---------- drawings ----------
 function drawings(){
-  const box=$('#drawings'); if(!box) return;
+  const box=$('#drawingsBox'); if(!box) return;
   const t=['General arrangement','Exploded assembly','Parts list','Wing panel, saddle and bolt pillar','Motor mount and splice','Clamps','Tube cut list, leg and fairing','Fastener schedule','Printed hardpoints and trays'].filter((_,i)=>IMG['drw'+(i+1)]);
   t.forEach((title,i)=>{ const k='drw'+(i+1); if(!IMG[k]) return;
     box.insertAdjacentHTML('beforeend', `<figure class="chart sheet"><button type="button" class="sheetbtn" data-k="${k}" data-t="Sheet ${i+1}: ${title}"><img class="cadimg" src="${IMG[k]}" alt="Drawing DBF-DRW-001 sheet ${i+1}, ${title}" loading="lazy"></button><figcaption>Sheet ${i+1} of ${t.length}. ${title}</figcaption></figure>`); });
@@ -96,8 +92,8 @@ function drawings(){
 }
 // report numbering: subsections n.k and figures n.k, from the section number
 function numberHeadings(){
-  $$('section.sec').forEach((s,i)=>{ s.dataset.n=String(i+1); const no=s.querySelector('.secno'); if(no) no.textContent=s.dataset.n; });
-  $$('section.sec').forEach(s=>{ const n=s.dataset.n; let k=0;
+  let i=0; $$('section.sec').forEach(s=>{ const no=s.querySelector('.secno'); if(s.dataset.nonum){ s.dataset.n=''; if(no) no.remove(); return; } s.dataset.n=String(++i); if(no) no.textContent=s.dataset.n; });
+  $$('section.sec').forEach(s=>{ const n=s.dataset.n; let k=0; if(!n) return;
     s.querySelectorAll('h3[id]').forEach(h=>{ k++; if(!h.querySelector('.subno')) h.insertAdjacentHTML('afterbegin',`<span class="subno">${n}.${k}</span> `); }); });
 }
 function numberFigures(){
@@ -469,7 +465,8 @@ function touchGate(view){
 
 const CHARTS = {tradeChart:()=>drawTrade(), dragChart:()=>drawDrag(), polarChart:()=>drawPolar(), tornado:()=>drawTornado(), packChart:()=>drawPack(), capChart:()=>drawCap(), dutyChart:()=>drawDuty(), cgChart:()=>drawCG(), stateSvg:()=>drawState(), gantt:()=>drawGantt()};
 // charts in a hidden chapter measure zero width, so only the visible chapter's charts are drawn; print draws all
-function redrawIn(sec){ for(const id in CHARTS){ const e=document.getElementById(id); if(e && (!sec || sec.contains(e))) CHARTS[id](); } if(CV && CV.refresh && (!sec || sec.contains($('#cadView')))) CV.refresh(); FlowViz.redraw(); }
+// a chart in a hidden tab is skipped here and draws when its tab opens
+function redrawIn(sec){ for(const id in CHARTS){ const e=document.getElementById(id); if(e && (!sec || sec.contains(e)) && !e.closest('[hidden]')) CHARTS[id](); } if(CV && CV.refresh && (!sec || sec.contains($('#cadView')))) CV.refresh(); FlowViz.redraw(); }
 function redrawAll(){ redrawIn(null); }
 function lazyCad(){ const v=$('#cadView'); if(!v) return;
   if(!('IntersectionObserver' in window)){ initCad(); return; }
@@ -571,7 +568,9 @@ function aeroText(){
       ? `<b>The aerodynamic package (XFOIL, NeuralFoil, AVL, a component drag build-up and 2-D RANS CFD) found that bare round landing legs would add ${fmt(100*(dr.gear_round_case.CdA_legs_round-dr.gear_round_case.CdA_legs_faired)/AD.geometry.S_ref_m2/(dr.CD0_total||1),0)} % to the zero-lift drag, so the legs now carry printed teardrop fairings.</b> `
       : `<b>The aerodynamic package (XFOIL, NeuralFoil, AVL, a component drag build-up and 2-D RANS CFD) found the sizing's drag too low: bare round landing legs alone were ${fmt(100*(dr.by_group&&dr.by_group.gear||0)/(dr.CD0_total||1),0)} % of zero-lift drag.</b> `)
     + (faired ? `With round legs the aircraft has ${fmt(tDesign,1)} min of cruise, short of R10's 10 min; teardrop leg fairings, now part of the design, raise that to ${fmt(faired.t_cruise_avail_min,1)} min. ` : round ? `With the teardrop leg fairings now in the design the build-up gives ${fmt(tDesign,1)} min of cruise, against the ${fmt(s0.t_cruise_avail_min,1)} min the sizing uses as the design value (R10 needs 10); with bare round legs it would be ${fmt(round.t_cruise_avail_min,1)}. ` : '')
-    + `The wing is sized on a CL_max of ${fmt(B.CLmax,2)}; the trimmed analysis of the resized wing gives ${fmt(AD.CL_max_3D.adopted,2)}, which puts stall at ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12?'just over':'within'} R11's 12 m/s and inside the uncertainty of the prediction. `
+    + (Math.abs(B.CLmax-AD.CL_max_3D.adopted)<5e-4
+      ? `The wing is sized on the trimmed CL_max of the aerodynamic package, ${fmt(AD.CL_max_3D.adopted,3)}, which puts stall at ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12+1e-9?'just over':'at'} R11's 12 m/s limit. `
+      : `The wing is sized on a CL_max of ${fmt(B.CLmax,3)}; the trimmed analysis of the resized wing gives ${fmt(AD.CL_max_3D.adopted,3)}, which puts stall at ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12+1e-9?'just over':'within'} R11's 12 m/s. `)
     + `With the pod included, the neutral point sits at ${fmt(np.AVL_pod_pct_MAC,1)} % MAC: ${fmt(sm.CG_28pct,1)} % static margin at the design CG and ${fmt(sm.CG_no_payload,1)} % with an empty payload bay, so the bay carries ballast when flown empty.`;
   const k=$('#aeroKpis'); if(k){ const rows=[
       ['CL_max, section (adopted)', fmt(AD.CL_max_2D.adopted_2D,2), 'XFOIL '+fmt(AD.CL_max_2D.xfoil_stall_Re,2)+', NeuralFoil '+fmt(AD.CL_max_2D.neuralfoil_stall_Re,2)+', wind tunnel 1.30'],
@@ -683,10 +682,7 @@ function a11yNames(scope){
 // charts redraw at the container width (the bar charts change layout at phone width)
 let rzT=0; window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT=setTimeout(()=>redrawIn(curSec), 150); });
 
-// ---------- print: paper palette for the charts, every disclosure open ----------
-let printOpened=[];
-addEventListener('beforeprint', ()=>{ secs.forEach(s=>s.hidden=false); document.documentElement.classList.add('printing'); printOpened=[...document.querySelectorAll('details:not([open])')]; printOpened.forEach(d=>d.open=true); redrawAll(); });
-addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('printing'); printOpened.forEach(d=>d.open=false); printOpened=[]; curSec=null; route(); });
+// printing: shell.js enters report view (every page, disclosures open, paper palette) and calls onShow(null)
 
 // ---------- shop files: inside the claude.ai viewer, plain download links do nothing ----------
 // so links marked data-dl are fetched and offered through the downloads capability (the viewer confirms each save);
@@ -696,38 +692,8 @@ addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('
     try{ const res=await fetch(link.getAttribute('href')); if(!res.ok) throw new Error('fetch '+res.status); await dl.save({filename:link.dataset.dl, data:await res.blob()}); }
     catch(err){ if(err && err.code==='declined') return; link.removeAttribute('data-dl'); } }); })();
 
-// ---------- binder: part tabs, chapter strip, one chapter at a time ----------
-function buildBinder(){
-  const pt=$('#ptabs'), cs=$('#cstrip'); if(!pt||!cs) return;
-  document.documentElement.classList.add('binder-on');
-  [1,2,3].forEach(p=>{ const first=secs.find(s=>s.dataset.part===String(p)); if(!first) return;
-    pt.insertAdjacentHTML('beforeend', `<a href="#${first.id}" data-part="${p}"><span class="pn">Part ${ROMAN[p-1]}</span> <span class="pt">${PARTS[p]}</span></a>`); });
-  secs.forEach(s=>cs.insertAdjacentHTML('beforeend', `<a href="#${s.id}" data-part="${s.dataset.part}" data-sec="${s.id}"><span class="n">${s.dataset.n}</span> ${s.dataset.title}</a>`));
-  // previous / next at the foot of every chapter
-  secs.forEach((s,i)=>{ const pv=secs[i-1], nx=secs[i+1];
-    s.insertAdjacentHTML('beforeend', `<nav class="pnext" aria-label="Chapter navigation">${pv?`<a class="prev" href="#${pv.id}"><span class="dir">Previous</span><span class="t">${pv.dataset.n} ${pv.dataset.title}</span></a>`:'<span></span>'}${nx?`<a class="next" href="#${nx.id}"><span class="dir">Next</span><span class="t">${nx.dataset.n} ${nx.dataset.title}</span></a>`:''}</nav>`); });
-}
 let curSec=null;
-function route(hash, focus){
-  const id=(hash||location.hash.slice(1)||'').trim(); let t=id?document.getElementById(id):null;
-  if(id==='main' && curSec) t=curSec;   // skip link: stay in the chapter being read, focus its heading
-  let sec = t ? (t.matches('section.sec') ? t : t.closest('section.sec')) : null;
-  const home = !sec || sec.id==='overview' || id==='contents';
-  if(!sec) sec=$('#overview');
-  secs.forEach(s=>{ s.hidden = s!==sec; });
-  document.body.classList.toggle('home', home);
-  const part=sec.dataset.part;
-  $$('#ptabs a').forEach(x=>{ const on=x.dataset.part===part; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','true'); else x.removeAttribute('aria-current'); });
-  $$('#cstrip a').forEach(x=>{ x.hidden = x.dataset.part!==part; const on=x.dataset.sec===sec.id; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','page'); else x.removeAttribute('aria-current'); });
-  if(curSec!==sec){ curSec=sec; redrawIn(sec); a11yNames(sec); }
-  requestAnimationFrame(()=>{
-    const target = (t && t!==sec && !t.matches('section.sec')) ? t : (home && (!id || id==='overview') ? null : sec);
-    if(target){ target.scrollIntoView({block:'start'}); } else window.scrollTo(0,0);
-    if(focus){ const f = target ? (target.matches('section.sec') ? target.querySelector('h2') : target) : sec.querySelector('h2'); if(f){ if(!f.hasAttribute('tabindex')) f.setAttribute('tabindex','-1'); f.focus({preventScroll:true}); } }
-    const cs=$('#cstrip a.on'); if(cs) cs.scrollIntoView({block:'nearest',inline:'center'});
-  });
-}
-addEventListener('popstate', ()=>route());
+
 
 // ---------- boot ----------
 numberHeadings(); buildNav(); xrefs(); fill(); derived(); tables(); hardware(); tradeText(); aeroText(); buildText(); testText(); drawings(); numberFigures(); sortable(); summarise(); measurements(); a11yNames();
@@ -736,5 +702,5 @@ $$('[data-cad="parts"]').forEach(e=>e.textContent=MESH_META.files); $$('[data-ca
 $$('main a[href^="#"]').forEach(a=>{ const t=a.textContent.trim(); if(!/^§\s?\d+$/.test(t)) return; const sec=document.getElementById(a.getAttribute('href').slice(1)); const s=sec&&(sec.closest('section.sec')); if(s) a.setAttribute('aria-label', `${t} ${s.dataset.title}`); });
 resetParams(); buildSliders(); renderChain();
 $$('#chainConcept button').forEach(b=>b.addEventListener('click',()=>{ chainKey=b.dataset.c; $$('#chainConcept button').forEach(x=>x.setAttribute('aria-pressed',x===b)); resetParams(); buildSliders(); renderChain(); drawTornado(); }));
-buildBinder(); route(); lazyCad(); FlowViz.lazy();
+Shell.init({ onShow: sec=>{ curSec=sec; redrawIn(sec); a11yNames(sec||undefined); } }); lazyCad(); FlowViz.lazy();
 })();

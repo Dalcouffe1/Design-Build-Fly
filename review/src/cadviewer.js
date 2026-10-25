@@ -158,6 +158,6 @@ function CadViewer(wrap, M){
       if (key){ tip.innerHTML = '<b></b><span></span>'; tip.firstChild.textContent = name.replace(/_/g, ' '); tip.lastChild.textContent = M.parts[key].d; tip.hidden = false; } else tip.hidden = true;
       kick();
     },
-    refresh(){ resize(); kick(); }
+    refresh(){ theme(); resize(); }   // theme() re-reads the palette (theme toggle, print) and redraws
   };
 }

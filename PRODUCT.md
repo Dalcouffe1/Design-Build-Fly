@@ -35,7 +35,7 @@ The review is generated from the project's own analysis, CAD and simulation outp
   - Built and flight-tested by 2027-04-30.
   - MTOW under 25 kg; 2–3 m span; breaks down to fit a standard car.
 - One self-contained HTML page. CSS, JS, data and images are inline. The only external loads are web fonts and the three.js library for the 3D viewer, so the 3D viewer needs a connection; the rest of the page works offline.
-- One dark theme (graphite: mid-grey ground, lighter grey panels; client direction 2026-10-21), at desktop and phone widths. Printing switches to a white-paper palette.
+- Presented as an interactive engineering review platform (redesign 2026-10-25; inspiration Onshape, SimScale, Linear): persistent sidebar navigation, one page per chapter with sub-tabs, visual-first CAD, drawing and CFD workspaces, Ctrl-K search. Dark graphite by default with a light theme (stored per viewer), at desktop and phone widths. A Report view renders the traditional document (cover, revision record, approvals, every chapter in order), and printing always uses it with a white-paper palette.
 - Interactive content: sortable tables, sensitivity sliders, charts drawn from the live sizing model, the trade-study chart, and a rotatable SOLIDWORKS model viewer with every part and fastener.
 - Companion pages in the same style, generated from the repo Markdown: the build manual (DBF-MAN-001, `build-manual.html`) and the test plan (DBF-TP-001, `test-plan.html`). The review links to them and to the shop files (cut, print and wiring lists, templates, parameter file).
 - Terminology: MTOW, T/W, QuadPlane, C0–C3 concepts, R-numbered requirements, M-numbered measurements, EST for estimates.
@@ -43,7 +43,7 @@ The review is generated from the project's own analysis, CAD and simulation outp
 ## Brand Commitments
 
 - Project name: **Design-Build-Fly** (confirmed 2026-10-18), shown on the cover mast line.
-- Client-facing: the page must read as a professional engineering document. It must not look like a generic AI-generated web page (user direction, 2026-10-13).
+- Client-facing: the page must read as professional aerospace engineering software that industry engineers, professors and employers would take seriously, while keeping the rigour of an engineering report. It must not look like a generic AI-generated web page or dashboard (user direction, 2026-10-13 and 2026-10-25).
 - Voice (REVIEW-STYLE.md): terse and specific, numbers inline with units, present tense, baseline and verdict first, no marketing language.
 - No client logo or university branding is required.
 
