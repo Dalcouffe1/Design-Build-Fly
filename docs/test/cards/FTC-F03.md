@@ -8,7 +8,7 @@ DBF-TP-001 rev B · Test F03 · Review step: F3 · Requirements: R9, R13
 
 **Weather limits:** Steady <= 3 m/s EST, gusts <= 5 m/s EST.
 
-**Predicted:** Hover electrical power 892 W total (results.json sized.P_hover v0.4); motor can ~73 degC after 90 s at the v0.3.1 thrust (cad/README.md), ~75 degC EST at v0.4, so ~60-65 degC EST after 60 s.
+**Predicted:** Hover electrical power 892 W total (results.json sized.P_hover v0.4); motor can ~76 degC EST after 90 s at v0.4 (lumped, cad/README.md motor thermal), so ~64 degC EST after 60 s (same lumped model, calc).
 
 **Crew:** TD, SO, PIC, GCS · **Duration:** 1 session, 2 packs
 
@@ -46,7 +46,7 @@ QTUN.ThO; POS/GPS position hold error; BAT Curr mean per hover; IR temperatures 
 ## Pass criteria
 - [ ] 3 x 60 s at <= 5 m AGL with motors cooled below 45 degC between (review F3).
 - [ ] Position held within 2 m EST in QLOITER; attitude error < 15 deg.
-- [ ] Motors <= 80 degC EST after each hover (review F3 abort; C08 prediction 73 degC at 90 s).
+- [ ] Motors <= 80 degC EST after each hover (review F3 abort; C08 prediction 76 degC at 90 s).
 - [ ] Hover current 40.2 A +-15 % EST (results.json sized.I_hover); sag-compensated voltage >= 21.0 V.
 
 ## Run log

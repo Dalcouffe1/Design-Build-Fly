@@ -243,7 +243,7 @@ IDs match `cad/hardware.json`. Engagement e = screw length − grip *(calc)*.
   the saddle. Hole Ø5.5. Head in a Ø10.3 × 1.0 spot-face. Nut pocket 8.2 AF × 8.0 deep
   from the lower surface; nut bears at 13.8 below the upper surface. Screw end at 21.0:
   2.2 mm past the nut, 0.8 mm inside the lower surface *(calc)*.
-- Bending is carried by the joiner (DESIGN-BASIS: RF 1.85). The bolt only stops the
+- Bending is carried by the joiner (RF 1.77 at the v0.4 MTOW, analysis/results.json struct.MS_J; 1.85 at v0.3.1). The bolt only stops the
   panel sliding off and rotating. **1.0 N·m EST.**
 
 ### J11 — Joiner and saddle to pod

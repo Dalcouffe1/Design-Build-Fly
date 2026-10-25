@@ -173,6 +173,8 @@ class Sim
     {
         double L = D("feaBoomL"), od = D("boomOD"), id = D("boomID");
         double tipM = D("feaTipMass"), rho = D("matRho");
+        // feaBoomL/feaTipMass/feaTipForce: cad/params.txt <- analysis/results.json C0 struct.Lb/mTip/Tmax (params.mjs). hBlk is a modelling
+        // choice (tip-block height, not a design dimension); the block radius follows from it so block volume x rho = lift-unit mass.
         double hBlk = 0.05, rBlk = Math.Sqrt(tipM / (rho * Math.PI * (od / 2 + hBlk)));   // block runs from the tube axis to od/2 + hBlk; its volume x rho = lift-unit mass
         ModelDoc2 d = NewPart();
         Sk(d, "Right Plane"); d.SketchManager.CreateCircleByRadius(0, 0, 0, od / 2); d.SketchManager.CreateCircleByRadius(0, 0, 0, id / 2); EndSk(d);
@@ -271,7 +273,7 @@ class Sim
         CWHeatPower hp; CWConvection cv;
         // steady-state bound
         CWStudy ss = NewStudy("Motor steady state", 3);
-        b = ss.SolidManager.GetComponentAt(0, out err).GetSolidBodyAt(0, out err); b.SetLibraryMaterial(Lib, "6061-T6 (SS)");
+        b = ss.SolidManager.GetComponentAt(0, out err).GetSolidBodyAt(0, out err); b.SetLibraryMaterial(Lib, P["matLib"]);   // library material from cad/params.txt matLib (params.mjs), not a literal
         ss.ThermalStudyOptions.SolutionType = 1;
         hp = ss.LoadsAndRestraintsManager.AddHeatPower(new object[] { ((object[])((PartDoc)d).GetBodies2(0, true))[0] }, out err);
         hp.HeatPowerBeginEdit(); hp.Unit = 0; hp.HPValue = D("thermQ"); hp.HeatPowerEndEdit();

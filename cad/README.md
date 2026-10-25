@@ -13,7 +13,7 @@ Everything here is generated from `analysis/results.json` and `cad/hardware.json
 | `Drawings.cs` | Builds drawing DBF-DRW-001 rev D (nine ANSI B sheets, see below) with driven dimensions, tolerances and fits from `params.txt` (note text included: every size that follows the sizing is read from `params.txt`); zoned layout with a self-check of overlaps (`drawings/layout-check.txt`); exports `.SLDDRW`, a vector PDF and sheet PNGs to `drawings/`. `Drawings.exe model drawings params.txt 2,3` builds only the listed sheets as `probe_*` files for layout iteration |
 | `ExportMesh.cs` | Exports each part as a binary STL (metres, part frame) plus colour and description → `mesh/`; `review/mesh.mjs` packs them (one pre-rotated mesh per part orientation) for the interactive viewer in the review page |
 | `Snap.cs` | Saves iso/top/side/front PNGs of the assembly → `images/` |
-| `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside (v0.3.1 geometry; not re-run for CAD rev B or rev C, see below) |
+| `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside (re-run 2026-10-25 on the CAD rev C / v0.4 inputs, see below) |
 | `ListDocs.cs` | Lists open SOLIDWORKS documents; `ListDocs.exe close` closes files under this folder, `close untitled` also discards unsaved new documents |
 | `Inspect.cs` | Lists a part's feature tree, bodies, volume and box (debugging aid) |
 | `TlbImp.cs`, `Probe.cs` | Tools used to inspect the Flow Simulation API and add-in availability |
@@ -60,15 +60,15 @@ Every sheet carries a general-tolerance table (bottom left) from `hardware.json 
 
 | Study | Model | Result vs hand calc |
 |---|---|---|
-| Boom static | Arm cantilevered at the spar clamp, tip block = lift-unit mass 0.242 kg, full thrust | 34.2 MPa (1.5 mm mesh; 31.3 at 3 mm) vs 32.6 MPa; 2.18 vs 2.30 mm |
-| Boom modal | Same, first bending mode | 38.5 vs 36.0 Hz (hand includes 0.236 m_boom; rigid root) |
-| Spar + joiner static | Half-span, fixed at the centreline, joiner idealised with OD = socket ID, load scaled to the elliptic root moment at 4.5 g | 146 MPa (2 mm mesh; 138 at 3 mm) vs 148.6 MPa; the hand calc on the true joiner governs (RF 1.85) |
-| Motor thermal | Steady state, 41.6 W heat (est.), h = 50 W/m²K (est.), 35 °C ambient | 133.9 vs 133.5 °C bulk; 90 s hover ≈ 73 °C (lumped, c = 470 J/kgK est.) |
+| Boom static | Arm 449.8 mm cantilevered at the spar clamp, tip block = lift-unit mass 0.242 kg, full thrust 30.7 N | 35.7 MPa (1.5 mm mesh; 32.9 at 3 mm) vs 34.1 MPa (+4.9 %); 2.49 vs 2.62 mm (−4.9 %); RF 8.3 on yield |
+| Boom modal | Same, first bending mode | 35.9 vs 33.7 Hz (+6.6 %; hand includes 0.236 m_boom; rigid root) |
+| Spar + joiner static | Half-span, fixed at the centreline, joiner idealised with OD = socket ID, 151.0 N uniform load scaled to the elliptic root moment 72.5 N·m at 4.5 g | 152 MPa (2 mm mesh; 144 at 3 mm) vs 155.0 MPa (−1.8 %); tip 22.9 mm; FEA RF 1.91, the hand calc on the true joiner governs (RF 1.77 = 275 / 155.0) |
+| Motor thermal | Steady state, 44.6 W heat (est., 20 % of 223 W hover per motor), h = 50 W/m²K (est.), 35 °C ambient | 141.1 vs 140.7 °C bulk; 90 s hover ≈ 76 °C (lumped, c = 470 J/kgK est.; 74–83 °C for c 500–385; `review/src/app.js` TH) |
 
-The studies were run on the v0.3.1 geometry (MTOW 6.18 kg). The aero re-sizings raise MTOW to 6.45 kg and the FEA boom arm to 449.8 mm (`analysis/results.json` C0 struct.Lb, +2.3 mm from CAD rev B); the hand calcs in `analysis/results.json` follow and `analysis/verify.py` still finds the FEA within its 15 % band, so the studies were not re-run (the joiner and boom tubes are unchanged).
+Last run 2026-10-25 (`Sim.exe params.txt sim`, about 4 min wall-clock) on the CAD rev C / v0.4 inputs in `params.txt` (MTOW 6.45 kg; boom arm 449.8 mm, tip force 30.7 N, `analysis/results.json` C0 struct.Lb / Tmax; root moment 72.5 N·m, struct.Mroot; heat 44.6 W, params.mjs thermQ). Every geometric and load input is read from `params.txt`; the studies build their own simplified parts and do not open `model/`. `analysis/verify.py` finds every FEA–hand pair within its 15 % band (largest: boom f1 +6.6 %). The earlier run (2026-10-13) was on the v0.3.1 geometry (MTOW 6.18 kg, boom arm 431 mm).
 
 **Not run:**
-- **Transient thermal through the API.** It returned no saved time steps, so the 90 s value is a lumped-capacitance estimate (shown in review §12).
+- **Transient thermal through the API.** It returned no saved time steps, so the 90 s value is a lumped-capacitance estimate (shown in the review, Simulation and verification chapter).
 - **Flow Simulation (CFD).** The add-in would not load on this licence (only the base SOLIDWORKS serial is listed).
 
 Material for all structural studies: SOLIDWORKS library `6061-T6 (SS)` (E 69 GPa, yield 275 MPa). Results are from the SOLIDWORKS Educational edition, and the plots carry its watermark.

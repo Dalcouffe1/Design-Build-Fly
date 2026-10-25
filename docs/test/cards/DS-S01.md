@@ -29,7 +29,7 @@ Actual bag masses used (kitchen scale): ____ (attach list)
 | 0 % after 5 min (residual) | | | | | |
 
 Pass: tip at 100 % ≤ 120 mm; residual ≤ 2 mm EST; joiner straight ≤ 0.5 mm over 0.76 m; no crush; no loosening.
-Predicted: 15.2 mm (FEA idealised joiner at v0.3.1, cad/sim/results.txt spar_tip_disp × (72.5/69.5) × 3/4.5); real 15–60 mm EST. Joiner (slip fit, rev B) slid out post-test: straightness ____ mm; stop discs intact: Y / N.
+Predicted: 15.2 mm (FEA idealised joiner at v0.4, cad/sim/results.txt spar_tip_disp 22.9 mm × 3/4.5); real 15–60 mm EST. Joiner (slip fit, rev B) slid out post-test: straightness ____ mm; stop discs intact: Y / N.
 
 ## Result
 PASS / FAIL · Deviations: ____ · Signed (TD) ______ Date ______

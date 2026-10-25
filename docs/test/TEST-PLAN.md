@@ -196,11 +196,11 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Duration** 0.5 h per motor, 4 h total. **Crew** 2. **Prereq.** C06.
 
 #### C08 — Hover-duty heat (review T3, expanded)
-- **Objective.** Validate the lumped thermal model (90 s hover ≈ 73 °C at the v0.3.1 hover thrust, `cad/sim/results.txt` and `cad/README.md`; v0.4 hover thrust is 4 % higher) and the ESC temperature under hover current.
+- **Objective.** Validate the lumped thermal model (90 s hover ≈ 76 °C at the v0.4 hover power, from `cad/sim/results.txt` and `cad/README.md`) and the ESC temperature under hover current.
 - **Setup.** C06 stand; thrust held at 1,613 g (hover) by throttle; IR thermometer on the motor can (bell) and ESC heat-shrink every 15 s; ambient logged.
 - **Procedure.** (1) Start at ambient. (2) Hold hover thrust 90 s, reading temperatures every 15 s. (3) Cool with the prop at idle until the can < 45 °C. (4) Repeat 3 times. (5) One run of 3 × 90 s with only 30 s rests (worst case, never flown) to find the limit. (6) Fit the time constant.
 - **Pass.** Can ≤ 80 °C EST after one 90 s run; no ESC cut-out; ESC ≤ 70 °C EST; measured time constant ≥ 100 s (review M[simulation].2: under 100 s invalidates the lumped model).
-- **Predicted.** 73 °C at 90 s (v0.3.1); steady-state upper bound 134 °C at 41.6 W EST heat and h = 50 W/m²K EST (`cad/sim/results.txt motor_T_steady`); with 223 W per motor (v0.4, `sized.P_hover_per_motor`) vs 208 W, expect ~2–3 °C more (EST).
+- **Predicted.** 76 °C at 90 s EST (lumped: τ = m c / (h A), h A = Q / (T_ss − T_amb), m 0.165 kg, c 470 J/kgK EST, `review/src/app.js` TH; 74–83 °C for c 500–385 J/kgK); steady-state upper bound 141 °C at 44.6 W EST heat (20 % of 223 W per motor, `sized.P_hover_per_motor`) and h = 50 W/m²K EST (`cad/sim/results.txt motor_T_steady`, FEA re-run 2026-10-25 on the v0.4 inputs).
 - **Duration** 2 h. **Crew** 2. **Prereq.** C07.
 
 #### C09 — Pusher thrust curve, X4110S + APC 14 × 8.5EP (review T4, expanded)
@@ -277,7 +277,7 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Load schedule.** Total 15.4 kg = n × (m − m_wing) = 3.0 × (6.45 − 1.31) *(calc; `sized.m`, `sized.m_wing`; the wing's own 1.31 kg already loads the spar in the inverted position, so this is slightly above 3.0 g at the root — conservative)*. Elliptic spanwise: per side, stations at 0.1 / 0.3 / 0.5 / 0.7 / 0.9 / 1.1 m from centre: 1.63 / 1.58 / 1.48 / 1.32 / 1.08 / 0.61 kg *(calc: elliptic integral over 0.2 m bins, data sheet `cards/DS-S01.md`)*. Chordwise at 30 % chord (spar line; chord 0.267 m, `sized.chord`).
 - **Procedure.** (1) Zero the tip gauges. (2) Load symmetrically in four increments (25, 50, 75, 100 % of schedule), reading both tips each step; listen for cracking; look at the socket foam cover and the saddle bolts. (3) Hold 100 % for 30 s (review M[structures].1). (4) Unload in the same steps. (5) Record residual tip deflection after 5 min. (6) Slide the joiner out and inspect for marks or bow against a straight edge; check the stop discs are still bonded.
 - **Pass.** Tip deflection at 100 % ≤ 120 mm (10 % of the 1.2 m semi-span, review M[structures].1); residual ≤ 2 mm EST; no permanent set in the joiner (straightness ≤ 0.5 mm over 0.76 m, EST); no foam crush at the sockets; no bolt loosening; stop discs intact.
-- **Predicted.** Spar tip 15.2 mm at 3.0 g, scaled from the FEA 21.9 mm at 4.5 g on the v0.3.1 root moment (`cad/sim/results.txt spar_tip_disp` × (72.5 / 69.5) × 3/4.5 *(calc; `struct.Mroot` v0.4 vs `spar_load_N` note)*; the studies were not re-run for CAD rev B or rev C, `cad/README.md` simulations). The FEA bonds an idealised joiner (OD = socket ID), so the real wing with 0.23 mm joiner clearance and foam compliance will deflect more; between 15 and 60 mm is the expected band (EST). Root moment at 3.0 g: 48.3 N·m = n W b / (3π) *(calc; `struct.Mroot` 72.5 × 3/4.5)*; joiner stress 103 MPa, RF 2.66 on 275 MPa yield (`struct.sigJ` 155.0 MPa × 3/4.5 *(calc)*).
+- **Predicted.** Spar tip 15.2 mm at 3.0 g, scaled from the FEA 22.9 mm at 4.5 g (`cad/sim/results.txt spar_tip_disp` × 3/4.5 *(calc)*; FEA re-run 2026-10-25 on the v0.4 root moment 72.5 N·m, `struct.Mroot`, `cad/README.md` simulations). The FEA bonds an idealised joiner (OD = socket ID), so the real wing with 0.23 mm joiner clearance and foam compliance will deflect more; between 15 and 60 mm is the expected band (EST). Root moment at 3.0 g: 48.3 N·m = n W b / (3π) *(calc; `struct.Mroot` 72.5 × 3/4.5)*; joiner stress 103 MPa, RF 2.66 on 275 MPa yield (`struct.sigJ` 155.0 MPa × 3/4.5 *(calc)*).
 - **Risk.** A failure drops 15 kg of bags: nobody under the wing; pad the floor.
 - **Duration** 2 h. **Crew** 3. **Prereq.** C05, C17, wing built.
 
@@ -285,16 +285,16 @@ Each test lists: objective · article/config · setup and instrumentation · pro
 - **Objective.** Measure boom tip deflection under a known load with the real printed clamp to check the FEA boundary condition.
 - **Setup.** One boom clamped in its front and rear wing clamps on the wing (or in a bench fixture using the real clamps); a jug of known mass hung at the front motor station (arm Lb = 0.450 m, `struct.Lb`); ruler/dial gauge at the motor station.
 - **Procedure.** Hang 1.0, 2.0, 3.0 kg (9.8–29.4 N, up to the 30.7 N full-thrust case `struct.Tmax`); read deflection each step and after removal.
-- **Pass.** Deflection at 3.0 kg ≤ 1.5 × prediction = 3.7 mm (review M[simulation].1 rule; FEA 2.18 mm at Lb 0.431 m scaled by (0.450/0.431)³ = 2.48 mm *(calc)*); residual 0; no clamp slip (witness line).
-- **Predicted.** 2.62 mm hand (P L³ / 3EI, `struct.defl_max`), 2.48 mm FEA-scaled at 30.7 N (`cad/sim/results.txt boom_disp_max` 2.18 mm at the v0.3.1 arm).
+- **Pass.** Deflection at 3.0 kg ≤ 1.5 × prediction = 3.7 mm (review M[simulation].1 rule; 1.5 × FEA 2.49 mm = 3.74 mm *(calc)*); residual 0; no clamp slip (witness line).
+- **Predicted.** 2.62 mm hand (P L³ / 3EI, `struct.defl_max`), 2.49 mm FEA at 30.7 N (`cad/sim/results.txt boom_disp_max`, re-run 2026-10-25 at the v0.4 arm Lb 0.450 m).
 - **Duration** 1 h. **Crew** 2. **Prereq.** Booms built.
 
 #### S03 — Boom modal tap test (review M[structures].2)
-- **Objective.** First bending frequency of each boom with the lift unit fitted, vs the hand 33.7 Hz / FEA 38.5 Hz.
+- **Objective.** First bending frequency of each boom with the lift unit fitted, vs the hand 33.7 Hz / FEA 35.9 Hz.
 - **Setup.** Aircraft assembled on its gear; phone taped to the motor mount running a free accelerometer logging app (e.g. phyphox, phyphox.org, free; EST adequacy: phone IMU rates 100–400 Hz give ≤ 50–200 Hz bandwidth); tap the motor with a rubber mallet handle.
 - **Procedure.** 10 taps per boom, vertical then lateral; export the accelerometer CSV; FFT in the app or with numpy; read the first peak.
-- **Pass.** f1 within 27–46 Hz EST (hand 33.7 Hz − 20 % to FEA 38.5 Hz + 20 %) in both planes; and not within ± 15 % of the hover rotor frequency or twice it (review M[structures].2). Hover rpm comes from C07 throttle and the no-load 8,880 rpm × throttle fraction EST (BLHeli_S has no telemetry on these ESCs, —).
-- **Predicted.** 33.7 Hz hand at the v0.4 arm (`struct.fn`), 38.5 Hz FEA at v0.3.1 (`cad/sim/results.txt boom_f1`); a compliant clamp lowers it (`analysis/sizing.mjs` comment on fn).
+- **Pass.** f1 within 27–43 Hz EST (hand 33.7 Hz − 20 % to FEA 35.9 Hz + 20 % *(calc)*) in both planes; and not within ± 15 % of the hover rotor frequency or twice it (review M[structures].2). Hover rpm comes from C07 throttle and the no-load 8,880 rpm × throttle fraction EST (BLHeli_S has no telemetry on these ESCs, —).
+- **Predicted.** 33.7 Hz hand at the v0.4 arm (`struct.fn`), 35.9 Hz FEA at the v0.4 arm (`cad/sim/results.txt boom_f1`, re-run 2026-10-25); a compliant clamp lowers it (`analysis/sizing.mjs` comment on fn).
 - **Duration** 1 h. **Crew** 2. **Prereq.** S02.
 
 #### S04 — Boom clamp and splice slip proof (hardware-spec M7, review M[structures].5)
