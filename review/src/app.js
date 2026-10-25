@@ -466,7 +466,7 @@ function touchGate(view){
 const CHARTS = {tradeChart:()=>drawTrade(), dragChart:()=>drawDrag(), polarChart:()=>drawPolar(), tornado:()=>drawTornado(), packChart:()=>drawPack(), capChart:()=>drawCap(), dutyChart:()=>drawDuty(), cgChart:()=>drawCG(), stateSvg:()=>drawState(), gantt:()=>drawGantt()};
 // charts in a hidden chapter measure zero width, so only the visible chapter's charts are drawn; print draws all
 // a chart in a hidden tab is skipped here and draws when its tab opens
-function redrawIn(sec){ for(const id in CHARTS){ const e=document.getElementById(id); if(e && (!sec || sec.contains(e)) && !e.closest('[hidden]')) CHARTS[id](); } if(CV && CV.refresh && (!sec || sec.contains($('#cadView')))) CV.refresh(); FlowViz.redraw(); }
+function redrawIn(sec){ for(const id in CHARTS){ const e=document.getElementById(id); if(e && (!sec || sec.contains(e)) && !e.closest('[hidden]')) CHARTS[id](); } if(CV && CV.refresh && (!sec || sec.contains($('#cadView')))) CV.refresh(); FlowViz.redraw(); if(!sec || sec.contains($('#thermViz'))) ThermViz.redraw(); }
 function redrawAll(){ redrawIn(null); }
 function lazyCad(){ const v=$('#cadView'); if(!v) return;
   if(!('IntersectionObserver' in window)){ initCad(); return; }
@@ -569,7 +569,7 @@ function aeroText(){
       : `<b>The aerodynamic package (XFOIL, NeuralFoil, AVL, a component drag build-up and 2-D RANS CFD) found the sizing's drag too low: bare round landing legs alone were ${fmt(100*(dr.by_group&&dr.by_group.gear||0)/(dr.CD0_total||1),0)} % of zero-lift drag.</b> `)
     + (faired ? `With round legs the aircraft has ${fmt(tDesign,1)} min of cruise, short of R10's 10 min; teardrop leg fairings, now part of the design, raise that to ${fmt(faired.t_cruise_avail_min,1)} min. ` : round ? `With the teardrop leg fairings now in the design the build-up gives ${fmt(tDesign,1)} min of cruise, against the ${fmt(s0.t_cruise_avail_min,1)} min the sizing uses as the design value (R10 needs 10); with bare round legs it would be ${fmt(round.t_cruise_avail_min,1)}. ` : '')
     + (Math.abs(B.CLmax-AD.CL_max_3D.adopted)<5e-4
-      ? `The wing is sized on the trimmed CL_max of the aerodynamic package, ${fmt(AD.CL_max_3D.adopted,3)}, which puts stall at ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12+1e-9?'just over':'at'} R11's 12 m/s limit. `
+      ? `The wing is sized on the trimmed CL_max of the aerodynamic package, ${fmt(AD.CL_max_3D.adopted,3)}, to a design stall of ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12+1e-9?'over':fmt(AD.stall.margin_to_R11_pct,1)+' % under'} R11's 12 m/s, which covers a ${fmt(100*(1-Math.pow(AD.stall.V_stall_mps/12,2)),0)} % shortfall in CL_max. `
       : `The wing is sized on a CL_max of ${fmt(B.CLmax,3)}; the trimmed analysis of the resized wing gives ${fmt(AD.CL_max_3D.adopted,3)}, which puts stall at ${fmt(AD.stall.V_stall_mps,2)} m/s, ${AD.stall.V_stall_mps>12+1e-9?'just over':'within'} R11's 12 m/s. `)
     + `With the pod included, the neutral point sits at ${fmt(np.AVL_pod_pct_MAC,1)} % MAC: ${fmt(sm.CG_28pct,1)} % static margin at the design CG and ${fmt(sm.CG_no_payload,1)} % with an empty payload bay, so the bay carries ballast when flown empty.`;
   const k=$('#aeroKpis'); if(k){ const rows=[

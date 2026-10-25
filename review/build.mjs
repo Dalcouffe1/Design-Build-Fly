@@ -70,6 +70,8 @@ const FLOW2 = (() => { const f = new URL('../analysis/aero/out/flowviz/flow2d.js
   return d; })();
 const FLOW3 = (() => { const f = new URL('../analysis/aero/out/flowviz/flow3d.json', import.meta.url); if (!existsSync(f)) { console.log('flow3d.json missing'); return null; } const d = JSON.parse(readFileSync(f, 'utf8')); const q = v => Math.round(v * 1e4) / 1e4;
   d.streamlines = d.streamlines.map(l => ({ xyz: l.xyz.map(q), s: l.s.map(v => Math.round(v * 1e3) / 1e3) })); for (const g of Object.values(d.panels)) if (g && g.quads) { g.quads = g.quads.map(qq => qq.map(q)); delete g.gamma; } return d; })();
+// thermal fields and findings (cad/Thermal.cs → analysis/thermal/thermal_report.py)
+const THERM = (() => { const f = new URL('../analysis/thermal/thermal_results.json', import.meta.url); if (!existsSync(f)) { console.log('thermal_results.json missing'); return null; } return JSON.parse(readFileSync(f, 'utf8')); })();
 const MESH = packMesh(); console.log('CAD mesh:', Object.keys(MESH.parts).length, 'parts,', MESH.comps.length, 'components,', MESH.tris, 'triangles');
 const html = `<title>Lift + Cruise VTOL Review</title>
 <script>try{if(localStorage.getItem('vtol-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
@@ -83,6 +85,7 @@ ${r('./src/style.css')}
 </style>
 ${FLOW2 ? `<script type="application/json" id="flow2dData">${JSON.stringify(FLOW2).replace(/</g, '\\u003c')}</script>` : ''}
 ${FLOW3 ? `<script type="application/json" id="flow3dData">${JSON.stringify(FLOW3).replace(/</g, '\\u003c')}</script>` : ''}
+${THERM ? `<script type="application/json" id="thermData">${js(THERM)}</script>` : ''}
 <script type="application/json" id="meshData">${JSON.stringify(MESH).replace(/</g, '\\u003c')}</script>
 ${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER).split('{{BASIS_VER}}').join(BASIS_VER)}
 <script>const DATA = ${js(data)}; const V02 = ${js(v02)}; const SIM = ${js(sim)}; const AERO = ${js(aero)}; const IMG = ${js(IMG)}; const CADP = ${js(cadp)}; let MESH = null; const MESH_META = ${JSON.stringify({ tris: MESH.tris, comps: MESH.comps.length, files: new Set(Object.keys(MESH.parts).map(k => k.split('~')[0])).size })}; const TRADE = ${js(TRADE)}; const AEROD = ${js(AEROD)}; const TESTS = ${js(TESTS)}; const BUILD = ${js(BUILD)}; const HW = ${js(HW)};</script>
@@ -95,6 +98,7 @@ ${r('./src/cadviewer.js')}
 <script>
 ${r('./src/flowviz.js')}
 ${r('./src/shell.js')}
+${r('./src/thermviz.js')}
 ${r('./src/app.js')}
 </script>
 `;

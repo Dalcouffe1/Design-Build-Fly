@@ -23,7 +23,7 @@
   <div class="mast"><span class="org">Design-Build-Fly <span aria-hidden="true">·</span> UC Berkeley capstone</span><span class="org">DBF-RPT-001 <span aria-hidden="true">·</span> Issue 5</span></div>
     <h1>Lift + Cruise VTOL Design Review</h1>
     <p class="subtitle">Hybrid VTOL with vertical lift rotors for takeoff and landing, and a pusher prop and fixed wing for cruise.</p>
-    <p class="docref">Engineering design review <b>DBF-RPT-001</b>, issue 5, 25 October 2026. Design revision {{BASIS_VER}}, ready for build: drawing set DBF-DRW-001 revision D.</p>
+    <p class="docref">Engineering design review <b>DBF-RPT-001</b>, issue 5, 25 October 2026. Design revision {{BASIS_VER}}, ready for build: drawing set DBF-DRW-001 revision E.</p>
     <div class="record">
       <table class="revrec">
         <caption>Revision record</caption>
@@ -33,7 +33,7 @@
           <tr><td>2</td><td>2026-10-18</td><td>Drawing set DBF-DRW-001 (5 sheets), wing saddle, interactive CAD model, accessibility fixes</td></tr>
           <tr><td>3</td><td>2026-10-21</td><td>Design {{BASIS_VER}}: aerodynamics and CFD, resized wing, leg fairings, every fastener in the CAD, drawing rev B (9 sheets), build manual, test plan, flight software, trade study</td></tr>
           <tr><td>4</td><td>2026-10-24</td><td>One chapter at a time with Part tabs; animated CFD flow views (2-D section, 3-D aircraft); drawing rev C (layout, ballooning and callouts corrected, geometry unchanged)</td></tr>
-        <tr><td>5</td><td>2026-10-25</td><td>Review platform: sidebar navigation, visual-first CAD, CFD and drawing workspaces, light theme, report view; wing re-sized to close R11 (sizing now reads CL_max from the aero package); drawing rev D; code-review fixes</td></tr>
+        <tr><td>5</td><td>2026-10-25</td><td>Review platform: sidebar navigation, visual-first CAD, CFD and drawing workspaces, light theme, report view; wing sized to an 11.75 m/s design stall, a 4 % CL_max margin under R11 (sizing reads CL_max from the aero package); CAD rev D, drawing rev E; FEA and CFD re-run on the final wing; heat-dissipation analysis; airframe-specific SITL; code-review fixes</td></tr>
         </tbody>
       </table>
       <div class="signoff" role="group" aria-labelledby="soTitle">
@@ -73,8 +73,8 @@
       <tr><td>Requirements</td><td><span class="chip risk">draft</span></td><td>docs/DESIGN-BASIS.md v0.4.0, R1–R20</td><td>Team sign-off; car measured (R4)</td></tr>
       <tr><td>Configuration</td><td><span class="chip met">done</span></td><td>29-variant trade study with literature survey (<a class="xref" href="#iterations">§2</a>)</td><td>—</td></tr>
       <tr><td>Sizing and aero</td><td><span class="chip met">v0.4</span></td><td>Sizing, XFOIL, NeuralFoil, AVL, drag build-up, 2-D RANS CFD (<a class="xref" href="#aero">§4</a>)</td><td>Any measured input (M-items)</td></tr>
-      <tr><td>CAD and drawings</td><td><span class="chip met">rev C</span></td><td><span data-cad="comps">—</span> components with every fastener; drawing set DBF-DRW-001 rev D, 9 sheets (<a class="xref" href="#model3d">§2</a>)</td><td>As-built check against the first article</td></tr>
-      <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (<a class="xref" href="#simulation">§9</a>)</td><td>FEA re-run 2026-10-25 on the CAD rev C inputs; every result within 15 % of its hand calc</td></tr>
+      <tr><td>CAD and drawings</td><td><span class="chip met">rev D</span></td><td><span data-cad="comps">—</span> components with every fastener; drawing set DBF-DRW-001 rev E, 9 sheets (<a class="xref" href="#model3d">§2</a>)</td><td>As-built check against the first article</td></tr>
+      <tr><td>Simulation</td><td><span class="chip met">run</span></td><td>FEA boom + spar, modal, thermal, vortex lattice (<a class="xref" href="#simulation">§9</a>)</td><td>FEA re-run 2026-10-25 on the CAD rev D inputs; every result within 15 % of its hand calc</td></tr>
       <tr><td>Build</td><td><span class="chip met">written</span></td><td>Build manual DBF-MAN-001, cut, print and wiring lists, templates (<a class="xref" href="#build">§11</a>)</td><td>Parts on hand</td></tr>
       <tr><td>Flight software</td><td><span class="chip met">configured</span></td><td>Parameter file, setup guide, checklists, SITL A–G (<a class="xref" href="#controls">§12</a>)</td><td>Bench setup on the real board</td></tr>
       <tr><td>Testing</td><td><span class="chip met">planned</span></td><td>Test plan DBF-TP-001, cards, data scripts (<a class="xref" href="#testing">§13</a>)</td><td>Tests run</td></tr>
@@ -151,10 +151,10 @@
     <p class="src">R18, R19; oercs.berkeley.edu/policies/campus-policy-library/unmanned-aircraft-system-drone-policy (site limits and senior-project clause, checked 2026-10-13) · <a class="xref" href="#schedule">§11</a></p>
   </div>
   <div class="decision">
-    <b class="q">Predicted stall is <span data-k="AEROD.stall.V_stall_mps" data-d="2"></span> m/s, meeting R11's 12 m/s at the limit. Accept the at-limit prediction and confirm it in flight?</b>
-    <div>On 2026-10-25 the sizing was changed to read the aircraft's trimmed CL_max from the aerodynamic package (now <span data-k="AEROD.CL_max_3D.adopted" data-d="3"></span>) and the wing was re-sized until the two agreed, which closed the earlier 0.4 % miss. The prediction sits exactly at the limit, and any low-Reynolds CL_max prediction carries more uncertainty than that margin. Transition completes at 16 m/s, 1.3 × the predicted stall.</div>
-    <div class="rec"><b>Recommended:</b> accept, and measure stall in fixed-wing mode early in the flight build-up (test plan, stall test). If it is over 12 m/s, raise AIRSPEED_MIN and Q_ASSIST_SPEED by the difference.</div>
-    <p class="src">R11; analysis/aero/aero_results.json stall; docs/research/aerodynamics.md · <a class="xref" href="#aero">§4</a></p>
+    <b class="q">The wing is sized to an 11.75 m/s design stall, <span data-k="AEROD.stall.margin_to_R11_pct" data-d="1"></span> % under R11's 12 m/s. Accept this margin and confirm stall in flight?</b>
+    <div>The sizing reads the aircraft's trimmed CL_max from the aerodynamic package (now <span data-k="AEROD.CL_max_3D.adopted" data-d="3"></span>) and designs to 11.75 m/s, so a CL_max up to 4 % below the prediction, or about 0.28 kg of mass growth, still meets R11. The margin cost 88 g and 0.6 min of cruise, no money and no pack change (docs/research/stall-margin.md compares 11.25–12.0 m/s). Transition completes at 16 m/s, 1.36 × the design stall.</div>
+    <div class="rec"><b>Recommended:</b> accept, and measure stall in fixed-wing mode early in the flight build-up (test plan, stall test). Then set AIRSPEED_STALL to the measured value and AIRSPEED_MIN to the larger of 16 and 1.3 × the measured stall; above 13.08 m/s treat it as an R11 failure.</div>
+    <p class="src">R11; analysis/aero/aero_results.json stall; docs/research/stall-margin.md; docs/research/aerodynamics.md · <a class="xref" href="#aero">§4</a></p>
   </div>
   <div class="decision">
     <b class="q">Accept no hover motor-out tolerance (R14)?</b>
@@ -250,7 +250,7 @@
       <div class="ctl">
         <div class="cgrp" role="group" aria-labelledby="cglView"><span class="cgl" id="cglView">View</span><div class="segbar"><button type="button" data-cview="iso">Isometric</button><button type="button" data-cview="top">Top</button><button type="button" data-cview="side">Side</button><button type="button" data-cview="front">Front</button></div></div>
         <div class="cgrp" role="group" aria-labelledby="cglShow"><span class="cgl" id="cglShow">Display</span><div class="segbar"><button type="button" id="cadXray" aria-pressed="false">X-ray</button><button type="button" id="cadExplode" aria-pressed="false">Explode</button><button type="button" id="cadEdges" aria-pressed="true">Edges</button></div></div>
-        <span class="cmeta">SOLIDWORKS model · C0 rev C</span>
+        <span class="cmeta">SOLIDWORKS model · C0 rev D</span>
       </div>
     </div>
       </div>
@@ -296,7 +296,7 @@
 <section class="sec" id="drawings" data-title="Drawings" data-group="design">
   <div class="sechead"><h2><span class="secno">0</span> Drawings</h2></div>
   <h3 id="m3-drw">Engineering drawings</h3>
-  <p>Drawing DBF-DRW-001, revision D, is a nine-sheet ANSI B set generated from the SOLIDWORKS model. Dimensions are driven from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. Every sheet carries a general tolerance block (printed parts ±0.5 % with a ±0.5 mm floor, cut tubes ISO 2768-m, hole positions Ø0.4, motor pattern Ø0.2), and the critical bores carry their fits. Select a sheet to view it at full size, or save the <a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revD.pdf">vector PDF</a>.</p>
+  <p>Drawing DBF-DRW-001, revision E, is a nine-sheet ANSI B set generated from the SOLIDWORKS model. Dimensions are driven from <code>cad/params.txt</code>, so the drawings show the sized geometry, not hand-entered numbers. Every sheet carries a general tolerance block (printed parts ±0.5 % with a ±0.5 mm floor, cut tubes ISO 2768-m, hole positions Ø0.4, motor pattern Ø0.2), and the critical bores carry their fits. Select a sheet to view it at full size, or save the <a href="cad/drawings/DBF-DRW-001.PDF" data-dl="DBF-DRW-001_revE.pdf">vector PDF</a>.</p>
   <div class="drawings" id="drawingsBox"></div>
   <div class="tbl"><table>
     <thead><tr><th>Sheet</th><th>Title</th><th>Contents</th></tr></thead>
@@ -523,7 +523,29 @@
     <div class="box"><div class="l">Time constant</div><div class="v"><span id="thermTau2"></span> s</div><div class="f">τ = m c / (h A)</div></div><span class="arr" aria-hidden="true">→</span>
     <div class="box"><div class="l">T after 90 s</div><div class="v ok-t"><span id="thermLumped2"></span> °C</div><div class="f">T_amb + ΔT_ss (1 − e^(−t/τ))</div></div>
   </div>
-  <p class="src">Transient thermal through the Simulation API returned no saved time steps (tested 2026-10-13), so the 90 s value is lumped capacitance. Motor heat capacity uses a mass-weighted c of 470 J/kgK <span class="est">est</span>. Copper (385) and steel (460) have lower c than aluminium (896), so an all-aluminium assumption would understate the temperature rise.</p>
+  <p class="src">The 90 s value here is lumped capacitance; the SOLIDWORKS transient study in the next section (cad/Thermal.cs) gives 76.2 °C for the same case. Motor heat capacity uses a mass-weighted c of 470 J/kgK <span class="est">est</span>. Copper (385) and steel (460) have lower c than aluminium (896), so an all-aluminium assumption would understate the temperature rise.</p>
+
+  <h3 id="sim-heat">Heat dissipation across the aircraft</h3>
+  <p id="thVerdict">SOLIDWORKS Simulation thermal studies of the four heat sources the mission loads: each lift unit (motor, PA6-CF mount, boom, ESC), the pod (battery and flight controller in the foam bays) and the pusher. Each is a chained transient through the mission (60 s hover, 20 s transition, 600 s cruise, 20 s transition, 60 s hover) on a 35 °C day, with convection from prop wash in hover and the free stream in cruise. Heat loads are loss estimates <span class="est">est</span>; the bench and flight tests that replace them are listed below.</p>
+  <figure class="chart thermviz" id="thermViz"><figcaption>Temperature fields from SOLIDWORKS Simulation, shown as a thermal camera would see them</figcaption>
+    <div class="th-bar"><div class="seg" id="thCases" role="group" aria-label="Thermal case"></div></div>
+    <canvas id="thCanvas" class="th-canvas" tabindex="0" role="img" aria-label="Thermal field"></canvas>
+    <img id="thImg" class="th-img" hidden src="analysis/thermal/img/pod_mission_end.png" alt="Thermal render: pod at the end of a hot-day mission" loading="lazy">
+    <p class="th-note" id="thNote"></p>
+  </figure>
+  <figure class="chart"><figcaption>Component temperatures through the mission, hot day, against their limits</figcaption><div class="svgwrap"><svg id="thHist" viewBox="0 0 640 300" role="img" aria-label="Mission temperature history"></svg></div></figure>
+  <div class="tbl"><table id="thFind"><thead><tr><th>Component</th><th>Case</th><th class="n">Peak, °C (35 °C day)</th><th class="n">Peak, °C (20 °C day)</th><th class="n">Limit, °C</th><th class="n">Margin, K</th><th>Status</th><th>Limit source and note</th></tr></thead><tbody></tbody></table></div>
+  <div class="decision red"><b class="q">The battery pack runs over its 60 °C limit by the end of a hot-day mission.</b><div>With the pack's internal resistance at the acceptance limit (7.5 mΩ per cell, test plan C11) and the foam bay sealed, the pack reaches 64 °C on a 35 °C day (49 °C on a 20 °C day); most of the heat comes in the two transitions. The pusher motor (an X4110S, as on the lift units) also reads hot: 91 °C after 600 s against an 80 °C limit <span class="est">est</span>. That figure is set by the estimated 38 W loss, which has no published value, so it is a measurement item before it is a design change.</div><div class="rec"><b>Recommended:</b> ventilate the battery bay (a nose inlet and an aft slot, about 15 × 30 mm <span class="est">est</span>): even 20 W/m²K of air on the pack brings the hot-day finish to about 56 °C. Tighten pack acceptance to 5 mΩ per cell for hot days and shade packs before flight. Vent the avionics bay (two Ø8 mm holes) and stand the flight controller off its tray. Keep the 60 s hover rule; move each lift ESC into the prop wash; measure the pusher on the ground (G03, 3 min at cruise throttle) and after the first cruise legs: above 65 °C after 120 s on a standard day, cut the loss and fit an aluminium spider floor; at 60 °C or below, leave it.</div><p class="src">analysis/thermal/thermal_results.json findings; docs/research/thermal.md §6 (recommendations with numbers)</p></div>
+  <details class="more"><summary>Static renders and SOLIDWORKS plots (for print)</summary>
+    <div class="th-gallery">
+      <img src="analysis/thermal/img/lift_unit_hover_30_60_90.png" alt="Lift unit at 30, 60 and 90 s of hover: motor can 50, 63 and 74 °C" loading="lazy">
+      <img src="analysis/thermal/img/lift_unit_mission.png" alt="Lift unit at the end of hover, end of transition and end of mission" loading="lazy">
+      <img src="analysis/thermal/img/pod_mission_end.png" alt="Pod centreline section at the end of a hot-day mission: flight controller 97 °C, battery about 64 °C" loading="lazy">
+      <img src="analysis/thermal/img/pusher_cruise.png" alt="Pusher motor and cup after 600 s cruise" loading="lazy">
+      <img src="analysis/thermal/img/thermal_mission_history.png" alt="Mission temperature history of every component" loading="lazy">
+    </div>
+  </details>
+  <p class="src">cad/Thermal.cs (SOLIDWORKS Simulation 2025 thermal, steady and chained transient; the transient API now saves every step) ← analysis/thermal/thermal_inputs.py (loads and film coefficients with sources) → cad/sim/thermal/results.txt → analysis/thermal/thermal_report.py → analysis/thermal/thermal_results.json and img/. Validation: motor-only steady 141.1 °C = Sim.cs; 90 s transient 76.2 °C vs lumped 75.9 °C. Correlations, materials and limitations: docs/research/thermal.md</p>
 
   <h3 id="sim-aero">Aerodynamics: vortex lattice</h3>
   <div class="tbl"><table id="aeroTable"><thead><tr><th>Quantity</th><th class="n">VLM</th><th class="n">Sizing estimate</th><th>Comment</th></tr></thead><tbody></tbody></table></div>

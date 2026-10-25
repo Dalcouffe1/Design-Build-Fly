@@ -767,6 +767,23 @@ h1{font-weight:600}
 
 :root.printing{color-scheme:light}
 
+/* heat dissipation viewer: a thermal-camera stage, case selector above, note below */
+.thermviz{padding:0}
+.thermviz figcaption{padding:12px 16px 6px}
+.th-bar{display:flex;flex-wrap:wrap;gap:8px;padding:0 12px 10px;border-bottom:1px solid var(--line)}
+.th-bar .seg{border:0;background:none;padding:0;gap:2px}
+.th-bar .seg button{padding:0 12px;background:var(--surface-2)}
+.th-canvas{display:block;width:100%;aspect-ratio:16/9;background:#2a2f36;touch-action:none;cursor:grab}
+.th-canvas:active{cursor:grabbing}
+.th-note{margin:0;padding:10px 16px 12px;font-size:.875rem;color:var(--fg-2);border-top:1px solid var(--line);max-width:none}
+.th-gallery{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:12px;padding:12px 0}
+.th-gallery img{width:100%;height:auto;border-radius:6px;border:1px solid var(--line)}
+@media (max-width:560px){.th-canvas{aspect-ratio:4/3}}
+@media print{.th-bar,.th-canvas{display:none}}
+
+.th-img{display:block;width:100%;height:auto;background:#111}
+.th-img[hidden],.th-canvas[hidden]{display:none}
+
 ul.tpl{list-style:none;margin:16px 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(16rem,1fr));gap:16px;max-width:none}
 ul.tpl li{max-width:none}
 ul.tpl a{display:flex;flex-direction:column;gap:8px;padding:10px;background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r);color:var(--fg);text-decoration:none}
