@@ -1,8 +1,8 @@
 {
- "generated": "2026-10-21",
+ "generated": "2026-10-25",
  "script": "analysis/tradestudy.mjs",
  "model": "analysis/model.js size() (unchanged)",
- "inputs": "analysis/results.json (sizing.mjs v0.3.1 outputs)",
+ "inputs": "analysis/results.json (sizing.mjs v0.4 outputs)",
  "notes": [
   "All costs include 10.25 % tax and the sizing shipping allowance (results.json C0 bom.shipping) plus $15 per added vendor (EST); fees outside the cap excluded (R6).",
   "Rubric scores (controlRisk, scheduleRisk, motor-out cruise points) are engineering judgements (EST) with the evidence quoted per variant.",
@@ -73,14 +73,14 @@
    {
     "rank": 1,
     "id": "TS-quad",
-    "total": 7.3787,
+    "total": 7.3467,
     "feasible": true,
     "meetsR1": false
    },
    {
     "rank": 2,
     "id": "TS-duo",
-    "total": 6.3181,
+    "total": 6.2967,
     "feasible": true,
     "meetsR1": false
    },
@@ -278,13 +278,13 @@
    {
     "rank": 1,
     "id": "TS-quad",
-    "total": 7.3787,
+    "total": 7.3467,
     "meetsR1": false
    },
    {
     "rank": 2,
     "id": "TS-duo",
-    "total": 6.3181,
+    "total": 6.2967,
     "meetsR1": false
    },
    {
@@ -765,19 +765,19 @@
     "eta_best": 0.6,
     "eta_pess": 0.3512,
     "cruise_min": {
-     "base": 21.9892,
-     "best": 23.9621,
-     "pess": 14.0258
+     "base": 22.7413,
+     "best": 24.7816,
+     "pess": 14.5055
     },
     "MTOW": {
-     "base": 5.18687,
-     "best": 5.18687,
-     "pess": 5.18687
+     "base": 5.26626,
+     "best": 5.26626,
+     "pess": 5.26626
     },
     "total": {
-     "base": 7.3787,
-     "best": 7.3787,
-     "pess": 6.4826
+     "base": 7.3467,
+     "best": 7.3467,
+     "pess": 6.5226
     },
     "feasible": {
      "base": true,
@@ -828,7 +828,8 @@
   "C0_this_script": {
    "MTOW": 6.43157,
    "cruise_min": 13.0535,
-   "total": 1896.79
+   "total": 1896.79,
+   "boomTotal": 2.89347
   }
  },
  "sources": {
@@ -3684,7 +3685,7 @@
     "tax_usd": 166.12,
     "shipping_usd": 110,
     "span_m": 2,
-    "longestPiece_m": 1.07965,
+    "longestPiece_m": 1.04965,
     "pieces": 6,
     "gustForce_N": 9.26305,
     "gustTilt_deg": 8.12582,
@@ -14802,8 +14803,8 @@
      "tailAreaRatio": 0.06,
      "CdA_rotor": 0,
      "etaProp": 0.5506,
-     "CLmax": 1,
-     "CD0_clean": 0.026,
+     "CLmax": 0.943333,
+     "CD0_clean": 0.0226,
      "mGear": 0.08,
      "mServos": 0.0864
     },
@@ -14823,33 +14824,33 @@
     "motorOutWhy": "4 rotors: no hover motor-out (S27); in cruise 3 rotors keep it flying but it cannot hover to land."
    },
    "metrics": {
-    "MTOW_kg": 5.18687,
-    "empty_kg_noBatt_noPayload": 3.86687,
+    "MTOW_kg": 5.26626,
+    "empty_kg_noBatt_noPayload": 3.94626,
     "battery_kg": 0.82,
     "pack": "Ovonic 6S 6500 100C (2-pack)",
     "packNote": "",
-    "S_m2": 0.576718,
-    "AR": 9.98754,
-    "chord_m": 0.240299,
-    "LD": 9.75088,
-    "CD0": 0.0317567,
-    "diskLoading_Nm2": 86.8395,
-    "wingLoading_Nm2": 88.2,
-    "P_hover_W": 629.282,
-    "P_cruise_W": 222.928,
-    "I_hover_A": 28.346,
-    "E_mission_Wh": 65.1227,
+    "S_m2": 0.620717,
+    "AR": 9.27959,
+    "chord_m": 0.258632,
+    "LD": 10.3242,
+    "CD0": 0.0279487,
+    "diskLoading_Nm2": 88.1683,
+    "wingLoading_Nm2": 83.202,
+    "P_hover_W": 644.504,
+    "P_cruise_W": 213.77,
+    "I_hover_A": 29.0317,
+    "E_mission_Wh": 64.273,
     "E_pack_Wh": 144.3,
     "E_usable_Wh": 109.668,
-    "cruise_avail_min": 21.9892,
-    "cruise_margin_pct": 119.892,
-    "TW": 2.41379,
+    "cruise_avail_min": 22.7413,
+    "cruise_margin_pct": 127.413,
+    "TW": 2.3774,
     "TW_motorOut": 0,
-    "growth_kg": 2.63813,
+    "growth_kg": 2.55874,
     "m_lift": 0.968,
     "m_booms": 0.2835,
-    "m_wing": 1.19679,
-    "m_tail": 0.0321809,
+    "m_wing": 1.27372,
+    "m_tail": 0.034636,
     "m_fixed": 1.8864,
     "extras": [],
     "cost_total_usd": 1727.52,
@@ -14860,10 +14861,10 @@
     "span_m": 2.4,
     "longestPiece_m": 1.2,
     "pieces": 3,
-    "gustForce_N": 28.9374,
-    "gustTilt_deg": 29.6354,
-    "exposedArea_m2": 0.576718,
-    "joinerMS_scaled": 2.20605,
+    "gustForce_N": 31.1451,
+    "gustTilt_deg": 31.0929,
+    "exposedArea_m2": 0.620717,
+    "joinerMS_scaled": 2.17279,
     "buildIndex": 10,
     "controlRisk": 6,
     "scheduleRisk": 6.5,
@@ -15315,21 +15316,21 @@
    "feasible": true,
    "flags": [],
    "warnings": [
-    "R16: 30° tilt needed to hold against an 8 m/s gust in hover (planform exposed)",
+    "R16: 31° tilt needed to hold against an 8 m/s gust in hover (planform exposed)",
     "R1 (Given): not lift + cruise with stopped lift rotors — needs the team to change the project definition",
-    "R2: MTOW 5.19 kg below the 8–15 kg working target (accepted for C0 pending sign-off)"
+    "R2: MTOW 5.27 kg below the 8–15 kg working target (accepted for C0 pending sign-off)"
    ],
    "scores": {
     "cost": 9.083,
     "energy": 10,
-    "portability": 9.869,
+    "portability": 9.814,
     "build": 10,
     "control": 4,
     "schedule": 3.5,
     "motorOut": 2,
-    "growth": 8.794
+    "growth": 8.529
    },
-   "total": 7.3787
+   "total": 7.3467
   },
   {
    "id": "TS-duo",
@@ -15386,8 +15387,8 @@
      "nBooms": 0,
      "boomTotalLen": 0,
      "tailAreaRatio": 0.06,
-     "CLmax": 1,
-     "CD0_clean": 0.026,
+     "CLmax": 0.943333,
+     "CD0_clean": 0.0226,
      "mGear": 0.08,
      "mServos": 0.0864
     },
@@ -15407,33 +15408,33 @@
     "motorOutWhy": "2 rotors: any motor loss is unrecoverable."
    },
    "metrics": {
-    "MTOW_kg": 4.70112,
-    "empty_kg_noBatt_noPayload": 3.38112,
+    "MTOW_kg": 4.76546,
+    "empty_kg_noBatt_noPayload": 3.44546,
     "battery_kg": 0.82,
     "pack": "Ovonic 6S 6500 100C (2-pack)",
     "packNote": "",
-    "S_m2": 0.52271,
-    "AR": 11.0195,
-    "chord_m": 0.217796,
-    "LD": 11.7342,
-    "CD0": 0.026,
-    "diskLoading_Nm2": 202.19,
-    "wingLoading_Nm2": 88.2,
-    "P_hover_W": 818.869,
-    "P_cruise_W": 154.076,
-    "I_hover_A": 36.886,
-    "E_mission_Wh": 62.0735,
+    "S_m2": 0.56169,
+    "AR": 10.2548,
+    "chord_m": 0.234038,
+    "LD": 12.543,
+    "CD0": 0.0226,
+    "diskLoading_Nm2": 204.956,
+    "wingLoading_Nm2": 83.202,
+    "P_hover_W": 834.354,
+    "P_cruise_W": 146.113,
+    "I_hover_A": 37.5835,
+    "E_mission_Wh": 61.4345,
     "E_pack_Wh": 144.3,
     "E_usable_Wh": 109.668,
-    "cruise_avail_min": 28.5341,
-    "cruise_margin_pct": 185.341,
-    "TW": 2.4675,
+    "cruise_avail_min": 29.8067,
+    "cruise_margin_pct": 198.067,
+    "TW": 2.43418,
     "TW_motorOut": 0,
-    "growth_kg": 2.54888,
+    "growth_kg": 2.48454,
     "m_lift": 0.916,
     "m_booms": 0,
-    "m_wing": 1.10955,
-    "m_tail": 0.0291672,
+    "m_wing": 1.17172,
+    "m_tail": 0.0313423,
     "m_fixed": 1.8264,
     "extras": [],
     "cost_total_usd": 1856.31,
@@ -15444,10 +15445,10 @@
     "span_m": 2.4,
     "longestPiece_m": 1.2,
     "pieces": 3,
-    "gustForce_N": 26.2275,
-    "gustTilt_deg": 29.6355,
-    "exposedArea_m2": 0.52271,
-    "joinerMS_scaled": 2.43399,
+    "gustForce_N": 28.1834,
+    "gustTilt_deg": 31.0929,
+    "exposedArea_m2": 0.56169,
+    "joinerMS_scaled": 2.40113,
     "buildIndex": 6,
     "controlRisk": 7,
     "scheduleRisk": 7,
@@ -15872,9 +15873,9 @@
    "feasible": true,
    "flags": [],
    "warnings": [
-    "R16: 30° tilt needed to hold against an 8 m/s gust in hover (planform exposed)",
+    "R16: 31° tilt needed to hold against an 8 m/s gust in hover (planform exposed)",
     "R1 (Given): not lift + cruise with stopped lift rotors — needs the team to change the project definition",
-    "R2: MTOW 4.70 kg below the 8–15 kg working target (accepted for C0 pending sign-off)"
+    "R2: MTOW 4.77 kg below the 8–15 kg working target (accepted for C0 pending sign-off)"
    ],
    "scores": {
     "cost": 4.79,
@@ -15884,9 +15885,9 @@
     "control": 3,
     "schedule": 3,
     "motorOut": 0,
-    "growth": 8.496
+    "growth": 8.282
    },
-   "total": 6.3181
+   "total": 6.2967
   },
   {
    "id": "BW-qp",

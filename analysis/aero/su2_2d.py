@@ -12,10 +12,14 @@ Study matrix (see MATRIX below):
   transition : L2, SST-LM, alpha 0 .. 16                    -> effect of laminar-turbulent transition
 Runs are executed in parallel (N_JOBS concurrent SU2 processes x THREADS OpenMP threads each).
 Outputs: out/su2/<case>/history.csv, surface_flow.csv; out/su2_2d.json (forces, convergence, timings).
-Usage: py su2_2d.py [--quick]   (--quick: mesh study + reduced sweep, for smoke testing)
+Usage: py su2_2d.py [--quick] [--parse-only]
+  --quick: mesh study + reduced sweep, for smoke testing
+  --parse-only: re-read the existing out/su2/<case> outputs and rebuild out/su2_2d.json without running SU2
+Cache: done.txt stores a hash of the case.cfg that produced history.csv and the source-mesh size/mtime; a case is
+re-run only when either changed.
 """
 from __future__ import annotations
-import os, sys, re, time, subprocess, csv, math, shutil
+import os, sys, re, time, subprocess, csv, math, shutil, hashlib
 from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 from common import *
@@ -92,9 +96,13 @@ WRT_RESTART_OVERWRITE= YES
 def case_name(level, alpha, model):
     return f"L{level}_{model}_a{alpha:+05.1f}".replace("+", "p").replace("-", "m")
 
-def write_case(level, alpha, model, iters=4000, cfl=2.0, cflmax=50.0, limfreeze=300):
-    name = case_name(level, alpha, model)
-    d = SU2_DIR / name; d.mkdir(exist_ok=True)
+# volume solution as CSV (flowfield_2d.py): SU2 8.5 writes the "CSV" entry of OUTPUT_FILES as the ASCII restart (PointID, x, y,
+# Pressure, Velocity_x, Velocity_y, Nu_Tilde) under RESTART_FILENAME; named flow.csv so run_case's restart* clean-up leaves it
+OUTPUT_LINE = "OUTPUT_FILES= ( SURFACE_CSV )"
+OUTPUT_LINE_VOLUME = "OUTPUT_FILES= ( SURFACE_CSV, CSV )\nRESTART_FILENAME= flow"
+
+def case_cfg(level, alpha, model, iters=4000, cfl=2.0, cflmax=50.0, limfreeze=300, extra_output=False):
+    """case.cfg text of one case (first-attempt numerics)"""
     a = math.radians(alpha)
     if model == "SA":
         turb, trans, ti, tlr = "SA", "", 0.001, 10.0
@@ -103,91 +111,177 @@ def write_case(level, alpha, model, iters=4000, cfl=2.0, cflmax=50.0, limfreeze=
     else:
         raise ValueError(model)
     mesh = MESH_DIR / f"naca2415_L{level}.su2"
-    if not mesh.exists():
-        raise FileNotFoundError(f"{mesh} missing: run mesh_2d.py {level}")
-    shutil.copy(mesh, d / mesh.name)
-    (d / "case.cfg").write_text(CFG.format(Re=RE, turb=turb, trans=trans, rho=RHO, vx=V * math.cos(a), vy=V * math.sin(a), mu=MU_C,
-                                           ti=ti, tlr=tlr, alpha=alpha, cfl=cfl, cflmax=cflmax, iters=iters, mesh=mesh.name, limfreeze=limfreeze))
-    return d
+    cfg = CFG.format(Re=RE, turb=turb, trans=trans, rho=RHO, vx=V * math.cos(a), vy=V * math.sin(a), mu=MU_C,
+                     ti=ti, tlr=tlr, alpha=alpha, cfl=cfl, cflmax=cflmax, iters=iters, mesh=mesh.name, limfreeze=limfreeze)
+    if extra_output:
+        new = cfg.replace(OUTPUT_LINE, OUTPUT_LINE_VOLUME)
+        assert new != cfg, f"'{OUTPUT_LINE}' not found in CFG: the volume CSV would not be written"
+        cfg = new
+    return cfg
 
 SAFE = dict(cfl=0.5, cflmax=10.0, limfreeze=1500)   # retry settings if a case diverges
 
-def _finite(r):
-    return all(math.isfinite(r[k]) and abs(r[k]) < 50 for k in ("CL", "CD", "CM"))
+def retry_cfg(cfg: str) -> str:
+    """the same case with the safer numerics (SAFE, 8000 iterations); idempotent"""
+    cfg = re.sub(r"CFL_NUMBER= [0-9.]+", f"CFL_NUMBER= {SAFE['cfl']}", cfg)
+    cfg = re.sub(r"CFL_ADAPT_PARAM= \(.*\)", f"CFL_ADAPT_PARAM= ( 0.5, 1.1, 0.1, {SAFE['cflmax']} )", cfg)
+    cfg = re.sub(r"LIMITER_ITER= \d+", f"LIMITER_ITER= {SAFE['limfreeze']}", cfg)
+    cfg = re.sub(r"(?m)^ITER= \d+", "ITER= 8000", cfg)   # only the main count, never LINEAR_SOLVER_ITER / LIMITER_ITER / CONV_STARTITER
+    return cfg
+
+def write_case(level, alpha, model, iters=4000, cfl=2.0, cflmax=50.0, limfreeze=300, out_dir=None, extra_output=False):
+    d = (out_dir or SU2_DIR) / case_name(level, alpha, model); d.mkdir(parents=True, exist_ok=True)
+    mesh = MESH_DIR / f"naca2415_L{level}.su2"
+    if not mesh.exists():
+        raise FileNotFoundError(f"{mesh} missing: run mesh_2d.py {level}")
+    cfg = case_cfg(level, alpha, model, iters, cfl, cflmax, limfreeze, extra_output)
+    f = d / "case.cfg"
+    old = f.read_text() if f.exists() else None
+    # an existing case.cfg that is this config or its safe-numerics retry is kept, so it stays the config that produced
+    # history.csv (run_case's cache key); any other change overwrites it, which invalidates the cache and re-runs the case
+    if old not in (cfg, retry_cfg(cfg)):
+        f.write_text(cfg)
+    return d
+
+# ---------------------------------------------------------------- cache key (done.txt)
+def _sha(text: str) -> str:
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()[:16]
+
+def _mesh_sig(cfg: str) -> str:
+    """source mesh (mesh/<name>) name:size:mtime; the per-case copy is deleted after each run"""
+    name = re.search(r"MESH_FILENAME= (\S+)", cfg).group(1)
+    m = MESH_DIR / name
+    return f"{name}:{m.stat().st_size}:{int(m.stat().st_mtime)}" if m.exists() else f"{name}:missing"
+
+def cache_key(cfg: str) -> dict:
+    return {"cfg_sha": _sha(cfg), "mesh": _mesh_sig(cfg)}
+
+def read_done(d: Path) -> dict:
+    f = d / "done.txt"
+    if not f.exists():
+        return {}
+    return dict(tok.split("=", 1) for tok in f.read_text().split() if "=" in tok)
+
+def write_done(d: Path, done: dict):
+    (d / "done.txt").write_text(" ".join(f"{k}={v}" for k, v in done.items()) + "\n")
+
+def backfill_key(d: Path) -> dict:
+    """done.txt written before the cache key existed: record the key of the case.cfg on disk if that file is evidently the
+    one that produced history.csv (attempt 2 <=> retry numerics in the file, iterations <= its ITER), never re-run"""
+    done = read_done(d)
+    if "cfg_sha" in done or not (d / "history.csv").exists() or not (d / "case.cfg").exists() or "attempt" not in done:
+        return done
+    cfg = (d / "case.cfg").read_text()
+    is_retry = retry_cfg(cfg) == cfg
+    n_iter = len(read_history(d / "history.csv")[1])
+    max_iter = int(re.search(r"(?m)^ITER= (\d+)", cfg).group(1))
+    if is_retry == (done["attempt"] == "2") and n_iter <= max_iter:
+        done.update(cache_key(cfg)); write_done(d, done)
+        print(f"  {d.name}: cache key backfilled from the case.cfg on disk")
+    else:
+        print(f"  {d.name}: case.cfg does not match the history (attempt {done['attempt']}, retry cfg {is_retry}, {n_iter} > {max_iter} it?): not backfilled")
+    return done
 
 def run_case(d: Path, threads=THREADS, force=False):
-    hist = d / "history.csv"
-    if hist.exists() and (d / "done.txt").exists() and not force:
-        r = parse_case(d)
-        if _finite(r) and "rc=0" in (d / "done.txt").read_text():
-            return r
-        force = True   # previous attempt diverged: fall through to the retry below
-    attempts = [None, SAFE]
-    for k, settings in enumerate(attempts):
-        if settings is not None:   # rewrite the config with the safer numerics
-            cfg = (d / "case.cfg").read_text()
-            cfg = re.sub(r"CFL_NUMBER= [0-9.]+", f"CFL_NUMBER= {settings['cfl']}", cfg)
-            cfg = re.sub(r"CFL_ADAPT_PARAM= \(.*\)", f"CFL_ADAPT_PARAM= ( 0.5, 1.1, 0.1, {settings['cflmax']} )", cfg)
-            cfg = re.sub(r"LIMITER_ITER= \d+", f"LIMITER_ITER= {settings['limfreeze']}", cfg)
-            cfg = re.sub(r"(?m)^ITER= \d+", "ITER= 8000", cfg)   # only the main count, never LINEAR_SOLVER_ITER / LIMITER_ITER / CONV_STARTITER
-            (d / "case.cfg").write_text(cfg)
-        mesh = MESH_DIR / (re.search(r"MESH_FILENAME= (\S+)", (d / "case.cfg").read_text()).group(1))
+    """run (or reuse) one case.  Reused only when done.txt carries the key of the case.cfg on disk and the source mesh.
+    An unusable first attempt is retried once with the SAFE numerics; the config that ran stays on disk as case.cfg."""
+    cfg0 = (d / "case.cfg").read_text()
+    plans = [cfg0]
+    if (d / "history.csv").exists() and not force:
+        done = backfill_key(d)
+        if done.get("cfg_sha") == _sha(cfg0) and done.get("mesh") == _mesh_sig(cfg0):
+            r = parse_case(d)
+            if (done.get("rc") == "0" and r["usable"]) or retry_cfg(cfg0) == cfg0:
+                return r          # usable, or the safe-numerics retry already ran: a re-run would reproduce it
+            plans = []            # first attempt is on disk and unusable: go straight to the retry
+    if retry_cfg(cfg0) != cfg0:
+        plans.append(retry_cfg(cfg0))
+    for cfg in plans:
+        attempt = 2 if retry_cfg(cfg) == cfg else 1
+        (d / "case.cfg").write_text(cfg)
+        mesh = MESH_DIR / re.search(r"MESH_FILENAME= (\S+)", cfg).group(1)
         if not (d / mesh.name).exists():
             shutil.copy(mesh, d / mesh.name)
         t0 = time.time()
-        with open(d / ("su2.log" if k == 0 else "su2_retry.log"), "w") as log:
+        with open(d / ("su2.log" if attempt == 1 else "su2_retry.log"), "w") as log:
             p = subprocess.run([str(SU2_CFD), "-t", str(threads), "case.cfg"], cwd=str(d), stdout=log, stderr=subprocess.STDOUT, text=True)
         wall = time.time() - t0
-        (d / "done.txt").write_text(f"rc={p.returncode} wall_s={wall:.1f} attempt={k+1}\n")
+        write_done(d, {"rc": p.returncode, "wall_s": f"{wall:.1f}", "attempt": attempt, **cache_key(cfg)})
         for f in d.glob("*.su2"):
             f.unlink()          # mesh copy, keep the folder small
         for f in d.glob("restart*"):
             f.unlink()
         r = parse_case(d)
-        if p.returncode == 0 and _finite(r):
+        if p.returncode == 0 and r["usable"]:
             break
-        print(f"  {d.name}: diverged on attempt {k+1}" + (", retrying with CFL 0.5" if k == 0 else ""))
-    print(f"  {d.name}: CL {r['CL']:.4f} CD {r['CD']:.5f} CM {r['CM']:.4f}  iters {r['iters']}  conv {r['converged']}  {wall:.0f} s")
+        print(f"  {d.name}: unusable on attempt {attempt} ({r['reason']})" + (", retrying with CFL 0.5" if attempt == 1 and cfg is not plans[-1] else ""))
+    print(f"  {d.name}: CL {r['CL']:.4f} CD {r['CD']:.5f} CM {r['CM']:.4f}  iters {r['iters']}  conv {r['converged']}  usable {r['usable']}  {wall:.0f} s")
     return r
 
+# ---------------------------------------------------------------- parsing
 NAN_RESULT = {"CL": float("nan"), "CD": float("nan"), "CM": float("nan"), "CL_final": float("nan"), "CD_final": float("nan"),
-              "CL_std_last300": None, "CD_std_last300": None, "rmsP_final": None, "rmsP_drop": None, "iters": 0, "converged": False, "wall_s": None}
+              "CL_std_last300": None, "CD_std_last300": None, "rmsP_final": None, "rmsP_drop": None, "iters": 0, "converged": False,
+              "usable": False, "reason": "no history", "wall_s": None}
+CL_PHYS_MAX = 2.5     # |CL| above this is not a physical 2-D value for a 15 % section (the review applies the same limit)
+
+def _num(v: str) -> float:
+    """tolerant float: MSVC writes NaN/Inf as '-nan(ind)', 'nan(ind)', '-1.#IND', 'inf'; anything unreadable -> NaN"""
+    try:
+        return float(v)
+    except ValueError:
+        return float("nan")
+
+def read_history(path: Path):
+    """SU2 history.csv -> (header list, float array rows x columns); unreadable values become NaN"""
+    with open(path) as f:
+        rows = list(csv.reader(f))
+    if not rows:
+        return [], np.empty((0, 0))
+    hdr = [h.strip().strip('"') for h in rows[0]]
+    data = np.array([[_num(v) for v in r] for r in rows[1:] if len(r) == len(hdr)], dtype=float)
+    return hdr, data.reshape(-1, len(hdr))
 
 def parse_case(d: Path):
-    # a crashed run can leave no history, or only a header: report it as not converged (the caller retries it)
+    # a crashed run can leave no history, or only a header: report it as not usable (the caller retries it)
     hist = d / "history.csv"
     if not hist.exists():
         return {**NAN_RESULT, "dir": d.name}
-    with open(hist) as f:
-        rows = list(csv.reader(f))
-    if len(rows) < 3:
-        return {**NAN_RESULT, "dir": d.name}
-    hdr = [h.strip().strip('"') for h in rows[0]]
-    data = np.array([[float(v) for v in r] for r in rows[1:] if len(r) == len(hdr)])
-    if data.ndim != 2 or len(data) < 2:
-        return {**NAN_RESULT, "dir": d.name}
+    hdr, data = read_history(hist)
+    if len(data) < 2:
+        return {**NAN_RESULT, "dir": d.name, "reason": "history has fewer than 2 rows"}
     col = {h: i for i, h in enumerate(hdr)}
     cl, cd, cm = data[:, col["CL"]], data[:, col["CD"]], data[:, col["CMz"]]
     rp = data[:, col["rms[P]"]]
     n = len(cl); tail = slice(max(0, n - 300), n)
-    done = (d / "done.txt").read_text() if (d / "done.txt").exists() else ""
-    wall = float(done.split("wall_s=")[1].split()[0]) if "wall_s=" in done else None
-    # converged = residual dropped and the force Cauchy criterion was met before ITER, or forces are steady
+    done = read_done(d)
+    wall = float(done["wall_s"]) if "wall_s" in done else None
+    # converged = force history steady over the last 300 iterations (std CL < 2e-3, std CD < 2e-4).  It says nothing about
+    # the residual: a diverged run can also sit still.  The residual-drop and physical-range checks are the `usable` flag.
     cl_std, cd_std = float(cl[tail].std()), float(cd[tail].std())
     steady = cl_std < 2e-3 and cd_std < 2e-4
-    return {"CL": float(cl[tail].mean()), "CD": float(cd[tail].mean()), "CM": float(cm[tail].mean()),
+    CL, CD, CM = float(cl[tail].mean()), float(cd[tail].mean()), float(cm[tail].mean())
+    drop = float(rp[0] - rp[-1])
+    if not all(math.isfinite(x) for x in (CL, CD, CM)):
+        reason = "non-finite forces"
+    elif not math.isfinite(drop) or drop <= 0:
+        reason = f"pressure residual did not drop (log10 rms[P] {rp[0]:.2f} -> {rp[-1]:.2f})"
+    elif CD <= 0:
+        reason = f"CD {CD:.4g} <= 0"
+    elif abs(CL) > CL_PHYS_MAX:
+        reason = f"|CL| {abs(CL):.4g} > {CL_PHYS_MAX}"
+    else:
+        reason = None
+    return {"CL": CL, "CD": CD, "CM": CM,
             "CL_final": float(cl[-1]), "CD_final": float(cd[-1]),
-            "CL_std_last300": cl_std, "CD_std_last300": cd_std, "rmsP_final": float(rp[-1]), "rmsP_drop": float(rp[0] - rp[-1]),
-            "iters": int(n), "converged": bool(steady), "wall_s": wall, "dir": d.name}
+            "CL_std_last300": cl_std, "CD_std_last300": cd_std, "rmsP_final": float(rp[-1]), "rmsP_drop": drop,
+            "iters": int(n), "converged": bool(steady) and reason is None, "usable": reason is None, "reason": reason,
+            "wall_s": wall, "dir": d.name}
 
 def surface_cp(d: Path):
     f = d / "surface_flow.csv"
     if not f.exists():
         return None
-    with open(f) as fh:
-        rows = list(csv.reader(fh))
-    hdr = [h.strip().strip('"') for h in rows[0]]
-    data = np.array([[float(v) for v in r] for r in rows[1:] if len(r) == len(hdr)])
+    hdr, data = read_history(f)
     ix, iy = hdr.index("x"), hdr.index("y")
     if "Pressure_Coefficient" in hdr:
         cp = data[:, hdr.index("Pressure_Coefficient")]
@@ -213,71 +307,109 @@ def gci(f1, f2, f3, r=math.sqrt(2.0), Fs=1.25):
     ea = abs((f1 - f2) / f1) if f1 else float("nan")
     return {"p": p, "GCI_fine_pct": 100 * Fs * ea / (r**p - 1), "f_ext": f_ext, "e21_pct": 100 * ea}
 
+def _clean(o):
+    """non-finite floats -> None (NaN/Inf are not valid JSON)"""
+    if isinstance(o, float):
+        return o if math.isfinite(o) else None
+    if isinstance(o, dict):
+        return {k: _clean(v) for k, v in o.items()}
+    return o
+
+# ---------------------------------------------------------------- study
+def matrix(quick=False):
+    """(level, alpha, model, numerics) of every case"""
+    sweep = [0, 2, 8, 14] if quick else [-4, -2, 0, 2, 4, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18, 20]
+    m = [(L, a, "SA") for L in (1, 2, 3) for a in (2.0, 10.0)]
+    m += [(2, float(a), "SA") for a in sweep if (2, float(a), "SA") not in m]
+    m += [(2, float(a), "SSTLM") for a in ([2, 10] if quick else [0, 2, 4, 6, 8, 10, 12, 14, 16])]
+    return [(L, a, mod, numerics(a)) for L, a, mod in m]
+
+def numerics(alpha):
+    """first-attempt numerics: CFL 2 adaptive to 50, limiter frozen after 300 it; gentler for alpha >= 13 deg"""
+    high = alpha >= 13
+    return dict(iters=6000 if high else 4000, cfl=1.0 if high else 2.0, cflmax=20.0 if high else 50.0, limfreeze=800 if high else 300)
+
+def assemble(parsed: dict, wall_s_total, extra=None):
+    """parsed: case name -> parse_case result for every case of the matrix.  Unusable cases are kept out of the polars,
+    the mesh study and the Cp output and listed with the reason under unusable_cases."""
+    usable = {k: r for k, r in parsed.items() if r["usable"]}
+    unusable = {k: _clean(r) for k, r in parsed.items() if not r["usable"]}
+    if unusable:
+        print(f"  {len(unusable)} cases without a usable result: " + "; ".join(f"{k} ({r['reason']})" for k, r in unusable.items()))
+    res = {"tool": "SU2 8.5.0 win64-omp (https://github.com/su2code/SU2/releases/tag/v8.5.0, checked 2026-10-21)",
+           "solver": "INC_RANS, FDS + MUSCL, implicit Euler; SA fully turbulent; SST + Langtry-Menter LM transition",
+           "Re": RE, "V_mps": V, "mu_model": MU_C, "threads_per_case": THREADS, "jobs": N_JOBS,
+           "usable_rule": f"usable = finite forces, log10 rms[P] lower at the end than at the start, CD > 0, |CL| <= {CL_PHYS_MAX}; "
+                          "converged = usable and force history steady over the last 300 iterations (std CL < 2e-3, std CD < 2e-4)",
+           "cases": usable, "failed_cases": list(unusable), "unusable_cases": unusable}
+    mesh_info = json.loads((OUT / "mesh_2d.json").read_text()) if (OUT / "mesh_2d.json").exists() else {}
+    res["mesh_study"] = {}
+    for a in (2.0, 10.0):
+        ran = {L: parsed.get(case_name(L, a, "SA")) for L in (1, 2, 3)}
+        ok = {L: (r if r and r["usable"] else None) for L, r in ran.items()}
+        if not any(ok.values()):
+            continue
+        excluded = {f"L{L}": (ran[L]["reason"] if ran[L] else "not run") for L in (1, 2, 3) if not ok[L]}
+        val = lambda L, k: ok[L][k] if ok[L] else None
+        if all(ok.values()):
+            g_cl, g_cd = gci(ok[3]["CL"], ok[2]["CL"], ok[1]["CL"]), gci(ok[3]["CD"], ok[2]["CD"], ok[1]["CD"])
+        else:
+            g_cl = g_cd = {"p": None, "GCI_fine_pct": None, "f_ext": None,
+                           "note": "GCI needs all three meshes usable; excluded: " + ", ".join(excluded)}
+        res["mesh_study"][f"alpha_{a:g}"] = {
+            "cells": {f"L{L}": mesh_info.get(f"L{L}", {}).get("cells") for L in (1, 2, 3)},
+            "CL": {f"L{L}": val(L, "CL") for L in (1, 2, 3)}, "CD": {f"L{L}": val(L, "CD") for L in (1, 2, 3)},
+            "converged": {f"L{L}": val(L, "converged") for L in (1, 2, 3)}, "excluded": excluded,
+            "GCI_CL": g_cl, "GCI_CD": g_cd,
+            "pct_change_CL_L2_L3": 100 * (ok[3]["CL"] - ok[2]["CL"]) / ok[3]["CL"] if ok[2] and ok[3] else None,
+            "pct_change_CD_L2_L3": 100 * (ok[3]["CD"] - ok[2]["CD"]) / ok[3]["CD"] if ok[2] and ok[3] else None,
+            "pct_change_CL_L1_L3": 100 * (ok[3]["CL"] - ok[1]["CL"]) / ok[3]["CL"] if ok[1] and ok[3] else None,
+            "pct_change_CD_L1_L3": 100 * (ok[3]["CD"] - ok[1]["CD"]) / ok[3]["CD"] if ok[1] and ok[3] else None}
+    for m in ("SA", "SSTLM"):
+        pol = sorted((float(k.split("_a")[1].replace("p", "+").replace("m", "-")), r) for k, r in usable.items() if k.startswith(f"L2_{m}_"))
+        res[f"polar_L2_{m}"] = [{"alpha_deg": a, "CL": r["CL"], "CD": r["CD"], "CM": r["CM"], "converged": r["converged"],
+                                 "CL_std": r["CL_std_last300"]} for a, r in pol]
+    res["cp"] = {}
+    for L, m, a in [(2, "SA", 2.0), (2, "SA", 8.0), (2, "SA", 12.0), (2, "SSTLM", 2.0), (3, "SA", 2.0), (3, "SA", 10.0)]:
+        name = case_name(L, a, m)
+        if name in usable:
+            cp = surface_cp(SU2_DIR / name)
+            if cp: res["cp"][f"L{L}_{m}_a{a:g}"] = cp
+    res["wall_s_total"] = wall_s_total
+    res.update(extra or {})
+    dump_json(OUT / "su2_2d.json", res)
+    return res
+
 def main():
     quick = "--quick" in sys.argv
     t0 = time.time()
-    sweep = [-4, -2, 0, 2, 4, 6, 8, 10, 12, 13, 14, 15, 16, 17, 18, 20]
-    if quick:
-        sweep = [0, 2, 8, 14]
-    matrix = []
-    for L in (1, 2, 3):
-        for a in (2.0, 10.0):
-            matrix.append((L, a, "SA"))
-    for a in sweep:
-        if (2, float(a), "SA") not in matrix:
-            matrix.append((2, float(a), "SA"))
-    for a in ([2, 10] if quick else [0, 2, 4, 6, 8, 10, 12, 14, 16]):
-        matrix.append((2, float(a), "SSTLM"))
-    dirs = []
-    for L, a, m in matrix:
-        high = a >= 13
-        dirs.append(write_case(L, a, m, iters=6000 if high else 4000, cfl=1.0 if high else 2.0, cflmax=20.0 if high else 50.0, limfreeze=800 if high else 300))
+    cases = matrix(quick)
+    if "--parse-only" in sys.argv:
+        # re-read the existing case outputs, no solver run and no case.cfg rewrite
+        parsed = {}
+        for L, a, m, _ in cases:
+            d = SU2_DIR / case_name(L, a, m)
+            if (d / "history.csv").exists():
+                backfill_key(d)
+                parsed[d.name] = parse_case(d)
+            else:
+                parsed[d.name] = {**NAN_RESULT, "dir": d.name}
+        old = json.loads((OUT / "su2_2d.json").read_text()) if (OUT / "su2_2d.json").exists() else {}
+        assemble(parsed, old.get("wall_s_total"), {"parsed_only": time.strftime("%Y-%m-%d %H:%M"),
+                                                   "wall_s_total_note": "solver wall time of the last full run (su2_2d.py without --parse-only)"})
+        print(f"SU2 2-D: re-parsed {len(parsed)} cases")
+        return
+    dirs = [write_case(L, a, m, **num) for L, a, m, num in cases]
     print(f"SU2 2-D: {len(dirs)} cases, {N_JOBS} jobs x {THREADS} threads on {NCPU} CPUs")
-    results = {}
     def safe_run(d):   # one broken case must never stop the batch
         try:
             return run_case(d)
         except Exception as e:
             print(f"  {d.name}: failed ({e})")
-            return {**NAN_RESULT, "dir": d.name, "error": str(e)}
-    failed = []
+            return {**NAN_RESULT, "dir": d.name, "reason": f"error: {e}"}
     with ThreadPoolExecutor(max_workers=N_JOBS) as ex:
-        for d, r in zip(dirs, ex.map(safe_run, dirs)):
-            if _finite(r):
-                results[d.name] = r
-            else:
-                failed.append(d.name)   # kept out of the polars and the mesh study (NaN is not valid JSON either)
-    if failed:
-        print(f"  {len(failed)} cases without a usable result: {', '.join(failed)}")
-    # assemble
-    res = {"tool": "SU2 8.5.0 win64-omp (https://github.com/su2code/SU2/releases/tag/v8.5.0, checked 2026-10-21)",
-           "solver": "INC_RANS, FDS + MUSCL, implicit Euler; SA fully turbulent; SST + Langtry-Menter LM transition",
-           "Re": RE, "V_mps": V, "mu_model": MU_C, "threads_per_case": THREADS, "jobs": N_JOBS, "cases": results, "failed_cases": failed}
-    mesh_info = json.loads((OUT / "mesh_2d.json").read_text()) if (OUT / "mesh_2d.json").exists() else {}
-    res["mesh_study"] = {}
-    for a in (2.0, 10.0):
-        f = {L: results.get(case_name(L, a, "SA")) for L in (1, 2, 3)}
-        if all(f.values()):
-            res["mesh_study"][f"alpha_{a:g}"] = {
-                "cells": {f"L{L}": mesh_info.get(f"L{L}", {}).get("cells") for L in (1, 2, 3)},
-                "CL": {f"L{L}": f[L]["CL"] for L in (1, 2, 3)}, "CD": {f"L{L}": f[L]["CD"] for L in (1, 2, 3)},
-                "GCI_CL": gci(f[3]["CL"], f[2]["CL"], f[1]["CL"]), "GCI_CD": gci(f[3]["CD"], f[2]["CD"], f[1]["CD"]),
-                "pct_change_CL_L2_L3": 100 * (f[3]["CL"] - f[2]["CL"]) / f[3]["CL"],
-                "pct_change_CD_L2_L3": 100 * (f[3]["CD"] - f[2]["CD"]) / f[3]["CD"]}
-    for m in ("SA", "SSTLM"):
-        pol = sorted([(a, r) for a, r in ((float(k.split("_a")[1].replace("p", "+").replace("m", "-")), v) for k, v in results.items()
-                      if k.startswith(f"L2_{m}_"))])
-        res[f"polar_L2_{m}"] = [{"alpha_deg": a, "CL": r["CL"], "CD": r["CD"], "CM": r["CM"], "converged": r["converged"],
-                                 "CL_std": r["CL_std_last300"]} for a, r in pol]
-    res["cp"] = {}
-    for a in (2.0, 8.0, 12.0):
-        cp = surface_cp(SU2_DIR / case_name(2, a, "SA"))
-        if cp: res["cp"][f"L2_SA_a{a:g}"] = cp
-    for a in (2.0,):
-        cp = surface_cp(SU2_DIR / case_name(2, a, "SSTLM"))
-        if cp: res["cp"][f"L2_SSTLM_a{a:g}"] = cp
-    res["wall_s_total"] = time.time() - t0
-    dump_json(OUT / "su2_2d.json", res)
+        parsed = {d.name: r for d, r in zip(dirs, ex.map(safe_run, dirs))}
+    res = assemble(parsed, time.time() - t0)
     print(f"SU2 2-D total {res['wall_s_total']/60:.1f} min")
 
 if __name__ == "__main__":

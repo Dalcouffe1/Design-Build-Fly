@@ -2,11 +2,15 @@
 
 Topology: airfoil (chord = 1, sharp closed trailing edge) inside a circular far field of radius R_FAR chords.
 A quad boundary layer is extruded from the surface (gmsh BoundaryLayer field); the rest is triangles.
-Three refinement levels for the mesh-independence study; level 1 = coarse, 2 = medium, 3 = fine, with the
-surface spacing and first-cell height scaled by 1/sqrt(2) per level (refinement ratio r = 1.41 in 2-D).
+Three refinement levels for the mesh-independence study; level 1 = coarse, 2 = medium, 3 = fine (table LEVELS):
+surface points per side x ~sqrt(2) per level (120 -> 170 -> 240), first-cell height halved per level
+(1e-4 -> 5e-5 -> 2.5e-5 c), wake and far-field spacing reduced by ~1.3-1.4 per level.  The surface refinement ratio
+r ~ 1.41 is the one su2_2d.gci() assumes; the wall-normal refinement is r = 2, so the levels are not a strictly
+uniform refinement and the GCI is indicative only.
 
-First-cell height: y+ = 1 at cruise Re 3.27e5 with Cf ~ 0.0045 (flat-plate turbulent, Schlichting) gives
-y1 = nu/u_tau = c/(Re sqrt(Cf/2)) = 6.4e-5 c; the medium mesh uses 5e-5 c (y+ ~ 0.8).
+First-cell height: y+ ~ (h1/c) Re sqrt(Cf/2) with Cf ~ 0.0045 (flat-plate turbulent, Schlichting) and Re from
+common.CONDITIONS["cruise"].  Estimate at the v0.4.0 cruise Re 3.60e5: L1 y+ ~ 1.7, L2 ~ 0.85, L3 ~ 0.43, i.e. the
+coarse mesh is above y+ = 1 (recompute with the formula if the chord or cruise speed changes).
 
 Usage: py mesh_2d.py [level ...]  -> mesh/naca2415_L<level>.su2  (meshes are git-ignored)
 """

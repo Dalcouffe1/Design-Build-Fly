@@ -21,11 +21,10 @@ from concurrent.futures import ThreadPoolExecutor
 import numpy as np
 from common import *
 import su2_2d
-from su2_2d import CFG, parse_case, _finite, RE, V, MU_C, THREADS, N_JOBS
+from su2_2d import parse_case, RE, V, THREADS, N_JOBS, MESH_DIR
 
 FLOW_DIR = OUT / "su2_flow"; FLOW_DIR.mkdir(exist_ok=True)
 VIZ = OUT / "flowviz"; VIZ.mkdir(exist_ok=True)
-MESH_DIR = HERE / "mesh"
 ALPHAS = [0.0, 4.0, 8.0, 12.0, 15.0]
 GRID = dict(nx=220, ny=128, x0=-0.6, x1=1.8, y0=-0.7, y1=0.7)   # 220 x 128 keeps flow2d.json under 1.5 MB (240 x 140 was 1.6 MB)
 SCALE = dict(u=10000, v=10000, cp=1000)                        # int16 = value * scale
@@ -33,26 +32,11 @@ TOOL = "SU2 8.5.0 win64-omp (https://github.com/su2code/SU2/releases/tag/v8.5.0,
 
 # ---------------------------------------------------------------- cases
 def case_name(level, alpha):
-    return f"L{level}_SA_a{alpha:+05.1f}".replace("+", "p").replace("-", "m")
+    return su2_2d.case_name(level, alpha, "SA")
 
 def write_case(level, alpha):
-    """su2_2d.write_case with volume CSV output, in out/su2_flow.  Numerics: the settings that converged on L1/L3 in
-    su2_2d.py (CFL 2 adaptive to 50, limiter frozen after 300 it); the high-alpha settings of su2_2d.main for >= 13 deg."""
-    high = alpha >= 13
-    iters, cfl, cflmax, limfreeze = (6000, 1.0, 20.0, 800) if high else (4000, 2.0, 50.0, 300)
-    name = case_name(level, alpha)
-    d = FLOW_DIR / name; d.mkdir(exist_ok=True)
-    a = math.radians(alpha)
-    mesh = MESH_DIR / f"naca2415_L{level}.su2"
-    if not mesh.exists():
-        raise FileNotFoundError(f"{mesh} missing: run mesh_2d.py {level}")
-    cfg = CFG.format(Re=RE, turb="SA", trans="", rho=RHO, vx=V * math.cos(a), vy=V * math.sin(a), mu=MU_C, ti=0.001, tlr=10.0,
-                     alpha=alpha, cfl=cfl, cflmax=cflmax, iters=iters, mesh=mesh.name, limfreeze=limfreeze)
-    # SU2 8.5 writes the "CSV" entry of OUTPUT_FILES as the ASCII restart (PointID, x, y, Pressure, Velocity_x, Velocity_y,
-    # Nu_Tilde) under RESTART_FILENAME; named flow.csv so su2_2d.run_case's restart* clean-up leaves it in place
-    cfg = cfg.replace("OUTPUT_FILES= ( SURFACE_CSV )", "OUTPUT_FILES= ( SURFACE_CSV, CSV )\nRESTART_FILENAME= flow")
-    (d / "case.cfg").write_text(cfg)
-    return d
+    """su2_2d.write_case (SA, su2_2d.numerics for this alpha) with the volume CSV output, in out/su2_flow"""
+    return su2_2d.write_case(level, alpha, "SA", **su2_2d.numerics(alpha), out_dir=FLOW_DIR, extra_output=True)
 
 def run_cases(level, alphas):
     dirs = [write_case(level, a) for a in alphas]
@@ -171,6 +155,7 @@ def resample(level, d: Path, g=GRID):
     out["mask"] = mask; out["X"] = X; out["Y"] = Y; out["xs"] = xs; out["ys"] = ys
     out["outline"] = pts[loop]; out["checks"] = checks
     out["_tri"] = tri; out["_P"] = P                 # for the Cp figure: contours on the solver mesh itself (exact wall)
+    out["_U"] = U; out["_V"] = Vv                    # node velocities / Vinf in mesh order, for the separation estimate
     # wall Cp along the outline for the page (TE -> upper -> LE -> lower)
     out["cp_wall"] = cp_wall
     return out
@@ -235,8 +220,7 @@ def separation_point(f):
     t = np.gradient(up, axis=0); t /= np.linalg.norm(t, axis=1)[:, None]
     nrm = np.column_stack([t[:, 1], -t[:, 0]])   # outward normal: to the right of the TE->LE direction of travel on the upper surface
     probe = up + 0.005 * nrm
-    pts, tris, loop = f["_mesh"]
-    tri = mtri.Triangulation(pts[:, 0], pts[:, 1], tris)
+    tri = f["_tri"]                           # resample()'s triangulation and node mapping
     uu = mtri.LinearTriInterpolator(tri, f["_U"])(probe[:, 0], probe[:, 1])
     vv = mtri.LinearTriInterpolator(tri, f["_V"])(probe[:, 0], probe[:, 1])
     # flow direction along the surface: from LE to TE is -t (t points TE -> LE)
@@ -266,27 +250,22 @@ def post(cases, level_by_alpha):
                      "cp_wall": "Cp at each outline node, same order as outline"},
         "outline_order": "closed polyline of the mesh wall nodes: TE -> upper surface -> LE -> lower surface -> (back to TE)",
         "outline": None, "angles": []}
+    outlines = {}
     for alpha in sorted(cases):
         d, r = cases[alpha]; level = level_by_alpha[alpha]
-        if not (d / "flow.csv").exists() or not _finite(r):
-            print(f"  alpha {alpha:g}: no usable field ({d.name})"); continue
+        if not (d / "flow.csv").exists() or not r["usable"]:
+            print(f"  alpha {alpha:g}: no usable field ({d.name}: {r.get('reason')})"); continue
         t0 = time.time()
         f = resample(level, d)
-        pts, tris, loop = mesh_data(level)
-        # node arrays for the separation estimate
-        hdr, data, col = read_flow_csv(d / "flow.csv")
-        f["_mesh"] = (pts, tris, loop)
-        pid = data[:, col["PointID"]].astype(int)
-        U = np.full(len(pts), np.nan); Vv = np.full(len(pts), np.nan)
-        U[pid] = data[:, col["Velocity_x"]] / f["checks"]["V_ref_in_file"]; Vv[pid] = data[:, col["Velocity_y"]] / f["checks"]["V_ref_in_file"]
-        f["_U"] = U; f["_V"] = Vv
         x_sep = separation_point(f)
         tag = f"{alpha:g}"
         plot_field(f, alpha, r, level, tag)
         if alpha == 8.0:
             plot_cp(f, alpha, r, level, tag)
+        outline = [[round(float(x), 5), round(float(y), 5)] for x, y in f["outline"]]
         if doc["outline"] is None or level == 3:
-            doc["outline"] = [[round(float(x), 5), round(float(y), 5)] for x, y in f["outline"]]
+            doc["outline"] = outline          # top level: the L3 wall (review/src/flowviz.js reads F2.outline)
+        outlines[alpha] = outline
         entry = {"alpha": alpha, "mesh": f"L{level}", "cells": mesh_info.get(f"L{level}", {}).get("cells"), "case_dir": f"out/su2_flow/{d.name}",
                  "converged": bool(r["converged"]),
                  "field_note": "steady converged solution" if r["converged"] else "force history not steady (stalled/oscillating): last iterate of the steady solver",
@@ -301,6 +280,11 @@ def post(cases, level_by_alpha):
         doc["angles"].append(entry)
         print(f"  alpha {alpha:g} L{level}: CL {r['CL']:.4f} CD {r['CD']:.5f} conv {r['converged']} | Vref {f['checks']['V_ref_in_file']:.4f} "
               f"Cp_stag {f['checks']['Cp_stag_max']:.3f} Cp_min {np.nanmin(f['cp_wall']):.2f} x_sep {x_sep} | {time.time()-t0:.0f} s")
+    # mixed mesh levels (an angle re-run on L1): each angle carries its own wall outline (cp_wall follows it)
+    if len({e["mesh"] for e in doc["angles"]}) > 1:
+        for e in doc["angles"]:
+            e["outline"] = outlines[e["alpha"]]
+        doc["outline_note"] = "angles use different mesh levels: angles[i].outline is the wall of that angle's mesh; top-level outline is L3"
     out = VIZ / "flow2d.json"
     out.write_text(json.dumps(doc, separators=(",", ":")))
     print(f"wrote {out} ({out.stat().st_size/1e6:.2f} MB), {len(doc['angles'])} angles")
@@ -319,14 +303,15 @@ def main():
             for L in (level, 1):
                 d = FLOW_DIR / case_name(L, a)
                 if (d / "flow.csv").exists():
+                    su2_2d.backfill_key(d)      # record the cache key of the case.cfg that produced it (no solve)
                     r = parse_case(d)
-                    if _finite(r):
+                    if r["usable"]:
                         cases[a] = (d, r); level_by_alpha[a] = L; break
     else:
         res = run_cases(level, alphas)
         for a, (d, r) in res.items():
             cases[a] = (d, r); level_by_alpha[a] = level
-        bad = [a for a, (d, r) in res.items() if not _finite(r) or not (d / "flow.csv").exists()]
+        bad = [a for a, (d, r) in res.items() if not r["usable"] or not (d / "flow.csv").exists()]
         if bad and level != 1:
             print(f"  diverged on L{level}: {bad} -> re-running on L1")
             res1 = run_cases(1, bad)

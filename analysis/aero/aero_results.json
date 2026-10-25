@@ -1,6 +1,6 @@
 {
- "generated": "2026-10-21",
- "aircraft": "C0 4-lift twin-boom quadplane, v0.3.1 (analysis/results.json)",
+ "generated": "2026-10-24",
+ "aircraft": "C0 4-lift twin-boom quadplane, v0.4.0 (docs/DESIGN-BASIS.md; geometry analysis/results.json)",
  "geometry": {
   "span_m": 2.4,
   "chord_m": 0.263219,
@@ -3580,10 +3580,15 @@
   "xfoil_cruise_Ncrit5": 1.377,
   "neuralfoil_stall_Re": 1.2787,
   "su2_SA_cruise_Re": {
-   "CL_max": 22.4071,
-   "alpha_deg": 12.0,
-   "converged": false,
-   "note": "fully turbulent SA; steady RANS near stall is unsteady, values are 300-iteration means"
+   "CL_max": 1.16587,
+   "alpha_deg": 15.0,
+   "converged": true,
+   "alphas_converged_deg": [
+    -2.0,
+    8.0,
+    15.0
+   ],
+   "note": "fully turbulent SA, medium mesh, max over the converged points only (sparse: see alphas_converged_deg); steady RANS near stall is unsteady, values are 300-iteration means"
   },
   "experiment_Genc_Lock_Kaynak_2008_Re2e5": {
    "CL_max": 1.3,
@@ -3622,7 +3627,7 @@
    "AVL_aircraft_pod": 5.35116,
    "AVL_aircraft_nopod": 5.12625,
    "AeroSandbox_VLM": 5.2948,
-   "repo_vlm_full": 5.33062,
+   "repo_vlm_full": 5.22643,
    "repo_helmbold_wing": 5.05435
   },
   "alpha_0L_deg_aircraft": -1.60528,
@@ -3641,7 +3646,7 @@
  "neutral_point": {
   "AVL_pod_pct_MAC": 40.4491,
   "AVL_nopod_pct_MAC": 46.0806,
-  "repo_vlm_pct_MAC": 47.632,
+  "repo_vlm_pct_MAC": 46.4107,
   "sizing_pct_MAC": 39.4666,
   "AeroSandbox_VLM_pct_MAC": 48.3655,
   "static_margin_pct": {
@@ -3725,7 +3730,7 @@
     "source": "XF out/xfoil_n2415_cruise_ncrit9.txt"
    },
    {
-    "component": "H-tail profile (XFOIL NACA 0009, Re 1.0e5, cl ~ 0)",
+    "component": "H-tail profile (XFOIL NACA 0009, Re 1.2e5, cl ~ 0)",
     "dCD": 0.00136314,
     "CdA_m2": 0.000861135,
     "source": "XF xfoil_n0009_tail_cruise_ncrit9.txt"
@@ -3816,7 +3821,11 @@
    "xfoil_ncrit9": 0.00827741,
    "xfoil_ncrit5": 0.00850272,
    "su2_SA_fully_turbulent": 0.0179782,
-   "note": "dCD on S_ref at section cl = cruise CL; exposed wing only"
+   "su2_interpolated_between_alpha_deg": [
+    -2.0,
+    8.0
+   ],
+   "note": "dCD on S_ref at section cl = cruise CL; exposed wing only; SU2 from converged medium-mesh points only (linear in CL between the two listed angles)"
   },
   "e_oswald_fit": 0.841307,
   "e_inviscid_AVL": 0.9239,
@@ -4026,28 +4035,38 @@
     },
     "CL": {
      "L1": 0.402963,
-     "L2": 11.1029,
+     "L2": null,
      "L3": 0.412512
     },
     "CD": {
      "L1": 0.0165313,
-     "L2": -2.33602,
+     "L2": null,
      "L3": 0.014912
+    },
+    "converged": {
+     "L1": false,
+     "L2": null,
+     "L3": true
+    },
+    "excluded": {
+     "L2": "pressure residual did not drop (log10 rms[P] -4.03 -> -2.40)"
     },
     "GCI_CL": {
      "p": null,
      "GCI_fine_pct": null,
      "f_ext": null,
-     "note": "oscillatory or converged to round-off; GCI undefined"
+     "note": "GCI needs all three meshes usable; excluded: L2"
     },
     "GCI_CD": {
      "p": null,
      "GCI_fine_pct": null,
      "f_ext": null,
-     "note": "oscillatory or converged to round-off; GCI undefined"
+     "note": "GCI needs all three meshes usable; excluded: L2"
     },
-    "pct_change_CL_L2_L3": -2591.52,
-    "pct_change_CD_L2_L3": 15765.3
+    "pct_change_CL_L2_L3": null,
+    "pct_change_CD_L2_L3": null,
+    "pct_change_CL_L1_L3": 2.31493,
+    "pct_change_CD_L1_L3": -10.8584
    },
    "alpha_10": {
     "cells": {
@@ -4057,28 +4076,38 @@
     },
     "CL": {
      "L1": 1.04423,
-     "L2": -4.12235,
+     "L2": null,
      "L3": 1.16826
     },
     "CD": {
      "L1": 0.0443018,
-     "L2": -1.26234,
+     "L2": null,
      "L3": 0.0281202
+    },
+    "converged": {
+     "L1": true,
+     "L2": null,
+     "L3": true
+    },
+    "excluded": {
+     "L2": "pressure residual did not drop (log10 rms[P] -3.94 -> -3.59)"
     },
     "GCI_CL": {
      "p": null,
      "GCI_fine_pct": null,
      "f_ext": null,
-     "note": "oscillatory or converged to round-off; GCI undefined"
+     "note": "GCI needs all three meshes usable; excluded: L2"
     },
     "GCI_CD": {
      "p": null,
      "GCI_fine_pct": null,
      "f_ext": null,
-     "note": "oscillatory or converged to round-off; GCI undefined"
+     "note": "GCI needs all three meshes usable; excluded: L2"
     },
-    "pct_change_CL_L2_L3": 452.862,
-    "pct_change_CD_L2_L3": 4589.08
+    "pct_change_CL_L2_L3": null,
+    "pct_change_CD_L2_L3": null,
+    "pct_change_CL_L1_L3": 10.6168,
+    "pct_change_CD_L1_L3": -57.5446
    }
   },
   "polar_L2_SA": [
@@ -4099,52 +4128,12 @@
     "CL_std": 7.99884e-06
    },
    {
-    "alpha_deg": 2.0,
-    "CL": 11.1029,
-    "CD": -2.33602,
-    "CM": -1.00104,
-    "converged": false,
-    "CL_std": 14.1806
-   },
-   {
-    "alpha_deg": 4.0,
-    "CL": -0.438606,
-    "CD": -1.74743,
-    "CM": -0.533252,
-    "converged": false,
-    "CL_std": 3.18042
-   },
-   {
     "alpha_deg": 8.0,
     "CL": 0.994911,
     "CD": 0.0256979,
     "CM": 0.0335481,
     "converged": true,
     "CL_std": 6.84762e-05
-   },
-   {
-    "alpha_deg": 10.0,
-    "CL": -4.12235,
-    "CD": -1.26234,
-    "CM": -3.28183,
-    "converged": false,
-    "CL_std": 3.81452
-   },
-   {
-    "alpha_deg": 12.0,
-    "CL": 22.4071,
-    "CD": -11.7191,
-    "CM": 9.56221,
-    "converged": false,
-    "CL_std": 423.908
-   },
-   {
-    "alpha_deg": 13.0,
-    "CL": -0.764977,
-    "CD": -2.77429,
-    "CM": -2.476,
-    "converged": false,
-    "CL_std": 7.55185
    },
    {
     "alpha_deg": 15.0,
@@ -4171,14 +4160,6 @@
     "CL_std": 0.00139379
    },
    {
-    "alpha_deg": 18.0,
-    "CL": 1.90053,
-    "CD": 0.351623,
-    "CM": 0.123837,
-    "converged": false,
-    "CL_std": 0.962706
-   },
-   {
     "alpha_deg": 20.0,
     "CL": 1.16602,
     "CD": 0.310468,
@@ -4188,14 +4169,6 @@
    }
   ],
   "polar_L2_SSTLM": [
-   {
-    "alpha_deg": 4.0,
-    "CL": 0.302416,
-    "CD": 0.231158,
-    "CM": 0.0523779,
-    "converged": false,
-    "CL_std": 0.567243
-   },
    {
     "alpha_deg": 6.0,
     "CL": 0.803814,
@@ -4237,121 +4210,195 @@
     "CL_std": 0.177738
    }
   ],
+  "unusable_cases": {
+   "L2_SA_ap02.0": "pressure residual did not drop (log10 rms[P] -4.03 -> -2.40)",
+   "L2_SA_ap10.0": "pressure residual did not drop (log10 rms[P] -3.94 -> -3.59)",
+   "L2_SA_ap00.0": "pressure residual did not drop (log10 rms[P] -4.04 -> 0.64)",
+   "L2_SA_ap04.0": "pressure residual did not drop (log10 rms[P] -4.02 -> -3.02)",
+   "L2_SA_ap06.0": "pressure residual did not drop (log10 rms[P] -4.00 -> 4.44)",
+   "L2_SA_ap12.0": "pressure residual did not drop (log10 rms[P] -3.90 -> -3.19)",
+   "L2_SA_ap13.0": "pressure residual did not drop (log10 rms[P] -3.89 -> -3.37)",
+   "L2_SA_ap14.0": "pressure residual did not drop (log10 rms[P] -3.87 -> 6.53)",
+   "L2_SA_ap18.0": "pressure residual did not drop (log10 rms[P] -3.81 -> -3.26)",
+   "L2_SSTLM_ap00.0": "pressure residual did not drop (log10 rms[P] -4.04 -> 5.22)",
+   "L2_SSTLM_ap02.0": "pressure residual did not drop (log10 rms[P] -4.03 -> 3.03)",
+   "L2_SSTLM_ap04.0": "pressure residual did not drop (log10 rms[P] -4.02 -> -3.13)",
+   "L2_SSTLM_ap12.0": "pressure residual did not drop (log10 rms[P] -3.90 -> 2.81)"
+  },
   "timings": {
    "L1_SA_ap02.0": {
     "iters": 4000,
     "wall_s": 828.4,
-    "converged": false
+    "converged": false,
+    "usable": true
    },
    "L1_SA_ap10.0": {
     "iters": 2878,
     "wall_s": 675.6,
-    "converged": true
-   },
-   "L2_SA_ap02.0": {
-    "iters": 8000,
-    "wall_s": 2459.6,
-    "converged": false
-   },
-   "L2_SA_ap10.0": {
-    "iters": 4000,
-    "wall_s": 3025.8,
-    "converged": false
-   },
-   "L3_SA_ap02.0": {
-    "iters": 2666,
-    "wall_s": 3738.2,
-    "converged": true
-   },
-   "L3_SA_ap10.0": {
-    "iters": 2471,
-    "wall_s": 3642.7,
-    "converged": true
-   },
-   "L2_SA_am04.0": {
-    "iters": 4000,
-    "wall_s": 3266.9,
-    "converged": false
+    "converged": true,
+    "usable": true
    },
    "L2_SA_am02.0": {
     "iters": 1714,
     "wall_s": 1476.7,
-    "converged": true
+    "converged": true,
+    "usable": true
+   },
+   "L2_SA_am04.0": {
+    "iters": 4000,
+    "wall_s": 3266.9,
+    "converged": false,
+    "usable": true
+   },
+   "L2_SA_ap00.0": {
+    "iters": 8000,
+    "wall_s": 2336.0,
+    "converged": false,
+    "usable": false
+   },
+   "L2_SA_ap02.0": {
+    "iters": 8000,
+    "wall_s": 2459.6,
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap04.0": {
     "iters": 8000,
     "wall_s": 2381.4,
-    "converged": false
+    "converged": false,
+    "usable": false
+   },
+   "L2_SA_ap06.0": {
+    "iters": 8000,
+    "wall_s": 2265.8,
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap08.0": {
     "iters": 4925,
     "wall_s": 1909.3,
-    "converged": true
+    "converged": true,
+    "usable": true
+   },
+   "L2_SA_ap10.0": {
+    "iters": 4000,
+    "wall_s": 3025.8,
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap12.0": {
     "iters": 8000,
     "wall_s": 2214.5,
-    "converged": false
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap13.0": {
     "iters": 8000,
     "wall_s": 2460.9,
-    "converged": false
+    "converged": false,
+    "usable": false
+   },
+   "L2_SA_ap14.0": {
+    "iters": 8000,
+    "wall_s": 2265.6,
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap15.0": {
     "iters": 8000,
     "wall_s": 2650.9,
-    "converged": true
+    "converged": true,
+    "usable": true
    },
    "L2_SA_ap16.0": {
     "iters": 6000,
     "wall_s": 2511.9,
-    "converged": false
+    "converged": false,
+    "usable": true
    },
    "L2_SA_ap17.0": {
     "iters": 6000,
     "wall_s": 2398.9,
-    "converged": false
+    "converged": false,
+    "usable": true
    },
    "L2_SA_ap18.0": {
     "iters": 8000,
     "wall_s": 2426.2,
-    "converged": false
+    "converged": false,
+    "usable": false
    },
    "L2_SA_ap20.0": {
     "iters": 8000,
     "wall_s": 3158.2,
-    "converged": false
+    "converged": false,
+    "usable": true
+   },
+   "L2_SSTLM_ap00.0": {
+    "iters": 8000,
+    "wall_s": 3026.4,
+    "converged": false,
+    "usable": false
+   },
+   "L2_SSTLM_ap02.0": {
+    "iters": 8000,
+    "wall_s": 2923.7,
+    "converged": false,
+    "usable": false
    },
    "L2_SSTLM_ap04.0": {
     "iters": 8000,
     "wall_s": 2821.0,
-    "converged": false
+    "converged": false,
+    "usable": false
    },
    "L2_SSTLM_ap06.0": {
     "iters": 4000,
     "wall_s": 2089.8,
-    "converged": true
+    "converged": true,
+    "usable": true
    },
    "L2_SSTLM_ap08.0": {
     "iters": 8000,
     "wall_s": 3384.0,
-    "converged": false
+    "converged": false,
+    "usable": true
    },
    "L2_SSTLM_ap10.0": {
     "iters": 4000,
     "wall_s": 1709.5,
-    "converged": false
+    "converged": false,
+    "usable": true
+   },
+   "L2_SSTLM_ap12.0": {
+    "iters": 8000,
+    "wall_s": 1847.4,
+    "converged": false,
+    "usable": false
    },
    "L2_SSTLM_ap14.0": {
     "iters": 6000,
     "wall_s": 2107.4,
-    "converged": false
+    "converged": false,
+    "usable": true
    },
    "L2_SSTLM_ap16.0": {
     "iters": 6000,
     "wall_s": 2121.2,
-    "converged": false
+    "converged": false,
+    "usable": true
+   },
+   "L3_SA_ap02.0": {
+    "iters": 2666,
+    "wall_s": 3738.2,
+    "converged": true,
+    "usable": true
+   },
+   "L3_SA_ap10.0": {
+    "iters": 2471,
+    "wall_s": 3642.7,
+    "converged": true,
+    "usable": true
    }
   },
   "wall_s_total": 10986.9,
@@ -4379,9 +4426,9 @@
    "xfoil_CD": 0.00911,
    "neuralfoil_CL": 0.448003,
    "neuralfoil_CD": 0.00905754,
-   "su2_SA_CL": 11.1029,
-   "su2_SA_CD": -2.33602,
-   "su2_SA_conv": false,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
    "su2_SSTLM_CL": null,
    "su2_SSTLM_CD": null,
    "su2_SSTLM_conv": null,
@@ -4393,12 +4440,12 @@
    "xfoil_CD": 0.01034,
    "neuralfoil_CL": 0.774339,
    "neuralfoil_CD": 0.010746,
-   "su2_SA_CL": -0.438606,
-   "su2_SA_CD": -1.74743,
-   "su2_SA_conv": false,
-   "su2_SSTLM_CL": 0.302416,
-   "su2_SSTLM_CD": 0.231158,
-   "su2_SSTLM_conv": false,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
    "thin_airfoil_CL": 0.658637
   },
   {
@@ -4410,9 +4457,9 @@
    "su2_SA_CL": 0.994911,
    "su2_SA_CD": 0.0256979,
    "su2_SA_conv": true,
-   "su2_SSTLM_CL": 0.947335,
-   "su2_SSTLM_CD": 0.0243348,
-   "su2_SSTLM_conv": false,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
    "thin_airfoil_CL": 1.09729
   },
   {
@@ -4421,12 +4468,12 @@
    "xfoil_CD": 0.01849,
    "neuralfoil_CL": 1.11508,
    "neuralfoil_CD": 0.0187605,
-   "su2_SA_CL": -4.12235,
-   "su2_SA_CD": -1.26234,
-   "su2_SA_conv": false,
-   "su2_SSTLM_CL": 1.00112,
-   "su2_SSTLM_CD": 0.0349538,
-   "su2_SSTLM_conv": false,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
    "thin_airfoil_CL": 1.31661
   },
   {
@@ -4435,9 +4482,9 @@
    "xfoil_CD": 0.02632,
    "neuralfoil_CL": 1.19676,
    "neuralfoil_CD": 0.0257579,
-   "su2_SA_CL": 22.4071,
-   "su2_SA_CD": -11.7191,
-   "su2_SA_conv": false,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
    "su2_SSTLM_CL": null,
    "su2_SSTLM_CD": null,
    "su2_SSTLM_conv": null,
@@ -4452,9 +4499,9 @@
    "su2_SA_CL": null,
    "su2_SA_CD": null,
    "su2_SA_conv": null,
-   "su2_SSTLM_CL": 0.983034,
-   "su2_SSTLM_CD": 0.0823187,
-   "su2_SSTLM_conv": false,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
    "thin_airfoil_CL": 1.75526
   },
   {
@@ -4463,12 +4510,12 @@
    "xfoil_CD": 0.0607,
    "neuralfoil_CL": 1.27466,
    "neuralfoil_CD": 0.0552335,
-   "su2_SA_CL": 1.0695,
-   "su2_SA_CD": 0.105174,
-   "su2_SA_conv": false,
-   "su2_SSTLM_CL": 0.832686,
-   "su2_SSTLM_CD": 0.266914,
-   "su2_SSTLM_conv": false,
+   "su2_SA_CL": null,
+   "su2_SA_CD": null,
+   "su2_SA_conv": null,
+   "su2_SSTLM_CL": null,
+   "su2_SSTLM_CD": null,
+   "su2_SSTLM_conv": null,
    "thin_airfoil_CL": 1.97458
   }
  ],

@@ -17,17 +17,14 @@ import numpy as np
 from common import *
 
 AVL_DIR = OUT / "avl"; AVL_DIR.mkdir(exist_ok=True)
-X_REF = -X_CG            # CG target 28 % MAC
+X_REF = -X_CG            # CG target (CG_FRAC of the MAC aft of the LE)
 Z_REF = 0.0              # CG height not in results.json; wing chord line assumed (EST, affects Cm_alpha weakly)
 
 def cdcl_from_polar(path: Path, cl_pts):
     """three (CL, CD) pairs for AVL's CDCL from a merged XFOIL polar file"""
     a = np.loadtxt(path)
-    a = a[np.argsort(a[:, 1])]
-    cl, cd = a[:, 1], a[:, 2]
-    # restrict to the attached branch (up to CL_max)
-    imax = int(np.argmax(np.loadtxt(path)[:, 1]))
-    b = np.loadtxt(path)[: imax + 1]
+    # restrict to the attached branch (rows in alpha order up to CL_max), then sort by CL for the interpolation
+    b = a[: int(np.argmax(a[:, 1])) + 1]
     b = b[np.argsort(b[:, 1])]
     out = []
     for c in cl_pts:
@@ -61,13 +58,13 @@ def write_avl(path: Path, with_pod=True):
     cd = lambda p: " ".join(f"{c:.4f} {d:.5f}" for c, d in p)
     c = CHORD; b2 = SPAN / 2
     y_ail = POD_R + 0.45 * (b2 - POD_R)       # aileron starts at 45 % of the panel (cad/BuildVtol.cs Aileron: outer 55 %)
-    xt = -X_TAIL_LE; zt = -0.0139              # H_Tail comp Y in cad/params.txt
+    xt = -X_TAIL_LE; zt = Z_HTAIL              # H_Tail mid-plane, cad/params.txt (common.Z_HTAIL)
     zfin0 = Z_BOOM + BOOM_OD / 2               # fin root on the boom top
-    s = f"""C0 lift+cruise VTOL (analysis/aero/avl_run.py from results.json v0.3.1)
+    s = f"""C0 lift+cruise VTOL (analysis/aero/avl_run.py from results.json, {DESIGN_VERSION})
 0.0                      | Mach
 0 0 0.0                  | iYsym iZsym Zsym
 {S_REF:.5f} {c:.5f} {SPAN:.4f}   | Sref Cref Bref
-{X_REF:.5f} 0.0 {Z_REF:.4f}     | Xref Yref Zref (CG, 28 % MAC)
+{X_REF:.5f} 0.0 {Z_REF:.4f}     | Xref Yref Zref (CG, {100*CG_FRAC:.0f} % MAC)
 0.0                      | CDp of non-lifting parts: added in drag_buildup.py, not here
 #
 SURFACE
@@ -158,7 +155,8 @@ def run_avl(cmds: str, timeout=300):
     return p.stdout
 
 def grab(txt, key):
-    m = re.search(rf"{re.escape(key)}\s*=\s*([-+0-9.Ee]+)", txt)
+    # the key must not be the tail of a longer name (e.g. "e" inside "...e =", "Cla" inside "CYCla"): no word char or ' before it
+    m = re.search(rf"(?<![\w']){re.escape(key)}\s*=\s*([-+0-9.Ee]+)", txt)
     return float(m.group(1)) if m else None
 
 def parse_ft(path: Path):
@@ -241,12 +239,12 @@ def main():
             "trim_Vstall": {"CL": vs["CLtot"], "alpha_deg": vs["Alpha"], "elevator_deg": vs["elevator"]},
             "derivatives_trim": {k: trim[k] for k in trim if k not in ("Alpha", "CLtot", "CDtot", "Cmtot", "elevator")},
             "Xnp_m_aft_LE": xnp, "NP_pct_MAC": 100 * xnp / CHORD,
-            "static_margin_pct_CG28": 100 * (xnp / CHORD - 0.28),
+            "static_margin_pct_CG28": 100 * (xnp / CHORD - CG_FRAC),
             "static_margin_pct_CG_noPayload": 100 * (xnp / CHORD - (-X_CG_NO_PAYLOAD / CHORD)),
             "span_loading_a2": parse_fs(AVL_DIR / f"fs_{tag}_a2.txt"), "span_loading_trim": parse_fs(AVL_DIR / f"fs_{tag}_trim.txt"),
             "e_sweep": {str(s["Alpha"]): s["e"] for s in sweep},
         }
-        print(f"  {tag:6s}: CLa {cla[0]:.3f}/rad  Cma {cma[0]:.3f}/rad  Xnp {xnp:.4f} m = {100*xnp/CHORD:.1f} % MAC  SM(28%) {100*(xnp/CHORD-0.28):.1f} %  "
+        print(f"  {tag:6s}: CLa {cla[0]:.3f}/rad  Cma {cma[0]:.3f}/rad  Xnp {xnp:.4f} m = {100*xnp/CHORD:.1f} % MAC  SM({100*CG_FRAC:.0f}%) {100*(xnp/CHORD-CG_FRAC):.1f} %  "
               f"trim a {trim['Alpha']:.2f} deg, elev {trim['elevator']:.2f} deg, e {trim_ft['e']:.3f}  Cnb {trim['Cnb']:.4f} Clb {trim['Clb']:.4f}")
     res["wall_s"] = time.time() - t0
     dump_json(OUT / "avl_results.json", res)

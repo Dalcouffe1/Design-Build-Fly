@@ -2,7 +2,24 @@
 
 **Date checked: 2026-10-21.** Every source below was read that day (WebFetch, or a PDF converted with pdftotext). A value seen only in a search-engine summary is marked *snippet, unverified*. "—" = not found. "EST" = engineering estimate, not published. Model numbers come from `analysis/tradestudy.mjs` → `analysis/tradestudy.json`, which imports `analysis/model.js` unchanged and starts from the v0.3.1 inputs in `analysis/results.json`.
 
-## Verdict
+## Current results (v0.4 inputs, regenerated 2026-10-25)
+
+The sections below record the first run of this study, on the v0.3.1 inputs; their tables are kept for the reasoning. `analysis/tradestudy.json` holds the current run, which the review reads. Current figures:
+
+| Variant (feasible, meets R1) | Score /10 | MTOW kg | Cruise min | Total | Reserve |
+|---|---|---|---|---|---|
+| C0-lean | 6.04 | 6.43 | 13.1 | $1,830.65 | $169.35 |
+| C0-b3.0 | 6.01 | 6.27 | 14.3 | $1,896.79 | $103.21 |
+| C0-pk-HOOVO6S8000 | 5.96 | 6.65 | 16.9 | $1,964.04 | $35.96 |
+| C0-b2.8 | 5.94 | 6.32 | 14.0 | $1,896.79 | $103.21 |
+| C3 | 5.89 | 6.65 | 14.7 | $1,949.25 | $50.75 |
+| C0 | 5.86 | 6.43 | 13.1 | $1,896.79 | $103.21 |
+
+- **Top lift + cruise variant: C0-lean**, 6.04/10, first in 12 of 16 weight-sensitivity cases (it loses first place in: cost ×0.7 → C0-pk-HOOVO6S8000; energy ×1.3 → C0-pk-HOOVO6S8000; control ×1.3 → C0-b3.0; schedule ×0.7 → C0-b3.0). The margin over the next variant is 0.03 points.
+- **The design carried forward is C0 as specified in v0.4**, not C0-lean: C0-lean's lead comes mainly from dropping the airspeed sensor, which the stall test (R11) and transition margins need. v0.4 already dropped the other optional spares.
+- **Tailsitters** (break R1, ranked separately): TS-quad 7.35, TS-duo 6.30.
+
+## Verdict (first run, v0.3.1 inputs)
 
 - **C0 (4-lift twin boom, Alia-style) is still the recommendation among configurations that satisfy R1.** It scores highest of the R1-compliant layouts, and that holds in all 16 weight-sensitivity cases (each weight ×0.7 and ×1.3). The best-scoring C0 variant is **C0-lean: 6.18/10**. It saves $109 by dropping the airspeed sensor, the spare servo and part of the hardware kit, which raises the reserve to $211.39. That comes at a transition-risk cost: control is scored 3 instead of 2.
 - **Only one configuration scores higher: the quad tailsitter (TS-quad, 7.37/10).** The twin-motor tailsitter is second (6.31).

@@ -5,7 +5,7 @@ second estimate), the stall speed at the sized wing loading, the trim state, sta
 cases in results.json, and the CFD-vs-XFOIL-vs-VLM comparison table.
 """
 from __future__ import annotations
-import json, math
+import json, math, time
 import numpy as np
 from common import *
 
@@ -18,9 +18,10 @@ def interp_sorted(x, xs, ys):
 
 def main():
     xf, nf, su2, avl, asb, drag, mesh = (load(n) for n in ("xfoil_polars.json", "neuralfoil_polars.json", "su2_2d.json", "avl_results.json", "asb_results.json", "drag_buildup.json", "mesh_2d.json"))
-    R = {"generated": "2026-10-21", "aircraft": "C0 4-lift twin-boom quadplane, v0.3.1 (analysis/results.json)",
+    vlm_repo = json.loads((REPO / "analysis" / "aero.json").read_text())   # analysis/vlm.mjs output
+    R = {"generated": time.strftime("%Y-%m-%d"), "aircraft": f"C0 4-lift twin-boom quadplane, {DESIGN_VERSION} (docs/DESIGN-BASIS.md; geometry analysis/results.json)",
          "geometry": {"span_m": SPAN, "chord_m": CHORD, "S_ref_m2": S_REF, "AR": AR, "MTOW_kg": MTOW, "wing_loading_N_m2": W / S_REF,
-                      "S_h_m2": S_H, "l_h_m": L_H, "V_h": GEO["Vh"], "S_v_m2": S_V, "V_v": GEO["Vv"], "CG_target_pct_MAC": 28.0,
+                      "S_h_m2": S_H, "l_h_m": L_H, "V_h": GEO["Vh"], "S_v_m2": S_V, "V_v": GEO["Vv"], "CG_target_pct_MAC": 100 * CG_FRAC,
                       "CG_no_payload_pct_MAC": CG["pct"]["noPayload"], "CG_range_pct_MAC": [CG["pctFwd"], CG["pctAft"]]},
          "conditions": {k: {**v, "mu": MU, "rho": RHO} for k, v in CONDITIONS.items()},
          "tools": {"XFOIL": xf["tool"], "NeuralFoil": nf["tool"], "SU2": su2["tool"] if su2 else "—", "AVL": avl["tool"], "AeroSandbox": asb["tool"] if asb else "—",
@@ -36,12 +37,14 @@ def main():
                                   "neuralfoil_alpha_CLmax_deg": nf["cases"][k]["alpha_CLmax_deg"] if k in nf["cases"] else None}
     c_cr = xf["cases"]["n2415_cruise_ncrit9"]; c_st = xf["cases"]["n2415_stall_ncrit9"]
     # ---- 2-D CL_max summary ----
-    su2_clmax = None; su2_pol = su2.get("polar_L2_SA", []) if su2 else []
-    if su2_pol:
-        conv = [r for r in su2_pol if r["converged"]]
-        i = int(np.argmax([r["CL"] for r in su2_pol]))
-        su2_clmax = {"CL_max": su2_pol[i]["CL"], "alpha_deg": su2_pol[i]["alpha_deg"], "converged": su2_pol[i]["converged"],
-                     "note": "fully turbulent SA; steady RANS near stall is unsteady, values are 300-iteration means"}
+    # SU2 polar entries are usable by construction (su2_2d.py drops diverged cases); only converged points are used here
+    su2_clmax = None; su2_conv = [r for r in (su2.get("polar_L2_SA", []) if su2 else []) if r["converged"]]
+    if su2_conv:
+        i = int(np.argmax([r["CL"] for r in su2_conv]))
+        su2_clmax = {"CL_max": su2_conv[i]["CL"], "alpha_deg": su2_conv[i]["alpha_deg"], "converged": True,
+                     "alphas_converged_deg": [r["alpha_deg"] for r in su2_conv],
+                     "note": "fully turbulent SA, medium mesh, max over the converged points only (sparse: see alphas_converged_deg); "
+                             "steady RANS near stall is unsteady, values are 300-iteration means"}
     R["CL_max_2D"] = {"xfoil_stall_Re": c_st["CL_max"], "xfoil_cruise_Re": c_cr["CL_max"], "xfoil_cruise_Ncrit5": xf["cases"]["n2415_cruise_ncrit5"]["CL_max"],
                       "neuralfoil_stall_Re": nf["cases"]["n2415_stall_ncrit9"]["CL_max"], "su2_SA_cruise_Re": su2_clmax,
                       "experiment_Genc_Lock_Kaynak_2008_Re2e5": {"CL_max": 1.3, "alpha_stall_deg": 12,
@@ -54,7 +57,6 @@ def main():
     cl2d = R["CL_max_2D"]["adopted_2D"]
     clmax_crit = cl2d / cl_ratio
     clmax_raymer = 0.9 * cl2d                                       # Raymer eq. 12.15, high-AR unswept wing, minus nothing for tail
-    tail_download = CLt - sum(s["c_cl"] * 0 for s in wing_strips)  # placeholder
     R["CL_max_3D"] = {"critical_section_method": clmax_crit, "max_cl_over_CL_at_trim": cl_ratio, "raymer_0p9": clmax_raymer,
                       "aerobuildup_untrimmed": asb["summary"]["aerobuildup_CL_max_untrimmed_12mps"] if asb else None,
                       "adopted": round(min(clmax_crit, clmax_raymer), 3),
@@ -69,11 +71,11 @@ def main():
     pod = avl["pod"]
     R["lift_curve"] = {"CL_alpha_per_rad": {"xfoil_2D_cruise": c_cr["CL_alpha_per_rad"], "AVL_aircraft_pod": pod["CL_alpha_per_rad_fit"], "AVL_aircraft_nopod": avl["nopod"]["CL_alpha_per_rad_fit"],
                                             "AeroSandbox_VLM": asb["summary"]["vlm_CL_alpha_per_rad"] if asb else None,
-                                            "repo_vlm_full": 5.33062, "repo_helmbold_wing": GEO["aw"]},
+                                            "repo_vlm_full": vlm_repo["full_CLa_per_rad"], "repo_helmbold_wing": GEO["aw"]},
                        "alpha_0L_deg_aircraft": pod["alpha_0L_deg"], "Cm0_CG28": pod["Cm0"]}
     R["trim_cruise"] = {**pod["trim_cruise"], "Cm_elevator0_at_cruise_CL": pod["cruise_CL_elevator0"]["Cm"]}
-    sm_cases = {"CG_28pct": 28.0, "CG_fwd_batt+30mm": CG["pctFwd"], "CG_aft_batt-30mm": CG["pctAft"], "CG_no_payload": CG["pct"]["noPayload"]}
-    R["neutral_point"] = {"AVL_pod_pct_MAC": pod["NP_pct_MAC"], "AVL_nopod_pct_MAC": avl["nopod"]["NP_pct_MAC"], "repo_vlm_pct_MAC": 47.632, "sizing_pct_MAC": GEO["hn"] * 100,
+    sm_cases = {"CG_28pct": 100 * CG_FRAC, "CG_fwd_batt+30mm": CG["pctFwd"], "CG_aft_batt-30mm": CG["pctAft"], "CG_no_payload": CG["pct"]["noPayload"]}
+    R["neutral_point"] = {"AVL_pod_pct_MAC": pod["NP_pct_MAC"], "AVL_nopod_pct_MAC": avl["nopod"]["NP_pct_MAC"], "repo_vlm_pct_MAC": vlm_repo["neutral_point_pct_mac"], "sizing_pct_MAC": GEO["hn"] * 100,
                           "AeroSandbox_VLM_pct_MAC": asb["summary"]["vlm_NP_pct_MAC"] if asb else None,
                           "static_margin_pct": {k: pod["NP_pct_MAC"] - v for k, v in sm_cases.items()},
                           "static_margin_sizing_pct": GEO["SM"] * 100, "pod_shift_pct_MAC": pod["NP_pct_MAC"] - avl["nopod"]["NP_pct_MAC"]}
@@ -103,7 +105,9 @@ def main():
     if su2:
         R["cfd"] = {"solver": su2["solver"], "Re": su2["Re"], "meshes": mesh, "mesh_study": su2["mesh_study"],
                     "polar_L2_SA": su2.get("polar_L2_SA"), "polar_L2_SSTLM": su2.get("polar_L2_SSTLM"),
-                    "timings": {k: {"iters": v["iters"], "wall_s": v["wall_s"], "converged": v["converged"]} for k, v in su2["cases"].items()},
+                    "unusable_cases": {k: v.get("reason") for k, v in su2.get("unusable_cases", {}).items()},
+                    "timings": {k: {"iters": v["iters"], "wall_s": v["wall_s"], "converged": bool(v["converged"] and v.get("usable", True)), "usable": v.get("usable", True)}
+                                for k, v in sorted({**su2["cases"], **su2.get("unusable_cases", {})}.items())},
                     "wall_s_total": su2["wall_s_total"], "threads_per_case": su2["threads_per_case"], "jobs": su2["jobs"]}
         # comparison table at common alphas
         tbl = []
@@ -113,7 +117,7 @@ def main():
                    "xfoil_CD": interp_sorted(a, xt[:, 0], xt[:, 2]) if xt[:, 0].min() <= a <= xt[:, 0].max() else None,
                    "neuralfoil_CL": interp_sorted(a, nfc["alpha_deg"], nfc["CL"]), "neuralfoil_CD": interp_sorted(a, nfc["alpha_deg"], nfc["CD"])}
             for m in ("SA", "SSTLM"):
-                p = [r for r in su2.get(f"polar_L2_{m}", []) if abs(r["alpha_deg"] - a) < 1e-6]
+                p = [r for r in su2.get(f"polar_L2_{m}", []) if abs(r["alpha_deg"] - a) < 1e-6 and r["converged"]]   # converged & usable only
                 row[f"su2_{m}_CL"] = p[0]["CL"] if p else None; row[f"su2_{m}_CD"] = p[0]["CD"] if p else None
                 row[f"su2_{m}_conv"] = p[0]["converged"] if p else None
             # AVL wing section cl at this alpha is not 2-D; VLM 2-D equivalent is 2 pi (alpha - a0L)
@@ -127,7 +131,7 @@ def main():
                       "su2_total": su2.get("wall_s_total") if su2 else None, "mesh_2d": {k: v["wall_s"] for k, v in mesh.items()} if mesh else None}
     dump_json(HERE / "aero_results.json", R)
     print(f"  CL_max 2D adopted {cl2d} -> 3D {clmax3} (crit-section {clmax_crit:.3f}, Raymer {clmax_raymer:.3f}); Vs {Vs:.2f} m/s (R11 <= 12)")
-    print(f"  NP {pod['NP_pct_MAC']:.1f} % MAC (pod), SM at 28 % {pod['NP_pct_MAC']-28:.1f} %, no-payload CG {CG['pct']['noPayload']:.1f} % -> SM {pod['NP_pct_MAC']-CG['pct']['noPayload']:.1f} %")
+    print(f"  NP {pod['NP_pct_MAC']:.1f} % MAC (pod), SM at {100*CG_FRAC:.0f} % {pod['NP_pct_MAC']-100*CG_FRAC:.1f} %, no-payload CG {CG['pct']['noPayload']:.1f} % -> SM {pod['NP_pct_MAC']-CG['pct']['noPayload']:.1f} %")
     print(f"  CD0 {drag['CD0_total']:.4f}, L/D cruise {drag['cruise']['LD']:.2f}, P_cruise {P:.0f} W, cruise avail {t_cr:.1f} min (sizing {SIZED['t_cruise_avail_min']:.1f}); faired gear {t_cr_f:.1f} min")
 
 if __name__ == "__main__":

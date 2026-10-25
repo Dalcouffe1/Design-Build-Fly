@@ -428,10 +428,10 @@ table.revrec td:nth-child(2){white-space:normal}
 @media (max-width:360px){.viewer .ctl .segbar button{padding:0 6px}}
 
 /* ---------- binder: the report reads one chapter at a time ---------- */
-.runhead{display:none}
-body:not(.home) header.top, body:not(.home) .toc, body:not(.home) .closing{display:none}
+/* scoped to .binder-on (set by app.js) so the companion pages, which share this sheet, keep their masthead and contents */
+.binder-on body:not(.home) header.top, .binder-on body:not(.home) .toc, .binder-on body:not(.home) .closing{display:none}
 .binder{position:sticky;top:0;z-index:12;margin:28px 0 30px;background:var(--bg);border-bottom:1px solid var(--line-2);padding-top:calc(env(safe-area-inset-top,0px))}
-body:not(.home) .binder{margin-top:0}
+.binder-on body:not(.home) .binder{margin-top:0}
 .ptabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-bottom:2px solid var(--ink)}
 .ptabs a{display:flex;flex-direction:column;justify-content:center;gap:1px;min-height:52px;padding:6px 14px;border:1px solid var(--line-2);border-bottom:0;margin-right:-1px;background:var(--surface);color:var(--fg-2);text-decoration:none;border-radius:var(--r) var(--r) 0 0}
 .ptabs a .pn{font-size:.8125rem;color:var(--fg-3)}
@@ -459,7 +459,7 @@ body:not(.home) .binder{margin-top:0}
   .pnext{grid-template-columns:minmax(0,1fr)}
   .pnext a.next{grid-column:1}
 }
-@media print{ .binder,.pnext{display:none!important} body:not(.home) header.top, body:not(.home) .toc, body:not(.home) .closing{display:block!important} section.sec[hidden]{display:block!important} }
+@media print{ .binder,.pnext{display:none!important} .binder-on body:not(.home) header.top, .binder-on body:not(.home) .toc, .binder-on body:not(.home) .closing{display:block!important} section.sec[hidden]{display:block!important} }
 /* ---------- flow visualisation (aerodynamics) ---------- */
 .flowviz{margin:18px 0 8px;border:1px solid var(--line-3);border-radius:var(--r);background:var(--surface);overflow:hidden}
 .fv-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding:10px 12px;border-bottom:1px solid var(--line-3)}

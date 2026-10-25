@@ -6,6 +6,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from common import *
+from su2_2d import read_history
 
 plt.rcParams.update({"font.size": 10, "axes.grid": True, "grid.alpha": 0.3, "figure.dpi": 120, "savefig.bbox": "tight"})
 C = {"xfoil": "#1f77b4", "nf": "#2ca02c", "su2": "#d62728", "su2lm": "#ff7f0e", "avl": "#9467bd", "asb": "#8c564b", "exp": "k", "sizing": "#7f7f7f"}
@@ -45,7 +46,8 @@ def polars():
     ax[1].set(xlabel="section CD", ylabel="section CL", title="Drag polar", xlim=(0, 0.06), ylim=(-0.9, 1.6))
     ax[2].set(xlabel="alpha [deg]", ylabel="Cm c/4", title="Pitching moment", xlim=(-9, 23))
     ax[0].legend(fontsize=7, loc="lower right"); ax[1].legend(fontsize=7, loc="lower right"); ax[2].legend(fontsize=7)
-    fig.suptitle("Wing section polars: XFOIL 6.99 vs NeuralFoil vs SU2 8.5.0 RANS (chord 0.239 m; stall 12, transition 16, cruise 20 m/s)")
+    speeds = ", ".join(f"{k} {v['V']:g}" for k, v in CONDITIONS.items())
+    fig.suptitle(f"Wing section polars: XFOIL 6.99 vs NeuralFoil vs SU2 8.5.0 RANS (chord {CHORD:.3f} m; {speeds} m/s)")
     fig.savefig(PLOTS / "section_polars.png"); plt.close(fig)
 
 def tail_polar():
@@ -58,7 +60,7 @@ def tail_polar():
             ax[0].plot(t[:, 0], t[:, 1], ls, color=C["xfoil"], label=f"XFOIL Re {Re:.2g}"); ax[1].plot(t[:, 2], t[:, 1], ls, color=C["xfoil"], label=f"XFOIL Re {Re:.2g}")
         n = nf["cases"][k]
         ax[0].plot(n["alpha_deg"], n["CL"], ls, color=C["nf"], label=f"NeuralFoil Re {n['Re']:.2g}"); ax[1].plot(n["CD"], n["CL"], ls, color=C["nf"])
-    ax[0].set(xlabel="alpha [deg]", ylabel="CL", title="NACA 0009 tail section (chord 76 mm)"); ax[1].set(xlabel="CD", ylabel="CL", title="Tail section drag polar", xlim=(0, 0.08))
+    ax[0].set(xlabel="alpha [deg]", ylabel="CL", title=f"NACA 0009 tail section (chord {H_CHORD*1e3:.0f} mm)"); ax[1].set(xlabel="CD", ylabel="CL", title="Tail section drag polar", xlim=(0, 0.08))
     ax[0].legend(fontsize=8); ax[1].legend(fontsize=8)
     fig.savefig(PLOTS / "tail_section_polars.png"); plt.close(fig)
 
@@ -71,15 +73,17 @@ def cp():
             d = np.loadtxt(f, skiprows=3)   # XFOIL CPWR: 2 header lines + '#    x        y        Cp'
             ax.plot(d[:, 0], d[:, 2], "-", color=C["xfoil"], label="XFOIL (transitional, Ncrit 9)")
         if su2:
-            k = f"L2_SA_a{a}"
-            if k in su2.get("cp", {}):
-                c = su2["cp"][k]; x, y, cpv = np.array(c["x"]), np.array(c["y"]), np.array(c["Cp"])
-                o = np.argsort(np.arctan2(y - 0.0, x - 0.5)); ax.plot(x[o], cpv[o], ".", color=C["su2"], ms=2.5, label="SU2 RANS SA (medium mesh)")
+            # medium mesh if that case is usable, else the fine mesh (su2_2d.json cp holds usable cases only)
+            for k, lab in ((f"L2_SA_a{a}", "SU2 RANS SA (medium mesh)"), (f"L3_SA_a{a}", "SU2 RANS SA (fine mesh)")):
+                if k in su2.get("cp", {}):
+                    c = su2["cp"][k]; x, y, cpv = np.array(c["x"]), np.array(c["y"]), np.array(c["Cp"])
+                    o = np.argsort(np.arctan2(y - 0.0, x - 0.5)); ax.plot(x[o], cpv[o], ".", color=C["su2"], ms=2.5, label=lab)
+                    break
             k = f"L2_SSTLM_a{a}"
             if k in su2.get("cp", {}):
                 c = su2["cp"][k]; x, y, cpv = np.array(c["x"]), np.array(c["y"]), np.array(c["Cp"])
                 o = np.argsort(np.arctan2(y, x - 0.5)); ax.plot(x[o], cpv[o], ".", color=C["su2lm"], ms=2.5, label="SU2 RANS SST-LM")
-        ax.invert_yaxis(); ax.set(xlabel="x/c", ylabel="Cp", title=f"alpha = {a} deg, Re 3.27e5"); ax.legend(fontsize=7)
+        ax.invert_yaxis(); ax.set(xlabel="x/c", ylabel="Cp", title=f"alpha = {a} deg, Re {CONDITIONS['cruise']['Re']/1e5:.2f}e5"); ax.legend(fontsize=7)
     fig.suptitle("NACA 2415 surface pressure: XFOIL vs SU2")
     fig.savefig(PLOTS / "cp_distributions.png"); plt.close(fig)
 
@@ -90,10 +94,10 @@ def convergence():
     for name in ("L2_SA_ap02.0", "L3_SA_ap02.0", "L2_SA_ap10.0", "L2_SA_ap14.0", "L2_SA_ap16.0", "L2_SSTLM_ap02.0"):
         h = OUT / "su2" / name / "history.csv"
         if not h.exists(): continue
-        with open(h) as f: rows = list(csv.reader(f))
-        hdr = [x.strip().strip('"') for x in rows[0]]; d = np.array([[float(v) for v in r] for r in rows[1:] if len(r) == len(hdr)])
+        hdr, d = read_history(h)         # tolerant of MSVC '-nan(ind)' / 'inf' text
         it = d[:, hdr.index("Inner_Iter")]
-        ax[0].plot(it, d[:, hdr.index("rms[P]")], label=name); ax[1].plot(it, d[:, hdr.index("CL")], label=name)
+        tag = "" if name in su2.get("cases", {}) else " (unusable)"
+        ax[0].plot(it, d[:, hdr.index("rms[P]")], label=name + tag); ax[1].plot(it, d[:, hdr.index("CL")], label=name + tag)
     ax[0].set(xlabel="iteration", ylabel="log10 rms(P)", title="SU2 residual history"); ax[1].set(xlabel="iteration", ylabel="CL", title="Lift history", ylim=(-0.5, 1.8))
     ax[0].legend(fontsize=7); ax[1].legend(fontsize=7)
     fig.savefig(PLOTS / "su2_convergence.png"); plt.close(fig)
@@ -103,10 +107,13 @@ def mesh_study():
     if not su2 or not su2.get("mesh_study"): return
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2))
     for key, ms in su2["mesh_study"].items():
-        N = np.array([ms["cells"][f"L{L}"] for L in (1, 2, 3)], float); h = 1 / np.sqrt(N)
-        cl = [ms["CL"][f"L{L}"] for L in (1, 2, 3)]; cd = [ms["CD"][f"L{L}"] for L in (1, 2, 3)]
-        ax[0].plot(h, cl, "o-", label=f"{key.replace('_', ' ')} deg"); ax[1].plot(h, cd, "o-", label=f"{key.replace('_', ' ')} deg")
-        for i, L in enumerate((1, 2, 3)):
+        Ls = [L for L in (1, 2, 3) if ms["CL"][f"L{L}"] is not None]     # unusable levels are null in su2_2d.json
+        N = np.array([ms["cells"][f"L{L}"] for L in Ls], float); h = 1 / np.sqrt(N)
+        cl = [ms["CL"][f"L{L}"] for L in Ls]; cd = [ms["CD"][f"L{L}"] for L in Ls]
+        miss = [L for L in (1, 2, 3) if L not in Ls]
+        lab = f"{key.replace('_', ' ')} deg" + (f" (L{', L'.join(map(str, miss))} unusable)" if miss else "")
+        ax[0].plot(h, cl, "o-", label=lab); ax[1].plot(h, cd, "o-", label=lab)
+        for i, L in enumerate(Ls):
             ax[0].annotate(f"L{L}", (h[i], cl[i]), fontsize=7, xytext=(3, 3), textcoords="offset points")
         if ms["GCI_CL"].get("f_ext") is not None: ax[0].plot(0, ms["GCI_CL"]["f_ext"], "k*", ms=8)
         if ms["GCI_CD"].get("f_ext") is not None: ax[1].plot(0, ms["GCI_CD"]["f_ext"], "k*", ms=8)
@@ -139,7 +146,7 @@ def drag_breakdown():
     ax.barh(names[::-1], vals[::-1], color=[cols[i["group"]] for i in items][::-1])
     for i, v in enumerate(vals[::-1]): ax.text(v + 0.0005, i, f"{v:.4f}", va="center", fontsize=7)
     ax.axvline(0, color="k", lw=0.5)
-    ax.set(xlabel="ΔCD0 on S_ref = 0.573 m²", title=f"Cruise parasite drag build-up: CD0 = {d['CD0_total']:.4f} (sizing assumed {d['sizing']['CD0_total']:.4f})")
+    ax.set(xlabel=f"ΔCD0 on S_ref = {d['conditions']['S_ref_m2']:.3f} m²", title=f"Cruise parasite drag build-up: CD0 = {d['CD0_total']:.4f} (sizing assumed {d['sizing']['CD0_total']:.4f})")
     ax.tick_params(axis="y", labelsize=7)
     fig.savefig(PLOTS / "drag_breakdown.png"); plt.close(fig)
     # pie by group
@@ -154,14 +161,17 @@ def aircraft_polar():
     fig, ax = plt.subplots(1, 2, figsize=(11, 4.2))
     ax[0].plot(CD, CL, "-", color=C["avl"], label="build-up (XFOIL profile + AVL induced + components)")
     CDs = d["sizing"]["CD0_total"] + CL**2 / (math.pi * AR * d["sizing"]["e"])
-    ax[0].plot(CDs, CL, "--", color=C["sizing"], label="sizing.mjs polar (CD0 0.059, e 0.80)")
-    gf = d["gear_faired_case"]; ax[0].plot(CD - (gf["CdA_legs_round"] - gf["CdA_legs_faired"]) / S_REF, CL, ":", color="#2ca02c", label="with faired gear legs")
-    ax[0].axhline(CL_CRUISE_SIZING, color="k", lw=0.5); ax[0].text(0.005, CL_CRUISE_SIZING + 0.02, "cruise CL 0.432", fontsize=7)
+    ax[0].plot(CDs, CL, "--", color=C["sizing"], label=f"sizing.mjs polar (CD0 {d['sizing']['CD0_total']:.3f}, e {d['sizing']['e']:.2f})")
+    # the alternative gear: bare round legs when the design case is faired (drag_buildup gear_round_case), else faired legs
+    gf = d["gear_faired_case"]; dleg = (gf["CdA_legs_round"] - gf["CdA_legs_faired"]) / S_REF
+    dgear, glab = (dleg, "round gear legs") if d.get("gear_round_case") else (-dleg, "faired gear legs")
+    ax[0].plot(CD + dgear, CL, ":", color="#2ca02c", label=f"with {glab}")
+    ax[0].axhline(CL_CRUISE_SIZING, color="k", lw=0.5); ax[0].text(0.01, CL_CRUISE_SIZING + 0.02, f"cruise CL {CL_CRUISE_SIZING:.3f}", fontsize=7, transform=ax[0].get_yaxis_transform())
     ax[0].set(xlabel="CD", ylabel="CL", title="Whole-aircraft drag polar (trimmed, stopped rotors)"); ax[0].legend(fontsize=7)
     ax[1].plot(V, LD, "-", color=C["avl"], label="build-up"); ax[1].plot(V, CL / CDs, "--", color=C["sizing"], label="sizing polar")
-    ax[1].plot(V, CL / (CD - (gf["CdA_legs_round"] - gf["CdA_legs_faired"]) / S_REF), ":", color="#2ca02c", label="faired gear")
-    ax[1].axvline(V_CRUISE, color="k", lw=0.5); ax[1].axvline(V_STALL_REQ, color="r", lw=0.5); ax[1].text(V_STALL_REQ + 0.2, 1, "R11 Vs 12", fontsize=7, color="r")
-    ax[1].set(xlabel="V [m/s] at MTOW 6.18 kg", ylabel="L/D", title="L/D vs speed", xlim=(10, 28)); ax[1].legend(fontsize=7)
+    ax[1].plot(V, CL / (CD + dgear), ":", color="#2ca02c", label=glab)
+    ax[1].axvline(V_CRUISE, color="k", lw=0.5); ax[1].axvline(V_STALL_REQ, color="r", lw=0.5); ax[1].text(V_STALL_REQ + 0.2, 1, f"R11 Vs {V_STALL_REQ:g}", fontsize=7, color="r")
+    ax[1].set(xlabel=f"V [m/s] at MTOW {MTOW:.2f} kg", ylabel="L/D", title="L/D vs speed", xlim=(10, 28)); ax[1].legend(fontsize=7)
     fig.savefig(PLOTS / "aircraft_polar.png"); plt.close(fig)
 
 def stability():
@@ -175,13 +185,13 @@ def stability():
         ax[1].plot([r["CL"] for r in v], [r["Cm"] for r in v], "s--", color=C["asb"], ms=3, label="AeroSandbox VLM")
         b = asb["aerobuildup"]; ax[0].plot([r["alpha_deg"] for r in b], [r["CL"] for r in b], "^:", color="#e377c2", ms=3, label="AeroSandbox AeroBuildup (viscous, 12 m/s)")
     ax[0].set(xlabel="alpha [deg]", ylabel="CL (aircraft)", title="Aircraft lift curve, elevator 0"); ax[0].legend(fontsize=7)
-    ax[1].axhline(0, color="k", lw=0.5); ax[1].set(xlabel="CL", ylabel="Cm about CG (28 % MAC)", title="Pitch stiffness about the 28 % CG"); ax[1].legend(fontsize=7)
+    ax[1].axhline(0, color="k", lw=0.5); ax[1].set(xlabel="CL", ylabel=f"Cm about CG ({100*CG_FRAC:.0f} % MAC)", title=f"Pitch stiffness about the {100*CG_FRAC:.0f} % CG"); ax[1].legend(fontsize=7)
     fig.savefig(PLOTS / "stability.png"); plt.close(fig)
     # NP / CG bar
     fig, ax = plt.subplots(figsize=(9, 2.6))
-    pts = [("CG fwd (batt +30 mm)", CG["pctFwd"], "#2ca02c"), ("CG target", 28.0, "#2ca02c"), ("CG aft (batt -30 mm)", CG["pctAft"], "#2ca02c"),
+    pts = [("CG fwd (batt +30 mm)", CG["pctFwd"], "#2ca02c"), ("CG target", 100 * CG_FRAC, "#2ca02c"), ("CG aft (batt -30 mm)", CG["pctAft"], "#2ca02c"),
            ("CG no payload", CG["pct"]["noPayload"], "#ff7f0e"), ("NP sizing (Helmbold)", GEO["hn"] * 100, C["sizing"]),
-           ("NP repo VLM", 47.6, C["sizing"]), ("NP AVL no pod", avl["nopod"]["NP_pct_MAC"], "#c5b0d5"), ("NP AVL with pod", avl["pod"]["NP_pct_MAC"], C["avl"])]
+           ("NP repo VLM", json.loads((REPO / "analysis" / "aero.json").read_text())["neutral_point_pct_mac"], C["sizing"]), ("NP AVL no pod", avl["nopod"]["NP_pct_MAC"], "#c5b0d5"), ("NP AVL with pod", avl["pod"]["NP_pct_MAC"], C["avl"])]
     if asb: pts.append(("NP AeroSandbox VLM", asb["summary"]["vlm_NP_pct_MAC"], C["asb"]))
     pts.sort(key=lambda p: p[1]); offs = [16, -34, 44, -62]
     for i, (n, x, c) in enumerate(pts):

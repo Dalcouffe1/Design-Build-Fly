@@ -6,11 +6,11 @@
 //  - Sizing loop: analysis/model.js size() is imported unchanged (F1–F12, model.js lines 1–18, size() at line 34).
 //  - Baseline inputs: read from analysis/results.json concepts.C0.params (written by analysis/sizing.mjs BASE, line 15).
 //    sizing.mjs is NOT imported because importing it re-runs it and rewrites results.json.
-//  - Twin-boom geometry (boom length, tail areas) is RE-IMPLEMENTED below from sizing.mjs geometry(), lines 90–128
-//    (yIn line 99, tail-volume loop line 102, boom x0/x1 lines 105–106). Checked: reproduces C0 boomTotal 2.823 m.
-//  - Pack picker re-implements sizing.mjs run() lines 138–145 (cheapest pack meeting energy, 11.5 min, 60 A).
-//  - BOM starts from results.json concepts.C0.bom.lines (sizing.mjs bom(), lines 156–222); tax 10.25 % (line 217),
-//    shipping allowance $100 EST (line 216). Variant edits use prices in docs/research/configurations.md §6.
+//  - Twin-boom geometry (boom length, tail areas, segments) is RE-IMPLEMENTED below from sizing.mjs geometry();
+//    the reproduction check at the end compares MTOW, cruise time, cost and boomTotal with results.json and exits 1 on a mismatch.
+//  - Pack picker re-implements sizing.mjs run() (cheapest pack meeting energy, the cruise-margin floor and the current limit).
+//  - BOM starts from results.json concepts.C0.bom.lines (sizing.mjs bom()); tax and the shipping allowance come from
+//    results.json concepts.C0.bom. Variant edits use prices in docs/research/configurations.md §6.
 //  - Joiner reserve factor scales from results.json concepts.C0.struct.MS_J with Mroot = nUlt W b / (3 pi)
 //    (sizing.mjs line 257): MS_J(variant) = MS_J(C0) * (W0 b0) / (W b).
 // Every estimate is tagged EST. Sources tagged [S#] are listed in SOURCES and in docs/research/configurations.md.
@@ -59,6 +59,7 @@ const SOURCES = {
 // ---------------------------------------------------------------- baseline inputs from the repo
 const C0 = R.concepts.C0;
 const BASEP = { ...C0.params }; delete BASEP.mBattFixed; delete BASEP.EBattFixed;
+const TS_CLMAX_RATIO = 1.0/1.2, TS_DCD0 = 0.004;   // tailsitter deltas against the C0 baseline (EST, see the TS variants)
 const X4110S = { name:BASEP.name, liftD:BASEP.liftD, Tmax_g:BASEP.Tmax_g, mMotor:BASEP.mMotor, mEsc:BASEP.mEsc, mProp:BASEP.mProp,
   mMount:BASEP.mMount, thrustTable:BASEP.thrustTable, CdA_rotor:BASEP.CdA_rotor };
 // X4120 V3 480KV + EOLO 15x8 on 22.2 V (S6). Hover table points from S6; ESC Skywalker 100A (S10, mass unverified);
@@ -100,7 +101,7 @@ function twinBoomGeo(p, r){
   for(let k=0;k<6;k++){ lh0 = (-0.25*chord) - (lh_tailLE - 0.25*hC0); Sh = p.VhTarget*S*chord/lh0; hC0 = Sh/hSpan0; }
   const Sv = p.VvTarget*S*p.span/lh0;
   const boomLen = (xFront + 0.05) - (lh_tailLE - 0.22);
-  const segFront = (xFront + 0.05) - (xRear - 0.03), segRear = (xRear + 0.03) - (lh_tailLE - 0.22);
+  const segFront = (xFront + 0.05) - xRear, segRear = xRear - (lh_tailLE - 0.22);   // butt at xRear, no overlap (sizing.mjs geometry())
   return { boomTotal: 2*boomLen, tailRatio: (Sh+Sv)/S, Sh, Sv, segs:[segFront, segRear, segFront, segRear], yIn };
 }
 
@@ -261,8 +262,9 @@ V.push({ id:'TW-4', label:'Tilt-wing: 4 x X4110S on the wing, wing pivots, tail 
   motorOut:{ hover:()=>0, cruise:2, why:'4 wing rotors: no hover motor-out; cruise motor-out leaves 3 rotors.' }, exposure:'planform' });
 V.push({ id:'TS-quad', label:'Quad tailsitter: 4 x X4110S on 2 wing pylons, elevons, fins as gear, no tail', family:'Tailsitter', meetsR1:false, geo:'fixed',
   p:{ noPusher:true, mPusherSet:0, nLift:4, nBooms:2, boomTotalLen:2*0.55, tailAreaRatio:0.06, CdA_rotor:0, etaProp:ETA_HOVERPROP_CRUISE,
-      CLmax:1.0, CD0_clean:0.026, mGear:0.08, mServos:2*0.0432 },
-  // CLmax 1.0 EST (reflexed flying-wing section, lower than the repo's 1.2 EST); CD0 0.026 EST (tail + gear removed from the 0.030 EST);
+      CLmax:BASEP.CLmax*TS_CLMAX_RATIO, CD0_clean:BASEP.CD0_clean-TS_DCD0, mGear:0.08, mServos:2*0.0432 },
+  // CLmax = baseline x 1.0/1.2 EST (reflexed flying-wing section; the ratio of the original 1.0 EST to the then-baseline 1.2);
+  // CD0 = baseline - 0.004 EST (tail + gear removed; the original 0.030 -> 0.026 EST step);
   // fins/feet 80 g EST (same allowance as the repo's printed feet); tailAreaRatio 0.06 EST (fins only)
   extras:[],
   bom: api => { api.remove(/X4110S 400KV \(pusher\)/); api.remove(/APC 14x8.5EP/); api.qty(/EMAX ES3005HV servo$/, 2); api.qty(/6061-T6 tube 1.000 x 0.035/, 1); },
@@ -271,7 +273,7 @@ V.push({ id:'TS-quad', label:'Quad tailsitter: 4 x X4110S on 2 wing pylons, elev
   sched:6.5, schedWhy:'Whole airframe new; hover in R16 wind is the gating test; landing on fins.',
   motorOut:{ hover:()=>0, cruise:2, why:'4 rotors: no hover motor-out (S27); in cruise 3 rotors keep it flying but it cannot hover to land.' }, exposure:'planform' });
 V.push({ id:'TS-duo', label:'Twin-motor tailsitter: 2 x X4120 15x8 on the wing, elevons in slipstream', family:'Tailsitter', meetsR1:false, geo:'fixed',
-  p:{ ...X4120, noPusher:true, mPusherSet:0, nLift:2, nBooms:0, boomTotalLen:0, tailAreaRatio:0.06, CdA_rotor:0, CLmax:1.0, CD0_clean:0.026, mGear:0.08, mServos:2*0.0432 },
+  p:{ ...X4120, noPusher:true, mPusherSet:0, nLift:2, nBooms:0, boomTotalLen:0, tailAreaRatio:0.06, CdA_rotor:0, CLmax:BASEP.CLmax*TS_CLMAX_RATIO, CD0_clean:BASEP.CD0_clean-TS_DCD0, mGear:0.08, mServos:2*0.0432 },
   extras:[],
   bom: api => { api.remove(/^SunnySky X4110S 400KV$/); api.remove(/X4110S 400KV \(pusher\)/); api.remove(/APC 14x8.5EP/); api.remove(/JeeFly 1755 carbon prop/); api.remove(/JeeFly 1755 spare/);
     api.remove(/SoloGood 45A/); api.remove(/X4110S spare motor/); api.remove(/6061-T6 tube 1.000 x 0.035/); api.qty(/EMAX ES3005HV servo$/, 2);
@@ -434,10 +436,12 @@ const cdaSens = [0.5, 1, 2].map(k => { const e = evaluate({ ...V.find(v=>v.id===
 // reproduction check: C0 through this script vs results.json
 const rep = results.find(x=>x.id==='C0-b2.4');
 const check = { C0_results_json:{ MTOW:R.concepts.C0.sized.m, cruise_min:R.concepts.C0.sized.t_cruise_avail_min, total:R.concepts.C0.bom.total, boomTotal:R.concepts.C0.geo.boomTotal },
-  C0_this_script:{ MTOW:rep.metrics.MTOW_kg, cruise_min:rep.metrics.cruise_avail_min, total:rep.metrics.cost_total_usd } };
+  C0_this_script:{ MTOW:rep.metrics.MTOW_kg, cruise_min:rep.metrics.cruise_avail_min, total:rep.metrics.cost_total_usd, boomTotal:twinBoomGeo({ ...BASEP }, R.concepts.C0.sized).boomTotal } };
+{ const a=check.C0_results_json, b=check.C0_this_script, bad=['MTOW','cruise_min','total','boomTotal'].filter(k=>Math.abs(a[k]-b[k]) > 1e-3*Math.max(1,Math.abs(a[k])));
+  if(bad.length){ console.error('tradestudy reproduction check FAILED:', bad.map(k=>`${k} ${a[k]} vs ${b[k]}`).join('; ')); process.exit(1); } }
 
 const out = {
-  generated:'2026-10-21', script:'analysis/tradestudy.mjs', model:'analysis/model.js size() (unchanged)', inputs:'analysis/results.json (sizing.mjs v0.3.1 outputs)',
+  generated:'2026-10-25', script:'analysis/tradestudy.mjs', model:'analysis/model.js size() (unchanged)', inputs:'analysis/results.json (sizing.mjs v0.4 outputs)',
   notes:[ 'All costs include 10.25 % tax and the sizing shipping allowance (results.json C0 bom.shipping) plus $15 per added vendor (EST); fees outside the cap excluded (R6).',
     'Rubric scores (controlRisk, scheduleRisk, motor-out cruise points) are engineering judgements (EST) with the evidence quoted per variant.',
     'Non-R1 variants (tiltrotor, tilt-wing, tailsitter) are scored for comparison; R1 is a Given requirement, so they are ranked separately.',

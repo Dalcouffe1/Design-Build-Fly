@@ -17,7 +17,7 @@
    "group": "wing"
   },
   {
-   "component": "H-tail profile (XFOIL NACA 0009, Re 1.0e5, cl ~ 0)",
+   "component": "H-tail profile (XFOIL NACA 0009, Re 1.2e5, cl ~ 0)",
    "CdA_m2": 0.000861135,
    "dCD": 0.00136314,
    "source": "XF xfoil_n0009_tail_cruise_ncrit9.txt",
@@ -149,7 +149,11 @@
   "xfoil_ncrit9": 0.00827741,
   "xfoil_ncrit5": 0.00850272,
   "su2_SA_fully_turbulent": 0.0179782,
-  "note": "dCD on S_ref at section cl = cruise CL; exposed wing only"
+  "su2_interpolated_between_alpha_deg": [
+   -2.0,
+   8.0
+  ],
+  "note": "dCD on S_ref at section cl = cruise CL; exposed wing only; SU2 from converged medium-mesh points only (linear in CL between the two listed angles)"
  },
  "sizing": {
   "CD0_clean": 0.0266,

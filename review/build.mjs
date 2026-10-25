@@ -2,10 +2,12 @@
 import { readFileSync, writeFileSync, existsSync, statSync, mkdirSync, readdirSync } from 'fs';
 
 // Windows can hold an output file open for a moment (preview browser, virus scan): retry a few times
+// JSON for inline <script>: '<' escaped so no data string can close the tag or open a comment
+const js = v => JSON.stringify(v).replace(/</g, '\\u003c');
 function writeSafe(u, data) {
   for (let k = 0; ; k++) {
     try { writeFileSync(u, data); return; }
-    catch (e) { if (k >= 6) throw e; Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); }
+    catch (e) { if (k >= 6 || !['EBUSY', 'EPERM', 'EACCES', 'UNKNOWN'].includes(e.code)) throw e; Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 250); }
   }
 }
 
@@ -80,7 +82,7 @@ ${FLOW2 ? `<script type="application/json" id="flow2dData">${JSON.stringify(FLOW
 ${FLOW3 ? `<script type="application/json" id="flow3dData">${JSON.stringify(FLOW3).replace(/</g, '\\u003c')}</script>` : ''}
 <script type="application/json" id="meshData">${JSON.stringify(MESH).replace(/</g, '\\u003c')}</script>
 ${r('./src/body.html').replace(/DESIGN-BASIS\.md v\d+\.\d+(?:\.\d+)?/g, 'DESIGN-BASIS.md v' + BASIS_VER).split('{{BASIS_VER}}').join(BASIS_VER)}
-<script>const DATA = ${JSON.stringify(data)}; const V02 = ${JSON.stringify(v02)}; const SIM = ${JSON.stringify(sim)}; const AERO = ${JSON.stringify(aero)}; const IMG = ${JSON.stringify(IMG)}; const CADP = ${JSON.stringify(cadp)}; let MESH = null; const MESH_META = ${JSON.stringify({ tris: MESH.tris, comps: MESH.comps.length, files: new Set(Object.keys(MESH.parts).map(k => k.split('~')[0])).size })}; const TRADE = ${JSON.stringify(TRADE)}; const AEROD = ${JSON.stringify(AEROD)}; const TESTS = ${JSON.stringify(TESTS)}; const BUILD = ${JSON.stringify(BUILD)}; const HW = ${JSON.stringify(HW)};</script>
+<script>const DATA = ${js(data)}; const V02 = ${js(v02)}; const SIM = ${js(sim)}; const AERO = ${js(aero)}; const IMG = ${js(IMG)}; const CADP = ${js(cadp)}; let MESH = null; const MESH_META = ${JSON.stringify({ tris: MESH.tris, comps: MESH.comps.length, files: new Set(Object.keys(MESH.parts).map(k => k.split('~')[0])).size })}; const TRADE = ${js(TRADE)}; const AEROD = ${js(AEROD)}; const TESTS = ${js(TESTS)}; const BUILD = ${js(BUILD)}; const HW = ${js(HW)};</script>
 <script>
 ${r('../analysis/model.js')}
 </script>

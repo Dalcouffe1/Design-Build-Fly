@@ -4,10 +4,12 @@
 const FlowViz = (()=>{
   const $ = s => document.querySelector(s), $$ = s => [...document.querySelectorAll(s)];
   const RM = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let F2=null, F3=null, mode='2d', field='speed', ai=0, paused=RM, running=false, visible=false, raf=0;
+  let F2=null, F3=null, DEC=[], mode='2d', field='speed', ai=0, paused=RM, running=false, visible=false, raf=0;
   let cv, ctx, W=0, H=0, dpr=1, fieldImg=null, dec=null, parts=null, last=0;
   let cam={yaw:-0.75, pitch:0.42, zoom:1}, drag=null, seg3=null, clock=0;
-  const tok = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+  let T={};
+  const readTok = () => { const cs=getComputedStyle(document.documentElement), g=n=>cs.getPropertyValue(n).trim();
+    T={surface:g('--surface'), surface3:g('--surface-3'), fg:g('--fg'), fg2:g('--fg-2'), line3:g('--line-3'), font:g('--f-body')}; };
 
   // diverging ramp on the dark ground: cool below the reference, neutral at it, warm above
   const LO=[111,159,208], MID=[50,55,61], HI=[224,154,92];
@@ -68,7 +70,7 @@ const FlowViz = (()=>{
   }
   function frame2d(){
     const w=win(), a=alpha(), k=Math.min(W/(2*w.hx), H/(2*w.hy));
-    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=tok('--surface'); ctx.fillRect(0,0,W,H);
+    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=T.surface; ctx.fillRect(0,0,W,H);
     ctx.save(); ctx.translate(W/2,H/2); ctx.scale(k,-k); ctx.rotate(-a); ctx.translate(-w.cx,0);
     ctx.imageSmoothingEnabled=true; ctx.save(); ctx.translate(dec.x0,dec.y1); ctx.scale(1,-1); ctx.drawImage(fieldImg,0,0,dec.x1-dec.x0,dec.y1-dec.y0); ctx.restore();
     // particles: trails fade with age, drawn in age buckets
@@ -80,20 +82,20 @@ const FlowViz = (()=>{
     if(!parts){ drawStreamlines(w,a,k); }
     // aerofoil
     const o=F2.outline; ctx.beginPath(); o.forEach((q,i)=>i?ctx.lineTo(q[0],q[1]):ctx.moveTo(q[0],q[1])); ctx.closePath();
-    ctx.fillStyle=tok('--surface-3'); ctx.fill(); ctx.lineWidth=1.2*dpr/k; ctx.strokeStyle=tok('--fg-2'); ctx.stroke();
+    ctx.fillStyle=T.surface3; ctx.fill(); ctx.lineWidth=1.2*dpr/k; ctx.strokeStyle=T.fg2; ctx.stroke();
     // stagnation point and estimated separation on the upper surface
     const marks=[]; const st=dec.a.stag_xy; if(st) marks.push({x:st[0],y:st[1],t:'stagnation point'});
-    const xs=dec.a.x_sep_upper_est; if(xs!=null && xs<0.99){ const up=o.filter(q=>q[1]>0.0); let best=null; up.forEach(q=>{ if(!best||Math.abs(q[0]-xs)<Math.abs(best[0]-xs)) best=q; }); if(best) marks.push({x:best[0],y:best[1],t:'flow separates (est.)'}); }
-    const pix=marks.map(m=>{ ctx.beginPath(); ctx.arc(m.x,m.y,4*dpr/k,0,7); ctx.fillStyle=tok('--fg'); ctx.fill(); const t=ctx.getTransform(); const P=t.transformPoint(new DOMPoint(m.x,m.y)); return {X:P.x,Y:P.y,t:m.t}; });
+    if(dec.sep) marks.push({x:dec.sep[0],y:dec.sep[1],t:'flow separates (est.)'});
+    const pix=marks.map(m=>{ ctx.beginPath(); ctx.arc(m.x,m.y,4*dpr/k,0,7); ctx.fillStyle=T.fg; ctx.fill(); const t=ctx.getTransform(); const P=t.transformPoint(new DOMPoint(m.x,m.y)); return {X:P.x,Y:P.y,t:m.t}; });
     ctx.restore();
     // labels in screen space, each on a plate so it reads over the moving traces
     const plate=(txt,x,y,al)=>{ const m=ctx.measureText(txt), w=m.width+10*dpr, h=20*dpr; let lx=al==='right'?x-w+5*dpr:x-5*dpr; lx=Math.max(4*dpr,Math.min(W-w-4*dpr,lx)); // kept inside the canvas
-      ctx.save(); ctx.globalAlpha=0.88; ctx.fillStyle=tok('--surface'); ctx.fillRect(lx,y-h/2,w,h); ctx.restore(); ctx.fillStyle=tok('--fg'); ctx.textAlign='left'; ctx.fillText(txt,lx+5*dpr,y); };
-    ctx.font=`${13*dpr}px ${tok('--f-body')}`; ctx.fillStyle=tok('--fg'); ctx.textBaseline='middle';
+      ctx.save(); ctx.globalAlpha=0.88; ctx.fillStyle=T.surface; ctx.fillRect(lx,y-h/2,w,h); ctx.restore(); ctx.fillStyle=T.fg; ctx.textAlign='left'; ctx.fillText(txt,lx+5*dpr,y); };
+    ctx.font=`${13*dpr}px ${T.font}`; ctx.fillStyle=T.fg; ctx.textBaseline='middle';
     pix.forEach(m=>{ const up=m.t.startsWith('flow'); ctx.textAlign=up?'left':'right'; const dx=up?8*dpr:-8*dpr, dy=up?-16*dpr:14*dpr;
-      ctx.strokeStyle=tok('--fg-2'); ctx.lineWidth=dpr; ctx.beginPath(); ctx.moveTo(m.X,m.Y); ctx.lineTo(m.X+dx*0.7,m.Y+dy*0.8); ctx.stroke(); plate(m.t,m.X+dx,m.Y+dy,up?'left':'right'); });
+      ctx.strokeStyle=T.fg2; ctx.lineWidth=dpr; ctx.beginPath(); ctx.moveTo(m.X,m.Y); ctx.lineTo(m.X+dx*0.7,m.Y+dy*0.8); ctx.stroke(); plate(m.t,m.X+dx,m.Y+dy,up?'left':'right'); });
     // free-stream arrow and chord scale
-    ctx.strokeStyle=tok('--fg'); ctx.lineWidth=1.5*dpr; const y0=20*dpr, x0=19*dpr;
+    ctx.strokeStyle=T.fg; ctx.lineWidth=1.5*dpr; const y0=20*dpr, x0=19*dpr;
     plate(`→  free stream, ${F2.V_mps} m/s, α = ${dec.a.alpha}°`, x0, y0, 'left');
     const cmm=Math.round(AEROD.geometry.chord_m*1000), sx=W-14*dpr-k*0.5, sy=H-16*dpr;
     ctx.beginPath(); ctx.moveTo(sx,sy-4*dpr); ctx.lineTo(sx,sy); ctx.lineTo(sx+k*0.5,sy); ctx.lineTo(sx+k*0.5,sy-4*dpr); ctx.stroke();
@@ -107,41 +109,40 @@ const FlowViz = (()=>{
     ctx.stroke(); }
 
   // ---------- 3-D: painter-sorted panels and streamline segments, particles riding the lines ----------
-  function proj(p){ const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw), cp=Math.cos(cam.pitch), sp=Math.sin(cam.pitch);
-    // CAD frame X fwd, Y up, Z right; camera orbits the wing centre (X −0.6)
-    const x=p[0]+0.6, y=p[1], z=p[2];
-    const xr=cy*z - sy*x, zr=sy*z + cy*x;           // yaw about Y
-    const yr=cp*y - sp*zr, d=sp*y + cp*zr;          // pitch about screen x
-    const s=Math.min(W,H*1.6)/2.9*cam.zoom; return [W/2 - xr*s, H/2 - yr*s, d]; }   // minus: keeps the view right-handed (starboard on the right seen from behind)
   function build3(){ seg3={panels:[], lines:[]};
     ['wing','htail','fin'].forEach(g=>{ const P=F3.panels[g]; if(!P) return; P.quads.forEach(q=>seg3.panels.push(q)); });
     const all=[]; F3.streamlines.forEach(l=>l.s.forEach(v=>all.push(v))); all.sort((a,b)=>a-b);
     const lo=all[Math.floor(all.length*0.02)], hi=all[Math.floor(all.length*0.98)], span=Math.max(1-lo,hi-1,0.01);
-    seg3.span=span; seg3.lines=F3.streamlines.map(l=>({xyz:l.xyz, s:l.s, ph:Math.random()})); }
-  function frame3d(t){
-    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=tok('--surface'); ctx.fillRect(0,0,W,H);
+    seg3.span=span; seg3.lines=F3.streamlines.map(l=>({xyz:l.xyz, s:l.s, ph:Math.random(), c:l.s.map(v=>rgb(lramp((v-1)/span)))})); seg3.key=''; }
+  function project3(){ const key=[cam.yaw,cam.pitch,cam.zoom,W,H].join(); if(seg3.key===key) return; seg3.key=key;
+    const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw), cp=Math.cos(cam.pitch), sp=Math.sin(cam.pitch), sc=Math.min(W,H*1.6)/2.9*cam.zoom;
+    // CAD frame X fwd, Y up, Z right; camera orbits the wing centre (X −0.6); screen x negated so starboard is on the right seen from behind
+    const pr=(X,Y,Z)=>{ const x=X+0.6, xr=cy*Z-sy*x, zr=sy*Z+cy*x; return [W/2-xr*sc, H/2-(cp*Y-sp*zr)*sc, sp*Y+cp*zr]; };
     const prims=[];
-    seg3.panels.forEach(q=>{ const a=proj([q[0],q[1],q[2]]), b=proj([q[3],q[4],q[5]]), c=proj([q[6],q[7],q[8]]), d=proj([q[9],q[10],q[11]]);
-      prims.push({d:(a[2]+b[2]+c[2]+d[2])/4, k:0, p:[a,b,c,d]}); });
-    const ph=(clock*0.25)%1;
-    seg3.lines.forEach(l=>{ const n=l.s.length, P=[]; for(let i=0;i<n;i++) P.push(proj([l.xyz[i*3],l.xyz[i*3+1],l.xyz[i*3+2]]));
-      for(let i=0;i<n-1;i++) prims.push({d:(P[i][2]+P[i+1][2])/2, k:1, a:P[i], b:P[i+1], c:rgb(lramp((l.s[i]-1)/seg3.span))});
-      if(!RM) for(let m=0;m<2;m++){ const f=((ph+l.ph+m/2)%1)*(n-1), i=Math.floor(f), u=f-i; if(i>=n-1) continue;
-        const x=P[i][0]+(P[i+1][0]-P[i][0])*u, y=P[i][1]+(P[i+1][1]-P[i][1])*u; prims.push({d:P[i][2], k:2, x, y}); } });
-    prims.sort((a,b)=>a.d-b.d);
-    const sf=tok('--line-3'), fg='#f1f3f5'; ctx.lineCap='round';
-    for(const p of prims){
+    seg3.panels.forEach(q=>{ const a=pr(q[0],q[1],q[2]), b=pr(q[3],q[4],q[5]), c=pr(q[6],q[7],q[8]), d=pr(q[9],q[10],q[11]); prims.push({d:(a[2]+b[2]+c[2]+d[2])/4, k:0, p:[a,b,c,d]}); });
+    seg3.lines.forEach(l=>{ const n=l.s.length, P=l.P=new Array(n); for(let i=0;i<n;i++) P[i]=pr(l.xyz[i*3],l.xyz[i*3+1],l.xyz[i*3+2]);
+      for(let i=0;i<n-1;i++) prims.push({d:(P[i][2]+P[i+1][2])/2, k:1, a:P[i], b:P[i+1], c:l.c[i]}); });
+    seg3.prims=prims.sort((a,b)=>a.d-b.d); }
+  function frame3d(){
+    project3();
+    ctx.setTransform(1,0,0,1,0,0); ctx.fillStyle=T.surface; ctx.fillRect(0,0,W,H); ctx.lineCap='round';
+    const sf=T.line3, lw=1.1*dpr;
+    for(const p of seg3.prims){
       if(p.k===0){ ctx.beginPath(); ctx.moveTo(p.p[0][0],p.p[0][1]); for(let i=1;i<4;i++) ctx.lineTo(p.p[i][0],p.p[i][1]); ctx.closePath(); ctx.fillStyle=sf; ctx.fill(); ctx.lineWidth=0.8*dpr; ctx.strokeStyle=sf; ctx.stroke(); }
-      else if(p.k===1){ ctx.beginPath(); ctx.moveTo(p.a[0],p.a[1]); ctx.lineTo(p.b[0],p.b[1]); ctx.lineWidth=1.1*dpr; ctx.strokeStyle=p.c; ctx.stroke(); }
-      else { ctx.beginPath(); ctx.arc(p.x,p.y,1.8*dpr,0,7); ctx.fillStyle=fg; ctx.fill(); } }
-    ctx.font=`${13*dpr}px ${tok('--f-body')}`; ctx.fillStyle=tok('--fg'); ctx.textAlign='left'; ctx.textBaseline='middle';
+      else { ctx.beginPath(); ctx.moveTo(p.a[0],p.a[1]); ctx.lineTo(p.b[0],p.b[1]); ctx.lineWidth=lw; ctx.strokeStyle=p.c; ctx.stroke(); } }
+    // particles ride the cached projected lines; drawn last (on top) so the sort is not redone every frame
+    if(!RM || !paused){ const ph=(clock*0.25)%1; ctx.fillStyle='#f1f3f5'; ctx.beginPath();
+      seg3.lines.forEach(l=>{ const P=l.P, n=P.length; for(let m=0;m<2;m++){ const f=((ph+l.ph+m/2)%1)*(n-1), i=Math.floor(f), u=f-i; if(i>=n-1) continue;
+        const x=P[i][0]+(P[i+1][0]-P[i][0])*u, y=P[i][1]+(P[i+1][1]-P[i][1])*u; ctx.moveTo(x+1.8*dpr,y); ctx.arc(x,y,1.8*dpr,0,7); } });
+      ctx.fill(); }
+    ctx.font=`${13*dpr}px ${T.font}`; ctx.fillStyle=T.fg; ctx.textAlign='left'; ctx.textBaseline='middle';
     ctx.fillText(`cruise ${F3.condition.V_mps} m/s, α = ${F3.condition.alpha_deg.toFixed(2)}° (trim) · drag to turn`, 14*dpr, 18*dpr);
   }
 
   // ---------- shell ----------
   function size(){ const r=cv.getBoundingClientRect(); dpr=Math.min(2,window.devicePixelRatio||1);
     W=Math.max(1,Math.round(r.width*dpr)); H=Math.max(1,Math.round(r.height*dpr)); cv.width=W; cv.height=H;
-    if(mode==='2d' && dec && !RM) initParticles(); draw(performance.now()); }
+    if(mode==='2d' && dec && (!RM || !paused)) initParticles(); draw(performance.now()); }
   function draw(t){ if(!ctx) return; if(mode==='2d'){ if(dec) frame2d(); } else if(seg3) frame3d(t); }
   function loop(t){ raf=0; if(!running) return; const dt=Math.min(0.05,(t-(last||t))/1000); last=t;
     if(!paused){ clock+=dt; if(mode==='2d' && parts) step2d(dt); } draw(t); raf=requestAnimationFrame(loop); }
@@ -156,8 +157,8 @@ const FlowViz = (()=>{
     if(mode==='3d'){ const c=F3.condition, dw=F3.downwash_at_htail;
       el.innerHTML=`Vortex-lattice model at cruise trim: CL ${c.CL_vlm.toFixed(3)}, induced drag CDi ${c.CDi_vlm.toFixed(4)}. The streamlines bend down behind the wing (downwash ${Math.abs(dw.epsilon_deg_mean).toFixed(1)}° at the tail) and curl round the tips into the tip vortices. Inviscid: no boundary layer, no stall, pod not modelled.`; return; }
     const a=dec.a, conv=a.converged?'converged':'not steady (last iterate shown)';
-    const sep = a.x_sep_upper_est==null || a.x_sep_upper_est>=0.99 ? 'stays attached to the trailing edge' : `separates from about ${Math.round(a.x_sep_upper_est*100)} % chord (est.). Fully turbulent SA stalls later and more gently than the tunnel section, which stalls at 12°`;
-    el.innerHTML=`α ${a.alpha}°: CL ${a.CL.toFixed(3)}, CD ${a.CD.toFixed(4)}, ${a.mesh} mesh, ${conv}. Lowest wall Cp ${a.Cp_min_wall.toFixed(2).replace('-','−')}; probed 0.5 % chord off the wall, the upper-surface flow ${sep}.`; }
+    const sep = a.x_sep_upper_est==null || a.x_sep_upper_est>=0.99 ? 'stays attached to the trailing edge' : `separates from about ${Math.round(a.x_sep_upper_est*100)} % chord (est.). Fully turbulent SA stalls later and more gently than the tunnel section, which stalls at ${AEROD.CL_max_2D.experiment_Genc_Lock_Kaynak_2008_Re2e5.alpha_stall_deg}°`;
+    el.innerHTML=`α ${a.alpha}°: CL ${a.CL.toFixed(3)}, CD ${a.CD.toFixed(4)}, ${a.mesh} mesh, ${conv}. Lowest wall Cp ${a.Cp_min_wall.toFixed(2).replace('-','−')}; probed 0.5 % chord off the wall (flowfield_2d.py), the upper-surface flow ${sep}.`; }
   function syncUI(){
     $$('#flowViz [data-fv]').forEach(b=>b.setAttribute('aria-pressed', String(b.dataset.fv===mode)));
     $$('#fvAlpha button').forEach((b,i)=>b.setAttribute('aria-pressed', String(i===ai)));
@@ -166,7 +167,11 @@ const FlowViz = (()=>{
     const pb=$('#fvPause'); if(pb){ pb.setAttribute('aria-pressed',String(paused)); pb.textContent=paused?'Play':'Pause'; }
     cv.setAttribute('aria-label', mode==='2d' ? `Animated flow field around the NACA 2415 section at ${dec?dec.a.alpha:''} degrees angle of attack, coloured by ${field==='cp'?'pressure coefficient':'local speed'}` : 'Streamlines over the wing, tail and fins at cruise, coloured by local speed; drag to rotate');
     cv.classList.toggle('grab', mode==='3d'); legend(); readout(); }
-  function pickAngle(i){ ai=i; dec=decode(F2.angles[i]); buildFieldImg(); if(!RM) initParticles(); else parts=null; syncUI(); draw(performance.now()); }
+  function pickAngle(i){ ai=i; dec = DEC[i] || (DEC[i]=withSep(decode(F2.angles[i]))); buildFieldImg(); if(!RM || !paused) initParticles(); else parts=null; syncUI(); draw(performance.now()); }
+  // outline node nearest the estimated upper-surface separation (flowfield_2d.py x_sep_upper_est), or null when attached
+  function withSep(d){ const xs=d.a.x_sep_upper_est; d.sep=null;
+    if(xs!=null && xs<0.99) F2.outline.forEach(q=>{ if(q[1]>0 && (!d.sep || Math.abs(q[0]-xs)<Math.abs(d.sep[0]-xs))) d.sep=q; });
+    return d; }
 
   function init(){
     const root=$('#flowViz'); if(!root) return;
@@ -183,14 +188,14 @@ const FlowViz = (()=>{
     if(F3) build3();
     $$('#flowViz [data-fv]').forEach(b=>b.addEventListener('click',()=>{ mode=b.dataset.fv; root.dataset.mode=mode; syncUI(); size(); }));
     $$('#flowViz [data-ff]').forEach(b=>b.addEventListener('click',()=>{ field=b.dataset.ff; buildFieldImg(); syncUI(); draw(performance.now()); }));
-    $('#fvPause').addEventListener('click',()=>{ paused=!paused; syncUI(); setRun(); });
+    $('#fvPause').addEventListener('click',()=>{ paused=!paused; if(!paused && !parts && dec && mode==='2d') initParticles(); syncUI(); setRun(); });
     // orbit in 3-D: pointer drag and arrow keys
     cv.addEventListener('pointerdown',e=>{ if(mode!=='3d') return; drag={x:e.clientX,y:e.clientY}; cv.setPointerCapture(e.pointerId); setRun(); });
     cv.addEventListener('pointermove',e=>{ if(!drag) return; cam.yaw+=(e.clientX-drag.x)*0.008; cam.pitch=Math.max(-1.4,Math.min(1.4,cam.pitch+(e.clientY-drag.y)*0.008)); drag={x:e.clientX,y:e.clientY}; if(!running) draw(performance.now()); });
     const end=()=>{ drag=null; setRun(); }; cv.addEventListener('pointerup',end); cv.addEventListener('pointercancel',end);
     cv.addEventListener('keydown',e=>{ if(mode!=='3d') return; const k={ArrowLeft:[-.1,0],ArrowRight:[.1,0],ArrowUp:[0,-.1],ArrowDown:[0,.1]}[e.key]; if(!k) return; e.preventDefault(); cam.yaw+=k[0]; cam.pitch=Math.max(-1.4,Math.min(1.4,cam.pitch+k[1])); draw(performance.now()); });
     $$('#flowViz [data-fcam]').forEach(b=>b.addEventListener('click',()=>{ const v={iso:[-0.75,0.42,1],rear:[Math.PI,0.12,1.5],top:[Math.PI,1.35,1]}[b.dataset.fcam]; cam.yaw=v[0]; cam.pitch=v[1]; cam.zoom=v[2]; draw(performance.now()); }));
-    root.dataset.mode=mode; syncUI();
+    readTok(); root.dataset.mode=mode; syncUI();
     if(window.ResizeObserver) new ResizeObserver(()=>size()).observe(cv); else addEventListener('resize',size);
     if(window.IntersectionObserver) new IntersectionObserver(es=>{ visible=es.some(x=>x.isIntersecting); setRun(); }).observe(cv); else { visible=true; }
     visible=inView(cv); size(); setRun();
@@ -202,5 +207,5 @@ const FlowViz = (()=>{
     if(!('IntersectionObserver' in window)){ setTimeout(go,0); return; }
     const io=new IntersectionObserver(es=>{ if(es.some(x=>x.isIntersecting) && !started){ io.disconnect(); go(); } }, {rootMargin:'400px 0px'}); io.observe(v); }
   // the chapter router shows the figure without a scroll, which IntersectionObserver may not report until the next scroll
-  return {lazy, redraw:()=>{ setTimeout(()=>{ const v=$('#flowViz'); if(!v) return; if(!started){ if(inView(v)) go(); } else if(ctx){ visible=inView(cv); size(); setRun(); } }, 60); }};   // after the router has scrolled to its target
+  return {lazy, redraw:()=>{ setTimeout(()=>{ const v=$('#flowViz'); if(!v) return; if(!started){ if(inView(v)) go(); } else if(ctx){ readTok(); visible=inView(cv); if(visible) size(); setRun(); } }, 60); }};   // after the router has scrolled to its target
 })();

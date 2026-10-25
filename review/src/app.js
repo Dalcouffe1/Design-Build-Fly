@@ -14,35 +14,22 @@ function get(path){
 const set = (id, txt) => { const e=document.getElementById(id); if(e) e.textContent = txt; };
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
 
-// ---------- navigation: one continuous report ----------
+// ---------- navigation: contents list (the binder below shows one chapter at a time) ----------
 const secs = $$('section.sec');
-const PARTS = {1:'The decision', 2:'The design', 3:'Build and fly'};
+const PARTS = {1:'The decision', 2:'The design', 3:'Build and fly'}, ROMAN = ['I','II','III'];
 function buildNav(){
   const box = $('#tocList'); let cur=null, ol=null;
   secs.forEach(s=>{ const p=s.dataset.part;
-    if(p!==cur){ cur=p; box.insertAdjacentHTML('beforeend', `<li class="part"><span class="pn">Part ${['I','II','III'][p-1]}</span> ${PARTS[p]}<ol></ol></li>`); ol=box.lastElementChild.querySelector('ol'); }
+    if(p!==cur){ cur=p; box.insertAdjacentHTML('beforeend', `<li class="part"><span class="pn">Part ${ROMAN[p-1]}</span> ${PARTS[p]}<ol></ol></li>`); ol=box.lastElementChild.querySelector('ol'); }
     ol.insertAdjacentHTML('beforeend', `<li><a href="#${s.id}"><span class="n">${s.dataset.n}</span><span class="t">${s.dataset.title}</span></a></li>`); });
 }
 // chapter numbers follow page order; "§N" links are filled from their target chapter
 function xrefs(){ $$('a.xref').forEach(x=>{ const t=document.getElementById(x.getAttribute('href').slice(1)); const s=t&&t.closest('section.sec'); if(s) x.textContent='§'+s.dataset.n; }); }
 const secNo = id => { const s=document.getElementById(id); return s ? s.dataset.n : '—'; };
-// running head: shows once the cover has scrolled away, names the section being read
-function runningHead(){
-  const rh=$('#runhead'), name=$('#rhSec'), cover=$('header.top'), toc=$('#contents');
-  let raf=0;
-  const update=()=>{ raf=0;
-    const past = toc.getBoundingClientRect().bottom < 0; rh.classList.toggle('on', past);
-    let cur=null; for(const s of secs){ if(s.getBoundingClientRect().top < 90) cur=s; }
-    const t = cur ? cur.dataset.n+'  '+cur.dataset.title : ''; if(name.textContent!==t) name.textContent=t; };
-  window.addEventListener('scroll', ()=>{ if(!raf) raf=requestAnimationFrame(update); }, {passive:true});
-  window.addEventListener('resize', ()=>{ if(!raf) raf=requestAnimationFrame(update); });
-  update();
-}
-// in-page links move focus to their target so keyboard and screen-reader users land where the page scrolled
 // in-page links go through the router (one chapter shows at a time); focus follows the content that appears
-document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l || e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey) return;
+document.addEventListener('click', e=>{ const l=e.target.closest('a[href^="#"]'); if(!l || e.defaultPrevented || e.button!==0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
   const id=l.getAttribute('href').slice(1); const t=document.getElementById(id); if(!t) return;
-  e.preventDefault(); if(location.hash!=='#'+id) history.pushState(null,'','#'+id); route(id, true); });
+  e.preventDefault(); if(location.hash!=='#'+id){ try{ history.pushState(null,'','#'+id); }catch(err){} } route(id, true); });
 
 // ---------- data binding ----------
 function fill(){
@@ -480,7 +467,10 @@ function touchGate(view){
   if(window.IntersectionObserver) new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) arm(false); })).observe(view);
 }
 
-function redrawAll(){ drawTrade(); drawDrag(); drawPolar(); drawTornado(); drawPack(); drawCap(); drawDuty(); drawCG(); drawState(); drawGantt(); if(CV && CV.refresh) CV.refresh(); FlowViz.redraw(); }
+const CHARTS = {tradeChart:()=>drawTrade(), dragChart:()=>drawDrag(), polarChart:()=>drawPolar(), tornado:()=>drawTornado(), packChart:()=>drawPack(), capChart:()=>drawCap(), dutyChart:()=>drawDuty(), cgChart:()=>drawCG(), stateSvg:()=>drawState(), gantt:()=>drawGantt()};
+// charts in a hidden chapter measure zero width, so only the visible chapter's charts are drawn; print draws all
+function redrawIn(sec){ for(const id in CHARTS){ const e=document.getElementById(id); if(e && (!sec || sec.contains(e))) CHARTS[id](); } if(CV && CV.refresh && (!sec || sec.contains($('#cadView')))) CV.refresh(); FlowViz.redraw(); }
+function redrawAll(){ redrawIn(null); }
 function lazyCad(){ const v=$('#cadView'); if(!v) return;
   if(!('IntersectionObserver' in window)){ initCad(); return; }
   const io=new IntersectionObserver(es=>{ if(es.some(x=>x.isIntersecting)){ io.disconnect(); initCad(); } }, {rootMargin:'600px 0px'}); io.observe(v); }
@@ -681,8 +671,8 @@ function measurements(){
   set('measureSum', `${total} measurements are still open. Each sits in the chapter it affects, with how to make it and what result would change the design; the list below gathers them in one place.`);
 }
 // scroll regions and tables get names, so keyboard and screen-reader users can reach and identify them
-function a11yNames(){
-  $$('section.sec').forEach(s=>{ s.querySelectorAll('.tbl, .svgwrap').forEach(w=>{
+function a11yNames(scope){
+  (scope ? [scope] : $$('section.sec')).forEach(s=>{ s.querySelectorAll('.tbl, .svgwrap').forEach(w=>{
     const h=[...s.querySelectorAll('h3, .sechead h2')].filter(x=>x.compareDocumentPosition(w)&Node.DOCUMENT_POSITION_FOLLOWING).pop();
     const cap=w.closest('figure')&&w.closest('figure').querySelector('figcaption');
     const name=(cap?cap.textContent:(h?h.textContent:s.dataset.title)).trim();
@@ -690,8 +680,8 @@ function a11yNames(){
     const t=w.querySelector('table'); if(t && !t.querySelector('caption') && !t.getAttribute('aria-label')) t.setAttribute('aria-label', name); }); });
 }
 
-// the two bar charts change layout at phone width: redraw them when the width class flips
-let rzT=0; window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT=setTimeout(()=>{ drawTrade(); drawDrag(); drawCap(); drawTornado(); }, 150); });
+// charts redraw at the container width (the bar charts change layout at phone width)
+let rzT=0; window.addEventListener('resize', ()=>{ clearTimeout(rzT); rzT=setTimeout(()=>redrawIn(curSec), 150); });
 
 // ---------- print: paper palette for the charts, every disclosure open ----------
 let printOpened=[];
@@ -707,11 +697,11 @@ addEventListener('afterprint', ()=>{ document.documentElement.classList.remove('
     catch(err){ if(err && err.code==='declined') return; link.removeAttribute('data-dl'); } }); })();
 
 // ---------- binder: part tabs, chapter strip, one chapter at a time ----------
-const PART_SHORT = {1:'The decision', 2:'The design', 3:'Build and fly'};
 function buildBinder(){
   const pt=$('#ptabs'), cs=$('#cstrip'); if(!pt||!cs) return;
+  document.documentElement.classList.add('binder-on');
   [1,2,3].forEach(p=>{ const first=secs.find(s=>s.dataset.part===String(p)); if(!first) return;
-    pt.insertAdjacentHTML('beforeend', `<a href="#${first.id}" data-part="${p}"><span class="pn">Part ${['I','II','III'][p-1]}</span> <span class="pt">${PART_SHORT[p]}</span></a>`); });
+    pt.insertAdjacentHTML('beforeend', `<a href="#${first.id}" data-part="${p}"><span class="pn">Part ${ROMAN[p-1]}</span> <span class="pt">${PARTS[p]}</span></a>`); });
   secs.forEach(s=>cs.insertAdjacentHTML('beforeend', `<a href="#${s.id}" data-part="${s.dataset.part}" data-sec="${s.id}"><span class="n">${s.dataset.n}</span> ${s.dataset.title}</a>`));
   // previous / next at the foot of every chapter
   secs.forEach((s,i)=>{ const pv=secs[i-1], nx=secs[i+1];
@@ -720,15 +710,16 @@ function buildBinder(){
 let curSec=null;
 function route(hash, focus){
   const id=(hash||location.hash.slice(1)||'').trim(); let t=id?document.getElementById(id):null;
+  if(id==='main' && curSec) t=curSec;   // skip link: stay in the chapter being read, focus its heading
   let sec = t ? (t.matches('section.sec') ? t : t.closest('section.sec')) : null;
-  const home = !sec || sec.id==='overview' || id==='contents' || id==='main';
+  const home = !sec || sec.id==='overview' || id==='contents';
   if(!sec) sec=$('#overview');
   secs.forEach(s=>{ s.hidden = s!==sec; });
   document.body.classList.toggle('home', home);
   const part=sec.dataset.part;
   $$('#ptabs a').forEach(x=>{ const on=x.dataset.part===part; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','true'); else x.removeAttribute('aria-current'); });
   $$('#cstrip a').forEach(x=>{ x.hidden = x.dataset.part!==part; const on=x.dataset.sec===sec.id; x.classList.toggle('on',on); if(on) x.setAttribute('aria-current','page'); else x.removeAttribute('aria-current'); });
-  if(curSec!==sec){ curSec=sec; redrawAll(); a11yNames(); }
+  if(curSec!==sec){ curSec=sec; redrawIn(sec); a11yNames(sec); }
   requestAnimationFrame(()=>{
     const target = (t && t!==sec && !t.matches('section.sec')) ? t : (home && (!id || id==='overview') ? null : sec);
     if(target){ target.scrollIntoView({block:'start'}); } else window.scrollTo(0,0);

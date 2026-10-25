@@ -1,6 +1,6 @@
 """Shared geometry, flight conditions and tool paths for the C0 aerodynamic data package.
 
-Every geometric number is read from analysis/results.json (sizing output, v0.3.1) or cad/params.txt
+Every geometric number is read from analysis/results.json (sizing output) or cad/params.txt
 (SolidWorks build parameters derived from results.json by cad/params.mjs).  Nothing is typed in here
 except the atmosphere (ISA sea level) and the tool locations.
 """
@@ -40,6 +40,15 @@ def _params_txt() -> dict:
     return d
 PARAMS = _params_txt()
 
+def _design_version() -> str:
+    """design version from the first line of docs/DESIGN-BASIS.md ('# Design basis ... (v0.4.0, 2026-10-21)')"""
+    f = REPO / "docs" / "DESIGN-BASIS.md"
+    if not f.exists():
+        return "—"
+    m = re.search(r"\((v\d+\.\d+(?:\.\d+)?)", f.read_text(encoding="utf-8").splitlines()[0])
+    return m.group(1) if m else "—"
+DESIGN_VERSION = _design_version()
+
 # ---------- atmosphere (ISA sea level) ----------
 RHO = BASE["rho"]                 # 1.225 kg/m^3  (results.json base.rho)
 MU = 1.789e-5                     # Pa s, ISA sea level 15 C (Anderson, Fundamentals of Aerodynamics, App. A / ISA)
@@ -47,17 +56,17 @@ A_SOUND = 340.3                   # m/s, ISA sea level
 NU = MU / RHO
 
 # ---------- aircraft ----------
-SPAN = BASE["span"]               # 2.4 m
-CHORD = SIZED["chord"]            # 0.2387 m
-S_REF = SIZED["S"]                # 0.5728 m^2
+SPAN = BASE["span"]               # m   (results.json base.span)
+CHORD = SIZED["chord"]            # m   (results.json concepts.C0.sized.chord)
+S_REF = SIZED["S"]                # m^2 (results.json concepts.C0.sized.S)
 AR = SIZED["AR"]
-MTOW = SIZED["m"]                 # 6.18 kg
+MTOW = SIZED["m"]                 # kg  (results.json concepts.C0.sized.m)
 W = SIZED["W"]                    # N
 G = 9.80665
 V_STALL_REQ = BASE["Vs"]          # 12 m/s (R11)
 V_CRUISE = BASE["Vc"]             # 20 m/s (R11 midpoint)
 V_TRANS = 16.0                    # m/s, AIRSPEED_MIN per DESIGN-BASIS.md R11
-CL_MAX_SIZING = BASE["CLmax"]     # 1.2 (EST in sizing)
+CL_MAX_SIZING = BASE["CLmax"]     # sizing CL_max (results.json base.CLmax)
 CD0_CLEAN_SIZING = BASE["CD0_clean"]
 CDA_BOOM_SIZING = BASE["CdA_boom"]
 CDA_ROTOR_SIZING = C0["params"]["CdA_rotor"]
@@ -73,10 +82,13 @@ L_H = GEO["lh"]
 X_TAIL_LE = GEO["xRear"] - GEO["D"] / 2 - 0.05       # sizing.mjs: lh_tailLE (x fwd from wing LE, so negative = aft)
 X_FRONT_ROTOR = GEO["xFront"]; X_REAR_ROTOR = GEO["xRear"]; Y_BOOM = GEO["yIn"]
 D_LIFT_PROP = GEO["D"]
-X_CG = GEO["xLEtoCG"]                                  # -0.28 c (target CG)
+X_CG = GEO["xLEtoCG"]                                  # target CG, m (x fwd from wing LE, so negative = aft)
+CG_FRAC = -X_CG / CHORD                                # target CG as a fraction of MAC aft of the LE
 X_CG_NO_PAYLOAD = CG["cgNoPayload"]
 NP_SIZING_FRAC = GEO["hn"]
-Z_BOOM = PARAMS["yB"]                                  # -0.03 m (boom axis below wing LE datum, CAD Y up)
+Z_BOOM = PARAMS["yB"]                                  # boom axis height vs the wing LE datum, m (CAD Y up)
+# H-tail mid-plane height: cad/params.mjs places comp H_Tail at yStabMid = (yStabBot + yStabTop) / 2 (= params.txt comp=H_Tail Y)
+Z_HTAIL = 0.5 * (PARAMS["yStabBot"] + PARAMS["yStabTop"])
 
 # pod (cad/BuildVtol.cs Fuselage(): elliptic nose a=0.22 m, parallel to 0.50 m, smooth-step boat-tail to tailR)
 POD_L = PARAMS["fusL"]; POD_R = PARAMS["fusR"]; POD_TAIL_R = PARAMS["tailR"]; POD_NOSE_X = 0.45

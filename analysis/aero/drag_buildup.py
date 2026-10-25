@@ -64,23 +64,27 @@ def main():
 
     # ---- wing (three estimates; the XFOIL one is carried into the polar) ----
     Re_w = CONDITIONS["cruise"]["Re"]
-    S_exp = S_REF - 2 * POD_R * CHORD                  # exposed wing (pod covers 0.16 m of span)
-    Swet_w = 2 * S_exp * (1 + 0.25 * T_C_WING)         # Raymer eq. 7.12 (approx. for t/c < 0.25? uses 1.977+0.52 t/c; this is the thin-wing form)
+    S_exp = S_REF - 2 * POD_R * CHORD                  # exposed wing (the pod covers 2 x POD_R of span)
     Swet_w = S_exp * (1.977 + 0.52 * T_C_WING)         # Raymer eq. 7.12
     cd_wing_ff = cf_turb(Re_w) * ff_wing(T_C_WING, 0.3, CONDITIONS["cruise"]["M"]) * 1.0 * Swet_w / S_REF
     cd_wing_xf = xfoil_cd_at_cl(OUT / "xfoil_n2415_cruise_ncrit9.txt", cl_cruise) * S_exp / S_REF
     cd_wing_xf5 = xfoil_cd_at_cl(OUT / "xfoil_n2415_cruise_ncrit5.txt", cl_cruise) * S_exp / S_REF
-    cd_wing_su2 = None
+    # SU2: converged points only (the polar holds only usable cases, see su2_2d.py); None unless they bracket the cruise CL
+    cd_wing_su2 = None; su2_pts = []
     if su2 and su2.get("polar_L2_SA"):
-        p = su2["polar_L2_SA"]; cl = np.array([r["CL"] for r in p]); cd = np.array([r["CD"] for r in p])
-        k = np.argsort(cl); cd_wing_su2 = float(np.interp(cl_cruise, cl[k], cd[k])) * S_exp / S_REF
+        p = [r for r in su2["polar_L2_SA"] if r["converged"]]
+        cl = np.array([r["CL"] for r in p]); cd = np.array([r["CD"] for r in p])
+        if len(p) >= 2 and cl.min() <= cl_cruise <= cl.max():
+            k = np.argsort(cl); cd_wing_su2 = float(np.interp(cl_cruise, cl[k], cd[k])) * S_exp / S_REF
+            i = int(np.searchsorted(cl[k], cl_cruise))
+            su2_pts = [p[k[max(i - 1, 0)]]["alpha_deg"], p[k[min(i, len(p) - 1)]]["alpha_deg"]]
     add("Wing profile (XFOIL Ncrit 9, transitional, at section cl = CL cruise)", cd_wing_xf * S_REF, "XF out/xfoil_n2415_cruise_ncrit9.txt", "carried into the polar", "wing")
     # ---- tails ----
-    Re_h = TAIL_CONDITIONS["cruise"]["Re"]
     tail_file = OUT / "xfoil_n0009_tail_cruise_ncrit9.txt"
     if not tail_file.exists(): tail_file = OUT / "xfoil_n0009_tail_stall_ncrit9.txt"
     cd_h = xfoil_cd_at_cl(tail_file, 0.0)
-    add("H-tail profile (XFOIL NACA 0009, Re 1.0e5, cl ~ 0)", cd_h * S_H, f"XF {tail_file.name}", "", "tail")
+    Re_h_file = TAIL_CONDITIONS["cruise" if "cruise" in tail_file.name else "stall"]["Re"]
+    add(f"H-tail profile (XFOIL NACA 0009, Re {Re_h_file/1e5:.1f}e5, cl ~ 0)", cd_h * S_H, f"XF {tail_file.name}", "", "tail")
     Re_v = reynolds(V_CRUISE, V_C)
     cd_v = cf_turb(Re_v) * ff_wing(0.09, 0.3) * 1.05 * (2 * S_V * (1.977 + 0.52 * 0.09)) / (2 * S_V)   # per unit planform, Q 1.05 fin-boom junction (R: 1.04-1.05 for tails)
     add("Fins (2), Raymer FF, Q 1.05", cd_v * S_V, f"R 12.27/12.30, Re {Re_v:.2e}", "fully turbulent; XFOIL at this Re gives ~0.012-0.014", "tail")
@@ -149,7 +153,8 @@ def main():
         "CdA_per_boom_incl_clamps": sum(i["CdA_m2"] for i in items if i["group"] == "booms") / 2,
         "CdA_per_rotor_unit": sum(i["CdA_m2"] for i in items if i["group"] == "rotors") / 4,
         "wing_profile_estimates": {"raymer_FF_fully_turbulent": cd_wing_ff, "xfoil_ncrit9": cd_wing_xf, "xfoil_ncrit5": cd_wing_xf5, "su2_SA_fully_turbulent": cd_wing_su2,
-                                   "note": "dCD on S_ref at section cl = cruise CL; exposed wing only"},
+                                   "su2_interpolated_between_alpha_deg": su2_pts or None,
+                                   "note": "dCD on S_ref at section cl = cruise CL; exposed wing only; SU2 from converged medium-mesh points only (linear in CL between the two listed angles)"},
         "sizing": {"CD0_clean": CD0_CLEAN_SIZING, "CdA_boom": CDA_BOOM_SIZING, "CdA_rotor": CDA_ROTOR_SIZING, "CD0_total": CD0_TOTAL_SIZING, "e": E_SIZING,
                    "CL_cruise": cl_cruise, "LD_cruise": LD_SIZING, "P_cruise_W": SIZED["P_cruise"], "D_cruise_N": SIZED["D_cruise"]},
         "polar": {"CL": CLs.tolist(), "CD": CDs.tolist(), "LD": LD.tolist(), "e_inviscid_AVL": e_inv, "e_oswald_fit": float(e_visc), "CD0_fit": float(cd0_fit), "K_fit": float(K)},

@@ -15,7 +15,7 @@ from common import *
 def airplane():
     c = CHORD; b2 = SPAN / 2
     naca2415 = asb.Airfoil("naca2415"); naca0009 = asb.Airfoil("naca0009")
-    xt = -X_TAIL_LE; zt = -0.0139; zfin0 = Z_BOOM + BOOM_OD / 2
+    xt = -X_TAIL_LE; zt = Z_HTAIL; zfin0 = Z_BOOM + BOOM_OD / 2
     wing = asb.Wing(name="Wing", symmetric=True, xsecs=[
         asb.WingXSec(xyz_le=[0, 0, 0], chord=c, airfoil=naca2415),
         asb.WingXSec(xyz_le=[0, b2, 0], chord=c, airfoil=naca2415)])
@@ -61,7 +61,7 @@ def main():
         res["aerobuildup_cruise"].append({"alpha_deg": a, "CL": sc(ab["CL"]), "CD": sc(ab["CD"]), "Cm": sc(ab["Cm"])})
     V = np.array([[r["alpha_deg"], r["CL"], r["Cm"]] for r in res["vlm"]])
     cla = np.polyfit(np.radians(V[:, 0]), V[:, 1], 1); cma = np.polyfit(np.radians(V[:, 0]), V[:, 2], 1)
-    hn_vlm = 0.28 - cma[0] / cla[0]
+    hn_vlm = CG_FRAC - cma[0] / cla[0]          # Cm taken about xyz_ref = the target CG
     B = np.array([[r["alpha_deg"], r["CL"], r["Cm"]] for r in res["aerobuildup"]])
     lin = (B[:, 0] >= -2) & (B[:, 0] <= 6)
     clb = np.polyfit(np.radians(B[lin, 0]), B[lin, 1], 1); cmb = np.polyfit(np.radians(B[lin, 0]), B[lin, 2], 1)
@@ -69,7 +69,7 @@ def main():
     res["summary"] = {
         "vlm_CL_alpha_per_rad": float(cla[0]), "vlm_Cm_alpha_per_rad": float(cma[0]), "vlm_NP_pct_MAC": 100 * float(hn_vlm),
         "aerobuildup_CL_alpha_per_rad": float(clb[0]), "aerobuildup_Cm_alpha_per_rad": float(cmb[0]),
-        "aerobuildup_NP_pct_MAC": 100 * (0.28 - float(cmb[0] / clb[0])),
+        "aerobuildup_NP_pct_MAC": 100 * (CG_FRAC - float(cmb[0] / clb[0])),
         "aerobuildup_CL_max_untrimmed_12mps": float(B[i, 1]), "aerobuildup_alpha_CLmax_deg": float(B[i, 0]),
         "note": "AeroBuildup CL_max is for the whole aircraft at elevator 0 (untrimmed), V = 12 m/s; the wing-alone 3-D value is in aero_results.json"}
     res["wall_s"] = time.time() - t0

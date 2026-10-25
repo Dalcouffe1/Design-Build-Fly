@@ -47,18 +47,19 @@ def seeds():
     x0 = -0.4
     b2 = SPAN / 2
     pts = []
-    # main sheet: across the span, three heights around the wing
+    # main sheet: across the span to 0.10 m beyond each tip, 0.10 m apart, three heights around the wing
+    half = b2 + 0.10
     for z in (-0.06, 0.0, 0.06):
-        for y in np.arange(-1.30, 1.301, 0.10):
+        for y in np.linspace(-half, half, int(round(2 * half / 0.10)) + 1):
             pts.append([x0, y, z])
     # dense rows at both tips (inboard 0.95..1.00 b/2, outboard to 1.12 b/2) at the chord-line height
     for s in (-1, 1):
-        for y in np.arange(1.14, 1.345, 0.03):
+        for y in np.arange(0.95 * b2, 1.12 * b2 + 1e-9, 0.03):
             for z in (-0.03, 0.03):
                 pts.append([x0, s * y, z])
     # a row at the H-tail height through the wing wake (downwash at the tail)
     for y in np.arange(-0.45, 0.451, 0.09):
-        pts.append([x0, y, -0.0139 - 0.02])
+        pts.append([x0, y, Z_HTAIL - 0.02])
     return np.array(pts)
 
 def trace(vlm, seed, n_steps=N_STEPS, ds=STEP):
@@ -161,13 +162,12 @@ def main():
     # wing-induced downwash at the H-tail quarter chord for the documentation: a wing-only lattice at the same alpha,
     # so the tail's own bound vortices do not pollute the sample points
     xt = -X_TAIL_LE + 0.25 * H_CHORD
-    tail_pts = np.array([[xt, y, -0.0139] for y in np.linspace(0.05, H_SPAN / 2 - 0.02, 8)])
+    tail_pts = np.array([[xt, y, Z_HTAIL] for y in np.linspace(0.05, H_SPAN / 2 - 0.02, 8)])
     wing_only = asb.Airplane(name="wing", xyz_ref=ap.xyz_ref, s_ref=S_REF, c_ref=CHORD, b_ref=SPAN, wings=[ap.wings[0]])
     vw = asb.VortexLatticeMethod(airplane=wing_only, op_point=op, spanwise_resolution=SPAN_RES, chordwise_resolution=CHORD_RES); vw.run()
     vt = np.asarray(vw.get_velocity_at_points(tail_pts))
     vinf = np.asarray(vw.steady_freestream_velocity).ravel()
     eps = np.degrees(np.arctan2(vt[:, 2], vt[:, 0])) - np.degrees(np.arctan2(vinf[2], vinf[0]))   # local flow angle minus free stream (deg)
-    # tip-vortex check: circulation-weighted centre of the tip streamlines at the tail station
     pan = panels(vlm)
     Pc = to_cad(P)
     keep = slice(0, N_STEPS, THIN)
