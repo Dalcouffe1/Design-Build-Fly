@@ -47,13 +47,14 @@ for (const line of r('../cad/sim/results.txt').split(String.fromCharCode(10)).ma
 const cadp = {};
 for (const line of r('../cad/params.txt').split(String.fromCharCode(10)).map(x => x.trim())) { if (!line || line.startsWith('comp=')) continue; const i = line.indexOf('='); const v = parseFloat(line.slice(i + 1)); if (!isNaN(v) && !line.startsWith('foil=')) cadp[line.slice(0, i)] = v; }
 // images embedded as data URIs (page stays self-contained)
-// renders are embedded as JPEG (review/tojpeg.ps1, regenerated when the PNG is newer); falls back to the PNG elsewhere
+// renders are embedded as JPEG (review/tojpeg.ps1, regenerated on Windows when the PNG is newer); elsewhere the committed JPEG is used,
+// since checkout times say nothing about which file is newer; the PNG only when no JPEG exists
 const IMGDIR = new URL('./img/', import.meta.url); mkdirSync(IMGDIR, { recursive: true });
 function b64(f) {
   const png = new URL(f, import.meta.url), jpg = new URL(f.split('/').pop().replace(/.png$/i, '.jpg'), IMGDIR);
   if (process.platform === 'win32' && (!existsSync(jpg) || statSync(jpg).mtimeMs < statSync(png).mtimeMs))
     spawnSync('powershell', ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', fileURLToPath(new URL('./tojpeg.ps1', import.meta.url)), fileURLToPath(png), fileURLToPath(jpg)]);
-  if (existsSync(jpg) && statSync(jpg).mtimeMs >= statSync(png).mtimeMs) return 'data:image/jpeg;base64,' + readFileSync(jpg).toString('base64');
+  if (existsSync(jpg) && (process.platform !== 'win32' || statSync(jpg).mtimeMs >= statSync(png).mtimeMs)) return 'data:image/jpeg;base64,' + readFileSync(jpg).toString('base64');
   return 'data:image/png;base64,' + readFileSync(png).toString('base64');
 }
 const imgs = { iso:'../cad/images/VTOL_Concept_iso.png', fea_boom:'../cad/sim/FEA_Boom_vonMises.png', fea_spar:'../cad/sim/FEA_Spar_vonMises.png', therm_motor:'../cad/sim/THERM_Motor_steady.png' };
