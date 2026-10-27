@@ -82,7 +82,7 @@ export function renderMarkdown(md) {
     if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(l)) { i++; continue; }
     if ((m = l.match(/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/))) {
       const src = IMG(m[2]); i++;
-      if (src) out.push(`<figure class="docfig"><img src="${src}" alt="${esc(m[1].replace(/[*`]/g, ''))}" loading="lazy"><figcaption>${inline(m[1])}</figcaption></figure>`);
+      if (src) out.push(`<figure class="docfig"><img src="${src}" alt="${esc(m[1].replace(/[*`]/g, ''))}"><figcaption>${inline(m[1])}</figcaption></figure>`);
       else console.log('missing figure', m[2]);
       continue;
     }
@@ -150,22 +150,92 @@ export function renderMarkdown(md) {
   if (front.revNotes) appx.unshift({ id: 'revision-notes', txt: 'Revision notes', subs: [], html: ['<h2 id="revision-notes">Revision notes</h2>', ...front.revNotes], appendix: true });
   appx.forEach((x, k) => { const A = String.fromCharCode(65 + k); x.html[0] = x.html[0].replace(/<h2 id="([^"]+)">(?:\d+\.\s*)?/, `<h2 id="$1">Appendix ${A}. `); x.txt = `Appendix ${A}. ` + x.txt.replace(/^\d+\.\s*/, ''); });
   const html = [...front, ...main.flatMap(x => x.html), ...appx.flatMap(x => x.html)].join('\n');
-  return { title, toc: [...main, ...appx], html };
+  return { title, toc: [...main, ...appx], html, front, parts: [...main, ...appx] };
+}
+
+// Pages for the reader: the front matter, then one page per section; a section whose subsections are work packages
+// (WP1, WP2, ...) or that runs long is split so each subsection is its own page, after a short section intro.
+const strip = t => t.replace(/<[^>]+>/g, '');
+function paginate(front, parts) {
+  const pages = [];
+  if (front.length) pages.push({ id: 'about', title: 'About this document', html: [...front] });
+  for (const x of parts) {
+    const split = x.subs.some(t => /^WP\d/.test(strip(t.txt))) || x.html.join('').length > 60000;
+    if (!split || !x.subs.length) { pages.push({ id: x.id, title: x.txt, html: [...x.html] }); continue; }
+    const intro = { id: x.id, title: x.txt, html: [], kids: [] }; pages.push(intro); let cur = intro;
+    for (const h of x.html) {
+      const m = h.match(/^<h3 id="([^"]+)">([\s\S]*)<\/h3>$/);
+      if (m) { cur = { id: m[1], title: m[2], parent: x.id, html: [] }; intro.kids.push(cur); pages.push(cur); }
+      cur.html.push(h);
+    }
+    intro.html.push(`<ol class="pglist">${intro.kids.map(k => `<li><a href="#${k.id}">${k.title}</a></li>`).join('')}</ol>`);
+  }
+  return pages;
 }
 
 // A full page in the report style: masthead, title, contents, body. `back` links to the review.
 export function docPage({ md, css, fontLink, docNo, kicker, back = 'vtol-review.html', chapters = [], img = () => null }) {
   REVIEW = { base: back, no: Object.fromEntries(chapters.map((id, i) => [id, i + 1])) }; IMG = img;
-  const { title, toc, html } = renderMarkdown(md);
+  const { title, toc, front, parts } = renderMarkdown(md);
+  const pages = paginate(front, parts);
+  const num = t => { const m = strip(t).match(/^(\d+)\.\s/); return m ? m[1] : ''; };
+  const plain = t => t.replace(/^\d+(\.\d+)*\.?\s*/, '');
+  const body = pages.map((pg, k) => {
+    const prev = pages[k - 1], next = pages[k + 1];
+    const pager = `<nav class="pager" aria-label="Previous and next section">${prev ? `<a class="pv" href="#${prev.id}"><span>Previous</span>${plain(prev.title)}</a>` : '<span></span>'}${next ? `<a class="nx" href="#${next.id}"><span>Next</span>${plain(next.title)}</a>` : ''}</nav>`;
+    return `<section class="pg" id="pg-${pg.id}" data-id="${pg.id}">\n${pg.html.join('\n')}\n${pager}</section>`;
+  }).join('\n');
+  const side = pages.filter(pg => !pg.parent).map(pg => `<li><a href="#${pg.id}" data-pg="${pg.id}"><span class="n">${num(pg.title)}</span><span class="t">${plain(pg.title)}</span><span class="cnt" aria-hidden="true"></span></a>${pg.kids ? `<ol>${pg.kids.map(c => `<li><a href="#${c.id}" data-pg="${c.id}"><span class="t">${c.title}</span><span class="cnt" aria-hidden="true"></span></a></li>`).join('')}</ol>` : ''}</li>`).join('\n');
+  const opts = pages.map(pg => `<option value="${pg.id}">${pg.parent ? '\u2003' : ''}${esc(strip(pg.parent ? pg.title : (num(pg.title) ? num(pg.title) + '. ' : '') + plain(pg.title)))}</option>`).join('');
   const name = title.replace(/^DBF-[A-Z]+-\d+\s*[—:-]\s*/, '');
   return `<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${esc(name)}</title>
 <script>try{if(localStorage.getItem('vtol-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
+<script>try{if(sessionStorage.getItem('dbf-full')!=='1')document.documentElement.classList.add('paged')}catch(e){document.documentElement.classList.add('paged')}</script>
 ${fontLink}
 <style>
 ${css}
 /* ---------- companion document page ---------- */
+/* reader: one section (or work package) at a time; side contents on wide screens, a section menu on narrow ones.
+   Without the script, in "Full document" mode and in print every section shows. */
+.reader{display:block}
+.side h2{font:600 .75rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3);margin:0 0 10px;border:0;padding:0}
+.side ol{list-style:none;margin:0;padding:0}
+.side ol ol{margin:2px 0 6px 1.9rem}
+.side a{display:flex;align-items:baseline;gap:8px;min-height:36px;padding:7px 10px;border-radius:var(--r-s);color:var(--fg-2);text-decoration:none;font-size:.875rem;line-height:1.35}
+.side ol ol a{min-height:32px;padding:5px 10px;font-size:.8125rem}
+.side a:hover{background:var(--surface-2);color:var(--fg)}
+.side a[aria-current="page"]{background:var(--accent-soft,var(--surface-2));color:var(--fg);font-weight:600}
+.side .n{flex:none;min-width:1.2rem;font-variant-numeric:tabular-nums;color:var(--fg-3)}
+.side .t{flex:1}
+.side .cnt{flex:none;font:500 .75rem var(--f-mono);color:var(--fg-3)}
+.side .cnt.all{color:var(--ok)}
+.pgbar{display:none}
+.pager{display:none}
+.pglist{margin:16px 0;padding-left:1.4em}
+.pglist li{margin:.35em 0}
+html.paged .pg{display:none}
+html.paged .pg.on{display:block}
+html.paged .pg>h2:first-child,html.paged .pg>h3:first-child{margin-top:8px;padding-top:0;border-top:0}
+html.paged .pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 8px;padding-top:18px;border-top:1px solid var(--line)}
+.pager a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r);color:var(--fg);text-decoration:none;font-size:.9375rem;line-height:1.35}
+.pager a span{font:500 .75rem var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.05em}
+.pager a:hover{border-color:var(--accent)}
+.pager .nx{text-align:right;grid-column:2}
+@media (min-width:1100px){
+  html.paged .reader{display:grid;grid-template-columns:16.5rem minmax(0,1fr);gap:40px;align-items:start}
+  html.paged .side{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding:4px 4px 16px 0;border-right:1px solid var(--line)}
+}
+@media (max-width:1099px){
+  html.paged .side{display:none}
+  html.paged .pgbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5;margin:0 0 16px;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+  .pgbar label{font:600 .8125rem var(--f-body);color:var(--fg-2)}
+  .pgbar select{flex:1;min-width:0;min-height:44px;padding:0 10px;border:1px solid var(--line-3);border-radius:var(--r-s);background:var(--surface);color:var(--fg);font:inherit;font-size:.9375rem}
+}
+html:not(.paged) .side{margin:0 0 32px}
+html:not(.paged) .side ol ol{display:flex;flex-wrap:wrap;gap:0 6px}
+@media print{html.paged .pg{display:block}.side,.pgbar,.pager,#allBtn{display:none!important}}
 /* figures: CAD renders on white in both themes, so the frame stays light */
 .docfig{margin:4px 0 24px;max-width:46rem}
 .docfig img{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:6px}
@@ -223,26 +293,52 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <a class="skip" href="#doc">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <div class="mast"><span class="org"><a class="backlink" href="${back}">← Design review DBF-RPT-001</a></span><span class="org">${esc(docNo)} <button type="button" class="tbbtn" id="themeBtn"></button></span></div>
+  <div class="mast"><span class="org"><a class="backlink" href="${back}">← Design review DBF-RPT-001</a></span><span class="org">${esc(docNo)} <button type="button" class="tbbtn" id="allBtn" aria-pressed="false">Full document</button><button type="button" class="tbbtn" id="themeBtn"></button></span></div>
   <h1>${inline(name)}</h1>
 </header>
 <div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">${esc(docNo)}</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
-<nav class="toc doctoc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol>
-${toc.map((t, k) => { const plain = t.txt.replace(/^\d+(\.\d+)*\.?\s*/, ''); const subs = t.subs.filter(x => /^WP\d/.test(x.txt.replace(/<[^>]+>/g, '')));
-  return `<li><a href="#${t.id}"><span class="n">${/^Appendix/.test(t.txt) ? '' : ((t.txt.match(/^(\d+)\./) || [])[1] ?? k + 1)}</span><span class="t">${plain}</span></a>${subs.length ? `<ol class="sub">${subs.map(x => `<li><a href="#${x.id}">${x.txt}</a></li>`).join('')}</ol>` : ''}</li>`; }).join('\n')}
+<div class="reader">
+<nav class="side" id="contents" aria-label="Contents"><h2 id="tocTitle">Contents</h2><ol>
+${side}
 </ol></nav>
+<div class="readmain">
+<div class="pgbar"><label for="pgSel">Section</label><select id="pgSel">${opts}</select></div>
 <main id="doc" class="doc">
-${html}
+${body}
 </main>
+</div>
+</div>
 </div>
 <script>
 // theme: shared with the design review (same storage key)
 (()=>{ const b=document.getElementById('themeBtn'), r=document.documentElement; const lab=()=>{ b.textContent = r.dataset.theme==='light'?'Dark theme':'Light theme'; };
   lab(); b.addEventListener('click',()=>{ r.dataset.theme = r.dataset.theme==='light'?'dark':'light'; try{ localStorage.setItem('vtol-theme', r.dataset.theme); }catch(e){} lab(); }); })();
+// reader: show the page holding the target of the address (a section, work package, step or any anchor)
+(()=>{ const R=document.documentElement, pgs=[...document.querySelectorAll('.pg')]; if(!pgs.length) return;
+  const sel=document.getElementById('pgSel'), all=document.getElementById('allBtn');
+  const links=[...document.querySelectorAll('.side a[data-pg]')];
+  let full=false; try{ full=sessionStorage.getItem('dbf-full')==='1'; }catch(e){}
+  const pageOf=el=>el?el.closest('.pg'):null;
+  function show(hash, scroll){
+    const id=decodeURIComponent((hash||'').replace(/^#/,'')); const el=id?document.getElementById(id):null;
+    const pg=pageOf(el)||pgs[0];
+    pgs.forEach(p=>p.classList.toggle('on', p===pg));
+    const pid=pg.dataset.id; sel.value=pid;
+    links.forEach(a=>{ if(a.dataset.pg===pid) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+    if(scroll){ const first=pg.firstElementChild; if(!el || el===first || el.id===pid) scrollTo(0,0); else el.scrollIntoView(); }
+  }
+  function setFull(on){ full=on; R.classList.toggle('paged', !on); all.setAttribute('aria-pressed', on?'true':'false'); try{ sessionStorage.setItem('dbf-full', on?'1':'0'); }catch(e){} }
+  setFull(full); show(location.hash, !!location.hash);
+  addEventListener('hashchange',()=>show(location.hash, true));
+  sel.addEventListener('change',()=>{ location.hash=sel.value; });
+  all.addEventListener('click',()=>{ setFull(!full); show(location.hash, false); });
+  // per-page count of steps marked Done (from the check-off below); refreshed on every change
+  window.dbfCounts=()=>{ links.forEach(a=>{ const p=document.getElementById('pg-'+a.dataset.pg); if(!p) return; const st=p.querySelectorAll('.step'); const c=a.querySelector('.cnt'); if(!st.length){ c.textContent=''; return; } const d=p.querySelectorAll('.step.isdone').length; c.textContent=d+'/'+st.length; c.classList.toggle('all', d===st.length); }); };
+})();
 // running head: the section being read; step check-off kept in this browser only (a shop convenience, not a record)
 (()=>{ const rh=document.getElementById('runhead'), sec=document.getElementById('rhSec'), toc=document.getElementById('contents');
   const hs=[...document.querySelectorAll('.doc h2, .doc h3')]; let raf=0;
-  const up=()=>{ raf=0; rh.classList.toggle('on', toc.getBoundingClientRect().bottom<0); let cur=null; for(const h of hs){ if(h.getBoundingClientRect().top<90) cur=h; } const t=cur?cur.textContent:''; if(sec.textContent!==t) sec.textContent=t; };
+  const up=()=>{ raf=0; rh.classList.toggle('on', !document.documentElement.classList.contains('paged') && toc.getBoundingClientRect().bottom<0); let cur=null; for(const h of hs){ if(h.getBoundingClientRect().top<90) cur=h; } const t=cur?cur.textContent:''; if(sec.textContent!==t) sec.textContent=t; };
   addEventListener('scroll',()=>{ if(!raf) raf=requestAnimationFrame(up); },{passive:true}); up();
   const KEY='dbf-done-${esc(docNo).replace(/[^A-Za-z0-9-]/g, '')}'; let done={}; try{ done=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
   // wide tables scroll inside their own frame: give the frames a name and a tab stop when they actually scroll
@@ -253,6 +349,7 @@ ${html}
     b.addEventListener('click',()=>{ done[id]=!done[id]; if(!done[id]) delete done[id]; try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){}
       b.setAttribute('aria-pressed', done[id]?'true':'false'); b.textContent='Done'; b.setAttribute('aria-label', 'Done: '+h.textContent.trim()); st.classList.toggle('isdone', !!done[id]); });
     h.after(b); });
+  if(window.dbfCounts){ dbfCounts(); document.addEventListener('click',e=>{ if(e.target.closest('.stepchk')) dbfCounts(); }); }
 })();
 </script>
 </body></html>`;

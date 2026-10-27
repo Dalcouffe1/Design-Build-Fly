@@ -2,6 +2,7 @@
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>C0 flight software package: from a blank flight controller to the first transition</title>
 <script>try{if(localStorage.getItem('vtol-theme')==='light')document.documentElement.dataset.theme='light'}catch(e){}</script>
+<script>try{if(sessionStorage.getItem('dbf-full')!=='1')document.documentElement.classList.add('paged')}catch(e){document.documentElement.classList.add('paged')}</script>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=STIX+Two+Text:ital@1&display=swap">
 <style>
 /* Engineering review platform: app shell (top bar, sidebar, workspace), flat 1 px panels, IBM Plex type.
@@ -786,6 +787,45 @@ h1{font-weight:600}
 .th-img[hidden],.th-canvas[hidden]{display:none}
 
 /* ---------- companion document page ---------- */
+/* reader: one section (or work package) at a time; side contents on wide screens, a section menu on narrow ones.
+   Without the script, in "Full document" mode and in print every section shows. */
+.reader{display:block}
+.side h2{font:600 .75rem/1.3 var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--fg-3);margin:0 0 10px;border:0;padding:0}
+.side ol{list-style:none;margin:0;padding:0}
+.side ol ol{margin:2px 0 6px 1.9rem}
+.side a{display:flex;align-items:baseline;gap:8px;min-height:36px;padding:7px 10px;border-radius:var(--r-s);color:var(--fg-2);text-decoration:none;font-size:.875rem;line-height:1.35}
+.side ol ol a{min-height:32px;padding:5px 10px;font-size:.8125rem}
+.side a:hover{background:var(--surface-2);color:var(--fg)}
+.side a[aria-current="page"]{background:var(--accent-soft,var(--surface-2));color:var(--fg);font-weight:600}
+.side .n{flex:none;min-width:1.2rem;font-variant-numeric:tabular-nums;color:var(--fg-3)}
+.side .t{flex:1}
+.side .cnt{flex:none;font:500 .75rem var(--f-mono);color:var(--fg-3)}
+.side .cnt.all{color:var(--ok)}
+.pgbar{display:none}
+.pager{display:none}
+.pglist{margin:16px 0;padding-left:1.4em}
+.pglist li{margin:.35em 0}
+html.paged .pg{display:none}
+html.paged .pg.on{display:block}
+html.paged .pg>h2:first-child,html.paged .pg>h3:first-child{margin-top:8px;padding-top:0;border-top:0}
+html.paged .pager{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:40px 0 8px;padding-top:18px;border-top:1px solid var(--line)}
+.pager a{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line-2);border-radius:var(--r);color:var(--fg);text-decoration:none;font-size:.9375rem;line-height:1.35}
+.pager a span{font:500 .75rem var(--f-mono);color:var(--fg-3);text-transform:uppercase;letter-spacing:.05em}
+.pager a:hover{border-color:var(--accent)}
+.pager .nx{text-align:right;grid-column:2}
+@media (min-width:1100px){
+  html.paged .reader{display:grid;grid-template-columns:16.5rem minmax(0,1fr);gap:40px;align-items:start}
+  html.paged .side{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;padding:4px 4px 16px 0;border-right:1px solid var(--line)}
+}
+@media (max-width:1099px){
+  html.paged .side{display:none}
+  html.paged .pgbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:5;margin:0 0 16px;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+  .pgbar label{font:600 .8125rem var(--f-body);color:var(--fg-2)}
+  .pgbar select{flex:1;min-width:0;min-height:44px;padding:0 10px;border:1px solid var(--line-3);border-radius:var(--r-s);background:var(--surface);color:var(--fg);font:inherit;font-size:.9375rem}
+}
+html:not(.paged) .side{margin:0 0 32px}
+html:not(.paged) .side ol ol{display:flex;flex-wrap:wrap;gap:0 6px}
+@media print{html.paged .pg{display:block}.side,.pgbar,.pager,#allBtn{display:none!important}}
 /* figures: CAD renders on white in both themes, so the frame stays light */
 .docfig{margin:4px 0 24px;max-width:46rem}
 .docfig img{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:6px}
@@ -843,25 +883,30 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <a class="skip" href="#doc">Skip to content</a>
 <div class="wrap">
 <header class="top">
-  <div class="mast"><span class="org"><a class="backlink" href="VTOL-Review.html">← Design review DBF-RPT-001</a></span><span class="org">DBF-SW-001 <button type="button" class="tbbtn" id="themeBtn"></button></span></div>
+  <div class="mast"><span class="org"><a class="backlink" href="VTOL-Review.html">← Design review DBF-RPT-001</a></span><span class="org">DBF-SW-001 <button type="button" class="tbbtn" id="allBtn" aria-pressed="false">Full document</button><button type="button" class="tbbtn" id="themeBtn"></button></span></div>
   <h1>C0 flight software package: from a blank flight controller to the first transition</h1>
 </header>
 <div class="runhead" id="runhead" aria-hidden="true"><span class="rh-doc">DBF-SW-001</span><span class="rh-sec" id="rhSec"></span><a class="rh-toc" href="#contents" tabindex="-1">Contents</a></div>
-<nav class="toc doctoc" id="contents" aria-labelledby="tocTitle"><h2 id="tocTitle">Contents</h2><ol>
-<li><a href="#0-verified-facts-this-package-relies-on"><span class="n">0</span><span class="t">Verified facts this package relies on</span></a></li>
-<li><a href="#1-install-the-tools-windows"><span class="n">1</span><span class="t">Install the tools (Windows)</span></a></li>
-<li><a href="#2-firmware-target-and-files"><span class="n">2</span><span class="t">Firmware target and files</span></a></li>
-<li><a href="#3-first-flash-dfu"><span class="n">3</span><span class="t">First flash (DFU)</span></a></li>
-<li><a href="#4-wiring-fc-pad-device"><span class="n">4</span><span class="t">Wiring (FC pad → device)</span></a></li>
-<li><a href="#5-load-the-parameters"><span class="n">5</span><span class="t">Load the parameters</span></a></li>
-<li><a href="#6-calibrations-props-off-battery-on-only-where-stated"><span class="n">6</span><span class="t">Calibrations (props off, battery on only where stated)</span></a></li>
-<li><a href="#7-motor-order-direction-and-servo-checks"><span class="n">7</span><span class="t">Motor order, direction and servo checks</span></a></li>
-<li><a href="#8-failsafe-configuration-and-bench-tests"><span class="n">8</span><span class="t">Failsafe configuration and bench tests</span></a></li>
-<li><a href="#9-first-flight-build-up"><span class="n">9</span><span class="t">First-flight build-up</span></a></li>
-<li><a href="#10-decisions-that-changed-the-review-s-controls-chapter"><span class="n">10</span><span class="t">Decisions that changed the review's controls chapter</span></a></li>
-<li><a href="#11-sitl-validation-summary-2026-10-21"><span class="n">11</span><span class="t">SITL validation summary (2026-10-21)</span></a></li>
+<div class="reader">
+<nav class="side" id="contents" aria-label="Contents"><h2 id="tocTitle">Contents</h2><ol>
+<li><a href="#about" data-pg="about"><span class="n"></span><span class="t">About this document</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#0-verified-facts-this-package-relies-on" data-pg="0-verified-facts-this-package-relies-on"><span class="n">0</span><span class="t">Verified facts this package relies on</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#1-install-the-tools-windows" data-pg="1-install-the-tools-windows"><span class="n">1</span><span class="t">Install the tools (Windows)</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#2-firmware-target-and-files" data-pg="2-firmware-target-and-files"><span class="n">2</span><span class="t">Firmware target and files</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#3-first-flash-dfu" data-pg="3-first-flash-dfu"><span class="n">3</span><span class="t">First flash (DFU)</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#4-wiring-fc-pad-device" data-pg="4-wiring-fc-pad-device"><span class="n">4</span><span class="t">Wiring (FC pad → device)</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#5-load-the-parameters" data-pg="5-load-the-parameters"><span class="n">5</span><span class="t">Load the parameters</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#6-calibrations-props-off-battery-on-only-where-stated" data-pg="6-calibrations-props-off-battery-on-only-where-stated"><span class="n">6</span><span class="t">Calibrations (props off, battery on only where stated)</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#7-motor-order-direction-and-servo-checks" data-pg="7-motor-order-direction-and-servo-checks"><span class="n">7</span><span class="t">Motor order, direction and servo checks</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#8-failsafe-configuration-and-bench-tests" data-pg="8-failsafe-configuration-and-bench-tests"><span class="n">8</span><span class="t">Failsafe configuration and bench tests</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#9-first-flight-build-up" data-pg="9-first-flight-build-up"><span class="n">9</span><span class="t">First-flight build-up</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#10-decisions-that-changed-the-review-s-controls-chapter" data-pg="10-decisions-that-changed-the-review-s-controls-chapter"><span class="n">10</span><span class="t">Decisions that changed the review's controls chapter</span><span class="cnt" aria-hidden="true"></span></a></li>
+<li><a href="#11-sitl-validation-summary-2026-10-21" data-pg="11-sitl-validation-summary-2026-10-21"><span class="n">11</span><span class="t">SITL validation summary (2026-10-21)</span><span class="cnt" aria-hidden="true"></span></a></li>
 </ol></nav>
+<div class="readmain">
+<div class="pgbar"><label for="pgSel">Section</label><select id="pgSel"><option value="about">About this document</option><option value="0-verified-facts-this-package-relies-on">0. Verified facts this package relies on</option><option value="1-install-the-tools-windows">1. Install the tools (Windows)</option><option value="2-firmware-target-and-files">2. Firmware target and files</option><option value="3-first-flash-dfu">3. First flash (DFU)</option><option value="4-wiring-fc-pad-device">4. Wiring (FC pad → device)</option><option value="5-load-the-parameters">5. Load the parameters</option><option value="6-calibrations-props-off-battery-on-only-where-stated">6. Calibrations (props off, battery on only where stated)</option><option value="7-motor-order-direction-and-servo-checks">7. Motor order, direction and servo checks</option><option value="8-failsafe-configuration-and-bench-tests">8. Failsafe configuration and bench tests</option><option value="9-first-flight-build-up">9. First-flight build-up</option><option value="10-decisions-that-changed-the-review-s-controls-chapter">10. Decisions that changed the review's controls chapter</option><option value="11-sitl-validation-summary-2026-10-21">11. SITL validation summary (2026-10-21)</option></select></div>
 <main id="doc" class="doc">
+<section class="pg" id="pg-about" data-id="about">
 <p>ArduPlane QuadPlane on the CoreWing F405 Wing APP V2. This package holds everything the team needs to program and configure each programmable part of the C0 lift + cruise VTOL, in the order the work is done. Every number has a source key; the full source list with check dates is in <a href="../docs/research/firmware.md">docs/research/firmware.md</a>. Values marked (est.) are engineering estimates. "—" means the value is unknown.</p>
 <p><b>Status, 2026-10-21.</b> The parameter file passes the checker against the current ArduPlane metadata and the 4.7.1 stable metadata. All seven SITL scenarios passed on ArduPlane 4.7.2 (§11). Nothing here has run on the real board yet. Treat every gain as a starting value.</p>
 <div class="tbl"><table><thead><tr><th>File</th><th>What it is</th></tr></thead><tbody>
@@ -876,6 +921,8 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <tr><td><code>checklists.md</code></td><td>Bench, pre-flight, failsafe-test and post-flight log-review checklists</td></tr>
 <tr><td><code>scripts/README.md</code></td><td>Why there are no Lua scripts: this firmware build does not include scripting</td></tr>
 </tbody></table></div>
+<nav class="pager" aria-label="Previous and next section"><span></span><a class="nx" href="#0-verified-facts-this-package-relies-on"><span>Next</span>Verified facts this package relies on</a></nav></section>
+<section class="pg" id="pg-0-verified-facts-this-package-relies-on" data-id="0-verified-facts-this-package-relies-on">
 <h2 id="0-verified-facts-this-package-relies-on">0. Verified facts this package relies on</h2>
 <div class="tbl"><table><thead><tr><th>Fact</th><th>Value</th><th>Source (checked 2026-10-21)</th></tr></thead><tbody>
 <tr><td>Board</td><td>CoreWing F405 Wing APP V2, STM32F405 with 1 MB flash</td><td>BOM; hwdef <code>FLASH_SIZE_KB 1024</code></td></tr>
@@ -893,13 +940,21 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <tr><td>Lift/pusher ESCs</td><td>SoloGood 45A BLHeli_S, "Support D-Shot 150/300/600". ESC MCU: —</td><td>BOM; amazon.com/dp/B0DJQVGSBC listing title</td></tr>
 <tr><td>RC receiver</td><td>RadioMaster RP3 V2, ESP8285, CRSF output, ships with ELRS 3.0</td><td>BOM; radiomasterrc.com product page</td></tr>
 </tbody></table></div>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#about"><span>Previous</span>About this document</a><a class="nx" href="#1-install-the-tools-windows"><span>Next</span>Install the tools (Windows)</a></nav></section>
+<section class="pg" id="pg-1-install-the-tools-windows" data-id="1-install-the-tools-windows">
 <h2 id="1-install-the-tools-windows">1. Install the tools (Windows)</h2>
 <ol><li><b>Mission Planner</b> (primary ground station; parameter files, motor test, logs): installer <a href="https://firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi" rel="noopener" target="_blank">firmware.ardupilot.org/Tools/MissionPlanner/MissionPlanner-latest.msi</a>, guide <a href="https://ardupilot.org/planner/docs/mission-planner-installation.html" rel="noopener" target="_blank">ardupilot.org/planner/docs/mission-planner-installation.html</a>.</li><li><b>QGroundControl</b> (optional second ground station): <a href="https://docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html" rel="noopener" target="_blank">docs.qgroundcontrol.com/master/en/qgc-user-guide/getting_started/download_and_install.html</a>. This package's parameter files use the Mission Planner/MAVProxy <code>NAME,VALUE</code> format. Load them with Mission Planner.</li><li><b>STM32CubeProgrammer</b> (needed once, for the first DFU flash): <a href="https://www.st.com/en/development-tools/stm32cubeprog.html" rel="noopener" target="_blank">st.com/en/development-tools/stm32cubeprog.html</a>. The ArduPilot page says it installs the DFU driver and may need Java (<a href="https://ardupilot.org/plane/docs/common-loading-firmware-onto-chibios-only-boards.html" rel="noopener" target="_blank">ardupilot.org/plane/docs/common-loading-firmware-onto-chibios-only-boards.html</a>).</li><li><b>ESC Configurator</b> (web, Chrome/Edge): <a href="https://esc-configurator.com/" rel="noopener" target="_blank">esc-configurator.com</a> — BLHeli_S/Bluejay settings through the FC.</li><li><b>ExpressLRS Configurator</b>: <a href="https://github.com/ExpressLRS/ExpressLRS-Configurator/releases" rel="noopener" target="_blank">github.com/ExpressLRS/ExpressLRS-Configurator/releases</a> — receiver firmware and bind phrase.</li><li><b>Python 3 + pymavlink</b> for the tools in this folder: <code>py -m pip install pymavlink</code>. The checker uses only the standard library.</li></ol>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#0-verified-facts-this-package-relies-on"><span>Previous</span>Verified facts this package relies on</a><a class="nx" href="#2-firmware-target-and-files"><span>Next</span>Firmware target and files</a></nav></section>
+<section class="pg" id="pg-2-firmware-target-and-files" data-id="2-firmware-target-and-files">
 <h2 id="2-firmware-target-and-files">2. Firmware target and files</h2>
 <ul><li>Target folder: <a href="https://firmware.ardupilot.org/Plane/stable/CoreWingF405WingV2/" rel="noopener" target="_blank">firmware.ardupilot.org/Plane/stable/CoreWingF405WingV2</a><ul><li><code>arduplane_with_bl.hex</code> — bootloader plus firmware. <b>First flash only, over DFU.</b></li><li><code>arduplane.apj</code> — later updates from Mission Planner ("Install Firmware" &gt; "Load custom firmware").</li></ul></li><li>Do <b>not</b> use <code>CoreWingF405WMiniV2</code>. That target is for the Wing Mini V2, which has a different current-sensor scale (<code>BATT_AMP_PERVLT</code> 51 vs 64, board page).</li><li>Pin the firmware version for the season. Record <code>ArduPlane V4.7.2 (git hash)</code> from the Mission Planner Messages tab in the build log. Retest in SITL before any upgrade.</li></ul>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#1-install-the-tools-windows"><span>Previous</span>Install the tools (Windows)</a><a class="nx" href="#3-first-flash-dfu"><span>Next</span>First flash (DFU)</a></nav></section>
+<section class="pg" id="pg-3-first-flash-dfu" data-id="3-first-flash-dfu">
 <h2 id="3-first-flash-dfu">3. First flash (DFU)</h2>
 <p>The board ships without an ArduPilot bootloader (hwdef README "Loading Firmware").</p>
 <ol><li>Remove the props. Unplug the flight battery. Leave only USB connected.</li><li>Enter DFU mode. The board has <b>no boot button</b>. The hwdef README says to "pull the <code>BOOT0</code> pin on the USB extender connector low while powering the board over USB, or hold the BOOT button on the wireless USB extender module if one is fitted". The included wireless module has that BOOT button, so use it. (On STM32 parts, BOOT0 is normally pulled <i>high</i> for DFU. The extender may invert it. Check the CoreWing Wing V2 user manual linked from the ArduPilot board page before bridging any pin.)</li><li>In Device Manager, check for "STM32 BOOTLOADER" under Universal Serial Bus devices.</li><li>STM32CubeProgrammer: connection <b>USB</b> &gt; Connect &gt; Open file <code>arduplane_with_bl.hex</code> &gt; Download.</li><li>Power-cycle. In Mission Planner, connect over USB (COM port, 115200, or auto). Messages should show <code>ArduPlane V4.7.2</code> and the board name.</li><li>Later updates: Mission Planner &gt; Setup &gt; Install Firmware &gt; "Load custom firmware" &gt; <code>arduplane.apj</code> (or pick Plane from the list once the board is detected).</li></ol>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#2-firmware-target-and-files"><span>Previous</span>Firmware target and files</a><a class="nx" href="#4-wiring-fc-pad-device"><span>Next</span>Wiring (FC pad → device)</a></nav></section>
+<section class="pg" id="pg-4-wiring-fc-pad-device" data-id="4-wiring-fc-pad-device">
 <h2 id="4-wiring-fc-pad-device">4. Wiring (FC pad → device)</h2>
 <p>Pad names come from the hwdef README and the ArduPilot board page. Before soldering, check every pad on the board's own pinout images: the GPS pads and the GPS connector use different pin orders (hwdef README).</p>
 <h3 id="4-1-signal-and-power">4.1 Signal and power</h3>
@@ -953,8 +1008,12 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <tr><td>S12 (LED)</td><td>5</td><td>unused</td><td class="n">0</td></tr>
 </tbody></table></div>
 <p>The review (<a class="rref" href="VTOL-Review.html#controls">§17</a> "Outputs and wiring") puts the lift motors on S7–S10 and the rudders on S5–S6. S7 shares timer group S5–S7 with S5 and S6, so DShot on S7 would force both rudder outputs into DShot. The map above keeps every servo out of a DShot group. It also matches ArduPilot's QuadPlane convention of lift motors on outputs 5–8 (quadplane-frame-setup.html). <code>tools/check_params.py --corewing</code> checks this automatically.</p>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#3-first-flash-dfu"><span>Previous</span>First flash (DFU)</a><a class="nx" href="#5-load-the-parameters"><span>Next</span>Load the parameters</a></nav></section>
+<section class="pg" id="pg-5-load-the-parameters" data-id="5-load-the-parameters">
 <h2 id="5-load-the-parameters">5. Load the parameters</h2>
 <ol><li>Validate first: <code>py firmware/tools/check_params.py firmware/vtol_c0.param --corewing --require-every-line-commented</code>.</li><li>Mission Planner &gt; Config &gt; Full Parameter List &gt; <b>Load from file</b> &gt; <code>vtol_c0.param</code> &gt; Write Params.</li><li><b>Reboot.</b> <code>Q_ENABLE</code> and the DShot settings (<code>Q_M_PWM_TYPE</code>, <code>SERVO_BLH_*</code>) take effect only after a reboot, and the <code>Q_</code> parameters do not exist until then.</li><li>Load the same file <b>a second time</b>, Write Params, and reboot again. Then use "Compare Params" against the file: every row should match.</li><li>Hover-only sessions: also load <code>vtol_c0_hover_phase.param</code>. Reload <code>vtol_c0.param</code> before the first transition session.</li><li>Save the full parameter list (<code>Save to file</code>) after each session as <code>params_&lt;date&gt;.param</code> in the team log.</li></ol>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#4-wiring-fc-pad-device"><span>Previous</span>Wiring (FC pad → device)</a><a class="nx" href="#6-calibrations-props-off-battery-on-only-where-stated"><span>Next</span>Calibrations (props off, battery on only where stated)</a></nav></section>
+<section class="pg" id="pg-6-calibrations-props-off-battery-on-only-where-stated" data-id="6-calibrations-props-off-battery-on-only-where-stated">
 <h2 id="6-calibrations-props-off-battery-on-only-where-stated">6. Calibrations (props off, battery on only where stated)</h2>
 <div class="tbl"><table><thead><tr><th class="n">#</th><th>Step</th><th>How</th><th>Pass condition</th></tr></thead><tbody>
 <tr><td class="n">6.1</td><td>Board orientation</td><td>FC arrow forward, top up → <code>AHRS_ORIENTATION,0</code></td><td>HUD horizon matches the airframe</td></tr>
@@ -966,6 +1025,8 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <tr><td class="n">6.7</td><td>Battery current</td><td>Watt meter in series. Hold one lift motor at a steady load (props on, aircraft tethered) and adjust <code>BATT_AMP_PERVLT</code></td><td>GCS current within 5 % of the watt meter (est.)</td></tr>
 <tr><td class="n">6.8</td><td>Airspeed offset</td><td>Cover the pitot loosely (foam) during boot or press "Calibrate Airspeed" (calibrating-an-airspeed-sensor.html)</td><td>Reads 0 ± 1 m/s (est.) still air</td></tr>
 </tbody></table></div>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#5-load-the-parameters"><span>Previous</span>Load the parameters</a><a class="nx" href="#7-motor-order-direction-and-servo-checks"><span>Next</span>Motor order, direction and servo checks</a></nav></section>
+<section class="pg" id="pg-7-motor-order-direction-and-servo-checks" data-id="7-motor-order-direction-and-servo-checks">
 <h2 id="7-motor-order-direction-and-servo-checks">7. Motor order, direction and servo checks</h2>
 <p><b>Motor test (props OFF, battery ON, aircraft restrained).</b> Mission Planner &gt; Setup &gt; Optional Hardware &gt; Motor Test, 5–10 % throttle, 2 s. Buttons go clockwise from front-right (copter/docs/connect-escs-and-motors.html):</p>
 <div class="tbl"><table><thead><tr><th>Button</th><th>Must spin</th><th>Output</th><th>Direction (seen from above)</th></tr></thead><tbody>
@@ -985,6 +1046,8 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 </tbody></table></div>
 <p>Then set throws: <code>SERVOn_MIN/MAX/TRIM</code> so that no linkage binds at full stick. Check that the 5 servos together stay under the 8 A servo BEC (budget-avionics M3).</p>
 <p><b>Pusher check:</b> QSTABILIZE, armed, props on, tethered. The pusher must stay <b>stopped</b> in Q modes. In FBWA the throttle stick drives it. Air must blow aft.</p>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#6-calibrations-props-off-battery-on-only-where-stated"><span>Previous</span>Calibrations (props off, battery on only where stated)</a><a class="nx" href="#8-failsafe-configuration-and-bench-tests"><span>Next</span>Failsafe configuration and bench tests</a></nav></section>
+<section class="pg" id="pg-8-failsafe-configuration-and-bench-tests" data-id="8-failsafe-configuration-and-bench-tests">
 <h2 id="8-failsafe-configuration-and-bench-tests">8. Failsafe configuration and bench tests</h2>
 <div class="tbl"><table><thead><tr><th>Event</th><th>Mode on event</th><th>Parameters</th><th>Bench test (props off)</th></tr></thead><tbody>
 <tr><td>RC loss in a Q mode</td><td><b>QLAND</b> in place (ArduPilot forces this in QSTABILIZE, QHOVER, QLOITER)</td><td><code>THR_FAILSAFE,1</code>; <code>Q_OPTIONS</code> bit 5 clear (apms-failsafe-function.html)</td><td>Arm in QLOITER, switch the TX off → GCS shows "RC Short Failsafe: switched to QLand"</td></tr>
@@ -997,6 +1060,8 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <tr><td>Arming</td><td>Only from the CH5 switch, only in VTOL modes, only with a charged pack (≥ 23.4 V)</td><td><code>RC5_OPTION,153</code>; <code>ARMING_RUDDER,0</code>; <code>Q_OPTIONS,262144</code>; <code>BATT_ARM_VOLT,23.4</code></td><td>Try to arm in FBWA → refused</td></tr>
 </tbody></table></div>
 <p><b>Receiver failsafe setting:</b> set the receiver to output <b>no pulses</b> on link loss. ArduPilot recommends this over a preset failsafe throttle (apms-failsafe-function.html). Check the RP3 V2 failsafe option in its WiFi/Lua settings (<code>peripherals.md</code> §2). Do not set a failsafe position on the handset.</p>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#7-motor-order-direction-and-servo-checks"><span>Previous</span>Motor order, direction and servo checks</a><a class="nx" href="#9-first-flight-build-up"><span>Next</span>First-flight build-up</a></nav></section>
+<section class="pg" id="pg-9-first-flight-build-up" data-id="9-first-flight-build-up">
 <h2 id="9-first-flight-build-up">9. First-flight build-up</h2>
 <p>Fly at a site that allows the test (review <a class="rref" href="VTOL-Review.html#schedule">§15</a>). Hover tests: ≤ 5 m AGL, ≤ 60 s per hover (review <a class="rref" href="VTOL-Review.html#controls">§17</a>, R14). Transitions: ≥ 30 m AGL, into wind. Wind ≤ 5 m/s, gusts ≤ 8 m/s (R16). The full checklists are in <code>checklists.md</code>.</p>
 <h3 id="9-1-sitl-rehearsal-every-pilot-before-any-flight">9.1 SITL rehearsal (every pilot, before any flight)</h3>
@@ -1011,22 +1076,51 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
 <ul><li>Airspeed ratio: <code>ARSPD_AUTOCAL,1</code> for a 5-minute loiter, then back to 0 (calibrating-an-airspeed-sensor.html). Review <a class="rref" href="VTOL-Review.html#controls">M17.1</a> failure threshold: &gt; 10 % error puts the real transition speed under R11's 15.6 m/s.</li><li>Fixed-wing gains start at firmware defaults. Run AUTOTUNE in FBWA after the first transitions (automatic-tuning-with-autotune.html).</li></ul>
 <h3 id="9-6-first-transitions">9.6 First transitions</h3>
 <ol><li>Load <code>vtol_c0.param</code> again (removes the hover-phase overlay). Check <code>Q_ASSIST_SPEED</code> = 13.</li><li>QLOITER to ≥ 30 m, nose into wind, with the longest clear line ahead.</li><li>Switch to <b>FBWA</b> and push the throttle to about 70 %. The lift motors hold height. At <code>AIRSPEED_MIN</code> 16 m/s they taper out over 5 s. In SITL this took 10–11 s from mode change to "Transition done" on the generic model (sitl/results) and 13–15 s, 140–170 m on the C0 airframe model (sitl/results_c0.json).</li><li><b>Start the turn as soon as "Transition done" appears.</b> In SITL, a straight FBWA transition reached the 300 m fence circle about 6 s after transition end (first SITL run, scenario B, 2026-10-21). Start transitions from the upwind edge of the field.</li><li>Back-transition: select QLOITER (or QHOVER). The pusher stops at once and the lift motors brake the aircraft (quadplane-transitions.html). Allow about 100 m stopping distance at 20 m/s (2 m/s² decel). In the C0 airframe model the airbrake phase pitches to the 30° VTOL limit and briefly stalls the wing (−17°/+33° swing, ≤ 2 m altitude loss, sitl/README.md Gains item 1); if the aircraft does this, lower <code>Q_TRANS_DECEL</code> first (gentler, longer stop), then <code>Q_ANGLE_MAX</code>, before any attitude gain. The test cards F06–F13 carry this as a watch item.</li><li>Check in the log: the transition current peak against the 75.7 A estimate (results.json <code>C0.sized.I_trans</code>), battery sag, and time to <code>AIRSPEED_MIN</code>. Review <a class="rref" href="VTOL-Review.html#controls">M17.2</a> failure threshold: &gt; 15 s or &gt; 100 m.</li><li>Only then: CRUISE circuits, RTL test at altitude, and the full R9 mission in AUTO (<code>sitl/mission_test.py</code> scenario A is the template: NAV_WAYPOINTs then NAV_VTOL_LAND).</li></ol>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#8-failsafe-configuration-and-bench-tests"><span>Previous</span>Failsafe configuration and bench tests</a><a class="nx" href="#10-decisions-that-changed-the-review-s-controls-chapter"><span>Next</span>Decisions that changed the review's controls chapter</a></nav></section>
+<section class="pg" id="pg-10-decisions-that-changed-the-review-s-controls-chapter" data-id="10-decisions-that-changed-the-review-s-controls-chapter">
 <h2 id="10-decisions-that-changed-the-review-s-controls-chapter">10. Decisions that changed the review's controls chapter</h2>
 <p>Details and rationale are in docs/research/firmware.md. They should be folded into the review:</p>
 <ol><li><b>Output map</b>: lift on S5–S8, pusher S9, rudder 2 on S11 (DShot timer-group conflict in the review map).</li><li><b>Airspeed sensor</b>: the MS5525DSO ships at 0x76, the onboard baro's address. Run it at 0x77 (CSB strapped low, <code>ARSPD_TYPE,5</code>) or swap to MS4525DO (§4.3). The review row "I²C MS5525DSO airspeed" needs this note.</li><li><b>Telemetry (no radio in the BOM, $0)</b>: one RP3 V2 runs either CRSF or ELRS-MAVLink, not both (review row "CRSF + MAVLink"). Baseline for hover phases: CRSF (<code>SERIAL6_PROTOCOL,23</code>), with telemetry on the Pocket Crush. GCS link for transition flights: ELRS MAVLink mode (<code>SERIAL6_PROTOCOL,2</code>, <code>SERIAL6_BAUD,460</code>, <code>RSSI_TYPE,5</code>, ELRS ≥ 3.5 on TX and RX, Mission Planner on UDP 14550 via the Pocket Crush backpack WiFi). The RX then sends RC as RC_CHANNELS_OVERRIDE; SITL scenario G showed RC-loss failsafe 1 s after the overrides stop. Details and limits: peripherals.md §2.3–2.4.</li><li><b>Transition threshold</b>: the state diagram labels say "≥ 15 m/s" and "&lt; 12 m/s". The table says AIRSPEED_MIN 16 and Q_ASSIST_SPEED 13. The parameters use 16 and 13.</li><li><b>Battery current limit</b>: <code>BATT_WATT_MAX</code> is not in this build. <code>Q_M_BAT_CURR_MAX</code> limits only the lift motors, so it is set to 85 A as a fault guard, not 60 A. Transition current is managed with <code>TKOFF_THR_MAX</code> 75 % and the pilot's throttle. Bench test M4 decides. <b><code>THR_MAX</code> 85</b> caps the pusher in every fixed-wing mode: the C0 SITL model gives about 890 W at 100 % throttle on a full 25.2 V pack (<code>sitl/validation_c0.json</code>, estimated motor model) against the X4110S 615 W rating; power scales roughly as throttle³, so 85 % is about 0.85³ × 890 = 547 W (est.). Cruise needs 233–302 W (SITL model / aero build-up). Bench test M1 (pusher power at full pack, TEST-PLAN C09) re-sets it; if <code>THR_MAX</code> is lowered, re-check that level speed at full throttle still exceeds <code>AIRSPEED_MAX</code> 25 m/s.</li><li><b>Low-battery action, two stages</b>: low (30 % / 1950 mAh, or 21.0 V sag-compensated) → RTL, which ends in QRTL and a vertical landing at home (<code>Q_RTL_MODE,1</code>). Critical (20 % / 1300 mAh, or 19.8 V) → QLAND in place. ArduPilot's failsafe page calls "BATT_FS_LOW_ACT = 1 (RTL) and BATT_FS_CRT_ACT = 2 (Land)" a reasonable setup. 4 = QLand is used for the explicit VTOL landing. The review had low = QLAND. The hover-phase overlay sets low → QLAND, because RTL would start a fixed-wing return. (Note: the parameter is <code>BATT_FS_LOW_ACT</code>; <code>BATT_FS_LLOW_ACT</code> does not exist.)</li><li><b>Fence ceiling</b>: 110 m above home, 12 m below the 400 ft (121.9 m) limit, so the climb overshoot after a breach stays legal. SITL peaked at 113.1 m, 3.1 m over the fence. Review wording: "fence 110 m, 12 m below the 400 ft limit".</li><li><b>RC loss in hover</b>: QLAND in place (ArduPilot behaviour in Q modes). The review's "RC loss → RTL then QLAND" applies to fixed-wing modes only.</li><li><b>Firmware</b>: stable 4.7.2 now covers the CoreWing. The 2027-02-22 go/no-go can close early.</li></ol>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#9-first-flight-build-up"><span>Previous</span>First-flight build-up</a><a class="nx" href="#11-sitl-validation-summary-2026-10-21"><span>Next</span>SITL validation summary (2026-10-21)</a></nav></section>
+<section class="pg" id="pg-11-sitl-validation-summary-2026-10-21" data-id="11-sitl-validation-summary-2026-10-21">
 <h2 id="11-sitl-validation-summary-2026-10-21">11. SITL validation summary (2026-10-21)</h2>
 <p>ArduPlane <b>V4.7.2</b> SITL (the Windows build Mission Planner uses, from firmware.ardupilot.org/Tools/MissionPlanner/sitl/PlaneStable), model <code>quadplane</code>, <code>vtol_c0.param</code> + <code>sitl/sitl_overrides.param</code>. 133 parameters read back. All match. Only the 3 BLHeli passthrough parameters (<code>SERVO_BLH_*</code>) are absent, because SITL has no BLHeli support. <b>7/7 scenarios passed.</b> Results and limits are in <code>sitl/README.md</code>. The SITL airframe is ArduPilot's generic QuadPlane model, not C0. Its learned hover throttle was 0.15, against about 0.52 (est.) for C0. So SITL validates modes, thresholds, failsafes and the fence. It does not validate gains or performance.</p>
 <p><b>Update 2026-10-25 — C0 airframe model.</b> The same seven scenarios were re-run on <code>sitl/c0_physics.py</code>, a 6-DOF model of C0 itself (SITL <code>--model JSON</code>; mass, geometry, AVL derivatives, CL_max, drag polar, motor thrust/power table, APC 14x8.5 prop data and the output map all read from the repo files). <b>7/7 passed with <code>vtol_c0.param</code> unchanged</b>; no <code>vtol_c0_sitl_tuned.param</code> was needed. Trims match the analysis: hover 0.523 thrust fraction at 22.2 V (TEST-PLAN 0.52), cruise α 2.84° / elevator −3.45° / 7.69 N (AVL 2.86° / −3.45° / 7.70 N), stall 11.75 m/s (target 11.75). SITL learned <code>Q_M_THST_HOVER</code> 0.44 on a full pack (the model predicts 0.45 at 25.2 V, because ArduPilot references thrust to <code>Q_M_BAT_VOLT_MAX</code>; 0.52 is the 22.2 V figure). Forward transition 13–15 s and 140–170 m with ≤ 2 m altitude loss, peak 71–75 A; back-transition ≤ 2 m loss with a −17°/+33° pitch swing during ArduPilot's airbrake stop (the C0 wing stalls at the 30° VTOL pitch limit). Model limitations (no prop wash, no rotor inflow, estimated inertia, reversed-flow aero) are listed in <code>sitl/README.md</code>. Re-run 2026-10-25 on the final data (results.json MTOW 6.552 kg, chord 0.2842 m; corrected AVL model with rudder derivatives Cnδr +0.000736/deg; CAD rev D): 7/7 again, same transition times (13–14 s), losses ≤ 2 m, peak 69–75 A; the model now takes all control derivatives from the AVL st file.</p>
+<nav class="pager" aria-label="Previous and next section"><a class="pv" href="#10-decisions-that-changed-the-review-s-controls-chapter"><span>Previous</span>Decisions that changed the review's controls chapter</a></nav></section>
 </main>
+</div>
+</div>
 </div>
 <script>
 // theme: shared with the design review (same storage key)
 (()=>{ const b=document.getElementById('themeBtn'), r=document.documentElement; const lab=()=>{ b.textContent = r.dataset.theme==='light'?'Dark theme':'Light theme'; };
   lab(); b.addEventListener('click',()=>{ r.dataset.theme = r.dataset.theme==='light'?'dark':'light'; try{ localStorage.setItem('vtol-theme', r.dataset.theme); }catch(e){} lab(); }); })();
+// reader: show the page holding the target of the address (a section, work package, step or any anchor)
+(()=>{ const R=document.documentElement, pgs=[...document.querySelectorAll('.pg')]; if(!pgs.length) return;
+  const sel=document.getElementById('pgSel'), all=document.getElementById('allBtn');
+  const links=[...document.querySelectorAll('.side a[data-pg]')];
+  let full=false; try{ full=sessionStorage.getItem('dbf-full')==='1'; }catch(e){}
+  const pageOf=el=>el?el.closest('.pg'):null;
+  function show(hash, scroll){
+    const id=decodeURIComponent((hash||'').replace(/^#/,'')); const el=id?document.getElementById(id):null;
+    const pg=pageOf(el)||pgs[0];
+    pgs.forEach(p=>p.classList.toggle('on', p===pg));
+    const pid=pg.dataset.id; sel.value=pid;
+    links.forEach(a=>{ if(a.dataset.pg===pid) a.setAttribute('aria-current','page'); else a.removeAttribute('aria-current'); });
+    if(scroll){ const first=pg.firstElementChild; if(!el || el===first || el.id===pid) scrollTo(0,0); else el.scrollIntoView(); }
+  }
+  function setFull(on){ full=on; R.classList.toggle('paged', !on); all.setAttribute('aria-pressed', on?'true':'false'); try{ sessionStorage.setItem('dbf-full', on?'1':'0'); }catch(e){} }
+  setFull(full); show(location.hash, !!location.hash);
+  addEventListener('hashchange',()=>show(location.hash, true));
+  sel.addEventListener('change',()=>{ location.hash=sel.value; });
+  all.addEventListener('click',()=>{ setFull(!full); show(location.hash, false); });
+  // per-page count of steps marked Done (from the check-off below); refreshed on every change
+  window.dbfCounts=()=>{ links.forEach(a=>{ const p=document.getElementById('pg-'+a.dataset.pg); if(!p) return; const st=p.querySelectorAll('.step'); const c=a.querySelector('.cnt'); if(!st.length){ c.textContent=''; return; } const d=p.querySelectorAll('.step.isdone').length; c.textContent=d+'/'+st.length; c.classList.toggle('all', d===st.length); }); };
+})();
 // running head: the section being read; step check-off kept in this browser only (a shop convenience, not a record)
 (()=>{ const rh=document.getElementById('runhead'), sec=document.getElementById('rhSec'), toc=document.getElementById('contents');
   const hs=[...document.querySelectorAll('.doc h2, .doc h3')]; let raf=0;
-  const up=()=>{ raf=0; rh.classList.toggle('on', toc.getBoundingClientRect().bottom<0); let cur=null; for(const h of hs){ if(h.getBoundingClientRect().top<90) cur=h; } const t=cur?cur.textContent:''; if(sec.textContent!==t) sec.textContent=t; };
+  const up=()=>{ raf=0; rh.classList.toggle('on', !document.documentElement.classList.contains('paged') && toc.getBoundingClientRect().bottom<0); let cur=null; for(const h of hs){ if(h.getBoundingClientRect().top<90) cur=h; } const t=cur?cur.textContent:''; if(sec.textContent!==t) sec.textContent=t; };
   addEventListener('scroll',()=>{ if(!raf) raf=requestAnimationFrame(up); },{passive:true}); up();
   const KEY='dbf-done-DBF-SW-001'; let done={}; try{ done=JSON.parse(localStorage.getItem(KEY)||'{}'); }catch(e){}
   // wide tables scroll inside their own frame: give the frames a name and a tab stop when they actually scroll
@@ -1037,6 +1131,7 @@ header.top h1{font:600 2rem/1.15 var(--f-display);letter-spacing:-.025em;max-wid
     b.addEventListener('click',()=>{ done[id]=!done[id]; if(!done[id]) delete done[id]; try{ localStorage.setItem(KEY, JSON.stringify(done)); }catch(e){}
       b.setAttribute('aria-pressed', done[id]?'true':'false'); b.textContent='Done'; b.setAttribute('aria-label', 'Done: '+h.textContent.trim()); st.classList.toggle('isdone', !!done[id]); });
     h.after(b); });
+  if(window.dbfCounts){ dbfCounts(); document.addEventListener('click',e=>{ if(e.target.closest('.stepchk')) dbfCounts(); }); }
 })();
 </script>
 </body></html>
