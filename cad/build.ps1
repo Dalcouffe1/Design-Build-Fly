@@ -39,4 +39,9 @@ Build (Join-Path $root 'cad\Drawings.cs') $dx $true
 $sn = Join-Path $root 'cad\Snap.exe'
 Build (Join-Path $root 'cad\Snap.cs') $sn
 & $sn (Join-Path $root 'cad\model\VTOL_Concept.SLDASM') (Join-Path $root 'cad\images')
+# build-manual step figures (docs/build/img/*.jpg from the list in docs/build/figs.txt)
+$bf = Join-Path $root 'cad\BuildFigs.exe'
+& $csc /nologo /platform:x64 /out:$bf /r:System.Drawing.dll /r:"$sw\SolidWorks.Interop.sldworks.dll" /r:"$sw\SolidWorks.Interop.swconst.dll" (Join-Path $root 'cad\BuildFigs.cs')
+if ($LASTEXITCODE -ne 0) { throw 'compile failed: BuildFigs.cs' }
+& $bf (Join-Path $root 'cad\model') (Join-Path $root 'docs\build\figs.txt') (Join-Path $root 'docs\build\img')
 & (Join-Path $root 'cad\ListDocs.exe') close

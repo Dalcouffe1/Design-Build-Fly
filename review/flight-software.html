@@ -786,6 +786,10 @@ h1{font-weight:600}
 .th-img[hidden],.th-canvas[hidden]{display:none}
 
 /* ---------- companion document page ---------- */
+/* figures: CAD renders on white in both themes, so the frame stays light */
+.docfig{margin:4px 0 24px;max-width:46rem}
+.docfig img{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:6px}
+.docfig figcaption{margin-top:6px;font-size:.8125rem;line-height:1.45;color:var(--fg-2);max-width:62ch}
 .doc h2{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.02em}
 .doc h3{margin-top:40px;padding-top:12px;border-top:1px solid var(--line-2);font-size:1.25rem}
 .doc h4{margin-top:28px;font-size:1.125rem}

@@ -126,8 +126,10 @@ const pages = [['../docs/build/BUILD-MANUAL.md', 'build-manual.html', 'DBF-MAN-0
 for (const [src, out, docNo, kicker] of pages) {
   const md = r(src), rev = (md.match(/\|\s*Revision\s*\|\s*([A-Z])\b/) || [])[1];
   const no = docNo + (rev ? ' · Rev ' + rev : '');
-  writeSafe(new URL('./' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: './', chapters: CHAPTERS }));
-  writeSafe(new URL('../' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: 'VTOL-Review.html', chapters: CHAPTERS }));
+  // figures embedded as data URIs (the companion pages stay self-contained); paths are relative to the Markdown file
+  const img = p => { const f = new URL(p, new URL(src, import.meta.url)); if (!existsSync(f)) return null; const ext = p.split('.').pop().toLowerCase(); return `data:image/${ext === 'jpg' ? 'jpeg' : ext};base64,` + readFileSync(f).toString('base64'); };
+  writeSafe(new URL('./' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: './', chapters: CHAPTERS, img }));
+  writeSafe(new URL('../' + out, import.meta.url), docPage({ md, css: r('./src/style.css'), fontLink, docNo: no, kicker, back: 'VTOL-Review.html', chapters: CHAPTERS, img }));
   console.log('wrote', out);
 }
 

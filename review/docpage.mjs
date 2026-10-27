@@ -1,8 +1,10 @@
 // Companion pages for the review (build manual, test plan): renders the repo Markdown into the report's house style.
 // Small dependency-free Markdown subset: headings, paragraphs, nested lists, task lists, tables, code blocks,
-// blockquotes, rules, and inline code / bold / italic / links. Raw HTML in the source is escaped, never passed through.
+// blockquotes, rules, figures (a line holding only ![caption](path)), and inline code / bold / italic / links. Raw HTML in the source is escaped, never passed through.
 // where "review §N" links point: set by docPage for each output (artifact vs project-root copy)
 let REVIEW = { base: './', no: {} };
+// figure sources: set by docPage; maps a path relative to the Markdown file to an img src (null = file missing)
+let IMG = () => null;
 const esc = s => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const slug = s => s.toLowerCase().replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 
@@ -78,6 +80,12 @@ export function renderMarkdown(md) {
       i++; out.push(`<pre class="code"><code>${esc(buf.join('\n'))}</code></pre>`); continue;
     }
     if (/^(-{3,}|\*{3,}|_{3,})\s*$/.test(l)) { i++; continue; }
+    if ((m = l.match(/^!\[([^\]]*)\]\(([^)\s]+)\)\s*$/))) {
+      const src = IMG(m[2]); i++;
+      if (src) out.push(`<figure class="docfig"><img src="${src}" alt="${esc(m[1].replace(/[*`]/g, ''))}" loading="lazy"><figcaption>${inline(m[1])}</figcaption></figure>`);
+      else console.log('missing figure', m[2]);
+      continue;
+    }
     if (/^\s*\|/.test(l) && i + 1 < L.length && isTableSep(L[i + 1])) {
       const head = cells(l); i += 2; const rows = [];
       while (i < L.length && /^\s*\|/.test(L[i])) rows.push(cells(L[i++]));
@@ -115,7 +123,7 @@ export function renderMarkdown(md) {
       out.push(html); continue;
     }
     const buf = [l.trim()]; i++;
-    while (i < L.length && L[i].trim() && !/^(#{1,6}\s|```|\s*\||>|\s*([-*+]|\d+[.)])\s+|-{3,}\s*$)/.test(L[i])) buf.push(L[i++].trim());
+    while (i < L.length && L[i].trim() && !/^(#{1,6}\s|```|\s*\||>|\s*([-*+]|\d+[.)])\s+|-{3,}\s*$|!\[)/.test(L[i])) buf.push(L[i++].trim());
     const para = buf.join(' ');
     const st = para.match(/^\*\*(\d+\.\d+[a-z]?)\s+(.+?)\*\*\s*(.*)$/);
     if (st) {
@@ -146,8 +154,8 @@ export function renderMarkdown(md) {
 }
 
 // A full page in the report style: masthead, title, contents, body. `back` links to the review.
-export function docPage({ md, css, fontLink, docNo, kicker, back = 'vtol-review.html', chapters = [] }) {
-  REVIEW = { base: back, no: Object.fromEntries(chapters.map((id, i) => [id, i + 1])) };
+export function docPage({ md, css, fontLink, docNo, kicker, back = 'vtol-review.html', chapters = [], img = () => null }) {
+  REVIEW = { base: back, no: Object.fromEntries(chapters.map((id, i) => [id, i + 1])) }; IMG = img;
   const { title, toc, html } = renderMarkdown(md);
   const name = title.replace(/^DBF-[A-Z]+-\d+\s*[—:-]\s*/, '');
   return `<!doctype html>
@@ -158,6 +166,10 @@ ${fontLink}
 <style>
 ${css}
 /* ---------- companion document page ---------- */
+/* figures: CAD renders on white in both themes, so the frame stays light */
+.docfig{margin:4px 0 24px;max-width:46rem}
+.docfig img{display:block;width:100%;height:auto;background:#fff;border:1px solid var(--line);border-radius:6px}
+.docfig figcaption{margin-top:6px;font-size:.8125rem;line-height:1.45;color:var(--fg-2);max-width:62ch}
 .doc h2{margin-top:64px;padding-top:18px;border-top:1px solid var(--line);font-size:1.5rem;letter-spacing:-.02em}
 .doc h3{margin-top:40px;padding-top:12px;border-top:1px solid var(--line-2);font-size:1.25rem}
 .doc h4{margin-top:28px;font-size:1.125rem}

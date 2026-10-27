@@ -15,6 +15,7 @@ Everything here is generated from `analysis/results.json` and `cad/hardware.json
 | `SharedTest.cs` | Parity test of `Shared.cs` against the inline code it replaced (bit-exact sections, pod radii and parsed parameters; no SOLIDWORKS). `build.ps1` compiles and runs it before every build; by hand: `csc /nologo /out:%TEMP%\SharedTest.exe cad\Shared.cs cad\SharedTest.cs && %TEMP%\SharedTest.exe cad\params.txt` |
 | `ExportMesh.cs` | Exports each part as a binary STL (metres, part frame) plus colour and description → `mesh/`; `review/mesh.mjs` packs them (one pre-rotated mesh per part orientation) for the interactive viewer in the review page |
 | `Snap.cs` | Saves iso/top/side/front PNGs of the assembly → `images/` |
+| `BuildFigs.cs` | Step figures for the build manual: per figure in `docs/build/figs.txt`, shows the parts a step fits (orange, with their fasteners in blue) among the parts already built, renders and crops → `docs/build/img/*.jpg` (assembly closed unsaved) |
 | `Sim.cs` | SOLIDWORKS Simulation studies → `sim/results.txt`, plots, and `sim/*.SLDPRT` with the studies saved inside (re-run 2026-10-25 on the CAD rev D / v0.4 inputs, see below) |
 | `ListDocs.cs` | Lists open SOLIDWORKS documents; `ListDocs.exe close` closes files under this folder, `close untitled` also discards unsaved new documents |
 | `Inspect.cs` | Lists a part's feature tree, bodies, volume and box (debugging aid) |
